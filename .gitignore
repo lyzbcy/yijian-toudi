@@ -1,0 +1,14 @@
+node_modules/
+release/
+dist/
+.DS_Store
+*.log
+*.pid
+.local-data/
+.playwright/
+coverage/
+test-output/
+build/icon.iconset/
+_plaintext.html
+_search_index.js
+_final_verify.mjs

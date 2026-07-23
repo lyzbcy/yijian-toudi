@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta name="description" content="一键投递：把大厂岗位、统一简历和招聘信息放进一个本地工作台。">
+  <title>一键投递｜少一点重复，多一点选择</title>
+  <style>
+    :root{--ink:#24243a;--muted:#77788e;--purple:#6857e8;--soft:#efedff;--green:#3ba57b;--line:#e8e7ef;--paper:#fff;--bg:#faf9fe;font-family:Inter,-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg)}a{color:inherit}.wrap{width:min(1120px,calc(100% - 40px));margin:auto}
+    nav{height:76px;display:flex;align-items:center;justify-content:space-between}.logo{display:flex;gap:10px;align-items:center;text-decoration:none;font-weight:900}.logo i{width:38px;height:38px;display:grid;place-items:center;border-radius:13px;background:var(--purple);color:#fff;font-style:normal}.navlinks{display:flex;gap:24px;align-items:center;font-size:13px}.navlinks a{text-decoration:none;color:#66677c}.small-btn{padding:10px 15px;border:1px solid var(--line);border-radius:11px;background:#fff!important;color:var(--ink)!important}
+    .hero{min-height:670px;padding:90px 0 60px;position:relative;overflow:hidden}.hero:before{content:"";position:absolute;left:50%;top:-120px;width:900px;height:600px;transform:translateX(-50%);background:radial-gradient(ellipse,rgba(104,87,232,.16),transparent 68%);pointer-events:none}.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:60px;position:relative}.pill{display:inline-flex;padding:8px 12px;border-radius:999px;background:var(--soft);color:var(--purple);font-size:12px;font-weight:800}.hero h1{font-size:58px;line-height:1.12;letter-spacing:-.06em;margin:20px 0}.hero h1 em{color:var(--purple);font-style:normal}.hero p{max-width:590px;color:var(--muted);font-size:17px;line-height:1.9}.actions{display:flex;gap:12px;margin-top:28px}.primary,.secondary{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:13px;text-decoration:none;font-size:14px;font-weight:800}.primary{background:var(--purple);color:#fff;box-shadow:0 16px 32px rgba(104,87,232,.22)}.secondary{background:#fff;border:1px solid var(--line);color:#5e5f72}.microcopy{margin-top:14px!important;font-size:11px!important;color:#a0a1af!important}
+    .preview{position:relative;height:470px}.preview-card{position:absolute;inset:30px 0 0 30px;padding:22px;border:1px solid rgba(223,221,239,.9);border-radius:28px;background:rgba(255,255,255,.88);box-shadow:0 32px 80px rgba(52,48,90,.13);transform:rotate(2deg)}.preview-top{display:flex;align-items:center;gap:6px}.preview-top i{width:7px;height:7px;border-radius:50%;background:#dedce8}.preview-title{height:72px;margin:18px 0;border-radius:18px;background:linear-gradient(130deg,#eeebff,#e6f5ef);display:flex;align-items:center;padding:20px}.preview-title strong{font-size:17px}.preview-row{display:grid;grid-template-columns:34px 1fr 80px;align-items:center;gap:12px;padding:14px 4px;border-bottom:1px solid #efeff4}.preview-row b{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;color:#fff}.preview-row strong,.preview-row span{display:block}.preview-row strong{font-size:11px}.preview-row span{font-size:8px;color:#9293a2;margin-top:4px}.preview-row em{font-style:normal;color:var(--green);font-size:10px;font-weight:900}.mascot{position:absolute;right:-20px;bottom:-18px;width:180px;filter:drop-shadow(0 20px 25px rgba(41,39,68,.13))}
+    .trust{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:20px}.trust article{padding:20px;border:1px solid var(--line);border-radius:18px;background:#fff}.trust b,.trust span{display:block}.trust b{font-size:20px}.trust span{margin-top:6px;color:var(--muted);font-size:11px}
+    section.block{padding:100px 0}.section-head{text-align:center;max-width:720px;margin:0 auto 52px}.section-head h2{font-size:40px;letter-spacing:-.04em;margin:16px 0}.section-head p{color:var(--muted);line-height:1.8}.features{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.feature{min-height:270px;padding:28px;border:1px solid var(--line);border-radius:24px;background:#fff}.feature-icon{width:48px;height:48px;display:grid;place-items:center;border-radius:15px;background:var(--soft);color:var(--purple);font-size:21px;font-weight:900}.feature h3{margin:22px 0 9px;font-size:19px}.feature p{color:var(--muted);font-size:13px;line-height:1.8}.feature small{display:inline-flex;margin-top:18px;padding:6px 9px;border-radius:999px;background:#f4f4f7;color:#8a8b99;font-size:10px}.feature small.real{background:#e9f7f1;color:var(--green)}
+    .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.step{padding:24px;border-radius:22px;background:#292a42;color:#fff}.step span{color:#9e96ff;font-size:12px;font-weight:900}.step h3{margin:17px 0 8px;font-size:16px}.step p{margin:0;color:#b8b9ca;font-size:12px;line-height:1.7}
+    .agent-box{padding:55px;border-radius:30px;background:linear-gradient(135deg,#27283f,#403d74);color:#fff;display:grid;grid-template-columns:1fr 420px;gap:40px;align-items:center}.agent-box h2{font-size:36px;margin:12px 0}.agent-box p{color:#c3c3d3;line-height:1.8}.prompt{padding:22px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:rgba(10,11,25,.35);font:11px/1.8 ui-monospace,monospace;color:#ececf5;white-space:pre-wrap}.copy{margin-top:12px;padding:10px 14px;border:0;border-radius:10px;background:#fff;color:#34354b;font-weight:800;cursor:pointer}
+    .promo{display:grid;grid-template-columns:1fr 1.2fr;gap:40px;align-items:center}.author{display:flex;gap:20px;align-items:center}.author>img{width:150px}.author span{color:var(--purple);font-size:12px;font-weight:800}.author h2{margin:7px 0}.author p{color:var(--muted);font-size:13px}.qrs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.qrs figure{margin:0;padding:13px;border:1px solid var(--line);border-radius:18px;background:#fff;text-align:center}.qrs img{width:100%;aspect-ratio:1;object-fit:contain}.qrs figcaption{font-size:11px;font-weight:800;margin-top:8px}
+    footer{padding:50px 0;border-top:1px solid var(--line);text-align:center;color:var(--muted);font-size:12px}footer a{color:var(--purple);font-weight:800}.load{display:none;position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:10;padding:10px 16px;border-radius:999px;background:#27283f;color:#fff;font-size:12px}
+    @media(max-width:850px){.navlinks a:not(.small-btn){display:none}.hero{padding-top:50px}.hero-grid,.agent-box,.promo{grid-template-columns:1fr}.hero h1{font-size:42px}.preview{height:410px}.trust,.features,.steps{grid-template-columns:1fr 1fr}.qrs{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:560px){.wrap{width:min(100% - 28px,1120px)}.hero h1{font-size:37px}.actions{flex-direction:column}.trust,.features,.steps{grid-template-columns:1fr}.preview-card{inset:20px 0 0}.mascot{width:130px}.agent-box{padding:30px}.qrs{grid-template-columns:1fr}.author{align-items:flex-start}.author>img{width:100px}}
+  </style>
+</head>
+<body>
+  <div id="g-load" class="load">内容已更新，正在刷新…</div>
+  <nav class="wrap">
+    <a class="logo" href="#"><i>投</i>一键投递</a>
+    <div class="navlinks"><a href="#features">功能</a><a href="#agent">Agent 接入</a><a href="#about">关于</a><a class="small-btn" href="https://github.com/lyzbcy/yijian-toudi" target="_blank" rel="noopener">GitHub ↗</a></div>
+  </nav>
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <span class="pill">本地优先 · 开源 · macOS 首发</span>
+          <h1>少一点重复，<br><em>多一点选择。</em></h1>
+          <p>把不同大厂的岗位放在一起比较，只维护一份完整简历，再统一管理面试、测评和 Offer。登录态与求职数据留在你的电脑里。</p>
+          <div class="actions"><a class="primary" href="https://github.com/lyzbcy/yijian-toudi/releases/latest">立即下载 macOS 版</a><a class="secondary" href="#agent">连接我的 Agent</a></div>
+          <p class="microcopy">当前 v0.1.0 内测版 · 未签名应用附带一键安装授权脚本</p>
+        </div>
+        <div class="preview">
+          <div class="preview-card">
+            <div class="preview-top"><i></i><i></i><i></i></div>
+            <div class="preview-title"><strong>今天的岗位，一眼比较</strong></div>
+            <div class="preview-row"><b style="background:#1664ff">T</b><div><strong>AI 产品经理</strong><span>深圳 · 腾讯</span></div><em>91%</em></div>
+            <div class="preview-row"><b style="background:#111827">字</b><div><strong>Agent 平台研发工程师</strong><span>北京 · 字节跳动</span></div><em>95%</em></div>
+            <div class="preview-row"><b style="background:#ff6a00">A</b><div><strong>高级前端开发工程师</strong><span>杭州 · 阿里巴巴</span></div><em>87%</em></div>
+          </div>
+          <img class="mascot" src="assets/stickers/sparkle.png" alt="星星眼表情">
+        </div>
+      </div>
+      <div class="wrap trust">
+        <article><b>1 份</b><span>统一简历源</span></article><article><b>本机</b><span>保存登录与数据</span></article><article><b>可追踪</b><span>每次自动化任务</span></article><article><b>可接管</b><span>登录与验证码节点</span></article>
+      </div>
+    </section>
+
+    <section class="block" id="features">
+      <div class="wrap">
+        <header class="section-head"><span class="pill">三个核心工作区</span><h2>求职流程终于在一个地方</h2><p>首版先把数据模型、桌面体验和安全边界做稳，再逐站增加招聘网站适配器。</p></header>
+        <div class="features">
+          <article class="feature"><span class="feature-icon">⌁</span><h3>招聘项目</h3><p>用公司、城市、时间、技能和收藏状态横向筛选岗位，清楚标注真实抓取与演示数据。</p><small>逐站适配中</small></article>
+          <article class="feature"><span class="feature-icon">▤</span><h3>统一简历</h3><p>涵盖基本信息、教育、工作、项目、技能、证书与长尾字段，一次填写，未来按平台映射。</p><small class="real">本地保存可用</small></article>
+          <article class="feature"><span class="feature-icon">✉</span><h3>招聘信息</h3><p>通过 QQ 邮箱 IMAP 读取近期邮件，只保留可能与招聘有关的内容并分类。</p><small class="real">QQ 邮箱可用</small></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="wrap">
+        <header class="section-head"><span class="pill">人机协作</span><h2>自动化不是黑盒</h2><p>每一步都能看到状态，遇到登录、验证码和最终投递时把控制权交还给你。</p></header>
+        <div class="steps"><article class="step"><span>01</span><h3>读取本地资料</h3><p>读取你授权的简历和筛选条件。</p></article><article class="step"><span>02</span><h3>打开真实浏览器</h3><p>独立资料目录保存站点登录态。</p></article><article class="step"><span>03</span><h3>遇到风险就暂停</h3><p>验证码、异常页面和敏感动作等你接管。</p></article><article class="step"><span>04</span><h3>确认后再执行</h3><p>最终投递或外部写入必须明确确认。</p></article></div>
+      </div>
+    </section>
+
+    <section class="block" id="agent">
+      <div class="wrap agent-box">
+        <div><span class="pill">LOCAL AGENT API</span><h2>复制一段 Prompt，<br>让 Agent 接入工作台</h2><p>应用只在 127.0.0.1 提供接口。Token 由本机随机生成，用户可以随时关闭服务。</p></div>
+        <div><div id="prompt" class="prompt">请连接我本机的“一键投递”服务。先读取 /v1/status，再根据我的要求读取岗位、简历和招聘信息。执行投递、发送消息或修改外部网站之前必须让我确认；出现登录或验证码时提示我接管。具体 Base URL 和 Token 请从应用的「连接 AI Agent」页面复制。</div><button class="copy" id="copy">复制 Prompt</button></div>
+      </div>
+    </section>
+
+    <section class="block" id="about">
+      <div class="wrap promo">
+        <div class="author"><img src="assets/stickers/mascot.png" alt="捞鱼工作室表情"><div><span>捞鱼工作室</span><h2>关于捞鱼</h2><p>一个弱小但有梦想的开发者。希望把重复劳动做成可靠、好用、看得懂的本地工具。</p><a href="https://lyzbcy.github.io/about/" target="_blank" rel="noopener">了解更多 ↗</a></div></div>
+        <div class="qrs"><figure><img src="assets/qq-group.jpg" alt="粉丝群二维码"><figcaption>粉丝群</figcaption></figure><figure><img src="assets/reward-qr.jpg" alt="赞赏二维码"><figcaption>赞赏支持</figcaption></figure><figure><img src="assets/sticker-qr.png" alt="微信表情包二维码"><figcaption>微信表情包</figcaption></figure></div>
+      </div>
+    </section>
+  </main>
+  <footer>由 <a href="https://lyzbcy.github.io/" target="_blank" rel="noopener">捞鱼</a> 制作 · 求职数据属于你自己</footer>
+  <script>
+    var PAGE_V=1;
+    fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(d){if(PAGE_V!==d.v){var el=document.getElementById('g-load');el.style.display='block';var last=0;try{last=parseInt(sessionStorage.getItem('yjt_refreshed_at')||'0')}catch(e){}if(Date.now()-last<3000)return;try{sessionStorage.setItem('yjt_refreshed_at',String(Date.now()))}catch(e){}setTimeout(function(){location.reload(true)},800)}}).catch(function(){});
+    document.getElementById('copy').addEventListener('click',function(){navigator.clipboard.writeText(document.getElementById('prompt').textContent).then(function(){document.getElementById('copy').textContent='已复制 ✓'})});
+  </script>
+</body>
+</html>

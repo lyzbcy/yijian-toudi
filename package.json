@@ -1,0 +1,78 @@
+{
+  "name": "yijian-toudi",
+  "version": "0.1.0",
+  "description": "把岗位、简历和招聘消息放在一个地方管理的本地桌面应用",
+  "main": "electron/main.cjs",
+  "type": "commonjs",
+  "author": "lyzbcy",
+  "license": "MIT",
+  "homepage": "https://github.com/lyzbcy/yijian-toudi",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "test": "node --test test/*.test.cjs",
+    "test:ui": "node test/ui-smoke.cjs",
+    "test:site": "node test/site-smoke.cjs",
+    "check": "node scripts/check-project.cjs",
+    "pack:mac": "electron-builder --mac dir",
+    "dist:mac": "electron-builder --mac dmg zip",
+    "preview:site": "node scripts/site-preview.cjs"
+  },
+  "dependencies": {
+    "imapflow": "1.5.0",
+    "mailparser": "3.9.14",
+    "playwright-core": "1.61.1"
+  },
+  "devDependencies": {
+    "electron": "43.2.0",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "com.lyzbcy.yijiantoudi",
+    "productName": "一键投递",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "electron/**/*",
+      "src/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "build/icon.icns",
+      "target": [
+        "dir",
+        "dmg",
+        "zip"
+      ],
+      "artifactName": "一键投递-${version}-${arch}.${ext}",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false
+    },
+    "dmg": {
+      "title": "一键投递 ${version}",
+      "contents": [
+        {
+          "x": 140,
+          "y": 210
+        },
+        {
+          "x": 420,
+          "y": 210,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "win": {
+      "target": "nsis",
+      "artifactName": "一键投递-${version}-Setup.${ext}"
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@10.12.1"
+}

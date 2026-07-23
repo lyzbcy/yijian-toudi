@@ -1,0 +1,29 @@
+# 一键投递 · AI Memory
+
+这里是项目的渐进式维护入口。先读本页，再按当前任务进入对应文档，不需要一次性加载全部资料。
+
+## 当前状态
+
+- 版本：`0.1.0 MVP`
+- 目标平台：macOS（Electron，架构保留 Windows 打包能力）
+- 可真实使用：本地简历保存、收藏与筛选、QQ 邮箱 IMAP 同步、本机 Agent API、更新检查、真实浏览器入口
+- 演示/待适配：各大厂岗位抓取、平台简历填写、自动投递
+- 最近进度：[progress/2026-07-23-mvp.md](progress/2026-07-23-mvp.md)
+
+## 按任务阅读
+
+| 要做什么 | 先读 |
+|---|---|
+| 理解整体架构 | [architecture/overview.md](architecture/overview.md) |
+| 开发招聘站自动化 | [integrations/browser-automation.md](integrations/browser-automation.md) |
+| 维护 QQ 邮箱同步 | [integrations/qq-mail.md](integrations/qq-mail.md) |
+| 规划下一阶段 | [development/roadmap.md](development/roadmap.md) |
+| 查看复用经验与坑 | [community/lessons.md](community/lessons.md) |
+
+## 维护纪律
+
+1. 不把演示数据描述成真实抓取结果。
+2. 每增加一个招聘网站，必须记录登录方式、字段映射、选择器证据、失败页面、验证码策略和最后实测日期。
+3. 最终投递、发送邮件等外部写入动作默认需要用户确认。
+4. 登录态、邮箱授权码、简历原文默认只在本机保存。
+5. 修改静态介绍页时，同时递增 `docs/index.html` 的 `PAGE_V` 和 `docs/version.json` 的 `v`。

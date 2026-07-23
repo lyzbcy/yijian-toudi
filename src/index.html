@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*">
+  <title>一键投递</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">投</div>
+        <div>
+          <strong>一键投递</strong>
+          <span>求职工作台</span>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="主要导航">
+        <button class="nav-item active" data-page="jobs"><span class="nav-icon">⌁</span><span>招聘项目</span><b id="jobCount">0</b></button>
+        <button class="nav-item" data-page="resume"><span class="nav-icon">▤</span><span>我的简历</span><b id="resumeBadge">0%</b></button>
+        <button class="nav-item" data-page="inbox"><span class="nav-icon">✉</span><span>招聘信息</span><b id="unreadCount">0</b></button>
+        <button class="nav-item" data-page="automation"><span class="nav-icon">↻</span><span>自动化中心</span><i class="live-dot"></i></button>
+      </nav>
+
+      <div class="nav-section-title">连接与帮助</div>
+      <nav class="nav secondary">
+        <button class="nav-item" data-page="connections"><span class="nav-icon">⌘</span><span>公司与邮箱</span></button>
+        <button class="nav-item" data-page="agent"><span class="nav-icon">✦</span><span>连接 AI Agent</span></button>
+        <button class="nav-item" data-page="settings"><span class="nav-icon">⚙</span><span>设置</span></button>
+      </nav>
+
+      <div class="sidebar-card">
+        <img src="./assets/stickers/mascot.png" alt="">
+        <strong>今天也在认真投递</strong>
+        <span>数据只保存在你的电脑里</span>
+      </div>
+      <div class="version">本地优先 · v<span id="appVersion">0.1.0</span></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="title-wrap">
+          <div class="eyebrow" id="pageEyebrow">JOB BOARD</div>
+          <h1 id="pageTitle">招聘项目</h1>
+          <p id="pageSubtitle">把不同公司的岗位放在一张清单里比较。</p>
+        </div>
+        <div class="top-actions">
+          <div class="mode-pill"><i></i><span id="dataModeLabel">演示数据</span></div>
+          <button class="icon-button" id="checkUpdateButton" title="检查更新">↗</button>
+          <button class="avatar-button" data-page="settings" title="设置">捞</button>
+        </div>
+      </header>
+
+      <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+
+      <section class="page active" id="page-jobs">
+        <div class="hero-card">
+          <div class="hero-copy">
+            <span class="soft-label">每天全量更新一次就够啦</span>
+            <h2>今天有 <em id="heroJobCount">0</em> 个岗位<br>等你横向比较</h2>
+            <p>先筛选，再收藏，最后交给 Agent 统一处理。每一步都由你确认。</p>
+            <div class="hero-actions">
+              <button class="primary-button" id="refreshJobsButton"><span>↻</span> 刷新全部岗位</button>
+              <button class="ghost-button" data-page="agent">让 Agent 帮我筛</button>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <div class="orbit-card orbit-a"><span>95%</span> 匹配</div>
+            <div class="orbit-card orbit-b">已收藏 <span id="favoriteCount">0</span></div>
+            <img src="./assets/stickers/sparkle.png" alt="期待找到好工作">
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <article><span class="stat-icon violet">⌁</span><div><b id="statJobs">0</b><small>岗位总数</small></div><em>演示</em></article>
+          <article><span class="stat-icon green">✓</span><div><b id="statCompanies">0</b><small>已收录公司</small></div><em>待适配</em></article>
+          <article><span class="stat-icon orange">★</span><div><b id="statFavorites">0</b><small>我的收藏</small></div><em>本地保存</em></article>
+          <article><span class="stat-icon blue">↗</span><div><b id="statTasks">0</b><small>自动化任务</small></div><em>可追踪</em></article>
+        </div>
+
+        <div class="content-card jobs-card">
+          <div class="card-toolbar">
+            <div>
+              <h3>岗位清单</h3>
+              <p>当前数据源和抓取状态会写在每个岗位上。</p>
+            </div>
+            <div class="search-box"><span>⌕</span><input id="jobSearch" placeholder="搜索岗位、公司、城市或技能"></div>
+          </div>
+          <div class="filter-row">
+            <button class="filter-chip active" data-filter="all">全部</button>
+            <button class="filter-chip" data-filter="favorite">★ 收藏</button>
+            <button class="filter-chip" data-filter="北京">北京</button>
+            <button class="filter-chip" data-filter="上海">上海</button>
+            <button class="filter-chip" data-filter="深圳">深圳</button>
+            <button class="filter-chip" data-filter="杭州">杭州</button>
+            <select id="companyFilter" aria-label="公司筛选"><option value="">所有公司</option></select>
+            <select id="sortJobs" aria-label="岗位排序"><option value="match">按匹配度</option><option value="date">按发布时间</option><option value="company">按公司</option></select>
+          </div>
+          <div class="job-list" id="jobList"></div>
+          <div class="empty-state hidden" id="jobEmpty"><span>⌕</span><h3>没有找到匹配岗位</h3><p>换个关键词或清空筛选试试。</p></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-resume">
+        <div class="resume-summary content-card">
+          <div class="progress-ring" id="resumeRing"><b id="resumeCompletion">0%</b><span>完整度</span></div>
+          <div>
+            <span class="soft-label">统一简历源</span>
+            <h2>只维护这一份，适配器负责填到各平台</h2>
+            <p>字段按招聘网站常见要求设计；保存只写入本机，不会自动上传。</p>
+          </div>
+          <div class="resume-summary-actions">
+            <button class="ghost-button" id="exportResumeButton">导出求职快照</button>
+            <button class="primary-button" id="saveResumeButton">保存简历</button>
+          </div>
+        </div>
+
+        <form id="resumeForm" class="resume-layout">
+          <aside class="resume-nav content-card">
+            <strong>简历目录</strong>
+            <a href="#resume-basic">01 基本信息</a>
+            <a href="#resume-intention">02 求职意向</a>
+            <a href="#resume-education">03 教育经历</a>
+            <a href="#resume-experience">04 工作经历</a>
+            <a href="#resume-project">05 项目经历</a>
+            <a href="#resume-skills">06 技能与证书</a>
+            <a href="#resume-extras">07 补充信息</a>
+            <div class="local-note">🔒 表单内容仅保存在本机应用数据目录。</div>
+          </aside>
+          <div class="resume-sections">
+            <section class="form-section content-card" id="resume-basic">
+              <div class="section-heading"><span>01</span><div><h3>基本信息</h3><p>联系方式与个人主页</p></div></div>
+              <div class="form-grid">
+                <label>姓名<input name="basic.name" placeholder="你的姓名" autocomplete="name"></label>
+                <label>手机号<input name="basic.phone" placeholder="常用手机号" autocomplete="tel"></label>
+                <label>邮箱<input name="basic.email" type="email" placeholder="常用邮箱" autocomplete="email"></label>
+                <label>当前城市<input name="basic.city" placeholder="例如：杭州"></label>
+                <label>性别<select name="basic.gender"><option value="">不填写</option><option>男</option><option>女</option><option>其他</option></select></label>
+                <label>出生日期<input name="basic.birthday" type="date"></label>
+                <label>微信<input name="basic.wechat" placeholder="选填"></label>
+                <label>个人主页<input name="basic.website" placeholder="https://"></label>
+              </div>
+            </section>
+            <section class="form-section content-card" id="resume-intention">
+              <div class="section-heading"><span>02</span><div><h3>求职意向</h3><p>用于筛选与匹配岗位</p></div></div>
+              <div class="form-grid">
+                <label class="span-2">目标岗位<input name="intention.roles" placeholder="多个岗位用逗号分隔"></label>
+                <label>意向城市<input name="intention.cities" placeholder="杭州、上海"></label>
+                <label>期望薪资<input name="intention.salary" placeholder="例如：25k-35k"></label>
+                <label>到岗时间<input name="intention.availability" placeholder="例如：两周内"></label>
+                <label>工作类型<select name="intention.employmentType"><option>全职</option><option>实习</option><option>兼职</option><option>远程</option></select></label>
+              </div>
+            </section>
+            <section class="form-section content-card" id="resume-education">
+              <div class="section-heading"><span>03</span><div><h3>教育经历</h3><p>首版支持一段主要学历</p></div></div>
+              <div class="form-grid">
+                <label>学校<input name="education.0.school" placeholder="学校名称"></label>
+                <label>专业<input name="education.0.major" placeholder="专业名称"></label>
+                <label>学历<select name="education.0.degree"><option value="">请选择</option><option>大专</option><option>本科</option><option>硕士</option><option>博士</option></select></label>
+                <label>成绩/排名<input name="education.0.rank" placeholder="例如：前 10%"></label>
+                <label>开始时间<input name="education.0.start" type="month"></label>
+                <label>结束时间<input name="education.0.end" type="month"></label>
+                <label class="span-2">主修课程<textarea name="education.0.courses" rows="3" placeholder="与目标岗位相关的课程"></textarea></label>
+              </div>
+            </section>
+            <section class="form-section content-card" id="resume-experience">
+              <div class="section-heading"><span>04</span><div><h3>工作经历</h3><p>建议使用“行动 + 结果”表达</p></div></div>
+              <div class="form-grid">
+                <label>公司<input name="experience.0.company" placeholder="公司名称"></label>
+                <label>职位<input name="experience.0.role" placeholder="职位名称"></label>
+                <label>开始时间<input name="experience.0.start" type="month"></label>
+                <label>结束时间<input name="experience.0.end" type="month" placeholder="至今"></label>
+                <label class="span-2">工作描述<textarea name="experience.0.description" rows="5" placeholder="负责什么、如何推进、产生什么结果"></textarea></label>
+                <label class="span-2">关键成果<textarea name="experience.0.achievements" rows="3" placeholder="尽量用数字描述"></textarea></label>
+              </div>
+            </section>
+            <section class="form-section content-card" id="resume-project">
+              <div class="section-heading"><span>05</span><div><h3>项目经历</h3><p>展示与你的目标岗位最相关的项目</p></div></div>
+              <div class="form-grid">
+                <label>项目名称<input name="projects.0.name" placeholder="项目名称"></label>
+                <label>担任角色<input name="projects.0.role" placeholder="例如：产品负责人"></label>
+                <label>开始时间<input name="projects.0.start" type="month"></label>
+                <label>结束时间<input name="projects.0.end" type="month"></label>
+                <label class="span-2">项目链接<input name="projects.0.link" placeholder="https://"></label>
+                <label class="span-2">项目说明<textarea name="projects.0.description" rows="5" placeholder="背景、你的贡献、最终结果"></textarea></label>
+              </div>
+            </section>
+            <section class="form-section content-card" id="resume-skills">
+              <div class="section-heading"><span>06</span><div><h3>技能与证书</h3><p>用于关键词匹配和平台字段映射</p></div></div>
+              <div class="form-grid">
+                <label class="span-2">专业技能<textarea name="skills.keywords" rows="3" placeholder="React、Python、产品规划、用户研究…"></textarea></label>
+                <label>语言能力<input name="skills.languages" placeholder="英语 CET-6"></label>
+                <label>证书<input name="skills.certificates" placeholder="PMP、软考…"></label>
+                <label class="span-2">作品集<input name="skills.portfolio" placeholder="作品集链接"></label>
+              </div>
+            </section>
+            <section class="form-section content-card" id="resume-extras">
+              <div class="section-heading"><span>07</span><div><h3>补充信息</h3><p>覆盖不同招聘网站的长尾字段</p></div></div>
+              <div class="form-grid">
+                <label class="span-2">个人简介<textarea name="extras.summary" rows="4" placeholder="用 3-5 句话概括你的优势"></textarea></label>
+                <label>奖项<input name="extras.awards" placeholder="奖项或荣誉"></label>
+                <label>校园经历<input name="extras.campus" placeholder="社团、学生工作"></label>
+                <label>发表作品<input name="extras.publications" placeholder="文章、论文"></label>
+                <label>专利<input name="extras.patents" placeholder="专利或软著"></label>
+              </div>
+            </section>
+          </div>
+        </form>
+      </section>
+
+      <section class="page" id="page-inbox">
+        <div class="inbox-banner content-card">
+          <div><span class="soft-label">招聘消息收件箱</span><h2>面试、测评和 Offer，不再淹没在邮箱里</h2><p>连接 QQ 邮箱后，应用只抽取可能与招聘相关的邮件。</p></div>
+          <button class="primary-button" data-page="connections">连接或同步邮箱</button>
+        </div>
+        <div class="stage-tabs" id="stageTabs"></div>
+        <div class="message-layout">
+          <div class="message-list content-card" id="messageList"></div>
+          <div class="message-detail content-card" id="messageDetail">
+            <img src="./assets/stickers/hello.png" alt="">
+            <h3>选择一封招聘信息</h3>
+            <p>这里会显示分类、摘要和收到时间。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-automation">
+        <div class="automation-grid">
+          <article class="content-card automation-intro">
+            <span class="soft-label">可追踪、可接管、可停止</span>
+            <h2>每个自动化动作都留下记录</h2>
+            <p>登录、验证码和最终投递是明确的人机协作节点，不会静默越过。</p>
+            <div class="pipeline"><span class="done">读取配置</span><i></i><span>打开浏览器</span><i></i><span>等待确认</span><i></i><span>执行</span></div>
+          </article>
+          <article class="content-card safety-card">
+            <div class="safety-icon">♢</div>
+            <strong>本地执行</strong>
+            <p>浏览器登录态、简历和邮箱授权码都留在你的电脑里。</p>
+          </article>
+        </div>
+        <div class="content-card">
+          <div class="card-toolbar"><div><h3>任务记录</h3><p>最新任务会显示在最上方。</p></div><button class="ghost-button" id="runDemoTask">运行一次安全演示</button></div>
+          <div class="task-list" id="taskList"></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-connections">
+        <div class="connections-grid">
+          <article class="content-card connection-card email-card">
+            <div class="connection-head"><span class="company-logo qq">Q</span><div><h3>QQ 邮箱</h3><p>读取招聘相关邮件</p></div><b id="emailStatus">未连接</b></div>
+            <p class="connection-copy">需要在 QQ 邮箱设置中开启 IMAP，并使用授权码而不是登录密码。授权码使用系统安全存储加密。</p>
+            <div class="inline-form">
+              <label>邮箱地址<input id="emailAddress" placeholder="123456@qq.com"></label>
+              <label>IMAP 授权码<input id="emailCode" type="password" placeholder="首次连接时填写"></label>
+            </div>
+            <button class="primary-button" id="syncEmailButton">连接并同步</button>
+          </article>
+          <article class="content-card connection-card">
+            <div class="connection-head"><span class="company-logo chrome">●</span><div><h3>招聘网站浏览器</h3><p>独立资料目录保留登录态</p></div><b>本地</b></div>
+            <p class="connection-copy">点击公司后会打开系统 Chrome/Edge。出现验证码时，请在真实浏览器里接管。</p>
+            <div class="company-grid" id="companyGrid"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="page" id="page-agent">
+        <div class="agent-hero">
+          <div>
+            <span class="soft-label">LOCAL AGENT API</span>
+            <h2>让你的 AI Agent<br>读懂这份求职工作台</h2>
+            <p>复制下面的 Prompt，Agent 就能在你的授权范围内查询岗位、简历、招聘信息和任务状态。</p>
+          </div>
+          <img src="./assets/stickers/study.png" alt="">
+        </div>
+        <div class="agent-grid">
+          <article class="content-card">
+            <div class="card-toolbar"><div><h3>接入 Prompt</h3><p>Token 只展示在本机，请不要发到公开聊天。</p></div><button class="primary-button" id="copyPromptButton">复制 Prompt</button></div>
+            <pre id="agentPrompt" class="prompt-box"></pre>
+          </article>
+          <aside class="content-card api-status-card">
+            <h3>本地服务状态</h3>
+            <div class="api-status"><i></i><div><strong>已在本机运行</strong><span id="apiAddress">127.0.0.1:53147</span></div></div>
+            <dl>
+              <div><dt>GET</dt><dd>/v1/jobs</dd></div>
+              <div><dt>GET</dt><dd>/v1/resume</dd></div>
+              <div><dt>GET</dt><dd>/v1/messages</dd></div>
+              <div><dt>POST</dt><dd>/v1/commands</dd></div>
+            </dl>
+            <button class="ghost-button full" id="exportSnapshotButton">导出脱敏快照</button>
+          </aside>
+        </div>
+      </section>
+
+      <section class="page" id="page-settings">
+        <div class="settings-layout">
+          <section class="content-card settings-card">
+            <h3>更新与发布</h3>
+            <p>填写 GitHub 仓库后，应用会读取最新 Release；未配置时不会假装有更新。</p>
+            <label>GitHub 仓库<input id="githubRepo" placeholder="例如：lyzbcy/yijian-toudi"></label>
+            <label class="switch-row"><span><strong>启动时检查更新</strong><small>只请求 GitHub Release 版本号</small></span><input id="autoUpdate" type="checkbox"><i></i></label>
+            <button class="primary-button" id="saveSettingsButton">保存设置</button>
+          </section>
+          <section class="content-card settings-card">
+            <h3>Agent API</h3>
+            <p>服务只监听 127.0.0.1，局域网内其他设备无法直接访问。</p>
+            <label class="switch-row"><span><strong>开启本地 Agent API</strong><small>关闭后外部 Agent 无法查询数据</small></span><input id="apiEnabled" type="checkbox"><i></i></label>
+            <label>端口<input id="apiPort" type="number" min="1024" max="65535"></label>
+          </section>
+          <section class="content-card settings-card about-card">
+            <img src="./assets/stickers/mascot.png" alt="">
+            <div><h3>一键投递 v0.1.0</h3><p>一个弱小但有梦想的开发者，想把重复投简历这件事做得轻松一点。</p><a href="https://lyzbcy.github.io/" data-external>关于捞鱼 ↗</a></div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="jobDialog" class="dialog">
+    <button class="dialog-close" aria-label="关闭">×</button>
+    <div id="jobDialogContent"></div>
+  </dialog>
+  <dialog id="promoDialog" class="dialog promo-dialog">
+    <button class="dialog-close" aria-label="关闭">×</button>
+    <div class="promo-author"><img src="./assets/stickers/mascot.png" alt=""><div><span>捞鱼工作室</span><h3>关于捞鱼</h3><p>一个弱小但有梦想的开发者</p></div></div>
+    <div class="qr-grid">
+      <figure><img src="./assets/qq-group.jpg" alt="粉丝群二维码"><figcaption>粉丝群</figcaption></figure>
+      <figure><img src="./assets/reward-qr.jpg" alt="赞赏二维码"><figcaption>赞赏支持</figcaption></figure>
+      <figure><img src="./assets/sticker-qr.png" alt="微信表情包二维码"><figcaption>微信表情包</figcaption></figure>
+    </div>
+  </dialog>
+  <button id="promoButton" class="promo-button">🐟 关于捞鱼</button>
+
+  <script src="./app.js"></script>
+</body>
+</html>
