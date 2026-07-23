@@ -150,6 +150,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .favorite-button:hover { background: #fff3d8; color: #efad30; }
 .favorite-button.active { background: #fff3d8; color: #efad30; }
 .source-pill { display: inline-block; margin-top: 5px; padding: 3px 6px; border-radius: 5px; background: var(--orange-soft); color: #bd6a2e; font-size: 8px; }
+.load-more { padding: 24px; text-align: center; }
+.load-more button { height: 42px; padding: 0 24px; }
 .empty-state { padding: 55px; text-align: center; }
 .empty-state span { font-size: 28px; color: #b7b8c4; }
 .empty-state h3 { margin: 12px 0 6px; }

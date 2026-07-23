@@ -17,6 +17,8 @@
   let activeFilter = 'all';
   let activeStage = '全部';
   let selectedMessageId = null;
+  // 岗位列表分页：真实数据可能上千条，一次全渲染会卡顿甚至崩溃，默认只渲染前若干条
+  let jobPageSize = 50;
 
   function toast(message, type = 'success') {
     const node = document.createElement('div');
@@ -132,7 +134,9 @@
         ? '<span>⌕</span><h3>没有找到匹配岗位</h3><p>换个关键词或清空筛选试试。</p>'
         : '<span>↻</span><h3>还没有岗位数据</h3><p>点击下方按钮，从各大厂招聘官网抓取真实岗位。</p><button class="primary-button" data-empty-refresh>刷新全部岗位</button>';
     }
-    $('#jobList').innerHTML = jobs.map((job) => {
+    const visible = jobs.slice(0, jobPageSize);
+    const hasMore = jobs.length > jobPageSize;
+    $('#jobList').innerHTML = visible.map((job) => {
       const company = companies[job.companyId];
       const posted = relativeDate(job.postedAt);
       return `<article class="job-item" data-job-id="${job.id}">
@@ -146,7 +150,7 @@
         <div class="job-time"><i class="fresh-dot"></i>${posted || escapeHtml(job.postedAt)}</div>
         <button class="favorite-button ${job.favorite ? 'active' : ''}" data-favorite="${job.id}" title="收藏">★</button>
       </article>`;
-    }).join('');
+    }).join('') + (hasMore ? `<div class="load-more"><button class="ghost-button" data-load-more>显示更多岗位（剩余 ${jobs.length - jobPageSize} 个）</button></div>` : '');
   }
 
   function renderCompanies() {
@@ -316,6 +320,12 @@ Authorization: Bearer ${state.settings.apiToken}
         run(emptyRefresh, () => window.oneClick.refreshJobs(), (result) => result.message);
         return;
       }
+      const loadMore = event.target.closest('[data-load-more]');
+      if (loadMore) {
+        jobPageSize += 50;
+        renderJobs();
+        return;
+      }
       const job = event.target.closest('[data-job-id]');
       if (job) return showJob(job.dataset.jobId);
       const company = event.target.closest('[data-company], [data-open-company]');
@@ -332,10 +342,11 @@ Authorization: Bearer ${state.settings.apiToken}
 
     $$('.filter-chip').forEach((button) => button.addEventListener('click', () => {
       activeFilter = button.dataset.filter;
+      jobPageSize = 50; // 改筛选时重置分页
       $$('.filter-chip').forEach((item) => item.classList.toggle('active', item === button));
       renderJobs();
     }));
-    ['jobSearch', 'companyFilter', 'sortJobs'].forEach((id) => $(`#${id}`).addEventListener(id === 'jobSearch' ? 'input' : 'change', renderJobs));
+    ['jobSearch', 'companyFilter', 'sortJobs'].forEach((id) => $(`#${id}`).addEventListener(id === 'jobSearch' ? 'input' : 'change', () => { jobPageSize = 50; renderJobs(); }));
     $('#refreshJobsButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.refreshJobs(), (result) => result.message));
     $('#runDemoTask').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.refreshJobs(), (result) => result.message));
     $('#saveResumeButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
