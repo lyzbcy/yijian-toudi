@@ -8,6 +8,9 @@ const { syncQqMail } = require('./mail.cjs');
 const { listTencentJobs } = require('./adapters/tencent.cjs');
 const { listBaiduJobs } = require('./adapters/baidu.cjs');
 const { listBytedanceJobs } = require('./adapters/bytedance.cjs');
+const { listXiaomiJobs } = require('./adapters/xiaomi.cjs');
+const { listJdJobs } = require('./adapters/jd.cjs');
+const { listMeituanJobs } = require('./adapters/meituan.cjs');
 const { logger } = require('./logger.cjs');
 const loginManager = require('./login-manager.cjs');
 
@@ -103,7 +106,10 @@ async function startAgentServer() {
 const JOB_ADAPTERS = [
   { companyId: 'tencent', name: '腾讯', idPrefix: 'tencent-', fetch: (opts) => listTencentJobs(opts) },
   { companyId: 'baidu', name: '百度', idPrefix: 'baidu-', fetch: (opts) => listBaiduJobs(opts) },
-  { companyId: 'bytedance', name: '字节跳动', idPrefix: 'bytedance-', fetch: (opts) => listBytedanceJobs(opts) }
+  { companyId: 'bytedance', name: '字节跳动', idPrefix: 'bytedance-', fetch: (opts) => listBytedanceJobs(opts) },
+  { companyId: 'xiaomi', name: '小米', idPrefix: 'xiaomi-', fetch: (opts) => listXiaomiJobs(opts) },
+  { companyId: 'jd', name: '京东', idPrefix: 'jd-', fetch: (opts) => listJdJobs(opts) },
+  { companyId: 'meituan', name: '美团', idPrefix: 'meituan-', fetch: (opts) => listMeituanJobs(opts) }
 ];
 
 async function refreshJobs() {
