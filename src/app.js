@@ -145,7 +145,7 @@
     const visible = jobs.slice(0, jobPageSize);
     const hasMore = jobs.length > jobPageSize;
     $('#jobList').innerHTML = visible.map((job) => {
-      const company = companies[job.companyId];
+      const company = companies[job.companyId] || { name: job.source || '未知公司', short: '?', color: '#999999' };
       const posted = relativeDate(job.postedAt);
       return `<article class="job-item" data-job-id="${job.id}">
         <span class="company-logo" style="background:${company.color}">${escapeHtml(company.short)}</span>
@@ -283,7 +283,8 @@ Authorization: Bearer ${state.settings.apiToken}
 
   function showJob(id) {
     const job = state.jobs.find((item) => item.id === id);
-    const company = companyMap()[job.companyId];
+    if (!job) return;
+    const company = companyMap()[job.companyId] || { name: job.source || '未知公司', short: '?', color: '#999999' };
     $('#jobDialogContent').innerHTML = `<div class="job-dialog-head">
       <span class="company-logo" style="background:${company.color}">${escapeHtml(company.short)}</span>
       <div><h2>${escapeHtml(job.title)}</h2><p>${escapeHtml(company.name)} · ${escapeHtml(job.department)}</p></div>

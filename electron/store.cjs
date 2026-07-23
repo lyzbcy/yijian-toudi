@@ -31,7 +31,44 @@ class JsonStore {
       this.state.settings.apiToken = crypto.randomBytes(18).toString('base64url');
       this.flush();
     }
+    this.migrate();
     return this.state;
+  }
+
+  // 数据迁移：升级后旧 state 可能缺新字段或公司。用最新 seed 补全，不丢已有岗位。
+  migrate() {
+    const seed = createSeed();
+    const seedCompanies = new Map(seed.companies.map((c) => [c.id, c]));
+    const existingIds = new Set((this.state.companies || []).map((c) => c.id));
+    let changed = false;
+
+    // 1. 补全缺失的公司（新版本新增的）
+    for (const [id, company] of seedCompanies) {
+      if (!existingIds.has(id)) {
+        this.state.companies.push(company);
+        changed = true;
+      }
+    }
+    // 2. 同步已有公司的 tags/adapterStatus/portal 等字段（保留旧值里用户可能改过的 id/name）
+    for (const company of this.state.companies) {
+      const latest = seedCompanies.get(company.id);
+      if (latest) {
+        if (!company.tags || company.tags.length === 0) { company.tags = latest.tags; changed = true; }
+        if (!company.adapterStatus) { company.adapterStatus = latest.adapterStatus; changed = true; }
+        if (company.portal !== latest.portal) { company.portal = latest.portal; changed = true; }
+      }
+    }
+    // 3. settings.jobs 补全（旧版可能没有）
+    if (!this.state.settings.jobs) {
+      this.state.settings.jobs = seed.settings.jobs;
+      changed = true;
+    }
+    // 4. dataMode 旧的 'demo' 已废弃，统一改 'live'
+    if (this.state.settings.dataMode === 'demo') {
+      this.state.settings.dataMode = 'live';
+      changed = true;
+    }
+    if (changed) this.flush();
   }
 
   get() {
