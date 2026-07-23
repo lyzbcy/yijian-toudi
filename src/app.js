@@ -19,6 +19,8 @@
   let selectedMessageId = null;
   // 岗位列表分页：真实数据可能上千条，一次全渲染会卡顿甚至崩溃，默认只渲染前若干条
   let jobPageSize = 50;
+  // 公司标签筛选：null=不限，'500强'/'AI公司'/'游戏'/'无锡'/'苏州'=只显示该公司标签下的岗位
+  let activeTag = null;
 
   function toast(message, type = 'success') {
     const node = document.createElement('div');
@@ -89,6 +91,7 @@
     $('#jobsLastRefresh').textContent = lastRefresh ? `上次抓取：${new Date(lastRefresh).toLocaleString('zh-CN')}` : '还没有抓取过岗位。';
 
     renderCompanies();
+    renderTagFilters();
     renderJobs();
     renderMessages();
     renderTasks();
@@ -106,6 +109,11 @@
     const companyId = $('#companyFilter').value;
     const companies = companyMap();
     const jobs = state.jobs.filter((job) => {
+      // 公司标签过滤：只保留公司 tags 含 activeTag 的岗位
+      if (activeTag) {
+        const company = companies[job.companyId];
+        if (!company?.tags?.includes(activeTag)) return false;
+      }
       if (companyId && job.companyId !== companyId) return false;
       if (activeFilter === 'favorite' && !job.favorite) return false;
       if (!['all', 'favorite'].includes(activeFilter) && job.city !== activeFilter) return false;
@@ -156,7 +164,17 @@
   function renderCompanies() {
     $('#companyGrid').innerHTML = state.companies.map((company) => `<button class="company-button" data-company="${company.id}">
       <span class="company-logo" style="background:${company.color}">${escapeHtml(company.short)}</span>${escapeHtml(company.name)}
+      ${company.adapterStatus === 'adapter-ready' ? '<span class="login-status logged-in">可抓取</span>' : '<span class="login-status logged-out">需登录</span>'}
     </button>`).join('');
+  }
+
+  // 渲染公司标签筛选 chip：从所有公司的 tags 聚合去重
+  function renderTagFilters() {
+    const tagSet = new Set();
+    for (const company of state.companies) for (const tag of company.tags || []) tagSet.add(tag);
+    const tags = [...tagSet];
+    const tagColors = { '500强': '#ef9a55', 'AI公司': '#6657e8', '游戏': '#37a67a', '无锡': '#548ddd', '苏州': '#548ddd' };
+    $('#tagFilterRow').innerHTML = `<button class="tag-chip ${activeTag === null ? 'active' : ''}" data-tag="">全部公司</button>` + tags.map((tag) => `<button class="tag-chip ${activeTag === tag ? 'active' : ''}" data-tag="${escapeHtml(tag)}">${tagColors[tag] ? `<i class="tag-dot" style="background:${tagColors[tag]}"></i>` : ''}${escapeHtml(tag)}</button>`).join('');
   }
 
   function renderMessages() {
@@ -338,6 +356,14 @@ Authorization: Bearer ${state.settings.apiToken}
       if (stage) { activeStage = stage.dataset.stage; return renderMessages(); }
       const message = event.target.closest('[data-message]');
       if (message) return showMessage(message.dataset.message);
+      const tagChip = event.target.closest('[data-tag]');
+      if (tagChip) {
+        activeTag = tagChip.dataset.tag || null;
+        jobPageSize = 50;
+        renderTagFilters();
+        renderJobs();
+        return;
+      }
     });
 
     $$('.filter-chip').forEach((button) => button.addEventListener('click', () => {
