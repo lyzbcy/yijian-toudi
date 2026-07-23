@@ -162,10 +162,16 @@
   }
 
   function renderCompanies() {
-    $('#companyGrid').innerHTML = state.companies.map((company) => `<button class="company-button" data-company="${company.id}">
-      <span class="company-logo" style="background:${company.color}">${escapeHtml(company.short)}</span>${escapeHtml(company.name)}
-      ${company.adapterStatus === 'adapter-ready' ? '<span class="login-status logged-in">可抓取</span>' : '<span class="login-status logged-out">需登录</span>'}
-    </button>`).join('');
+    $('#companyGrid').innerHTML = state.companies.map((company) => {
+      const statusBadge = company.adapterStatus === 'adapter-ready'
+        ? '<span class="login-status logged-in">可抓取</span>'
+        : '<span class="login-status logged-out">需登录</span>';
+      return `<div class="company-button" data-company="${company.id}">
+        <span class="company-logo" style="background:${company.color}">${escapeHtml(company.short)}</span>
+        <span class="company-name">${escapeHtml(company.name)}</span>
+        ${statusBadge}
+      </div>`;
+    }).join('');
   }
 
   // 渲染公司标签筛选 chip：从所有公司的 tags 聚合去重
@@ -314,6 +320,21 @@ Authorization: Bearer ${state.settings.apiToken}
     }
   }
 
+  // 在软件内嵌入某公司招聘官网，让用户登录，登录态由 Electron session 持久化
+  async function openEmbeddedLogin(companyId) {
+    const company = companyMap()[companyId];
+    if (!company) return;
+    try {
+      await window.oneClick.openLogin(companyId);
+      $('#loginBarCompany').textContent = `正在登录 ${company.name}`;
+      $('#loginBarUrl').textContent = company.portal;
+      $('#loginBar').classList.remove('hidden');
+      toast(`${company.name} 招聘官网已在软件内打开，请登录`);
+    } catch (error) {
+      toast(error.message || '打开登录失败', 'error');
+    }
+  }
+
   async function init() {
     state = await window.oneClick.getState();
     renderState();
@@ -349,7 +370,13 @@ Authorization: Bearer ${state.settings.apiToken}
       const company = event.target.closest('[data-company], [data-open-company]');
       if (company) {
         const id = company.dataset.company || company.dataset.openCompany;
-        await run(company, () => window.oneClick.openCompany(id), '招聘官网已在浏览器中打开');
+        const c = companyMap()[id];
+        // adapter-ready 的公司抓取不需要登录，直接打开官网浏览；其余公司引导在软件内登录
+        if (c?.adapterStatus === 'adapter-ready') {
+          await run(company, () => window.oneClick.openCompany(id), '招聘官网已在浏览器中打开');
+        } else {
+          await openEmbeddedLogin(id);
+        }
         return;
       }
       const stage = event.target.closest('[data-stage]');
@@ -409,6 +436,11 @@ Authorization: Bearer ${state.settings.apiToken}
       renderState();
     }, '设置已保存'));
     $('#promoButton').addEventListener('click', () => $('#promoDialog').showModal());
+    $('#loginBarDone').addEventListener('click', async () => {
+      await window.oneClick.closeLogin();
+      $('#loginBar').classList.add('hidden');
+      toast('登录态已保存，后续投递会自动复用');
+    });
     $('#refreshLogsButton').addEventListener('click', () => run($('#refreshLogsButton'), async () => {
       const logs = await window.oneClick.getLogs();
       renderLogs(logs);

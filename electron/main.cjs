@@ -9,6 +9,7 @@ const { listTencentJobs } = require('./adapters/tencent.cjs');
 const { listBaiduJobs } = require('./adapters/baidu.cjs');
 const { listBytedanceJobs } = require('./adapters/bytedance.cjs');
 const { logger } = require('./logger.cjs');
+const loginManager = require('./login-manager.cjs');
 
 let window;
 let store;
@@ -37,6 +38,7 @@ function createWindow() {
     return { action: 'deny' };
   });
   if (process.argv.includes('--dev')) window.webContents.openDevTools({ mode: 'detach' });
+  loginManager.setParent(window);
 }
 
 function broadcast() {
@@ -315,6 +317,24 @@ app.whenReady().then(async () => {
   ipcMain.handle('item:show', (_event, itemPath) => shell.showItemInFolder(itemPath));
   // 开发日志：返回内存中最近 50 条（见 logger.cjs）
   ipcMain.handle('log:get', () => logger.recent());
+
+  // 嵌入式登录（见 login-manager.cjs）
+  ipcMain.handle('login:open', (_event, companyId) => {
+    const company = store.get().companies.find((item) => item.id === companyId);
+    if (!company) throw new Error('未找到公司');
+    logger.info('打开嵌入式登录', { company: company.name, portal: company.portal });
+    return loginManager.openLoginView(company);
+  });
+  ipcMain.handle('login:close', () => {
+    logger.info('关闭嵌入式登录');
+    loginManager.closeLoginView();
+    return { ok: true };
+  });
+  ipcMain.handle('login:status', () => ({
+    active: loginManager.isActive(),
+    companyId: loginManager.getActiveCompanyId(),
+    url: loginManager.getCurrentUrl()
+  }));
 });
 
 app.on('window-all-closed', async () => {

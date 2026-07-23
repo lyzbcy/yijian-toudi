@@ -350,3 +350,15 @@ input:focus, select:focus, textarea:focus { border-color: #9d93ec; background: #
 .login-status.logged-in { background: var(--green-soft); color: var(--green); }
 .login-status.logged-out { background: #f4f4f8; color: #aaaabb; }
 .company-button .login-status { margin-left: auto; }
+
+/* 嵌入式登录控制条 */
+.login-bar { position: fixed; top: 0; left: 248px; right: 0; height: 52px; z-index: 50; display: flex; align-items: center; gap: 14px; padding: 0 20px; background: #26273c; color: #fff; box-shadow: 0 6px 20px rgba(22,23,38,.18); }
+.login-bar-icon { font-size: 18px; }
+.login-bar-text { flex: 1; min-width: 0; }
+.login-bar-text strong { display: block; font-size: 13px; }
+.login-bar-text span { display: block; color: #9ea0b8; font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: ui-monospace, monospace; }
+.login-bar .ghost-button { background: rgba(255,255,255,.12); color: #fff; border-color: transparent; }
+.login-bar .ghost-button:hover { background: rgba(255,255,255,.2); }
+/* company-button 改成 flex 容器（之前是 button，现在含状态徽章） */
+.company-button { width: 100%; text-align: left; }
+.company-button .company-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

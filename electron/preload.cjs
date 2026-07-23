@@ -13,6 +13,9 @@ contextBridge.exposeInMainWorld('oneClick', {
   openExternal: (url) => ipcRenderer.invoke('external:open', url),
   showItem: (path) => ipcRenderer.invoke('item:show', path),
   getLogs: () => ipcRenderer.invoke('log:get'),
+  openLogin: (companyId) => ipcRenderer.invoke('login:open', companyId),
+  closeLogin: () => ipcRenderer.invoke('login:close'),
+  loginStatus: () => ipcRenderer.invoke('login:status'),
   onStateChanged: (callback) => {
     const handler = (_event, state) => callback(state);
     ipcRenderer.on('state:changed', handler);
