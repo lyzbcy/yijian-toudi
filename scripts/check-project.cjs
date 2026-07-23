@@ -14,8 +14,9 @@ for (const file of ['electron/main.cjs', 'electron/preload.cjs', 'electron/store
 }
 
 const appHtml = fs.readFileSync(path.join(root, 'src/index.html'), 'utf8');
-const siteHtml = fs.readFileSync(path.join(root, 'docs/index.html'), 'utf8');
-for (const [base, html, name] of [['src', appHtml, '桌面界面'], ['docs', siteHtml, '介绍页']]) {
+const siteHtml = fs.readFileSync(path.join(root, 'site/index.html'), 'utf8');
+// 介绍页与桌面界面共用 src/assets 这一份图片源
+for (const [base, html, name] of [['src', appHtml, '桌面界面'], ['src', siteHtml, '介绍页']]) {
   const images = [...html.matchAll(/<img[^>]+src=["']([^"']+)["']/g)].map((match) => match[1]).filter((src) => !/^https?:/.test(src));
   for (const image of images) {
     if (!fs.existsSync(path.join(root, base, image))) fail(`${name} 图片缺失：${image}`);
@@ -23,7 +24,7 @@ for (const [base, html, name] of [['src', appHtml, '桌面界面'], ['docs', sit
   if (!failures.some((item) => item.includes(`${name} 图片缺失`))) pass(`${name} 本地图片引用完整`);
 }
 
-const version = JSON.parse(fs.readFileSync(path.join(root, 'docs/version.json'), 'utf8'));
+const version = JSON.parse(fs.readFileSync(path.join(root, 'site/version.json'), 'utf8'));
 const pageVersion = Number(siteHtml.match(/var PAGE_V\s*=\s*(\d+)/)?.[1]);
 if (pageVersion === version.v) pass(`介绍页 PAGE_V 与 version.json 一致（${version.v}）`);
 else fail(`介绍页版本不一致：PAGE_V=${pageVersion}, version.json=${version.v}`);

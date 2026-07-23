@@ -9,6 +9,8 @@ dist/
 coverage/
 test-output/
 build/icon.iconset/
+# site/assets 由 Pages 工作流和本地预览脚本从 src/assets 动态同步，不入库
+site/assets/
 _plaintext.html
 _search_index.js
 _final_verify.mjs

@@ -2,8 +2,12 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const root = path.resolve(__dirname, '..', 'docs');
+const root = path.resolve(__dirname, '..', 'site');
+const assetsSource = path.resolve(__dirname, '..', 'src', 'assets');
 const port = Number(process.env.SITE_PREVIEW_PORT || 4173);
+
+// 介绍页只维护 src/assets 这一份源，预览前同步到 site/assets
+fs.cpSync(assetsSource, path.join(root, 'assets'), { recursive: true });
 const mime = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',

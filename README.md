@@ -28,7 +28,7 @@ pnpm dist:mac
 
 - `electron/`：桌面主进程、数据存储、QQ 邮箱、浏览器入口、本地 Agent API
 - `src/`：桌面应用界面
-- `docs/`：GitHub Pages 介绍页
+- `site/`：GitHub Pages 介绍页（图片源唯一存放在 `src/assets/`，部署时同步）
 - `doc/`：AI memory 与开发文档
 - `installer/`：未签名 macOS 内测包安装授权脚本
 - `zeen-tools/`：一键开发预览与关闭脚本

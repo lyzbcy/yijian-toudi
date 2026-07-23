@@ -16,6 +16,7 @@
 |---|---|
 | 理解整体架构 | [architecture/overview.md](architecture/overview.md) |
 | 开发招聘站自动化 | [integrations/browser-automation.md](integrations/browser-automation.md) |
+| 查看支持哪些大厂 | [integrations/大厂清单.md](integrations/大厂清单.md) |
 | 维护 QQ 邮箱同步 | [integrations/qq-mail.md](integrations/qq-mail.md) |
 | 规划下一阶段 | [development/roadmap.md](development/roadmap.md) |
 | 查看复用经验与坑 | [community/lessons.md](community/lessons.md) |
@@ -26,4 +27,4 @@
 2. 每增加一个招聘网站，必须记录登录方式、字段映射、选择器证据、失败页面、验证码策略和最后实测日期。
 3. 最终投递、发送邮件等外部写入动作默认需要用户确认。
 4. 登录态、邮箱授权码、简历原文默认只在本机保存。
-5. 修改静态介绍页时，同时递增 `docs/index.html` 的 `PAGE_V` 和 `docs/version.json` 的 `v`。
+5. 修改静态介绍页时，同时递增 `site/index.html` 的 `PAGE_V` 和 `site/version.json` 的 `v`。介绍页与桌面界面共用 `src/assets/` 一份图片源，改二维码/表情只需改一处。

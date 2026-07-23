@@ -4,7 +4,8 @@ on:
   push:
     branches: [main]
     paths:
-      - "docs/**"
+      - "site/**"
+      - "src/assets/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -26,12 +27,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - name: Sync assets from src
+        run: |
+          # 介绍页只引用 src/assets 这一份源，部署前同步到 site/assets
+          rm -rf site/assets
+          cp -R src/assets site/assets
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload site
         uses: actions/upload-pages-artifact@v4
         with:
-          path: docs
+          path: site
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4

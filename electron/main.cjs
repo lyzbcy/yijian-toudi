@@ -5,6 +5,7 @@ const { JsonStore, calculateResumeCompletion } = require('./store.cjs');
 const { BrowserAutomation } = require('./automation.cjs');
 const { AgentServer } = require('./agent-server.cjs');
 const { syncQqMail } = require('./mail.cjs');
+const { listTencentJobs } = require('./adapters/tencent.cjs');
 
 let window;
 let store;
@@ -93,10 +94,50 @@ async function startAgentServer() {
 }
 
 async function refreshJobs() {
-  const id = addTask({ type: 'jobs', title: '刷新招聘项目', detail: '正在检查已配置的公司适配器…' });
-  await new Promise((resolve) => setTimeout(resolve, 700));
-  finishTask(id, 'done', '演示模式已完成数据校验；真实招聘站适配器尚未启用，未伪造新增岗位。');
-  return { mode: 'demo', added: 0, message: '真实公司适配器尚未启用' };
+  const settings = store.get().settings;
+  const daysBack = settings.jobs?.daysBack || 30;
+  const id = addTask({ type: 'jobs', title: '刷新全部岗位', detail: `正在抓取腾讯社招岗位（近 ${daysBack} 天）…`, progress: 20 });
+  try {
+    let fetchedCount = 0;
+    let totalReported = 0;
+    const tencentJobs = await listTencentJobs({
+      daysBack,
+      onProgress: (info) => {
+        fetchedCount = info.collected ?? fetchedCount;
+        totalReported = info.total ?? totalReported;
+        if (info.error) {
+          finishTask(id, 'running', `第 ${info.page} 页失败（${info.error}），保留已抓取数据继续…`);
+        } else {
+          finishTask(id, 'running', `已抓取 ${fetchedCount} 个腾讯岗位（共 ${totalReported}）…`);
+        }
+      }
+    });
+
+    const next = store.update((state) => {
+      // 合并：腾讯岗位按 id 去重；已收藏的非腾讯岗位保留；已收藏的腾讯岗位保留 favorite
+      const favorites = new Map(state.jobs.filter((job) => job.favorite).map((job) => [job.id, job]));
+      const nonTencent = state.jobs.filter((job) => !job.id.startsWith('tencent-'));
+      const merged = [
+        ...nonTencent,
+        ...tencentJobs.map((job) => (favorites.has(job.id) ? { ...job, favorite: true } : job))
+      ];
+      state.jobs = merged;
+      state.settings.jobs = { ...state.settings.jobs, lastRefreshAt: new Date().toISOString() };
+      return state;
+    });
+    broadcast();
+
+    if (tencentJobs.length === 0) {
+      finishTask(id, 'error', '未能抓取到任何腾讯岗位，请稍后重试。腾讯 API 可能暂时不可用。');
+      return { mode: 'live', added: 0, message: '未能抓取到岗位，请稍后重试' };
+    }
+
+    finishTask(id, 'done', `已抓取腾讯 ${tencentJobs.length} 个岗位（近 ${daysBack} 天）。`);
+    return { mode: 'live', added: tencentJobs.length, message: `已抓取腾讯 ${tencentJobs.length} 个岗位` };
+  } catch (error) {
+    finishTask(id, 'error', `抓取失败：${error.message}`);
+    throw error;
+  }
 }
 
 async function openCompany(companyId) {
@@ -214,6 +255,11 @@ app.whenReady().then(async () => {
   ipcMain.handle('settings:update', async (_event, patch) => {
     const before = store.get().settings;
     const next = store.update((state) => {
+      // jobsDaysBack 是扁平传入，存到嵌套的 settings.jobs.daysBack
+      if (patch.jobsDaysBack !== undefined) {
+        state.settings.jobs = { ...state.settings.jobs, daysBack: patch.jobsDaysBack };
+        delete patch.jobsDaysBack;
+      }
       state.settings = { ...state.settings, ...patch, email: { ...state.settings.email, ...(patch.email || {}) } };
       return state;
     });

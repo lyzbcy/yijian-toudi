@@ -59,7 +59,7 @@
     $('#statCompanies').textContent = state.companies.length;
     $('#statFavorites').textContent = favorites;
     $('#statTasks').textContent = state.tasks.length;
-    $('#dataModeLabel').textContent = state.settings.dataMode === 'demo' ? '演示数据' : '真实数据';
+    $('#dataModeLabel').textContent = state.jobs.length > 0 ? '真实数据' : '未抓取';
     $('#resumeCompletion').textContent = `${state.resume.completion || 0}%`;
     $('#resumeRing').style.setProperty('--percent', `${state.resume.completion || 0}%`);
     $('#emailStatus').textContent = state.settings.email.connected ? '已连接' : '未连接';
@@ -69,6 +69,9 @@
     $('#apiEnabled').checked = Boolean(state.settings.apiEnabled);
     $('#apiPort').value = state.settings.apiPort;
     $('#apiAddress').textContent = `127.0.0.1:${state.settings.apiPort}`;
+    $('#jobsDaysBack').value = state.settings.jobs?.daysBack ?? 30;
+    const lastRefresh = state.settings.jobs?.lastRefreshAt;
+    $('#jobsLastRefresh').textContent = lastRefresh ? `上次抓取：${new Date(lastRefresh).toLocaleString('zh-CN')}` : '还没有抓取过岗位。';
 
     renderCompanies();
     renderJobs();
@@ -105,7 +108,17 @@
   function renderJobs() {
     const companies = companyMap();
     const jobs = filteredJobs();
-    $('#jobEmpty').classList.toggle('hidden', jobs.length > 0);
+    const empty = $('#jobEmpty');
+    if (jobs.length > 0) {
+      empty.classList.add('hidden');
+    } else {
+      // 区分两种空：从未抓取 vs 有数据但筛选无结果
+      const hasAnyJobs = state.jobs.length > 0;
+      empty.classList.remove('hidden');
+      empty.innerHTML = hasAnyJobs
+        ? '<span>⌕</span><h3>没有找到匹配岗位</h3><p>换个关键词或清空筛选试试。</p>'
+        : '<span>↻</span><h3>还没有岗位数据</h3><p>点击下方按钮，从各大厂招聘官网抓取真实岗位。</p><button class="primary-button" data-empty-refresh>刷新全部岗位</button>';
+    }
     $('#jobList').innerHTML = jobs.map((job) => {
       const company = companies[job.companyId];
       return `<article class="job-item" data-job-id="${job.id}">
@@ -133,11 +146,15 @@
     const stages = ['全部', ...new Set(state.messages.map((message) => message.stage))];
     $('#stageTabs').innerHTML = stages.map((stage) => `<button class="${activeStage === stage ? 'active' : ''}" data-stage="${stage}">${stage} <span>${stage === '全部' ? state.messages.length : state.messages.filter((message) => message.stage === stage).length}</span></button>`).join('');
     const messages = state.messages.filter((message) => activeStage === '全部' || message.stage === activeStage);
-    $('#messageList').innerHTML = messages.map((message) => `<article class="message-item ${message.unread ? 'unread' : ''} ${message.id === selectedMessageId ? 'active' : ''}" data-message="${message.id}">
-      <span class="message-company">${escapeHtml(message.company.slice(0, 1))}</span>
-      <div><h4>${escapeHtml(message.subject)}</h4><p>${escapeHtml(message.company)} · ${escapeHtml(message.preview)}</p></div>
-      <div class="message-side"><time>${escapeHtml(message.receivedAt.slice(5))}</time><span class="stage-pill">${escapeHtml(message.stage)}</span></div>
-    </article>`).join('');
+    if (messages.length === 0) {
+      $('#messageList').innerHTML = `<div class="empty-state"><span>✉</span><h3>还没有招聘邮件</h3><p>连接 QQ 邮箱后，这里会自动同步面试、测评和 Offer 邮件。</p><button class="ghost-button" data-page="connections">去连接邮箱</button></div>`;
+    } else {
+      $('#messageList').innerHTML = messages.map((message) => `<article class="message-item ${message.unread ? 'unread' : ''} ${message.id === selectedMessageId ? 'active' : ''}" data-message="${message.id}">
+        <span class="message-company">${escapeHtml(message.company.slice(0, 1))}</span>
+        <div><h4>${escapeHtml(message.subject)}</h4><p>${escapeHtml(message.company)} · ${escapeHtml(message.preview)}</p></div>
+        <div class="message-side"><time>${escapeHtml(message.receivedAt.slice(5))}</time><span class="stage-pill">${escapeHtml(message.stage)}</span></div>
+      </article>`).join('');
+    }
     if (selectedMessageId) showMessage(selectedMessageId, false);
   }
 
@@ -219,7 +236,7 @@ Authorization: Bearer ${state.settings.apiToken}
 1. 先读取状态，再执行动作；
 2. 最终投递、发送信息或修改外部网站前必须让我确认；
 3. 登录或验证码出现时提示我接管；
-4. 明确区分“演示数据”和“真实抓取数据”；
+4. 岗位数据来自真实抓取，请如实反映每个岗位的数据来源；
 5. 不要在回复中泄露这段 Token。`;
   }
 
@@ -281,6 +298,11 @@ Authorization: Bearer ${state.settings.apiToken}
         renderState();
         return;
       }
+      const emptyRefresh = event.target.closest('[data-empty-refresh]');
+      if (emptyRefresh) {
+        run(emptyRefresh, () => window.oneClick.refreshJobs(), (result) => result.message);
+        return;
+      }
       const job = event.target.closest('[data-job-id]');
       if (job) return showJob(job.dataset.jobId);
       const company = event.target.closest('[data-company], [data-open-company]');
@@ -302,7 +324,7 @@ Authorization: Bearer ${state.settings.apiToken}
     }));
     ['jobSearch', 'companyFilter', 'sortJobs'].forEach((id) => $(`#${id}`).addEventListener(id === 'jobSearch' ? 'input' : 'change', renderJobs));
     $('#refreshJobsButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.refreshJobs(), (result) => result.message));
-    $('#runDemoTask').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.refreshJobs(), '安全演示已完成'));
+    $('#runDemoTask').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.refreshJobs(), (result) => result.message));
     $('#saveResumeButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
       state = await window.oneClick.saveResume(collectResume());
       renderState();
@@ -331,7 +353,8 @@ Authorization: Bearer ${state.settings.apiToken}
         githubRepo: $('#githubRepo').value.trim(),
         autoCheckUpdates: $('#autoUpdate').checked,
         apiEnabled: $('#apiEnabled').checked,
-        apiPort: Number($('#apiPort').value)
+        apiPort: Number($('#apiPort').value),
+        jobsDaysBack: Math.min(365, Math.max(1, Number($('#jobsDaysBack').value) || 30))
       });
       renderState();
     }, '设置已保存'));

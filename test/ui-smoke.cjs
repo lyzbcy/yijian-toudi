@@ -16,7 +16,10 @@ const { _electron: electron } = require('playwright-core');
   try {
     const window = await application.firstWindow();
     await window.waitForSelector('.hero-card');
-    await window.waitForSelector('.job-item');
+    // 首次启动无演示数据，应显示空状态而非岗位卡片
+    await window.waitForSelector('#jobEmpty:not(.hidden)');
+    const emptyText = await window.locator('#jobEmpty').textContent();
+    if (!emptyText.includes('还没有岗位数据')) throw new Error(`空状态文案不正确：${emptyText}`);
     const title = await window.locator('#pageTitle').textContent();
     if (title !== '招聘项目') throw new Error(`首屏标题不正确：${title}`);
     await window.screenshot({ path: path.join(output, 'desktop-jobs.png'), fullPage: true });

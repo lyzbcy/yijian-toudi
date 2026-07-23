@@ -48,7 +48,7 @@
           <p id="pageSubtitle">把不同公司的岗位放在一张清单里比较。</p>
         </div>
         <div class="top-actions">
-          <div class="mode-pill"><i></i><span id="dataModeLabel">演示数据</span></div>
+          <div class="mode-pill"><i></i><span id="dataModeLabel">未抓取</span></div>
           <button class="icon-button" id="checkUpdateButton" title="检查更新">↗</button>
           <button class="avatar-button" data-page="settings" title="设置">捞</button>
         </div>
@@ -75,7 +75,7 @@
         </div>
 
         <div class="stats-row">
-          <article><span class="stat-icon violet">⌁</span><div><b id="statJobs">0</b><small>岗位总数</small></div><em>演示</em></article>
+          <article><span class="stat-icon violet">⌁</span><div><b id="statJobs">0</b><small>岗位总数</small></div><em>真实抓取</em></article>
           <article><span class="stat-icon green">✓</span><div><b id="statCompanies">0</b><small>已收录公司</small></div><em>待适配</em></article>
           <article><span class="stat-icon orange">★</span><div><b id="statFavorites">0</b><small>我的收藏</small></div><em>本地保存</em></article>
           <article><span class="stat-icon blue">↗</span><div><b id="statTasks">0</b><small>自动化任务</small></div><em>可追踪</em></article>
@@ -100,7 +100,7 @@
             <select id="sortJobs" aria-label="岗位排序"><option value="match">按匹配度</option><option value="date">按发布时间</option><option value="company">按公司</option></select>
           </div>
           <div class="job-list" id="jobList"></div>
-          <div class="empty-state hidden" id="jobEmpty"><span>⌕</span><h3>没有找到匹配岗位</h3><p>换个关键词或清空筛选试试。</p></div>
+          <div class="empty-state hidden" id="jobEmpty"></div>
         </div>
       </section>
 
@@ -242,7 +242,7 @@
           </article>
         </div>
         <div class="content-card">
-          <div class="card-toolbar"><div><h3>任务记录</h3><p>最新任务会显示在最上方。</p></div><button class="ghost-button" id="runDemoTask">运行一次安全演示</button></div>
+          <div class="card-toolbar"><div><h3>任务记录</h3><p>最新任务会显示在最上方。</p></div><button class="ghost-button" id="runDemoTask">刷新全部岗位</button></div>
           <div class="task-list" id="taskList"></div>
         </div>
       </section>
@@ -302,6 +302,12 @@
             <label>GitHub 仓库<input id="githubRepo" placeholder="例如：lyzbcy/yijian-toudi"></label>
             <label class="switch-row"><span><strong>启动时检查更新</strong><small>只请求 GitHub Release 版本号</small></span><input id="autoUpdate" type="checkbox"><i></i></label>
             <button class="primary-button" id="saveSettingsButton">保存设置</button>
+          </section>
+          <section class="content-card settings-card">
+            <h3>岗位抓取</h3>
+            <p>刷新岗位时，只抓取最近若干天内发布的岗位，避免拉取过多过时数据。</p>
+            <label>抓取范围（天）<input id="jobsDaysBack" type="number" min="1" max="365" placeholder="30"></label>
+            <p class="setting-hint" id="jobsLastRefresh">还没有抓取过岗位。</p>
           </section>
           <section class="content-card settings-card">
             <h3>Agent API</h3>
