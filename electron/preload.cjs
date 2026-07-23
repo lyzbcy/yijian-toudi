@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld('oneClick', {
   exportSnapshot: () => ipcRenderer.invoke('snapshot:export'),
   openExternal: (url) => ipcRenderer.invoke('external:open', url),
   showItem: (path) => ipcRenderer.invoke('item:show', path),
+  getLogs: () => ipcRenderer.invoke('log:get'),
   onStateChanged: (callback) => {
     const handler = (_event, state) => callback(state);
     ipcRenderer.on('state:changed', handler);

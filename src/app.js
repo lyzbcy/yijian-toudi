@@ -383,6 +383,24 @@ Authorization: Bearer ${state.settings.apiToken}
       renderState();
     }, '设置已保存'));
     $('#promoButton').addEventListener('click', () => $('#promoDialog').showModal());
+    $('#refreshLogsButton').addEventListener('click', () => run($('#refreshLogsButton'), async () => {
+      const logs = await window.oneClick.getLogs();
+      renderLogs(logs);
+    }));
+  }
+
+  // 渲染开发日志（内存最近 50 条）
+  function renderLogs(logs) {
+    const list = $('#devLogList');
+    if (!logs || logs.length === 0) {
+      list.innerHTML = '<p class="dev-log-empty">暂无日志。触发一次"刷新全部岗位"后会产生日志。</p>';
+      return;
+    }
+    list.innerHTML = logs.map((entry) => `<div class="dev-log-entry level-${entry.level}">
+      <time>${escapeHtml(entry.ts)}</time>
+      <span class="dev-log-level">${escapeHtml(entry.level.toUpperCase())}</span>
+      <span class="dev-log-msg">${escapeHtml(entry.msg)}${entry.meta ? ` <em>${escapeHtml(JSON.stringify(entry.meta))}</em>` : ''}</span>
+    </div>`).join('');
   }
 
   init().catch((error) => {

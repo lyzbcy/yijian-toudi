@@ -323,3 +323,30 @@ input:focus, select:focus, textarea:focus { border-color: #9d93ec; background: #
   .job-item { grid-template-columns: 50px 1.2fr .7fr 66px 38px; }
   .job-item .job-meta:nth-of-type(2) { display: none; }
 }
+
+/* 开发日志 */
+.dev-log-card { grid-column: span 2; }
+.dev-log-card .card-toolbar { margin-bottom: 16px; }
+.dev-log-list { max-height: 320px; overflow-y: auto; display: grid; gap: 2px; font: 11px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; }
+.dev-log-empty { color: var(--muted); font-family: inherit; padding: 20px 0; text-align: center; }
+.dev-log-entry { display: grid; grid-template-columns: 140px 56px 1fr; gap: 10px; padding: 6px 10px; border-radius: 8px; background: #f9f9fb; align-items: start; }
+.dev-log-entry time { color: #aaaebb; font-size: 10px; }
+.dev-log-level { font-weight: 800; font-size: 10px; }
+.dev-log-entry.level-info .dev-log-level { color: var(--blue); }
+.dev-log-entry.level-warn .dev-log-level { color: var(--orange); }
+.dev-log-entry.level-error { background: #fef0f2; }
+.dev-log-entry.level-error .dev-log-level { color: var(--danger); }
+.dev-log-msg { color: #55576a; word-break: break-all; }
+.dev-log-msg em { color: #999aab; font-style: normal; font-size: 10px; }
+
+/* 公司标签筛选 */
+.tag-filter-row { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; padding: 8px 0 0; }
+.tag-chip { height: 28px; padding: 0 11px; border: 1px solid var(--line); background: #fff; border-radius: 999px; cursor: pointer; color: #74778b; font-size: 10px; display: inline-flex; align-items: center; gap: 4px; }
+.tag-chip.active { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); font-weight: 750; }
+.tag-chip .tag-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+/* 公司登录状态徽章 */
+.login-status { padding: 4px 8px; border-radius: 999px; font-size: 8px; font-weight: 700; }
+.login-status.logged-in { background: var(--green-soft); color: var(--green); }
+.login-status.logged-out { background: #f4f4f8; color: #aaaabb; }
+.company-button .login-status { margin-left: auto; }

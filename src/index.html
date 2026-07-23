@@ -315,6 +315,10 @@
             <label class="switch-row"><span><strong>开启本地 Agent API</strong><small>关闭后外部 Agent 无法查询数据</small></span><input id="apiEnabled" type="checkbox"><i></i></label>
             <label>端口<input id="apiPort" type="number" min="1024" max="65535"></label>
           </section>
+          <section class="content-card settings-card dev-log-card">
+            <div class="card-toolbar"><div><h3>开发日志</h3><p>内存中最近 50 条，重启后清空。</p></div><button class="ghost-button" id="refreshLogsButton">刷新</button></div>
+            <div class="dev-log-list" id="devLogList"><p class="dev-log-empty">点击"刷新"查看日志。</p></div>
+          </section>
           <section class="content-card settings-card about-card">
             <img src="./assets/stickers/mascot.png" alt="">
             <div><h3>一键投递 v0.1.0</h3><p>一个弱小但有梦想的开发者，想把重复投简历这件事做得轻松一点。</p><a href="https://lyzbcy.github.io/" data-external>关于捞鱼 ↗</a></div>

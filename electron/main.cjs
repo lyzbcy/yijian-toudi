@@ -8,6 +8,7 @@ const { syncQqMail } = require('./mail.cjs');
 const { listTencentJobs } = require('./adapters/tencent.cjs');
 const { listBaiduJobs } = require('./adapters/baidu.cjs');
 const { listBytedanceJobs } = require('./adapters/bytedance.cjs');
+const { logger } = require('./logger.cjs');
 
 let window;
 let store;
@@ -106,16 +107,19 @@ const JOB_ADAPTERS = [
 async function refreshJobs() {
   const settings = store.get().settings;
   const daysBack = settings.jobs?.daysBack || 30;
+  logger.info('开始刷新岗位', { daysBack, adapters: JOB_ADAPTERS.map((a) => a.companyId) });
   const id = addTask({ type: 'jobs', title: '刷新全部岗位', detail: `正在抓取各大厂社招岗位（近 ${daysBack} 天）…`, progress: 15 });
   try {
     const results = [];
     for (const adapter of JOB_ADAPTERS) {
       finishTask(id, 'running', `正在抓取${adapter.name}岗位…（${results.reduce((s, r) => s + r.count, 0)} 个已入库）`);
+      logger.info(`抓取${adapter.name}开始`);
       try {
         const jobs = await adapter.fetch({
           daysBack,
           onProgress: (info) => {
             if (info.error) {
+              logger.warn(`${adapter.name}抓取批次失败`, info);
               finishTask(id, 'running', `${adapter.name}第 ${info.page || info.keyword} 批失败（${info.error}），继续…`);
             } else {
               const running = results.reduce((s, r) => s + r.count, 0) + (info.collected ?? 0);
@@ -124,10 +128,12 @@ async function refreshJobs() {
           }
         });
         results.push({ companyId: adapter.companyId, name: adapter.name, idPrefix: adapter.idPrefix, count: jobs.length, jobs, error: null });
+        logger.info(`抓取${adapter.name}完成`, { count: jobs.length });
         // 每抓完一家就合并入库，让用户 progressively 看到数据
         mergeJobs(adapter.idPrefix, jobs);
         broadcast();
       } catch (error) {
+        logger.error(`抓取${adapter.name}失败`, { error: error.message });
         results.push({ companyId: adapter.companyId, name: adapter.name, idPrefix: adapter.idPrefix, count: 0, jobs: [], error: error.message });
       }
     }
@@ -142,13 +148,16 @@ async function refreshJobs() {
     const summary = results.map((r) => `${r.name || r.companyId} ${r.count} 个${r.error ? `（失败：${r.error}）` : ''}`).join('，');
 
     if (totalAdded === 0) {
+      logger.warn('刷新岗位完成但无数据', { results: results.map((r) => ({ c: r.companyId, err: r.error })) });
       finishTask(id, 'error', '各家适配器均未能抓取到岗位，请稍后重试。');
       return { mode: 'live', added: 0, message: '未能抓取到岗位，请稍后重试' };
     }
 
+    logger.info('刷新岗位全部完成', { total: totalAdded, breakdown: results.map((r) => ({ company: r.name, count: r.count })) });
     finishTask(id, 'done', `已抓取 ${totalAdded} 个岗位（近 ${daysBack} 天）：${summary}。`);
     return { mode: 'live', added: totalAdded, message: `已抓取 ${totalAdded} 个岗位` };
   } catch (error) {
+    logger.error('刷新岗位异常', { error: error.message });
     finishTask(id, 'error', `抓取失败：${error.message}`);
     throw error;
   }
@@ -304,6 +313,8 @@ app.whenReady().then(async () => {
     return shell.openExternal(url);
   });
   ipcMain.handle('item:show', (_event, itemPath) => shell.showItemInFolder(itemPath));
+  // 开发日志：返回内存中最近 50 条（见 logger.cjs）
+  ipcMain.handle('log:get', () => logger.recent());
 });
 
 app.on('window-all-closed', async () => {
