@@ -1,8 +1,10 @@
 const companies = [
-  { id: 'tencent', name: '腾讯', short: 'T', color: '#1664ff', portal: 'https://careers.tencent.com/', status: 'adapter-needed', enabled: true },
+  { id: 'tencent', name: '腾讯', short: 'T', color: '#1664ff', portal: 'https://careers.tencent.com/', status: 'adapter-ready', enabled: true },
   { id: 'alibaba', name: '阿里巴巴', short: 'A', color: '#ff6a00', portal: 'https://talent.alibaba.com/', status: 'adapter-needed', enabled: true },
   { id: 'bytedance', name: '字节跳动', short: '字', color: '#111827', portal: 'https://jobs.bytedance.com/', status: 'adapter-needed', enabled: true },
+  { id: 'baidu', name: '百度', short: '百', color: '#2932e1', portal: 'https://talent.baidu.com/', status: 'adapter-ready', enabled: true },
   { id: 'meituan', name: '美团', short: '美', color: '#ffc300', portal: 'https://zhaopin.meituan.com/', status: 'adapter-needed', enabled: true },
+  { id: 'jd', name: '京东', short: '京', color: '#e1251b', portal: 'https://zhaopin.jd.com/', status: 'adapter-needed', enabled: true },
   { id: 'xiaomi', name: '小米', short: '米', color: '#ff6900', portal: 'https://hr.xiaomi.com/', status: 'adapter-needed', enabled: true },
   { id: 'netease', name: '网易', short: '易', color: '#e1251b', portal: 'https://hr.163.com/', status: 'adapter-needed', enabled: true }
 ];

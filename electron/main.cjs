@@ -6,6 +6,8 @@ const { BrowserAutomation } = require('./automation.cjs');
 const { AgentServer } = require('./agent-server.cjs');
 const { syncQqMail } = require('./mail.cjs');
 const { listTencentJobs } = require('./adapters/tencent.cjs');
+const { listBaiduJobs } = require('./adapters/baidu.cjs');
+const { listBytedanceJobs } = require('./adapters/bytedance.cjs');
 
 let window;
 let store;
@@ -93,51 +95,76 @@ async function startAgentServer() {
   }
 }
 
+// 已适配的公司抓取器。每加一家，在这里登记一行即可被 refreshJobs 自动调用。
+// idPrefix 用于合并时按公司清理旧数据、保留已收藏岗位。
+const JOB_ADAPTERS = [
+  { companyId: 'tencent', name: '腾讯', idPrefix: 'tencent-', fetch: (opts) => listTencentJobs(opts) },
+  { companyId: 'baidu', name: '百度', idPrefix: 'baidu-', fetch: (opts) => listBaiduJobs(opts) },
+  { companyId: 'bytedance', name: '字节跳动', idPrefix: 'bytedance-', fetch: (opts) => listBytedanceJobs(opts) }
+];
+
 async function refreshJobs() {
   const settings = store.get().settings;
   const daysBack = settings.jobs?.daysBack || 30;
-  const id = addTask({ type: 'jobs', title: '刷新全部岗位', detail: `正在抓取腾讯社招岗位（近 ${daysBack} 天）…`, progress: 20 });
+  const id = addTask({ type: 'jobs', title: '刷新全部岗位', detail: `正在抓取各大厂社招岗位（近 ${daysBack} 天）…`, progress: 15 });
   try {
-    let fetchedCount = 0;
-    let totalReported = 0;
-    const tencentJobs = await listTencentJobs({
-      daysBack,
-      onProgress: (info) => {
-        fetchedCount = info.collected ?? fetchedCount;
-        totalReported = info.total ?? totalReported;
-        if (info.error) {
-          finishTask(id, 'running', `第 ${info.page} 页失败（${info.error}），保留已抓取数据继续…`);
-        } else {
-          finishTask(id, 'running', `已抓取 ${fetchedCount} 个腾讯岗位（共 ${totalReported}）…`);
-        }
+    const results = [];
+    for (const adapter of JOB_ADAPTERS) {
+      finishTask(id, 'running', `正在抓取${adapter.name}岗位…（${results.reduce((s, r) => s + r.count, 0)} 个已入库）`);
+      try {
+        const jobs = await adapter.fetch({
+          daysBack,
+          onProgress: (info) => {
+            if (info.error) {
+              finishTask(id, 'running', `${adapter.name}第 ${info.page || info.keyword} 批失败（${info.error}），继续…`);
+            } else {
+              const running = results.reduce((s, r) => s + r.count, 0) + (info.collected ?? 0);
+              finishTask(id, 'running', `正在抓取${adapter.name}… 已累计 ${running} 个岗位`);
+            }
+          }
+        });
+        results.push({ companyId: adapter.companyId, name: adapter.name, idPrefix: adapter.idPrefix, count: jobs.length, jobs, error: null });
+        // 每抓完一家就合并入库，让用户 progressively 看到数据
+        mergeJobs(adapter.idPrefix, jobs);
+        broadcast();
+      } catch (error) {
+        results.push({ companyId: adapter.companyId, name: adapter.name, idPrefix: adapter.idPrefix, count: 0, jobs: [], error: error.message });
       }
-    });
+    }
 
     const next = store.update((state) => {
-      // 合并：腾讯岗位按 id 去重；已收藏的非腾讯岗位保留；已收藏的腾讯岗位保留 favorite
-      const favorites = new Map(state.jobs.filter((job) => job.favorite).map((job) => [job.id, job]));
-      const nonTencent = state.jobs.filter((job) => !job.id.startsWith('tencent-'));
-      const merged = [
-        ...nonTencent,
-        ...tencentJobs.map((job) => (favorites.has(job.id) ? { ...job, favorite: true } : job))
-      ];
-      state.jobs = merged;
       state.settings.jobs = { ...state.settings.jobs, lastRefreshAt: new Date().toISOString() };
       return state;
     });
     broadcast();
 
-    if (tencentJobs.length === 0) {
-      finishTask(id, 'error', '未能抓取到任何腾讯岗位，请稍后重试。腾讯 API 可能暂时不可用。');
+    const totalAdded = results.reduce((sum, r) => sum + r.count, 0);
+    const summary = results.map((r) => `${r.name || r.companyId} ${r.count} 个${r.error ? `（失败：${r.error}）` : ''}`).join('，');
+
+    if (totalAdded === 0) {
+      finishTask(id, 'error', '各家适配器均未能抓取到岗位，请稍后重试。');
       return { mode: 'live', added: 0, message: '未能抓取到岗位，请稍后重试' };
     }
 
-    finishTask(id, 'done', `已抓取腾讯 ${tencentJobs.length} 个岗位（近 ${daysBack} 天）。`);
-    return { mode: 'live', added: tencentJobs.length, message: `已抓取腾讯 ${tencentJobs.length} 个岗位` };
+    finishTask(id, 'done', `已抓取 ${totalAdded} 个岗位（近 ${daysBack} 天）：${summary}。`);
+    return { mode: 'live', added: totalAdded, message: `已抓取 ${totalAdded} 个岗位` };
   } catch (error) {
     finishTask(id, 'error', `抓取失败：${error.message}`);
     throw error;
   }
+}
+
+// 按 idPrefix 合并岗位：清掉该公司的旧数据，写入新数据，保留已收藏状态
+function mergeJobs(idPrefix, newJobs) {
+  const favorites = new Map(store.get().jobs.filter((job) => job.favorite).map((job) => [job.id, job]));
+  store.update((state) => {
+    const others = state.jobs.filter((job) => !job.id.startsWith(idPrefix));
+    state.jobs = [
+      ...others,
+      ...newJobs.map((job) => (favorites.has(job.id) ? { ...job, favorite: true } : job))
+    ];
+    return state;
+  });
 }
 
 async function openCompany(companyId) {

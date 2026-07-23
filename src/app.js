@@ -30,6 +30,19 @@
     return String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
   }
 
+  // 把 ISO 日期转成“今天 / N 天前”这类相对描述，比满屏匹配度 0 更有信息量
+  function relativeDate(iso) {
+    if (!iso) return '';
+    const date = new Date(iso);
+    if (Number.isNaN(date.getTime())) return '';
+    const days = Math.floor((Date.now() - date.getTime()) / 86_400_000);
+    if (days <= 0) return '今天发布';
+    if (days === 1) return '昨天发布';
+    if (days < 7) return `${days} 天前`;
+    if (days < 30) return `${Math.floor(days / 7)} 周前`;
+    return iso;
+  }
+
   function navigate(page) {
     $$('.page').forEach((node) => node.classList.toggle('active', node.id === `page-${page}`));
     $$('.nav-item').forEach((node) => node.classList.toggle('active', node.dataset.page === page));
@@ -121,16 +134,16 @@
     }
     $('#jobList').innerHTML = jobs.map((job) => {
       const company = companies[job.companyId];
+      const posted = relativeDate(job.postedAt);
       return `<article class="job-item" data-job-id="${job.id}">
         <span class="company-logo" style="background:${company.color}">${escapeHtml(company.short)}</span>
         <div class="job-main">
           <h4>${escapeHtml(job.title)}</h4>
           <p>${escapeHtml(company.name)} · ${escapeHtml(job.department)}</p>
-          <div class="job-tags">${job.tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join('')}<span class="source-pill">${escapeHtml(job.source)}</span></div>
+          <div class="job-tags">${job.tags.filter(Boolean).map((tag) => `<span>${escapeHtml(tag)}</span>`).join('')}<span class="source-pill">${escapeHtml(job.source)}</span></div>
         </div>
-        <div class="job-meta"><strong>${escapeHtml(job.city)} · ${escapeHtml(job.type)}</strong><span>${escapeHtml(job.experience)} · ${escapeHtml(job.education)}</span></div>
-        <div class="job-meta"><strong>${escapeHtml(job.postedAt)}</strong><span>${escapeHtml(job.salary)}</span></div>
-        <div class="match-score"><b>${job.match}</b>匹配度</div>
+        <div class="job-meta"><strong>${escapeHtml(job.city)}</strong><span>${escapeHtml(job.experience)}</span></div>
+        <div class="job-time"><i class="fresh-dot"></i>${posted || escapeHtml(job.postedAt)}</div>
         <button class="favorite-button ${job.favorite ? 'active' : ''}" data-favorite="${job.id}" title="收藏">★</button>
       </article>`;
     }).join('');
@@ -250,12 +263,12 @@ Authorization: Bearer ${state.settings.apiToken}
     <div class="job-dialog-body">
       <div class="job-dialog-grid">
         <div><span>城市</span><b>${escapeHtml(job.city)}</b></div>
-        <div><span>经验</span><b>${escapeHtml(job.experience)}</b></div>
+        <div><span>经验要求</span><b>${escapeHtml(job.experience)}</b></div>
         <div><span>学历</span><b>${escapeHtml(job.education)}</b></div>
-        <div><span>匹配度</span><b>${job.match}%</b></div>
+        <div><span>发布时间</span><b>${escapeHtml(job.postedAt || '未标注')}</b></div>
       </div>
-      <h4>岗位摘要</h4><p>${escapeHtml(job.summary)}</p>
-      <h4>数据说明</h4><p>当前记录来自“${escapeHtml(job.source)}”。打开官网后请以招聘网站实时信息为准。</p>
+      <h4>岗位职责</h4><p>${escapeHtml(job.summary || '详见招聘官网')}</p>
+      <h4>数据来源</h4><p>本岗位由“${escapeHtml(job.source)}”抓取，打开官网可查看任职要求等完整信息。</p>
     </div>
     <div class="dialog-actions">
       <button class="ghost-button" data-favorite="${job.id}">${job.favorite ? '取消收藏' : '收藏岗位'}</button>
