@@ -52,14 +52,13 @@ function notifyChange() {
  */
 function openLoginView(company) {
   if (!parentWindow || parentWindow.isDestroyed()) throw new Error('主窗口未就绪');
-  // 已有视图先关掉
-  closeLoginView();
+  // 已有视图先关掉（await 确保 cookie flush 完成）
+  closeLoginViewSync();
 
   // 每家公司独立 session，登录态隔离持久化（重启后保留）
+  // 用 webPreferences.partition 字符串方式（比 session 对象传参更可靠，确保 cookie 存到正确 partition）
   const partition = `persist:${company.id}`;
-  const ses = session.fromPartition(partition);
-
-  currentView = new WebContentsView({ session: ses });
+  currentView = new WebContentsView({ webPreferences: { partition, contextIsolation: true, sandbox: true } });
   currentCompanyId = company.id;
   parentWindow.contentView.addChildView(currentView);
   currentView.webContents.loadURL(company.portal);
@@ -68,15 +67,29 @@ function openLoginView(company) {
   return { ok: true, companyId: company.id, url: company.portal };
 }
 
+// 同步关闭（用于 openLoginView 内部切换，不等 flush）
+function closeLoginViewSync() {
+  if (currentView && parentWindow && !parentWindow.isDestroyed()) {
+    parentWindow.contentView.removeChildView(currentView);
+  }
+  if (currentView?.webContents && !currentView.webContents.isDestroyed()) {
+    currentView.webContents.destroy();
+  }
+  currentView = null;
+  currentCompanyId = null;
+}
+
 // 关闭登录视图：必须先 flush session（把 cookie 写盘），否则登录态会丢
 async function closeLoginView() {
   if (!currentView) return;
-  // 先 flush 当前 session 的 cookie 到磁盘
+  // 用 partition 字符串获取对应 session 并 flush（persist: partition 会自动持久化，但显式 flush 更保险）
   const partition = currentCompanyId ? `persist:${currentCompanyId}` : null;
   if (partition) {
-    const ses = session.fromPartition(partition);
-    await ses.cookies.flushStore().catch(() => {});
-    await ses.flushStorageData().catch(() => {});
+    try {
+      const ses = session.fromPartition(partition);
+      await ses.cookies.flushStore();
+      await ses.flushStorageData();
+    } catch { /* flush 失败不阻塞关闭 */ }
   }
   if (parentWindow && !parentWindow.isDestroyed()) {
     parentWindow.contentView.removeChildView(currentView);

@@ -1,19 +1,19 @@
 const { app, session } = require('electron');
 app.whenReady().then(async () => {
-  // 检查所有可能的 partition
+  // 遍历所有 partition 检查 cookie
   for (const cid of ['tencent', 'alibaba', 'baidu', 'bytedance']) {
     const ses = session.fromPartition(`persist:${cid}`);
+    // 等待 cookie 从磁盘加载
+    await new Promise(r => setTimeout(r, 500));
     const cookies = await ses.cookies.get({});
-    const tencentCookies = await ses.cookies.get({ domain: 'tencent.com' }).catch(()=>[]);
-    const alibabaCookies = await ses.cookies.get({ domain: 'alibaba.com' }).catch(()=>[]);
-    console.log(`persist:${cid}: 总cookie=${cookies.length}, tencent=${tencentCookies.length}, alibaba=${alibabaCookies.length}`);
-    if (cookies.length > 0 && cookies.length < 50) {
-      console.log('  cookie名:', cookies.map(c => c.name).slice(0,15).join(', '));
+    if (cookies.length > 0) {
+      console.log(`persist:${cid}: ${cookies.length} cookies`);
+      console.log('  名字:', cookies.slice(0,8).map(c=>c.name).join(', '));
     }
   }
-  // 也检查 default session
-  const def = session.defaultSession;
-  const defCookies = await def.cookies.get({});
-  console.log(`default session: 总cookie=${defCookies.length}`);
+  // 也检查 default
+  const def = await session.defaultSession.cookies.get({});
+  console.log(`default: ${def.length} cookies`);
+  if (def.length > 0) console.log('  名字:', def.slice(0,8).map(c=>c.name).join(', '));
   app.exit(0);
 });

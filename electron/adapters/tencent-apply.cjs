@@ -36,40 +36,41 @@ async function applyTencentJob(job, { onStep } = {}) {
   }
   if (!detailUrl) throw new Error('岗位缺少 URL，无法投递');
 
-  // 用 persist:tencent session（用户登录态）
+  // 用 persist:tencent session（WebContentsView 创建时会自动从磁盘加载 cookie）
   const ses = session.fromPartition('persist:tencent');
-  const cookies = await ses.cookies.get({ domain: 'tencent.com' });
-  if (cookies.length === 0) {
-    step('error', '未检测到腾讯登录态，请先在「公司与邮箱」页登录腾讯');
-    return { ok: false, status: 'login-required', message: '未登录腾讯，请先登录' };
-  }
-  step('login-ok', `检测到登录态（${cookies.length} 个 cookie）`);
-
-  // 创建 WebContentsView 加载详情页
   const view = new WebContentsView({ session: ses });
   step('loading', '正在打开岗位详情页…');
   await view.webContents.loadURL(detailUrl, { waitUntil: 'domcontentloaded', timeout: 20000 }).catch((e) => {
     throw new Error(`打开详情页失败：${e.message}`);
   });
-  // 等页面渲染
   await new Promise((r) => setTimeout(r, 2000));
 
-  // 检查是否真的是详情页（不是 404）
-  const pageInfo = await view.webContents.executeJavaScript(`(function(){
-    return {
-      title: document.title,
-      hasApplyBtn: !!document.querySelector('${APPLY_BUTTON_SELECTOR}'),
-      btnText: document.querySelector('${APPLY_BUTTON_SELECTOR}') ? document.querySelector('${APPLY_BUTTON_SELECTOR}').innerText.trim() : '',
-      is404: /404|没有找到/.test(document.title + document.body.innerText)
-    };
-  })()`).catch(() => ({ is404: true }));
+  // 通过页面内容判断登录态（比预读 cookie 更可靠，因为 cookie 可能未同步到内存）
+  const loginCheck = await view.webContents.executeJavaScript(`(function(){
+    var hasLoginBtn = !!document.querySelector('.tis-login, [class*="login"]');
+    var bodyText = document.body ? document.body.innerText : '';
+    return { hasLoginPrompt: /登录|登 录|请先登录/.test(bodyText.slice(0, 500)), is404: /404|没有找到/.test(document.title + bodyText) };
+  })()`).catch(() => ({ hasLoginPrompt: true, is404: false }));
 
-  if (pageInfo.is404) {
+  // 检查是否真的是详情页（不是 404）+ 登录态
+  if (loginCheck.is404) {
     view.webContents.destroy();
     return { ok: false, status: 'not-found', message: '岗位详情页不存在（可能已下线）' };
   }
+  if (loginCheck.hasLoginPrompt) {
+    view.webContents.destroy();
+    step('error', '腾讯未登录，请先在「公司与邮箱」页登录');
+    return { ok: false, status: 'login-required', message: '未登录腾讯，请先登录' };
+  }
+  const hasApplyBtn = await view.webContents.executeJavaScript(`!!document.querySelector('${APPLY_BUTTON_SELECTOR}')`).catch(() => false);
+  const btnText = hasApplyBtn ? await view.webContents.executeJavaScript(`document.querySelector('${APPLY_BUTTON_SELECTOR}').innerText.trim()`).catch(() => '') : '';
 
-  step('found-btn', `找到投递按钮："${pageInfo.btnText}"`);
+  if (!hasApplyBtn) {
+    view.webContents.destroy();
+    return { ok: false, status: 'no-button', message: '未找到投递按钮' };
+  }
+
+  step('found-btn', `找到投递按钮："${btnText}"`);
 
   // 点击申请岗位按钮
   const clickResult = await view.webContents.executeJavaScript(`(() => {
