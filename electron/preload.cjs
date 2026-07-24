@@ -3,6 +3,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('oneClick', {
   getState: () => ipcRenderer.invoke('state:get'),
   saveResume: (resume) => ipcRenderer.invoke('resume:save', resume),
+  fillResumeToTencent: () => ipcRenderer.invoke('resume:fill-tencent'),
   toggleFavorite: (jobId) => ipcRenderer.invoke('job:favorite', jobId),
   toggleCart: (jobId) => ipcRenderer.invoke('cart:toggle', jobId),
   applyCart: () => ipcRenderer.invoke('cart:apply'),

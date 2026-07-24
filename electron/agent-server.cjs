@@ -65,7 +65,7 @@ class AgentServer {
       }
       if (request.method === 'POST' && url.pathname === '/v1/commands') {
         const body = await this.readJson(request);
-        const allowed = ['refresh_jobs', 'sync_email', 'open_company', 'favorite_job', 'export_snapshot'];
+        const allowed = ['refresh_jobs', 'sync_email', 'open_company', 'favorite_job', 'export_snapshot', 'apply_cart', 'fill_resume'];
         if (!allowed.includes(body.action)) {
           return this.send(response, 400, { error: 'unsupported_action', allowed });
         }

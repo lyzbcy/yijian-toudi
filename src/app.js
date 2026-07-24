@@ -462,6 +462,14 @@ Authorization: Bearer ${state.settings.apiToken}
     // 首次启动引导：让用户选校招/社招方向
     if (!state.meta?.onboardingSeen) showOnboarding();
 
+    // 启动时自动检查更新（agent.md 第66行：每次打开自动检查版本号）
+    if (state.settings?.autoCheckUpdates) {
+      try {
+        const result = await window.oneClick.checkUpdate();
+        if (result.configured && result.updateAvailable) toast(`发现新版本 ${result.latest}，建议更新`);
+      } catch { /* 静默失败，不打扰用户 */ }
+    }
+
 
     document.addEventListener('click', async (event) => {
       const pageButton = event.target.closest('[data-page]');
@@ -543,12 +551,14 @@ Authorization: Bearer ${state.settings.apiToken}
     $('#cartApplyAll').addEventListener('click', (event) => run(event.currentTarget, async () => {
       state = await window.oneClick.applyCart();
       renderState();
-    }, '购物车岗位已标记投递（实际投递需登录后执行）'));
+    }, (result) => result.message || '投递完成'));
+    $('#refreshApplied').addEventListener('click', () => toast('已投递状态需要登录对应公司后才能自动刷新，当前显示的是投递时的记录'));
     $('#saveResumeButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
       state = await window.oneClick.saveResume(collectResume());
       renderState();
     }, '简历已安全保存在本机'));
     $('#exportResumeButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportSnapshot(), '求职快照已导出'));
+    $('#fillResumeTencentButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.fillResumeToTencent(), (result) => result.message));
     $('#exportSnapshotButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportSnapshot(), '脱敏快照已导出'));
     $('#syncEmailButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
       state = await window.oneClick.syncEmail({ address: $('#emailAddress').value.trim(), authorizationCode: $('#emailCode').value.trim() });

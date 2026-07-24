@@ -83,6 +83,12 @@ async function handleCommand(command) {
     return { jobId: command.jobId };
   }
   if (command.action === 'export_snapshot') return exportSnapshot(false);
+  if (command.action === 'apply_cart') return applyCart();
+  if (command.action === 'fill_resume') {
+    const resume = store.get().resume;
+    const { fillTencentResume } = require('./adapters/tencent-fill.cjs');
+    return fillTencentResume(resume);
+  }
   if (command.action === 'sync_email') {
     throw new Error('出于安全考虑，邮箱同步需在应用内输入本机保存的授权码');
   }
@@ -253,22 +259,67 @@ async function toggleCart(jobId) {
   return next;
 }
 
-// 一键投递：把购物车里的岗位移到已投递（实际投递需登录态，这里只做状态流转）
+// 一键投递：用已登录 session 打开招聘网站执行真实投递（agent.md 核心目标）
+// 每家公司的投递由对应适配器执行，底层复用 persist:<companyId> session
+const APPLY_ADAPTERS = {
+  tencent: { apply: (job, opts) => require('./adapters/tencent-apply.cjs').applyTencentJob(job, opts) }
+};
+
 async function applyCart() {
+  const cart = store.get().cart || [];
+  if (cart.length === 0) return { applied: 0, message: '购物车是空的' };
+
+  const id = addTask({ type: 'browser', title: '一键投递', detail: `正在投递 ${cart.length} 个岗位…`, progress: 10 });
+  const results = [];
+  let appliedCount = 0;
+
+  for (let i = 0; i < cart.length; i++) {
+    const job = cart[i];
+    const adapter = APPLY_ADAPTERS[job.companyId];
+    updateTaskLive(id, { detail: `投递 ${job.title}（${i + 1}/${cart.length}）…`, progress: Math.round((i / cart.length) * 100) });
+
+    if (!adapter) {
+      results.push({ id: job.id, status: 'manual', message: `${job.companyId} 暂未支持自动投递，请手动投递` });
+      logger.warn('无投递适配器', { company: job.companyId, job: job.id });
+      continue;
+    }
+
+    try {
+      const result = await adapter.apply(job, {
+        onStep: (info) => updateTaskLive(id, { detail: info.message })
+      });
+      results.push({ id: job.id, status: result.status, message: result.message });
+      if (result.ok) appliedCount += 1;
+    } catch (error) {
+      results.push({ id: job.id, status: 'error', message: error.message });
+      logger.error('投递失败', { job: job.id, error: error.message });
+    }
+  }
+
+  // 把投递结果写进 state.applied
   const next = store.update((state) => {
     if (!state.applied) state.applied = [];
     const now = new Date().toISOString().slice(0, 10);
-    for (const job of (state.cart || [])) {
-      // 避免重复投递
-      if (!state.applied.some((a) => a.id === job.id)) {
-        state.applied.unshift({ ...job, applyStatus: '已投递', appliedAt: now });
-      }
+    for (let i = 0; i < cart.length; i++) {
+      const job = cart[i];
+      const result = results[i];
+      if (state.applied.some((a) => a.id === job.id)) continue;
+      state.applied.unshift({
+        ...job,
+        applyStatus: result.status === 'login-required' ? '需登录' : (result.status === 'submitted' ? '已投递' : '投递中'),
+        appliedAt: now,
+        applyMessage: result.message
+      });
     }
     state.cart = [];
     return state;
   });
   broadcast();
-  return next;
+
+  const summary = `${appliedCount}/${cart.length} 个投递启动`;
+  finishTask(id, 'done', summary);
+  logger.info('一键投递完成', { applied: appliedCount, total: cart.length });
+  return { applied: appliedCount, total: cart.length, results, message: summary };
 }
 
 async function exportSnapshot(showDialog = true) {
@@ -324,6 +375,23 @@ app.whenReady().then(async () => {
     });
     broadcast();
     return next;
+  });
+  // 简历一键更新到腾讯：用已登录 session 打开腾讯简历页自动填表（agent.md 核心目标）
+  ipcMain.handle('resume:fill-tencent', async () => {
+    const resume = store.get().resume;
+    const { fillTencentResume } = require('./adapters/tencent-fill.cjs');
+    const id = addTask({ type: 'browser', title: '更新简历到腾讯', detail: '正在打开腾讯简历页…' });
+    try {
+      const result = await fillTencentResume(resume, {
+        onStep: (info) => updateTaskLive(id, { detail: info.message })
+      });
+      finishTask(id, result.ok ? 'done' : 'error', result.message);
+      logger.info('简历填写腾讯', { status: result.status, filled: result.filledCount });
+      return result;
+    } catch (error) {
+      finishTask(id, 'error', error.message);
+      throw error;
+    }
   });
   ipcMain.handle('job:favorite', (_event, id) => toggleFavorite(id));
   ipcMain.handle('cart:toggle', (_event, id) => toggleCart(id));
