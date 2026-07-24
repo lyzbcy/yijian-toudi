@@ -402,9 +402,9 @@ app.whenReady().then(async () => {
     logger.info('打开嵌入式登录', { company: company.name, portal: company.portal });
     return loginManager.openLoginView(company);
   });
-  ipcMain.handle('login:close', () => {
+  ipcMain.handle('login:close', async () => {
     logger.info('关闭嵌入式登录');
-    loginManager.closeLoginView();
+    await loginManager.closeLoginView();
     return { ok: true };
   });
   ipcMain.handle('login:status', () => ({

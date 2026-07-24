@@ -68,11 +68,19 @@ function openLoginView(company) {
   return { ok: true, companyId: company.id, url: company.portal };
 }
 
-function closeLoginView() {
-  if (currentView && parentWindow && !parentWindow.isDestroyed()) {
+// 关闭登录视图：必须先 flush session（把 cookie 写盘），否则登录态会丢
+async function closeLoginView() {
+  if (!currentView) return;
+  // 先 flush 当前 session 的 cookie 到磁盘
+  const partition = currentCompanyId ? `persist:${currentCompanyId}` : null;
+  if (partition) {
+    const ses = session.fromPartition(partition);
+    await ses.cookies.flushStore().catch(() => {});
+    await ses.flushStorageData().catch(() => {});
+  }
+  if (parentWindow && !parentWindow.isDestroyed()) {
     parentWindow.contentView.removeChildView(currentView);
   }
-  // 置空引用，让 GC 回收 webContents
   if (currentView?.webContents && !currentView.webContents.isDestroyed()) {
     currentView.webContents.destroy();
   }
