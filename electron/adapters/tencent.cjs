@@ -102,11 +102,11 @@ function normalizePost(post) {
  * @returns {Promise<Array>} 归一化后的岗位数组
  */
 async function listTencentJobs({ daysBack = 30, pageSize = 50, recruitType = 'social', onProgress } = {}) {
-  // 腾讯校招是独立站 join.qq.com，社招 API 无法切换。校招需真人抓包适配，暂返回空。
+  // 腾讯校招在独立站 join.qq.com，校招模式委托给 tencent-campus 适配器
   const isCampus = ['campus', 'summer-intern', 'daily-intern'].includes(recruitType);
   if (isCampus) {
-    if (onProgress) onProgress({ error: '腾讯校招在独立站 join.qq.com，待抓包适配', collected: 0 });
-    return [];
+    const { listTencentCampusJobs } = require('./tencent-campus.cjs');
+    return listTencentCampusJobs({ recruitType, onProgress });
   }
   const cutoff = new Date();
   cutoff.setHours(0, 0, 0, 0);
