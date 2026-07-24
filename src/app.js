@@ -95,6 +95,7 @@
     renderJobs();
     renderMessages();
     renderTasks();
+    renderRefreshProgress();
     fillResume();
     renderAgentPrompt();
 
@@ -222,10 +223,24 @@
     const statusLabels = { running: '执行中', done: '已完成', error: '需处理' };
     $('#taskList').innerHTML = state.tasks.map((task) => `<article class="task-item">
       <span class="task-type">${labels[task.type] || '↻'}</span>
-      <div><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.detail || '')}</p></div>
+      <div><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.detail || '')}${task.currentJob ? `<em class="task-current-job">▸ ${escapeHtml(task.currentJob)}</em>` : ''}</p></div>
       <div class="task-progress"><i style="width:${Number(task.progress) || 0}%"></i></div>
       <span class="task-status ${task.status}">${statusLabels[task.status] || task.status}</span>
     </article>`).join('');
+  }
+
+  // 岗位页顶部的实时刷新进度条：找到最新一个 jobs 类型的 task，反映抓取进度
+  function renderRefreshProgress() {
+    const task = state.tasks.find((t) => t.type === 'jobs');
+    const bar = $('#refreshProgress');
+    if (!task || task.status === 'done' || task.status === 'error') {
+      bar.classList.add('hidden');
+      return;
+    }
+    bar.classList.remove('hidden');
+    $('#refreshProgressBar').style.width = `${Number(task.progress) || 0}%`;
+    $('#refreshProgressCompany').textContent = task.currentCompany ? `${task.currentCompany}（${task.progress || 0}%）` : '准备中…';
+    $('#refreshProgressJob').textContent = task.currentJob || task.detail || '';
   }
 
   function pathGet(object, path) {

@@ -140,7 +140,7 @@ async function listTencentJobs({ daysBack = 30, pageSize = 50, onProgress } = {}
       collected.push(job);
     }
 
-    if (onProgress) onProgress({ page: pageIndex, fetched: posts.length, total, collected: collected.length });
+    if (onProgress) onProgress({ page: pageIndex, fetched: posts.length, total, collected: collected.length, latestJob: collected.length ? collected[collected.length - 1].title : '' });
 
     // 本页大部分都早于截止日期 → 已经翻到老数据区，可以停了
     // 阈值放宽到整页都过时才停，避免边界处误停（API 按更新时间排，偶尔有回填）

@@ -148,7 +148,7 @@ async function listBaiduJobs({ daysBack = 30, keywords = DEFAULT_KEYWORDS, onPro
       collected.push(job);
       keep += 1;
     }
-    if (onProgress) onProgress({ keyword, fetched: posts.length, keep, collected: collected.length });
+    if (onProgress) onProgress({ keyword, fetched: posts.length, keep, collected: collected.length, latestJob: collected.length ? collected[collected.length - 1].title : '' });
     await sleep(500); // 控频
   }
 

@@ -68,6 +68,13 @@ function finishTask(id, status, detail) {
   broadcast();
 }
 
+// 高频进度更新：只改内存 + 广播，不写盘（避免每抓一个岗位就写一次 state.json）
+function updateTaskLive(id, patch) {
+  const task = store.state.tasks.find((item) => item.id === id);
+  if (task) Object.assign(task, patch);
+  broadcast();
+}
+
 async function handleCommand(command) {
   if (command.action === 'refresh_jobs') return refreshJobs();
   if (command.action === 'open_company') return openCompany(command.companyId);
@@ -116,22 +123,38 @@ async function refreshJobs() {
   const settings = store.get().settings;
   const daysBack = settings.jobs?.daysBack || 30;
   logger.info('开始刷新岗位', { daysBack, adapters: JOB_ADAPTERS.map((a) => a.companyId) });
-  const id = addTask({ type: 'jobs', title: '刷新全部岗位', detail: `正在抓取各大厂社招岗位（近 ${daysBack} 天）…`, progress: 15 });
+  const totalAdapters = JOB_ADAPTERS.length;
+  const id = addTask({ type: 'jobs', title: '刷新全部岗位', detail: `正在抓取各大厂社招岗位（近 ${daysBack} 天）…`, progress: 5 });
   try {
     const results = [];
-    for (const adapter of JOB_ADAPTERS) {
-      finishTask(id, 'running', `正在抓取${adapter.name}岗位…（${results.reduce((s, r) => s + r.count, 0)} 个已入库）`);
+    for (let ai = 0; ai < JOB_ADAPTERS.length; ai++) {
+      const adapter = JOB_ADAPTERS[ai];
+      const baseDone = results.reduce((s, r) => s + r.count, 0);
+      updateTaskLive(id, {
+        detail: `正在抓取${adapter.name}（第 ${ai + 1}/${totalAdapters} 家）…`,
+        progress: Math.round((ai / totalAdapters) * 100),
+        currentCompany: adapter.name,
+        currentJob: ''
+      });
       logger.info(`抓取${adapter.name}开始`);
       try {
         const jobs = await adapter.fetch({
           daysBack,
           onProgress: (info) => {
+            const running = baseDone + (info.collected ?? 0);
             if (info.error) {
               logger.warn(`${adapter.name}抓取批次失败`, info);
-              finishTask(id, 'running', `${adapter.name}第 ${info.page || info.keyword} 批失败（${info.error}），继续…`);
+              updateTaskLive(id, {
+                detail: `${adapter.name}第 ${info.page || info.keyword} 批失败（${info.error}），继续…`,
+                currentJob: '重试中…'
+              });
             } else {
-              const running = results.reduce((s, r) => s + r.count, 0) + (info.collected ?? 0);
-              finishTask(id, 'running', `正在抓取${adapter.name}… 已累计 ${running} 个岗位`);
+              // 实时显示当前抓到的岗位，让用户看到"在动"
+              updateTaskLive(id, {
+                detail: `正在抓取${adapter.name}… 已累计 ${running} 个岗位`,
+                progress: Math.round(((ai + (info.collected ?? 0) / Math.max(info.total || info.fetched || 1, 1)) / totalAdapters) * 100),
+                currentJob: info.latestJob || `已抓取 ${info.collected ?? 0} 个`
+              });
             }
           }
         });

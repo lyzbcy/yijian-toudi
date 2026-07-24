@@ -94,6 +94,16 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .hero-copy h2 em { color: var(--primary); font-style: normal; }
 .hero-copy p { margin: 0; max-width: 530px; color: #74748a; font-size: 13px; line-height: 1.7; }
 .hero-actions { margin-top: 24px; display: flex; gap: 10px; }
+
+/* 刷新进度条 */
+.refresh-progress { margin-top: 18px; max-width: 530px; }
+.refresh-progress-bar { height: 8px; border-radius: 999px; background: rgba(102,87,232,.15); overflow: hidden; }
+.refresh-progress-bar i { display: block; height: 100%; background: linear-gradient(90deg, #7c6ff0, #5142ce); border-radius: inherit; transition: width .3s ease; }
+.refresh-progress-text { margin-top: 9px; display: flex; align-items: center; gap: 10px; font-size: 11px; }
+.refresh-progress-text strong { color: var(--primary); font-weight: 750; white-space: nowrap; }
+.refresh-progress-text span { color: #8a8c9e; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* task 里的当前岗位高亮 */
+.task-current-job { color: var(--primary); font-style: normal; font-weight: 600; margin-left: 4px; }
 .primary-button, .ghost-button {
   height: 40px; padding: 0 18px; border-radius: 12px; border: 0; cursor: pointer; font-size: 12px; font-weight: 750; transition: .2s;
 }

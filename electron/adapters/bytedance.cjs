@@ -166,7 +166,7 @@ async function listBytedanceJobs({ daysBack = 30, pageSize = 20, onProgress } = 
       collected.push(job);
     }
 
-    if (onProgress) onProgress({ offset, fetched: posts.length, total, collected: collected.length });
+    if (onProgress) onProgress({ offset, fetched: posts.length, total, collected: collected.length, latestJob: collected.length ? collected[collected.length - 1].title : '' });
 
     if (posts.length < pageSize || tooOldCount === posts.length) break;
     offset += pageSize;

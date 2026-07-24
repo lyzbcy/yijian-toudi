@@ -102,7 +102,7 @@ async function listMeituanJobs({ daysBack = 30, pageSize = 20, onProgress } = {}
       collected.push(job);
     }
 
-    if (onProgress) onProgress({ pageNo, fetched: items.length, total, collected: collected.length });
+    if (onProgress) onProgress({ pageNo, fetched: items.length, total, collected: collected.length, latestJob: collected.length ? collected[collected.length - 1].title : '' });
     if (items.length < pageSize || tooOldCount === items.length) break;
     pageNo += 1;
     await sleep(400);
