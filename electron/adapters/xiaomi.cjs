@@ -76,6 +76,12 @@ function normalizeJob(post) {
 }
 
 async function listXiaomiJobs({ daysBack = 30, pageSize = 20, recruitType = 'social', onProgress } = {}) {
+  // 校招/实习模式：用 playwright 渲染 DOM 抓取（同字节飞书 ATS）
+  const isCampus = ['campus', 'summer-intern', 'daily-intern'].includes(recruitType);
+  if (isCampus) {
+    const { listXiaomiCampusJobs } = require('./xiaomi-campus.cjs');
+    return listXiaomiCampusJobs({ recruitType, onProgress });
+  }
   const cutoff = new Date();
   cutoff.setHours(0, 0, 0, 0);
   cutoff.setDate(cutoff.getDate() - daysBack);

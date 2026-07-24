@@ -108,6 +108,12 @@ function normalizeJob(post) {
  * @returns {Promise<Array>}
  */
 async function listBytedanceJobs({ daysBack = 30, pageSize = 20, recruitType = 'social', onProgress } = {}) {
+  // 校招/实习模式：字节校招 API 需复杂 session，改用 playwright 渲染 DOM 抓取
+  const isCampus = ['campus', 'summer-intern', 'daily-intern'].includes(recruitType);
+  if (isCampus) {
+    const { listBytedanceCampusJobs } = require('./bytedance-campus.cjs');
+    return listBytedanceCampusJobs({ recruitType, onProgress });
+  }
   const cutoff = new Date();
   cutoff.setHours(0, 0, 0, 0);
   cutoff.setDate(cutoff.getDate() - daysBack);
