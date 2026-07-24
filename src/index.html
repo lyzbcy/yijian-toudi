@@ -20,6 +20,8 @@
 
       <nav class="nav" aria-label="主要导航">
         <button class="nav-item active" data-page="jobs"><span class="nav-icon">⌁</span><span>招聘项目</span><b id="jobCount">0</b></button>
+        <button class="nav-item" data-page="cart"><span class="nav-icon">🛒</span><span>投递购物车</span><b id="cartCount">0</b></button>
+        <button class="nav-item" data-page="applied"><span class="nav-icon">✓</span><span>已投递</span><b id="appliedCount">0</b></button>
         <button class="nav-item" data-page="resume"><span class="nav-icon">▤</span><span>我的简历</span><b id="resumeBadge">0%</b></button>
         <button class="nav-item" data-page="inbox"><span class="nav-icon">✉</span><span>招聘信息</span><b id="unreadCount">0</b></button>
         <button class="nav-item" data-page="automation"><span class="nav-icon">↻</span><span>自动化中心</span><i class="live-dot"></i></button>
@@ -112,6 +114,20 @@
           <div class="tag-filter-row" id="tagFilterRow"></div>
           <div class="job-list" id="jobList"></div>
           <div class="empty-state hidden" id="jobEmpty"></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-cart">
+        <div class="content-card" style="padding:26px">
+          <div class="card-toolbar"><div><h3>投递购物车</h3><p>岗位按公司分组，检查投递限制后可一键投递。</p></div><button class="primary-button" id="cartApplyAll">一键投递</button></div>
+          <div id="cartList"></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-applied">
+        <div class="content-card" style="padding:26px">
+          <div class="card-toolbar"><div><h3>已投递岗位</h3><p>追踪每个已投岗位的状态变化（需登录后刷新）。</p></div><button class="ghost-button" id="refreshApplied">刷新状态</button></div>
+          <div id="appliedList"></div>
         </div>
       </section>
 

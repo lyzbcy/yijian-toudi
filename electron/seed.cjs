@@ -3,7 +3,7 @@
 // 标签是人工维护的事实数据（一家公司是不是500强/AI，是确定的），不随岗位抓取变化。
 const companies = [
   // ===== 互联网头部（已适配或待适配） =====
-  { id: 'tencent', name: '腾讯', short: 'T', color: '#1664ff', logoUrl: './assets/logos/tencent.png', portal: 'https://careers.tencent.com/', tags: ['500强', 'AI公司'], adapterStatus: 'adapter-ready', enabled: true },
+  { id: 'tencent', name: '腾讯', short: 'T', color: '#1664ff', logoUrl: './assets/logos/tencent.png', portal: 'https://careers.tencent.com/', tags: ['500强', 'AI公司'], adapterStatus: 'adapter-ready', applyRule: { maxActive: 3, cooldown: '7天', note: '腾讯 7 天内最多投递 3 个岗位' }, enabled: true },
   { id: 'baidu', name: '百度', short: '百', color: '#2932e1', logoUrl: './assets/logos/baidu.svg', portal: 'https://talent.baidu.com/', tags: ['500强', 'AI公司'], adapterStatus: 'adapter-ready', enabled: true },
   { id: 'bytedance', name: '字节跳动', short: '字', color: '#111827', logoUrl: './assets/logos/bytedance.svg', portal: 'https://jobs.bytedance.com/', tags: ['500强', 'AI公司'], adapterStatus: 'adapter-ready', enabled: true },
   { id: 'alibaba', name: '阿里巴巴', short: 'A', color: '#ff6a00', portal: 'https://talent.alibaba.com/', tags: ['500强', 'AI公司'], adapterStatus: 'adapter-needed', enabled: true },
@@ -14,7 +14,7 @@ const companies = [
   { id: 'huawei', name: '华为', short: '华', color: '#cf0a2c', logoUrl: './assets/logos/huawei.svg', portal: 'https://career.huawei.com/cn', tags: ['500强', 'AI公司'], adapterStatus: 'adapter-needed', enabled: true },
 
   // ===== 游戏 =====
-  { id: 'mihoyo', name: '米哈游', short: '米哈', color: '#5a8dee', logoUrl: './assets/logos/mihoyo.svg', portal: 'https://app.mihoyo.com/', tags: ['游戏', 'AI公司'], adapterStatus: 'adapter-needed', enabled: true },
+  { id: 'mihoyo', name: '米哈游', short: '米哈', color: '#5a8dee', logoUrl: './assets/logos/mihoyo.svg', portal: 'https://app.mihoyo.com/', tags: ['游戏', 'AI公司'], adapterStatus: 'adapter-needed', applyRule: { maxActive: 1, cooldown: '30天', note: '米哈游 30 天内只能投递一个岗位' }, enabled: true },
   { id: 'netease', name: '网易', short: '易', color: '#e1251b', logoUrl: './assets/logos/netease.png', portal: 'https://hr.163.com/', tags: ['500强', '游戏', 'AI公司'], adapterStatus: 'login-only', enabled: true },
 
   // ===== 无锡本地 AI/芯片（T0，调研 2026-07-24） =====
@@ -56,6 +56,8 @@ function createSeed() {
     jobs,
     messages,
     resume,
+    cart: [],
+    applied: [],
     tasks: [
       { id: 'task-welcome', type: 'system', title: '已就绪', status: 'done', progress: 100, createdAt: now, detail: '点击“刷新全部岗位”开始抓取真实招聘数据。' }
     ],

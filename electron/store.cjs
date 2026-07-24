@@ -68,6 +68,9 @@ class JsonStore {
       this.state.settings.jobs.recruitType = 'social';
       changed = true;
     }
+    // 3c. 补全 cart/applied（购物车功能，新字段）
+    if (!Array.isArray(this.state.cart)) { this.state.cart = []; changed = true; }
+    if (!Array.isArray(this.state.applied)) { this.state.applied = []; changed = true; }
     // 4. dataMode 旧的 'demo' 已废弃，统一改 'live'
     if (this.state.settings.dataMode === 'demo') {
       this.state.settings.dataMode = 'live';

@@ -234,6 +234,43 @@ async function toggleFavorite(jobId) {
   return next;
 }
 
+// 加入/移除购物车
+async function toggleCart(jobId) {
+  const next = store.update((state) => {
+    if (!state.cart) state.cart = [];
+    const idx = state.cart.findIndex((item) => item.id === jobId);
+    if (idx >= 0) {
+      // 已在购物车，移除
+      state.cart.splice(idx, 1);
+    } else {
+      // 加入购物车（从 jobs 里复制岗位快照）
+      const job = state.jobs.find((item) => item.id === jobId);
+      if (job) state.cart.push({ ...job });
+    }
+    return state;
+  });
+  broadcast();
+  return next;
+}
+
+// 一键投递：把购物车里的岗位移到已投递（实际投递需登录态，这里只做状态流转）
+async function applyCart() {
+  const next = store.update((state) => {
+    if (!state.applied) state.applied = [];
+    const now = new Date().toISOString().slice(0, 10);
+    for (const job of (state.cart || [])) {
+      // 避免重复投递
+      if (!state.applied.some((a) => a.id === job.id)) {
+        state.applied.unshift({ ...job, applyStatus: '已投递', appliedAt: now });
+      }
+    }
+    state.cart = [];
+    return state;
+  });
+  broadcast();
+  return next;
+}
+
 async function exportSnapshot(showDialog = true) {
   const snapshot = store.get();
   delete snapshot.settings.apiToken;
@@ -289,6 +326,8 @@ app.whenReady().then(async () => {
     return next;
   });
   ipcMain.handle('job:favorite', (_event, id) => toggleFavorite(id));
+  ipcMain.handle('cart:toggle', (_event, id) => toggleCart(id));
+  ipcMain.handle('cart:apply', () => applyCart());
   ipcMain.handle('jobs:refresh', () => refreshJobs());
   ipcMain.handle('company:open', (_event, id) => openCompany(id));
   ipcMain.handle('email:sync', async (_event, credentials) => {

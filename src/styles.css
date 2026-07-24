@@ -171,6 +171,21 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .source-pill { display: inline-block; margin-top: 5px; padding: 3px 6px; border-radius: 5px; background: var(--orange-soft); color: #bd6a2e; font-size: 8px; }
 .load-more { padding: 24px; text-align: center; }
 .load-more button { height: 42px; padding: 0 24px; }
+.job-actions { display: flex; gap: 6px; align-self: center; }
+/* 购物车分组 */
+.cart-group { margin-bottom: 18px; padding: 18px; border: 1px solid var(--line); border-radius: 16px; }
+.cart-group-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.cart-group-head > div { flex: 1; }
+.cart-group-head h4 { margin: 0; font-size: 14px; }
+.cart-rule { display: block; margin-top: 4px; font-size: 9px; }
+.cart-rule.ok { color: var(--green); }
+.cart-rule.blocked { color: var(--danger); font-weight: 700; }
+.cart-item { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid #f4f4f8; }
+.cart-item:last-child { border-bottom: 0; }
+.cart-item > div:first-child { flex: 1; }
+.cart-item strong { display: block; font-size: 12px; }
+.cart-item span { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; }
+.applied-item .stage-pill { background: var(--green-soft); color: var(--green); }
 .empty-state { padding: 55px; text-align: center; }
 .empty-state span { font-size: 28px; color: #b7b8c4; }
 .empty-state h3 { margin: 12px 0 6px; }

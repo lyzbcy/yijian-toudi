@@ -3,6 +3,8 @@
 
   const pageMeta = {
     jobs: ['JOB BOARD', '招聘项目', '把不同公司的岗位放在一张清单里比较。'],
+    cart: ['CART', '投递购物车', '挑好的岗位放这里，按公司分组，检查投递限制后一键投递。'],
+    applied: ['APPLIED', '已投递', '追踪已投岗位的状态变化。'],
     resume: ['MY RESUME', '我的简历', '维护一份完整信息，按不同平台字段映射。'],
     inbox: ['RECRUITING INBOX', '招聘信息', '统一查看面试、测评、Offer 和流程通知。'],
     automation: ['AUTOMATION', '自动化中心', '看清每一次自动化执行到了哪里。'],
@@ -76,6 +78,8 @@
     const unread = state.messages.filter((message) => message.unread).length;
 
     $('#jobCount').textContent = state.jobs.length;
+    $('#cartCount').textContent = (state.cart || []).length;
+    $('#appliedCount').textContent = (state.applied || []).length;
     $('#resumeBadge').textContent = `${state.resume.completion || 0}%`;
     $('#unreadCount').textContent = unread;
     $('#heroJobCount').textContent = state.jobs.length;
@@ -106,6 +110,8 @@
     renderMessages();
     renderTasks();
     renderRefreshProgress();
+    renderCart();
+    renderApplied();
     fillResume();
     renderAgentPrompt();
 
@@ -177,7 +183,10 @@
           <div class="job-tags">${tagHtml}<span class="source-pill">${escapeHtml(job.source)}</span></div>
         </div>
         <div class="job-time"><i class="fresh-dot"></i>${posted || escapeHtml(job.postedAt)}</div>
-        <button class="favorite-button ${job.favorite ? 'active' : ''}" data-favorite="${job.id}" title="收藏">★</button>
+        <div class="job-actions">
+          <button class="favorite-button ${state.cart?.some((c) => c.id === job.id) ? 'active' : ''}" data-cart="${escapeHtml(job.id)}" title="${state.cart?.some((c) => c.id === job.id) ? '移出购物车' : '加入购物车'}">🛒</button>
+          <button class="favorite-button ${job.favorite ? 'active' : ''}" data-favorite="${job.id}" title="收藏">★</button>
+        </div>
       </article>`;
     }).join('') + (hasMore ? `<div class="load-more"><button class="ghost-button" data-load-more>显示更多岗位（剩余 ${jobs.length - jobPageSize} 个）</button></div>` : '');
   }
@@ -261,6 +270,66 @@
     $('#refreshProgressBar').style.width = `${Number(task.progress) || 0}%`;
     $('#refreshProgressCompany').textContent = task.currentCompany ? `${task.currentCompany}（${task.progress || 0}%）` : '准备中…';
     $('#refreshProgressJob').textContent = task.currentJob || task.detail || '';
+  }
+
+  // 投递购物车：按公司分组，显示投递限制，可移除
+  function renderCart() {
+    const cart = state.cart || [];
+    const list = $('#cartList');
+    if (!cart.length) {
+      list.innerHTML = '<div class="empty-state"><span>🛒</span><h3>购物车是空的</h3><p>在「招聘项目」里把想投的岗位加入购物车，这里会按公司分组并检查投递限制。</p></div>';
+      return;
+    }
+    const companies = companyMap();
+    // 按公司分组
+    const groups = {};
+    for (const job of cart) {
+      const key = job.companyId || 'unknown';
+      (groups[key] = groups[key] || []).push(job);
+    }
+    list.innerHTML = Object.entries(groups).map(([companyId, jobs]) => {
+      const company = companies[companyId] || { name: '未知公司', color: '#999' };
+      const rule = company.applyRule;
+      // 校验投递限制
+      let blocked = false;
+      let ruleNote = '';
+      if (rule && jobs.length > rule.maxActive) {
+        blocked = true;
+        ruleNote = `⚠️ ${rule.note}（当前 ${jobs.length} 个，超出上限 ${rule.maxActive}）`;
+      } else if (rule) {
+        ruleNote = `✓ ${rule.note}`;
+      }
+      return `<div class="cart-group">
+        <div class="cart-group-head">
+          ${renderLogo(company)}
+          <div><h4>${escapeHtml(company.name)}</h4>${ruleNote ? `<span class="cart-rule ${blocked ? 'blocked' : ''}">${ruleNote}</span>` : '<span class="cart-rule ok">无投递限制</span>'}</div>
+        </div>
+        ${jobs.map((job) => `<div class="cart-item">
+          <div><strong>${escapeHtml(job.title)}</strong><span>${escapeHtml(job.city || '')} · ${escapeHtml(job.jobType || '')}</span></div>
+          <button class="ghost-button cart-remove" data-cart-remove="${escapeHtml(job.id)}">移除</button>
+        </div>`).join('')}
+      </div>`;
+    }).join('');
+  }
+
+  // 已投递岗位
+  function renderApplied() {
+    const applied = state.applied || [];
+    const list = $('#appliedList');
+    if (!applied.length) {
+      list.innerHTML = '<div class="empty-state"><span>📋</span><h3>还没有投递记录</h3><p>从「投递购物车」一键投递后，已投岗位会显示在这里。</p></div>';
+      return;
+    }
+    const companies = companyMap();
+    list.innerHTML = applied.map((job) => {
+      const company = companies[job.companyId] || { name: '未知公司', color: '#999' };
+      return `<div class="cart-item applied-item">
+        ${renderLogo(company)}
+        <div><strong>${escapeHtml(job.title)}</strong><span>${escapeHtml(company.name)} · ${escapeHtml(job.city || '')}</span></div>
+        <span class="stage-pill">${escapeHtml(job.applyStatus || '已投递')}</span>
+        <span class="job-time">${escapeHtml(job.appliedAt || '')}</span>
+      </div>`;
+    }).join('');
   }
 
   function pathGet(object, path) {
@@ -408,6 +477,21 @@ Authorization: Bearer ${state.settings.apiToken}
         renderState();
         return;
       }
+      const cartBtn = event.target.closest('[data-cart]');
+      if (cartBtn) {
+        event.stopPropagation();
+        const inCart = state.cart?.some((c) => c.id === cartBtn.dataset.cart);
+        state = await window.oneClick.toggleCart(cartBtn.dataset.cart);
+        renderState();
+        toast(inCart ? '已移出购物车' : '已加入购物车');
+        return;
+      }
+      const cartRemove = event.target.closest('[data-cart-remove]');
+      if (cartRemove) {
+        state = await window.oneClick.toggleCart(cartRemove.dataset.cartRemove);
+        renderState();
+        return;
+      }
       const emptyRefresh = event.target.closest('[data-empty-refresh]');
       if (emptyRefresh) {
         run(emptyRefresh, () => window.oneClick.refreshJobs(), (result) => result.message);
@@ -456,6 +540,10 @@ Authorization: Bearer ${state.settings.apiToken}
     ['jobSearch', 'companyFilter', 'sortJobs'].forEach((id) => $(`#${id}`).addEventListener(id === 'jobSearch' ? 'input' : 'change', () => { jobPageSize = 50; renderJobs(); }));
     $('#refreshJobsButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.refreshJobs(), (result) => result.message));
     $('#runRefreshTask').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.refreshJobs(), (result) => result.message));
+    $('#cartApplyAll').addEventListener('click', (event) => run(event.currentTarget, async () => {
+      state = await window.oneClick.applyCart();
+      renderState();
+    }, '购物车岗位已标记投递（实际投递需登录后执行）'));
     $('#saveResumeButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
       state = await window.oneClick.saveResume(collectResume());
       renderState();
