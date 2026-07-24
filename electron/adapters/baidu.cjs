@@ -16,20 +16,21 @@
 
 const https = require('node:https');
 
-const BASE = 'https://talent.baidu.com/jobs/social-list';
-const REFERER = 'https://talent.baidu.com/jobs/social-list';
+// 社招用 social-list，校招用 list（两个 SSR 页面结构一致，校招页含 recruitType 字段区分 GRADUATE/INTERN/SOCIAL）
+const SOCIAL_BASE = 'https://talent.baidu.com/jobs/social-list';
+const CAMPUS_BASE = 'https://talent.baidu.com/jobs/list';
 const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36';
 const MAX_TOTAL = 5000;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-function fetchText(url) {
+function fetchText(url, referer) {
   return new Promise((resolve, reject) => {
     const request = https.request(url, {
       method: 'GET',
       headers: {
         'User-Agent': USER_AGENT,
-        Referer: REFERER,
+        Referer: referer || url,
         Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'zh-CN,zh;q=0.9'
       }
@@ -80,10 +81,12 @@ function extractInitialData(html) {
   return null;
 }
 
-function normalizeJob(post) {
+function normalizeJob(post, mode) {
   // 百度用 updateDate 作为活跃时间（比 publishDate 新），用它做日期过滤和排序
   const date = post.updateDate || post.publishDate || '';
-  const tags = ['社招', post.postType, post.bgShortName].filter(Boolean);
+  // 校招页无 recruitType 字段，用抓取模式决定 jobType
+  const jobType = mode === 'campus' ? '校招' : '社招';
+  const tags = [jobType, post.postType, post.bgShortName].filter(Boolean);
   return {
     id: `baidu-${post.postId}`,
     companyId: 'baidu',
@@ -94,7 +97,7 @@ function normalizeJob(post) {
     experience: post.workYears || '不限',
     education: post.education || '详见要求',
     salary: '',
-    jobType: '社招',
+    jobType,
     tags,
     postedAt: date,
     source: '百度招聘官网',
@@ -110,27 +113,32 @@ function normalizeJob(post) {
 const DEFAULT_KEYWORDS = ['java', '前端', 'python', 'go', 'c++', '算法', '产品', '测试', '数据', '运维', '安全', '设计'];
 
 /**
- * 抓取百度社招岗位。
+ * 抓取百度岗位。
  * @param {Object} options
  * @param {number} options.daysBack 只保留最近 N 天内更新的岗位，默认 30
+ * @param {string} options.recruitType 'social'|'campus'|'summer-intern'|'daily-intern'|'all'，决定走社招页还是校招页
  * @param {string[]} options.keywords 关键词列表，默认覆盖主流方向
  * @param {Function} [options.onProgress] 进度回调 ({ keyword, fetched, keep })
  * @returns {Promise<Array>} 归一化后的岗位数组
  */
-async function listBaiduJobs({ daysBack = 30, keywords = DEFAULT_KEYWORDS, onProgress } = {}) {
+async function listBaiduJobs({ daysBack = 30, recruitType = 'social', keywords = DEFAULT_KEYWORDS, onProgress } = {}) {
   const cutoff = new Date();
   cutoff.setHours(0, 0, 0, 0);
   cutoff.setDate(cutoff.getDate() - daysBack);
+
+  // 校招/实习方向走 campus 页（/jobs/list，本身就是校招数据），社招/all 走 social 页
+  const isCampus = ['campus', 'summer-intern', 'daily-intern'].includes(recruitType);
+  const base = isCampus ? CAMPUS_BASE : SOCIAL_BASE;
 
   const seen = new Set();
   const collected = [];
 
   for (const keyword of keywords) {
     if (collected.length >= MAX_TOTAL) break;
-    const url = `${BASE}?search=${encodeURIComponent(keyword)}`;
+    const url = `${base}?search=${encodeURIComponent(keyword)}`;
     let html;
     try {
-      html = await fetchText(url);
+      html = await fetchText(url, base);
     } catch (error) {
       if (onProgress) onProgress({ keyword, error: error.message, collected: collected.length });
       await sleep(500);
@@ -140,7 +148,7 @@ async function listBaiduJobs({ daysBack = 30, keywords = DEFAULT_KEYWORDS, onPro
     const posts = data?.listData?.listDetailData || [];
     let keep = 0;
     for (const post of posts) {
-      const job = normalizeJob(post);
+      const job = normalizeJob(post, isCampus ? 'campus' : 'social');
       if (seen.has(job.id)) continue;
       seen.add(job.id);
       const updated = new Date(job.postedAt);

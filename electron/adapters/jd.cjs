@@ -71,7 +71,13 @@ function normalizeJob(item) {
   };
 }
 
-async function listJdJobs({ daysBack = 30, pageSize = 20, onProgress } = {}) {
+async function listJdJobs({ daysBack = 30, pageSize = 20, recruitType = 'social', onProgress } = {}) {
+  // 京东校招在独立站 campus.jd.com，社招 API 无法切换。校招需真人抓包适配，暂返回空。
+  const isCampus = ['campus', 'summer-intern', 'daily-intern'].includes(recruitType);
+  if (isCampus) {
+    if (onProgress) onProgress({ error: '京东校招在独立站 campus.jd.com，待抓包适配', collected: 0 });
+    return [];
+  }
   const cutoff = new Date();
   cutoff.setHours(0, 0, 0, 0);
   cutoff.setDate(cutoff.getDate() - daysBack);

@@ -75,7 +75,7 @@ function normalizeJob(post) {
   };
 }
 
-async function listXiaomiJobs({ daysBack = 30, pageSize = 20, onProgress } = {}) {
+async function listXiaomiJobs({ daysBack = 30, pageSize = 20, recruitType = 'social', onProgress } = {}) {
   const cutoff = new Date();
   cutoff.setHours(0, 0, 0, 0);
   cutoff.setDate(cutoff.getDate() - daysBack);
@@ -115,6 +115,11 @@ async function listXiaomiJobs({ daysBack = 30, pageSize = 20, onProgress } = {})
     let tooOldCount = 0;
     for (const post of posts) {
       const job = normalizeJob(post);
+      // 按用户选择的 recruitType 过滤（同字节飞书 ATS）
+      if (recruitType !== 'all') {
+        const wantCampus = ['campus', 'summer-intern', 'daily-intern'].includes(recruitType);
+        if (wantCampus !== (job.jobType === '校招')) continue;
+      }
       if (seen.has(job.id)) continue;
       seen.add(job.id);
       const posted = new Date(job.postedAt);

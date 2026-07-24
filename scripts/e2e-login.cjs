@@ -16,6 +16,10 @@ const { _electron: electron } = require('playwright-core');
   try {
     const win = await app.firstWindow();
     await win.waitForSelector('.hero-card');
+    if (await win.locator('#onboardingDialog[open]').count() > 0) {
+      await win.locator('.onboarding-choice[data-recruit="social"]').click();
+      await win.waitForTimeout(500);
+    }
 
     // 进入"公司与邮箱"页
     await win.locator('[data-page="connections"]').first().click();

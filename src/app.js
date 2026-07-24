@@ -96,6 +96,7 @@
     $('#apiPort').value = state.settings.apiPort;
     $('#apiAddress').textContent = `127.0.0.1:${state.settings.apiPort}`;
     $('#jobsDaysBack').value = state.settings.jobs?.daysBack ?? 30;
+    $('#recruitType').value = state.settings.jobs?.recruitType ?? 'social';
     const lastRefresh = state.settings.jobs?.lastRefreshAt;
     $('#jobsLastRefresh').textContent = lastRefresh ? `上次抓取：${new Date(lastRefresh).toLocaleString('zh-CN')}` : '还没有抓取过岗位。';
 
@@ -370,10 +371,28 @@ Authorization: Bearer ${state.settings.apiToken}
     }
   }
 
+  // 首启引导：选择求职方向（校招/社招/实习）
+  function showOnboarding() {
+    const dialog = $('#onboardingDialog');
+    dialog.showModal();
+    $$('.onboarding-choice').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const recruit = btn.dataset.recruit;
+        state = await window.oneClick.updateSettings({ recruitType: recruit });
+        dialog.close();
+        toast(`已选择${({ social: '社招', campus: '校招', 'summer-intern': '暑期实习', 'daily-intern': '日常实习', all: '全部' })[recruit]}方向，点击"刷新全部岗位"开始抓取`);
+      }, { once: true });
+    });
+  }
+
   async function init() {
     state = await window.oneClick.getState();
     renderState();
     window.oneClick.onStateChanged((next) => { state = next; renderState(); });
+
+    // 首次启动引导：让用户选校招/社招方向
+    if (!state.meta?.onboardingSeen) showOnboarding();
+
 
     document.addEventListener('click', async (event) => {
       const pageButton = event.target.closest('[data-page]');
@@ -466,7 +485,8 @@ Authorization: Bearer ${state.settings.apiToken}
         autoCheckUpdates: $('#autoUpdate').checked,
         apiEnabled: $('#apiEnabled').checked,
         apiPort: Number($('#apiPort').value),
-        jobsDaysBack: Math.min(365, Math.max(1, Number($('#jobsDaysBack').value) || 30))
+        jobsDaysBack: Math.min(365, Math.max(1, Number($('#jobsDaysBack').value) || 30)),
+        recruitType: $('#recruitType').value
       });
       renderState();
     }, '设置已保存'));

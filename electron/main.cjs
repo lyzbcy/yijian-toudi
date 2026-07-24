@@ -122,9 +122,11 @@ const JOB_ADAPTERS = [
 async function refreshJobs() {
   const settings = store.get().settings;
   const daysBack = settings.jobs?.daysBack || 30;
-  logger.info('开始刷新岗位', { daysBack, adapters: JOB_ADAPTERS.map((a) => a.companyId) });
+  const recruitType = settings.jobs?.recruitType || 'social';
+  const recruitLabel = { social: '社招', campus: '校招', 'summer-intern': '暑期实习', 'daily-intern': '日常实习', all: '全部' }[recruitType] || '社招';
+  logger.info('开始刷新岗位', { daysBack, recruitType, adapters: JOB_ADAPTERS.map((a) => a.companyId) });
   const totalAdapters = JOB_ADAPTERS.length;
-  const id = addTask({ type: 'jobs', title: '刷新全部岗位', detail: `正在抓取各大厂社招岗位（近 ${daysBack} 天）…`, progress: 5 });
+  const id = addTask({ type: 'jobs', title: '刷新全部岗位', detail: `正在抓取各大厂${recruitLabel}岗位（近 ${daysBack} 天）…`, progress: 5 });
   try {
     const results = [];
     for (let ai = 0; ai < JOB_ADAPTERS.length; ai++) {
@@ -140,6 +142,7 @@ async function refreshJobs() {
       try {
         const jobs = await adapter.fetch({
           daysBack,
+          recruitType,
           onProgress: (info) => {
             const running = baseDone + (info.collected ?? 0);
             if (info.error) {
@@ -322,10 +325,16 @@ app.whenReady().then(async () => {
   ipcMain.handle('settings:update', async (_event, patch) => {
     const before = store.get().settings;
     const next = store.update((state) => {
-      // jobsDaysBack 是扁平传入，存到嵌套的 settings.jobs.daysBack
+      // jobsDaysBack / recruitType 是扁平传入，存到嵌套的 settings.jobs
       if (patch.jobsDaysBack !== undefined) {
         state.settings.jobs = { ...state.settings.jobs, daysBack: patch.jobsDaysBack };
         delete patch.jobsDaysBack;
+      }
+      if (patch.recruitType !== undefined) {
+        state.settings.jobs = { ...state.settings.jobs, recruitType: patch.recruitType };
+        // 选择求职方向后，标记 onboarding 已完成
+        state.meta.onboardingSeen = true;
+        delete patch.recruitType;
       }
       state.settings = { ...state.settings, ...patch, email: { ...state.settings.email, ...(patch.email || {}) } };
       return state;

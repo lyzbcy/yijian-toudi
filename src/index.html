@@ -316,7 +316,8 @@
           </section>
           <section class="content-card settings-card">
             <h3>岗位抓取</h3>
-            <p>刷新岗位时，只抓取最近若干天内发布的岗位，避免拉取过多过时数据。</p>
+            <p>选择你的求职方向，软件会优先抓取对应类型岗位；再设置抓取时间范围。</p>
+            <label>求职方向<select id="recruitType"><option value="social">社招</option><option value="campus">校招</option><option value="summer-intern">暑期实习</option><option value="daily-intern">日常实习</option><option value="all">全部都要</option></select></label>
             <label>抓取范围（天）<input id="jobsDaysBack" type="number" min="1" max="365" placeholder="30"></label>
             <p class="setting-hint" id="jobsLastRefresh">还没有抓取过岗位。</p>
           </section>
@@ -339,6 +340,20 @@
     </main>
   </div>
 
+  <dialog id="onboardingDialog" class="dialog onboarding-dialog">
+    <div class="onboarding-content">
+      <img src="./assets/stickers/hello.png" alt="">
+      <h2>你好，先选一个方向</h2>
+      <p>软件会优先抓取你对应方向的岗位。之后可以在设置里随时更改。</p>
+      <div class="onboarding-choices">
+        <button class="onboarding-choice" data-recruit="social"><span class="choice-icon">👔</span><strong>社招</strong><small>有工作经验，找全职</small></button>
+        <button class="onboarding-choice" data-recruit="campus"><span class="choice-icon">🎓</span><strong>校招</strong><small>应届毕业生，找全职</small></button>
+        <button class="onboarding-choice" data-recruit="summer-intern"><span class="choice-icon">☀️</span><strong>暑期实习</strong><small>在校生，暑假实习</small></button>
+        <button class="onboarding-choice" data-recruit="daily-intern"><span class="choice-icon">📅</span><strong>日常实习</strong><small>在校生，日常实习</small></button>
+        <button class="onboarding-choice onboarding-all" data-recruit="all"><span class="choice-icon">👀</span><strong>全部都要</strong><small>各类型岗位都看看</small></button>
+      </div>
+    </div>
+  </dialog>
   <dialog id="jobDialog" class="dialog">
     <button class="dialog-close" aria-label="关闭">×</button>
     <div id="jobDialogContent"></div>

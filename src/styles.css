@@ -307,6 +307,18 @@ input:focus, select:focus, textarea:focus { border-color: #9d93ec; background: #
 .about-card p { margin: 6px 0 9px; color: var(--muted); font-size: 10px; }
 .about-card a { color: var(--primary); font-size: 10px; text-decoration: none; font-weight: 750; }
 .dialog { width: min(600px, 90vw); border: 0; border-radius: 24px; padding: 30px; box-shadow: 0 28px 80px rgba(22,23,38,.3); color: var(--ink); }
+.onboarding-dialog { width: min(560px, 90vw); }
+.onboarding-content { text-align: center; padding: 10px; }
+.onboarding-content > img { width: 88px; height: 88px; object-fit: contain; margin: 0 auto 12px; display: block; }
+.onboarding-content h2 { margin: 0 0 8px; font-size: 22px; }
+.onboarding-content > p { margin: 0 0 24px; color: var(--muted); font-size: 13px; }
+.onboarding-choices { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; text-align: left; }
+.onboarding-choice { display: grid; grid-template-columns: 38px 1fr; gap: 11px; align-items: center; padding: 15px; border: 1px solid var(--line); border-radius: 14px; background: #fff; cursor: pointer; transition: .15s; }
+.onboarding-choice:hover { border-color: var(--primary); background: var(--primary-soft); transform: translateY(-1px); }
+.onboarding-choice .choice-icon { font-size: 22px; }
+.onboarding-choice strong { display: block; font-size: 13px; }
+.onboarding-choice small { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; }
+.onboarding-all { grid-column: span 2; }
 .dialog::backdrop { background: rgba(25,25,39,.48); backdrop-filter: blur(4px); }
 .dialog-close { position: absolute; right: 16px; top: 14px; width: 32px; height: 32px; border: 0; border-radius: 50%; background: #f4f4f8; cursor: pointer; }
 .job-dialog-head { display: flex; gap: 15px; align-items: center; padding-right: 30px; }

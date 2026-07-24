@@ -21,6 +21,11 @@ const { _electron: electron } = require('playwright-core');
   try {
     const win = await application.firstWindow();
     await win.waitForSelector('.hero-card');
+    // 首启 onboarding dialog，点"社招"
+    if (await win.locator('#onboardingDialog[open]').count() > 0) {
+      await win.locator('.onboarding-choice[data-recruit="social"]').click();
+      await win.waitForTimeout(500);
+    }
 
     // 1. 验证空状态
     await win.waitForSelector('#jobEmpty:not(.hidden)');

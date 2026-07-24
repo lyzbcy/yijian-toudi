@@ -63,6 +63,11 @@ class JsonStore {
       this.state.settings.jobs = seed.settings.jobs;
       changed = true;
     }
+    // 3b. 补全 recruitType（校招/社招分流，新字段）
+    if (!this.state.settings.jobs.recruitType) {
+      this.state.settings.jobs.recruitType = 'social';
+      changed = true;
+    }
     // 4. dataMode 旧的 'demo' 已废弃，统一改 'live'
     if (this.state.settings.dataMode === 'demo') {
       this.state.settings.dataMode = 'live';

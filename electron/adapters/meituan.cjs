@@ -73,7 +73,13 @@ function normalizeJob(item) {
   };
 }
 
-async function listMeituanJobs({ daysBack = 30, pageSize = 20, onProgress } = {}) {
+async function listMeituanJobs({ daysBack = 30, pageSize = 20, recruitType = 'social', onProgress } = {}) {
+  // 美团校招 API 强制登录（401），社招匿名可读。校招需登录态，暂返回空。
+  const isCampus = ['campus', 'summer-intern', 'daily-intern'].includes(recruitType);
+  if (isCampus) {
+    if (onProgress) onProgress({ error: '美团校招需登录，待嵌入式登录适配', collected: 0 });
+    return [];
+  }
   const cutoff = new Date();
   cutoff.setHours(0, 0, 0, 0);
   cutoff.setDate(cutoff.getDate() - daysBack);

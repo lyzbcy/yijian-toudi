@@ -101,7 +101,13 @@ function normalizePost(post) {
  * @param {Function} [options.onProgress] 每抓完一页回调 ({ page, fetched, total, keep })
  * @returns {Promise<Array>} 归一化后的岗位数组
  */
-async function listTencentJobs({ daysBack = 30, pageSize = 50, onProgress } = {}) {
+async function listTencentJobs({ daysBack = 30, pageSize = 50, recruitType = 'social', onProgress } = {}) {
+  // 腾讯校招是独立站 join.qq.com，社招 API 无法切换。校招需真人抓包适配，暂返回空。
+  const isCampus = ['campus', 'summer-intern', 'daily-intern'].includes(recruitType);
+  if (isCampus) {
+    if (onProgress) onProgress({ error: '腾讯校招在独立站 join.qq.com，待抓包适配', collected: 0 });
+    return [];
+  }
   const cutoff = new Date();
   cutoff.setHours(0, 0, 0, 0);
   cutoff.setDate(cutoff.getDate() - daysBack);

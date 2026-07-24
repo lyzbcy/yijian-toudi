@@ -24,6 +24,11 @@ const { _electron: electron } = require('playwright-core');
 
   try {
     const win = await application.firstWindow();
+    // 首启 onboarding dialog，点"社招"关掉
+    if (await win.locator('#onboardingDialog[open]').count() > 0) {
+      await win.locator('.onboarding-choice[data-recruit="social"]').click();
+      await win.waitForTimeout(500);
+    }
     await win.waitForSelector('.job-item', { timeout: 15000 });
     await win.waitForTimeout(800);
 

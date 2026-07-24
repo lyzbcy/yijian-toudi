@@ -107,7 +107,7 @@ function normalizeJob(post) {
  * @param {Function} [options.onProgress] 进度回调
  * @returns {Promise<Array>}
  */
-async function listBytedanceJobs({ daysBack = 30, pageSize = 20, onProgress } = {}) {
+async function listBytedanceJobs({ daysBack = 30, pageSize = 20, recruitType = 'social', onProgress } = {}) {
   const cutoff = new Date();
   cutoff.setHours(0, 0, 0, 0);
   cutoff.setDate(cutoff.getDate() - daysBack);
@@ -158,6 +158,13 @@ async function listBytedanceJobs({ daysBack = 30, pageSize = 20, onProgress } = 
     let tooOldCount = 0;
     for (const post of posts) {
       const job = normalizeJob(post);
+      // 按用户选择的 recruitType 过滤：字节用 recruit_type.parent.name 区分社招/校招
+      if (recruitType !== 'all') {
+        const isCampus = ['campus', 'summer-intern', 'daily-intern'].includes(recruitType);
+        const wantCampus = isCampus;
+        const isJobCampus = job.jobType === '校招';
+        if (wantCampus !== isJobCampus) continue;
+      }
       if (seen.has(job.id)) continue;
       seen.add(job.id);
       const posted = new Date(job.postedAt);

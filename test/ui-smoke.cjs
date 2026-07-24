@@ -16,6 +16,12 @@ const { _electron: electron } = require('playwright-core');
   try {
     const window = await application.firstWindow();
     await window.waitForSelector('.hero-card');
+    // 首启会弹出 onboarding 选方向 dialog，点"社招"关掉它
+    const onboarding = window.locator('#onboardingDialog[open]');
+    if (await onboarding.count() > 0) {
+      await window.locator('.onboarding-choice[data-recruit="social"]').click();
+      await window.waitForTimeout(500);
+    }
     // 首次启动无演示数据，应显示空状态而非岗位卡片
     await window.waitForSelector('#jobEmpty:not(.hidden)');
     const emptyText = await window.locator('#jobEmpty').textContent();
