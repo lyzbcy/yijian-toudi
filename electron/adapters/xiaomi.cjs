@@ -52,9 +52,8 @@ function request(method, url, { body, cookie } = {}) {
 function normalizeJob(post) {
   const publishTime = Number(post.publish_time);
   const postedAt = publishTime > 0 ? new Date(publishTime).toISOString().slice(0, 10) : '';
-  const tags = [];
-  if (post.job_category?.name) tags.push(post.job_category.name);
-  if (post.recruit_type?.parent?.name) tags.push(post.recruit_type.parent.name);
+  const recruitType = post.recruit_type?.parent?.name || '社招';
+  const tags = [recruitType, post.job_category?.name].filter(Boolean);
   return {
     id: `xiaomi-${post.id}`,
     companyId: 'xiaomi',
@@ -64,14 +63,15 @@ function normalizeJob(post) {
     type: '全职',
     experience: '不限',
     education: '详见要求',
-    salary: '薪资面议',
+    salary: '',
+    jobType: recruitType,
     tags,
     postedAt,
     source: '小米招聘官网',
     favorite: false,
     match: 0,
     url: `https://xiaomi.jobs.f.mioffice.cn/experienced/position/${post.id}/detail`,
-    summary: post.description || post.requirement || ''
+    summary: [post.description, post.requirement].filter(Boolean).join('\n\n任职要求：\n')
   };
 }
 

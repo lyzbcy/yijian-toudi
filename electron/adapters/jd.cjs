@@ -59,14 +59,15 @@ function normalizeJob(item) {
     type: '全职',
     experience: item.workYear || '不限',
     education: item.education || '详见要求',
-    salary: '薪资面议',
-    tags: [item.jobType, item.jobClassName].filter(Boolean),
+    salary: '',
+    jobType: '社招',
+    tags: ['社招', item.jobType].filter(Boolean),
     postedAt,
     source: '京东招聘官网',
     favorite: false,
     match: 0,
     url: `https://zhaopin.jd.com/web/job/job_detail/${item.positionId}`,
-    summary: ''
+    summary: [item.workContent, item.qualification].filter(Boolean).join('\n\n任职资格：\n')
   };
 }
 

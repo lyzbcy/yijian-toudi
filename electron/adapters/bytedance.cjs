@@ -73,9 +73,9 @@ function mergeCookies(...parts) {
 function normalizeJob(post) {
   const publishTime = Number(post.publish_time);
   const postedAt = publishTime > 0 ? new Date(publishTime).toISOString().slice(0, 10) : '';
-  const tags = [];
-  if (post.job_category?.name) tags.push(post.job_category.name);
-  if (post.recruit_type?.parent?.name) tags.push(post.recruit_type.parent.name);
+  // 字节有 recruit_type，能真实区分社招/正式/实习（parent.name = 社招/校招）
+  const recruitType = post.recruit_type?.parent?.name || '社招';
+  const tags = [recruitType, post.job_category?.name].filter(Boolean);
   const city = post.city_info?.name || '未标注城市';
   return {
     id: `bytedance-${post.id}`,
@@ -86,14 +86,16 @@ function normalizeJob(post) {
     type: '全职',
     experience: '不限',
     education: '详见要求',
-    salary: '薪资面议',
+    salary: '',
+    jobType: recruitType,
     tags,
     postedAt,
     source: '字节跳动招聘官网',
     favorite: false,
     match: 0,
     url: `https://jobs.bytedance.com/experienced/position/${post.id}/detail`,
-    summary: post.description || post.requirement || ''
+    // 职责 + 任职要求拼接，字节两个文本都很完整
+    summary: [post.description, post.requirement].filter(Boolean).join('\n\n任职要求：\n')
   };
 }
 

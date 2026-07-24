@@ -61,14 +61,15 @@ function normalizeJob(item) {
     type: '全职',
     experience: workYearMap[item.workYear] || item.workYear || '不限',
     education: item.education || '详见要求',
-    salary: '薪资面议',
-    tags: [item.jobFamily, item.tag?.name].filter(Boolean),
+    salary: '',
+    jobType: '社招',
+    tags: ['社招', item.jobFamily, item.tag?.name].filter(Boolean),
     postedAt,
     source: '美团招聘官网',
     favorite: false,
     match: 0,
     url: `https://zhaopin.meituan.com/web/social/position/${item.jobUnionId || item.id}`,
-    summary: item.jobDuty || item.desc || ''
+    summary: [item.jobDuty, item.jobRequirement].filter(Boolean).join('\n\n任职要求：\n') || item.desc || ''
   };
 }
 

@@ -149,14 +149,26 @@
     $('#jobList').innerHTML = visible.map((job) => {
       const company = companies[job.companyId] || { name: job.source || '未知公司', short: '?', color: '#999999' };
       const posted = relativeDate(job.postedAt);
+      // logo 优先用图片，没有则用字母兜底
+      const logo = company.logoUrl
+        ? `<img class="company-logo-img" src="${escapeHtml(company.logoUrl)}" alt="${escapeHtml(company.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><span class="company-logo" style="background:${company.color};display:none">${escapeHtml(company.short)}</span>`
+        : `<span class="company-logo" style="background:${company.color}">${escapeHtml(company.short)}</span>`;
+      // tag 区分类型：实习类用橙色，社招用紫色，其他灰色
+      const internTypes = ['实习', '可转正实习', '日常实习', '不可转正实习', '暑期实习', '校招'];
+      const tagHtml = job.tags.filter(Boolean).map((tag) => {
+        const cls = internTypes.some((t) => tag.includes(t)) ? 'tag-intern' : (tag === '社招' ? 'tag-social' : '');
+        return `<span class="${cls}">${escapeHtml(tag)}</span>`;
+      }).join('');
+      // summary 截断显示前 2 行（完整内容在详情弹窗）
+      const summaryPreview = job.summary ? escapeHtml(job.summary.split('\n')[0].slice(0, 80)) + (job.summary.length > 80 ? '…' : '') : '';
       return `<article class="job-item" data-job-id="${job.id}">
-        <span class="company-logo" style="background:${company.color}">${escapeHtml(company.short)}</span>
+        <div class="company-logo-wrap">${logo}</div>
         <div class="job-main">
           <h4>${escapeHtml(job.title)}</h4>
-          <p>${escapeHtml(company.name)} · ${escapeHtml(job.department)}</p>
-          <div class="job-tags">${job.tags.filter(Boolean).map((tag) => `<span>${escapeHtml(tag)}</span>`).join('')}<span class="source-pill">${escapeHtml(job.source)}</span></div>
+          <p>${escapeHtml(company.name)} · ${escapeHtml(job.department)} · ${escapeHtml(job.city)}${job.experience && job.experience !== '不限' ? ' · ' + escapeHtml(job.experience) : ''}</p>
+          ${summaryPreview ? `<p class="job-summary">${summaryPreview}</p>` : ''}
+          <div class="job-tags">${tagHtml}<span class="source-pill">${escapeHtml(job.source)}</span></div>
         </div>
-        <div class="job-meta"><strong>${escapeHtml(job.city)}</strong><span>${escapeHtml(job.experience)}</span></div>
         <div class="job-time"><i class="fresh-dot"></i>${posted || escapeHtml(job.postedAt)}</div>
         <button class="favorite-button ${job.favorite ? 'active' : ''}" data-favorite="${job.id}" title="收藏">★</button>
       </article>`;

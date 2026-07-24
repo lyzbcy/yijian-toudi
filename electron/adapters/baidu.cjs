@@ -83,7 +83,7 @@ function extractInitialData(html) {
 function normalizeJob(post) {
   // 百度用 updateDate 作为活跃时间（比 publishDate 新），用它做日期过滤和排序
   const date = post.updateDate || post.publishDate || '';
-  const tags = [post.postType, post.bgShortName].filter(Boolean);
+  const tags = ['社招', post.postType, post.bgShortName].filter(Boolean);
   return {
     id: `baidu-${post.postId}`,
     companyId: 'baidu',
@@ -93,15 +93,16 @@ function normalizeJob(post) {
     type: '全职',
     experience: post.workYears || '不限',
     education: post.education || '详见要求',
-    salary: '薪资面议',
+    salary: '',
+    jobType: '社招',
     tags,
     postedAt: date,
     source: '百度招聘官网',
     favorite: false,
     match: 0,
     url: `https://talent.baidu.com/jobs/social-list/detail/${post.postId}`,
-    // summary 用工作内容，比腾讯列表的职责更完整
-    summary: post.workContent || post.serviceCondition || ''
+    // 百度首屏即带工作内容 + 任职要求全文，拼接让摘要更丰富
+    summary: [post.workContent, post.serviceCondition].filter(Boolean).join('\n\n任职要求：\n')
   };
 }
 
