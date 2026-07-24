@@ -148,7 +148,14 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .job-item:hover { background: #fbfbfe; padding-left: 10px; padding-right: 10px; margin: 0 -6px; border-radius: 14px; }
 .company-logo-wrap { width: 42px; height: 42px; }
 .company-logo { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 13px; color: #fff; font-weight: 900; font-size: 14px; }
-.company-logo-img { width: 42px; height: 42px; object-fit: contain; border-radius: 13px; background: #fff; border: 1px solid var(--line); }
+.company-logo-img { width: 42px; height: 42px; object-fit: contain; border-radius: 13px; background: #fff; border: 1px solid var(--line); padding: 4px; box-sizing: border-box; }
+/* 公司网格里的小 logo */
+.company-logo-wrap-sm { width: 27px; height: 27px; flex-shrink: 0; }
+.company-logo-wrap-sm .company-logo { width: 27px; height: 27px; border-radius: 8px; font-size: 9px; }
+.company-logo-wrap-sm .company-logo-img { width: 27px; height: 27px; border-radius: 8px; padding: 2px; }
+/* 详情弹窗里的大 logo */
+.job-dialog-head .company-logo { width: 48px; height: 48px; border-radius: 15px; font-size: 16px; }
+.job-dialog-head .company-logo-img { width: 48px; height: 48px; border-radius: 15px; }
 .job-main h4 { margin: 0 0 6px; font-size: 13px; }
 .job-main p { margin: 0; color: var(--muted); font-size: 10px; }
 .job-main .job-summary { margin: 5px 0 0; color: #8e8fa3; font-size: 9px; line-height: 1.6; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

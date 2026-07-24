@@ -34,6 +34,14 @@
     return String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
   }
 
+  // 统一渲染公司 logo：有 logoUrl 用图片（加载失败自动回退字母方块），否则用品牌色字母方块
+  function renderLogo(company, sizeClass = '') {
+    if (company?.logoUrl) {
+      return `<img class="company-logo-img ${sizeClass}" src="${escapeHtml(company.logoUrl)}" alt="${escapeHtml(company.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><span class="company-logo ${sizeClass}" style="background:${company.color};display:none">${escapeHtml(company.short)}</span>`;
+    }
+    return `<span class="company-logo ${sizeClass}" style="background:${company.color}">${escapeHtml(company.short)}</span>`;
+  }
+
   // 把 ISO 日期转成“今天 / N 天前”这类相对描述，比满屏匹配度 0 更有信息量
   function relativeDate(iso) {
     if (!iso) return '';
@@ -150,9 +158,7 @@
       const company = companies[job.companyId] || { name: job.source || '未知公司', short: '?', color: '#999999' };
       const posted = relativeDate(job.postedAt);
       // logo 优先用图片，没有则用字母兜底
-      const logo = company.logoUrl
-        ? `<img class="company-logo-img" src="${escapeHtml(company.logoUrl)}" alt="${escapeHtml(company.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><span class="company-logo" style="background:${company.color};display:none">${escapeHtml(company.short)}</span>`
-        : `<span class="company-logo" style="background:${company.color}">${escapeHtml(company.short)}</span>`;
+      const logo = renderLogo(company);
       // tag 区分类型：实习类用橙色，社招用紫色，其他灰色
       const internTypes = ['实习', '可转正实习', '日常实习', '不可转正实习', '暑期实习', '校招'];
       const tagHtml = job.tags.filter(Boolean).map((tag) => {
@@ -181,7 +187,7 @@
         ? '<span class="login-status logged-in">可抓取</span>'
         : '<span class="login-status logged-out">需登录</span>';
       return `<div class="company-button" data-company="${company.id}">
-        <span class="company-logo" style="background:${company.color}">${escapeHtml(company.short)}</span>
+        <span class="company-logo-wrap-sm">${renderLogo(company)}</span>
         <span class="company-name">${escapeHtml(company.name)}</span>
         ${statusBadge}
       </div>`;
@@ -314,7 +320,7 @@ Authorization: Bearer ${state.settings.apiToken}
     if (!job) return;
     const company = companyMap()[job.companyId] || { name: job.source || '未知公司', short: '?', color: '#999999' };
     $('#jobDialogContent').innerHTML = `<div class="job-dialog-head">
-      <span class="company-logo" style="background:${company.color}">${escapeHtml(company.short)}</span>
+      ${renderLogo(company)}
       <div><h2>${escapeHtml(job.title)}</h2><p>${escapeHtml(company.name)} · ${escapeHtml(job.department)}</p></div>
     </div>
     <div class="job-dialog-body">
