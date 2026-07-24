@@ -78,7 +78,7 @@
             </div>
           </div>
           <div class="hero-visual">
-            <div class="orbit-card orbit-a"><span>95%</span> 匹配</div>
+            <div class="orbit-card orbit-a"><span id="heroCompanyCount">0</span> 家大厂</div>
             <div class="orbit-card orbit-b">已收藏 <span id="favoriteCount">0</span></div>
             <img src="./assets/stickers/sparkle.png" alt="期待找到好工作">
           </div>
@@ -107,7 +107,7 @@
             <button class="filter-chip" data-filter="深圳">深圳</button>
             <button class="filter-chip" data-filter="杭州">杭州</button>
             <select id="companyFilter" aria-label="公司筛选"><option value="">所有公司</option></select>
-            <select id="sortJobs" aria-label="岗位排序"><option value="date">按发布时间</option><option value="company">按公司</option><option value="match">按匹配度</option></select>
+            <select id="sortJobs" aria-label="岗位排序"><option value="date">按发布时间</option><option value="company">按公司</option></select>
           </div>
           <div class="tag-filter-row" id="tagFilterRow"></div>
           <div class="job-list" id="jobList"></div>
@@ -253,7 +253,7 @@
           </article>
         </div>
         <div class="content-card">
-          <div class="card-toolbar"><div><h3>任务记录</h3><p>最新任务会显示在最上方。</p></div><button class="ghost-button" id="runDemoTask">刷新全部岗位</button></div>
+          <div class="card-toolbar"><div><h3>任务记录</h3><p>最新任务会显示在最上方。</p></div><button class="ghost-button" id="runRefreshTask">刷新全部岗位</button></div>
           <div class="task-list" id="taskList"></div>
         </div>
       </section>

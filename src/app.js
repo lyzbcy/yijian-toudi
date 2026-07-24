@@ -71,6 +71,7 @@
     $('#resumeBadge').textContent = `${state.resume.completion || 0}%`;
     $('#unreadCount').textContent = unread;
     $('#heroJobCount').textContent = state.jobs.length;
+    $('#heroCompanyCount').textContent = state.companies.length;
     $('#favoriteCount').textContent = favorites;
     $('#statJobs').textContent = state.jobs.length;
     $('#statCompanies').textContent = state.companies.length;
@@ -417,7 +418,7 @@ Authorization: Bearer ${state.settings.apiToken}
     }));
     ['jobSearch', 'companyFilter', 'sortJobs'].forEach((id) => $(`#${id}`).addEventListener(id === 'jobSearch' ? 'input' : 'change', () => { jobPageSize = 50; renderJobs(); }));
     $('#refreshJobsButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.refreshJobs(), (result) => result.message));
-    $('#runDemoTask').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.refreshJobs(), (result) => result.message));
+    $('#runRefreshTask').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.refreshJobs(), (result) => result.message));
     $('#saveResumeButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
       state = await window.oneClick.saveResume(collectResume());
       renderState();
