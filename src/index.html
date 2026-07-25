@@ -345,8 +345,7 @@
         <div class="settings-layout">
           <section class="content-card settings-card">
             <h3>更新与发布</h3>
-            <p>填写 GitHub 仓库后，应用会读取最新 Release；未配置时不会假装有更新。</p>
-            <label>GitHub 仓库<input id="githubRepo" placeholder="例如：lyzbcy/yijian-toudi"></label>
+            <p>应用启动时自动检查 GitHub 是否有新版本。新版本会一键下载到「下载」文件夹，校验后拖到「应用程序」替换即可。</p>
             <label class="switch-row"><span><strong>启动时检查更新</strong><small>只请求 GitHub Release 版本号</small></span><input id="autoUpdate" type="checkbox"><i></i></label>
             <button class="primary-button" id="saveSettingsButton">保存设置</button>
           </section>
@@ -371,6 +370,12 @@
               <button class="primary-button" id="backupExportButton">备份数据</button>
               <button class="ghost-button" id="backupRestoreButton">恢复备份</button>
             </div>
+          </section>
+          <section class="content-card settings-card">
+            <h3>数据安全与更新</h3>
+            <p>你的简历、岗位、邮箱配置等都保存在本机：<code id="dataPath">~/Library/Application Support/一键投递/</code></p>
+            <p class="setting-hint">更新 APP 只会替换「应用程序」里的应用本体，<strong>不会清除上述数据</strong>，所以更新后不用重填。换电脑时用「备份数据」迁移即可。</p>
+            <p class="setting-hint">数据未上传任何服务器。Agent API 只监听 127.0.0.1，仅本机可访问。</p>
           </section>
           <details class="settings-card dev-mode-details">
             <summary class="dev-mode-summary">开发者工具<small>日志与诊断（普通用户无需展开）</small></summary>

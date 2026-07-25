@@ -142,7 +142,6 @@
     $('#resumeRing').style.setProperty('--percent', `${state.resume.completion || 0}%`);
     $('#emailStatus').textContent = state.settings.email.connected ? '已连接' : '未连接';
     $('#emailAddress').value = state.settings.email.address || '';
-    $('#githubRepo').value = state.settings.githubRepo || '';
     $('#autoUpdate').checked = Boolean(state.settings.autoCheckUpdates);
     $('#apiEnabled').checked = Boolean(state.settings.apiEnabled);
     $('#apiPort').value = state.settings.apiPort;
@@ -163,6 +162,8 @@
     renderApplied();
     renderOnboardingTasks();
     renderSidebarMotto();
+    // 显示真实数据路径（dev 版和正式打包版路径不同，以后端为准）
+    window.oneClick.getDataPath?.().then((p) => { const el = $('#dataPath'); if (el && p) el.textContent = p + '/'; }).catch(() => {});
     renderProfileTabs();
     fillResume();
     renderAgentPrompt();
@@ -1129,7 +1130,6 @@ Authorization: Bearer ${state.settings.apiToken}
     }));
     $('#saveSettingsButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
       state = await window.oneClick.updateSettings({
-        githubRepo: $('#githubRepo').value.trim(),
         autoCheckUpdates: $('#autoUpdate').checked,
         apiEnabled: $('#apiEnabled').checked,
         apiPort: Number($('#apiPort').value),

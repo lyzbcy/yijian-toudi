@@ -526,6 +526,7 @@ app.whenReady().then(async () => {
   maybeAutoRefreshJobs();
 
   ipcMain.handle('state:get', () => store.get());
+  ipcMain.handle('app:data-path', () => app.getPath('userData'));
   ipcMain.handle('resume:save', (_event, resume) => {
     const next = store.update((state) => {
       state.resume = applyResumeEdit(state.resume, resume);
@@ -693,7 +694,8 @@ app.whenReady().then(async () => {
     }
   });
   ipcMain.handle('update:check', async () => {
-    const repo = store.get().settings.githubRepo.trim();
+    // 仓库地址写死（这是捞鱼自己的 APP，不该让用户填）。settings.githubRepo 保留做向后兼容。
+    const repo = (store.get().settings.githubRepo || '').trim() || 'lyzbcy/yijian-toudi';
     if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) return { configured: false, current: app.getVersion() };
     const release = await requestJson(`https://api.github.com/repos/${repo}/releases/latest`);
     const latest = String(release.tag_name || '').replace(/^v/, '');

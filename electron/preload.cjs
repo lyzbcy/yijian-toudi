@@ -28,6 +28,7 @@ contextBridge.exposeInMainWorld('oneClick', {
   resetAgentToken: () => ipcRenderer.invoke('agent:reset-token'),
   showItem: (path) => ipcRenderer.invoke('item:show', path),
   getLogs: () => ipcRenderer.invoke('log:get'),
+  getDataPath: () => ipcRenderer.invoke('app:data-path'),
   openLogin: (companyId) => ipcRenderer.invoke('login:open', companyId),
   closeLogin: () => ipcRenderer.invoke('login:close'),
   loginStatus: () => ipcRenderer.invoke('login:status'),
