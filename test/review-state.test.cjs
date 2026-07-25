@@ -85,6 +85,7 @@ test('购物车超过公司的投递上限时阻止启动', () => {
   const companies = [{
     id: 'tencent',
     name: '腾讯',
+    capabilities: { apply: 'verified' },
     applyRule: {
       maxActive: 3,
       note: '腾讯 7 天内最多投递 3 个岗位'
@@ -100,8 +101,42 @@ test('购物车超过公司的投递上限时阻止启动', () => {
   });
 
   assert.equal(blocked.ok, false);
-  assert.match(blocked.message, /最多投递 3 个/);
-  assert.deepEqual(allowed, { ok: true });
+  assert.ok(blocked.blockers.some((b) => b.type === 'rule-exceeded'));
+  assert.equal(allowed.ok, true);
+  assert.deepEqual(allowed.blockers, []);
+});
+
+test('购物车能力检查：apply=unsupported 阻止一键投递，manual 给警告', () => {
+  const companies = [
+    { id: 'tencent', name: '腾讯', capabilities: { apply: 'verified' } },
+    { id: 'baidu', name: '百度', capabilities: { apply: 'unsupported' } },
+    { id: 'mihoyo', name: '米哈游', capabilities: { apply: 'manual' } }
+  ];
+  const result = validateCartRules({
+    cart: [
+      { id: 't1', companyId: 'tencent' },
+      { id: 'b1', companyId: 'baidu' },
+      { id: 'm1', companyId: 'mihoyo' }
+    ],
+    companies
+  });
+  // 百度 unsupported 是 blocker
+  assert.equal(result.ok, false);
+  assert.ok(result.blockers.some((b) => b.companyId === 'baidu' && b.type === 'apply-unsupported'));
+  // 米哈游 manual 是 warning 不是 blocker
+  assert.ok(result.warnings.some((w) => w.companyId === 'mihoyo' && w.type === 'apply-manual'));
+  // 腾讯 verified 不产生 blocker 也不产生 warning
+  assert.ok(!result.blockers.some((b) => b.companyId === 'tencent'));
+  assert.ok(!result.warnings.some((w) => w.companyId === 'tencent'));
+});
+
+test('购物车能力检查：无 capabilities.apply 视为 unsupported', () => {
+  const result = validateCartRules({
+    cart: [{ id: 'x1', companyId: 'old' }],
+    companies: [{ id: 'old', name: '旧公司' }]
+  });
+  assert.equal(result.ok, false);
+  assert.ok(result.blockers.some((b) => b.type === 'apply-unsupported'));
 });
 
 test('需要用户审核的自动化任务保持等待状态', () => {

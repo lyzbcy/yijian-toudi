@@ -533,6 +533,38 @@ app.whenReady().then(async () => {
   ipcMain.handle('job:favorite', (_event, id) => toggleFavorite(id));
   ipcMain.handle('cart:toggle', (_event, id) => toggleCart(id));
   ipcMain.handle('cart:apply', () => applyCart());
+  // 刷新已投递岗位状态：目前只有腾讯实现了 inspectApplicationStatus（capabilities.status=manual）
+  ipcMain.handle('applied:refresh-status', async () => {
+    const currentState = store.get();
+    const tencent = currentState.companies.find((item) => item.id === 'tencent');
+    const adapter = registry.getAdapter('tencent');
+    if (!adapter?.inspectApplicationStatus) {
+      return { ok: false, message: '当前没有公司支持自动状态刷新，请在各招聘网站手动查看' };
+    }
+    const id = addTask({ type: 'browser', title: '刷新腾讯投递状态', detail: '正在打开腾讯「我的投递」…' });
+    try {
+      const result = await adapter.inspectApplicationStatus({
+        workspace: loginManager,
+        company: tencent,
+        taskId: id,
+        onStep: (info) => updateTaskLive(id, { detail: info.message })
+      });
+      if (result.status === 'inspected' && Array.isArray(result.records)) {
+        // 合并到 state.applied
+        const next = store.update((state) => {
+          state.applied = require('./adapters/tencent-status.cjs').mergeTencentApplicationStatus(state.applied || [], result.records);
+          return state;
+        });
+        finishTask(id, 'done', `已读取 ${result.count} 条腾讯投递记录`);
+        return { ok: true, state: next, count: result.count };
+      }
+      finishTask(id, taskStatusForAutomation(result.status), result.message);
+      return { ok: false, message: result.message, status: result.status };
+    } catch (error) {
+      finishTask(id, 'error', error.message);
+      return { ok: false, message: error.message };
+    }
+  });
   ipcMain.handle('jobs:refresh', () => refreshJobs());
   ipcMain.handle('company:open', (_event, id) => openCompany(id));
   ipcMain.handle('email:sync', async (_event, credentials) => {

@@ -72,14 +72,31 @@ async function applyTencentJob(job, {
       message: '岗位详情页不存在，岗位可能已经下线'
     };
   }
+  // 探测失败时先尝试自动过验证码（可能是验证码挡住而非真没登录）
+  if (page.loginRequired || !page.applyButton) {
+    step('captcha-check', '检测到可能需要验证码，尝试自动通过…');
+    const { ensureCaptchaCleared } = require('./tencent-fill.cjs');
+    const cleared = await ensureCaptchaCleared(workspace, { onStep });
+    if (cleared) {
+      const repage = await workspace.run(APPLY_PAGE_PROBE);
+      if (!repage.isNotFound && !repage.loginRequired && repage.applyButton) {
+        return await applyAfterProbe(workspace, job, step, repage);
+      }
+    }
+  }
   if (page.loginRequired) {
-    step('login-required', '腾讯登录态已失效，请在当前页面完成登录');
+    step('login-required', '腾讯登录态已失效或需要验证码，请在当前页面完成');
     return {
       ok: false,
       status: 'login-required',
-      message: '请先在当前腾讯页面完成登录，然后重新投递'
+      message: '请先在当前腾讯页面完成登录或验证码，然后重新投递'
     };
   }
+  return await applyAfterProbe(workspace, job, step, page);
+}
+
+// 抽出 probe 通过后的投递逻辑，供验证码通过后复用
+async function applyAfterProbe(workspace, job, step, page) {
   if (!page.applyButton) {
     return {
       ok: false,

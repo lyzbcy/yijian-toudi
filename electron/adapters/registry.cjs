@@ -42,7 +42,7 @@ const REGISTRY = [
     planResumePatch: null,
     fillResume: tencentFill,
     prepareApplication: tencentApply,
-    inspectApplicationStatus: null,
+    inspectApplicationStatus: (opts) => require('./tencent-status.cjs').inspectTencentApplicationStatus(opts),
     capabilities: { jobs: 'verified', login: 'manual', resume: 'verified', apply: 'verified', status: 'manual' }
   },
   {

@@ -4,6 +4,7 @@ const {
   GLOBAL_FIELD_RULES,
   REPEATABLE_GROUPS
 } = require('../resume-plan.cjs');
+const { solveTencentCaptcha } = require('../captcha.cjs');
 
 const RESUME_URL = 'https://careers.tencent.com/jobresume/resume.html';
 
@@ -137,6 +138,25 @@ function buildFillScript(plan) {
   return `(${fillPlan.toString()})(${JSON.stringify(plan)})`;
 }
 
+// 在腾讯页面打开后、正式 probe 前，先检查并尝试自动通过滑块验证码。
+// 返回 true 表示「没有验证码或已自动通过」，可继续；false 表示「需要用户手动接管」。
+async function ensureCaptchaCleared(workspace, { onStep, maxAttempts = 2 } = {}) {
+  // 先等页面稳定（验证码 iframe 加载需要时间）
+  await new Promise((r) => setTimeout(r, 1200));
+  try {
+    const result = await solveTencentCaptcha(workspace, { maxAttempts, onStep });
+    if (result.solved) {
+      // 通过后再等一下让页面跳转/刷新
+      await new Promise((r) => setTimeout(r, 1000));
+      return true;
+    }
+    return false;
+  } catch (e) {
+    onStep?.({ step: 'captcha-error', message: `验证码处理异常：${e.message}` });
+    return false;
+  }
+}
+
 // design §4.2 第 1 步：打开腾讯简历页，读出所有可识别表单字段及其当前值。
 // 只读不写，供 planResumePatch 做差异对比，也让用户在填写前看到「腾讯简历页现在长什么样」。
 // 返回 { status, fields } 或 { status: 'login-required'|'manual-required', message }。
@@ -153,8 +173,21 @@ async function inspectTencentResume({ workspace, company, taskId, onStep } = {})
     context: { action: 'inspect-resume', companyId: 'tencent', taskId: taskId || null }
   });
   const probe = await workspace.run(LOGIN_AND_FORM_PROBE);
+  // 探测失败时先尝试自动过验证码（可能是验证码挡住而非真没登录）
+  if (probe.isNotFound || probe.loginRequired || probe.inputCount === 0) {
+    const cleared = await ensureCaptchaCleared(workspace, { onStep });
+    if (cleared) {
+      // 过了验证码，重新探测
+      const reprobe = await workspace.run(LOGIN_AND_FORM_PROBE);
+      if (!reprobe.isNotFound && !reprobe.loginRequired && reprobe.inputCount > 0) {
+        const fields = await workspace.run(INSPECT_FORM_FIELDS);
+        step('inspected', `验证码已通过，读取到 ${fields.length} 个腾讯简历字段`);
+        return { status: 'inspected', fields, url: RESUME_URL };
+      }
+    }
+  }
   if (probe.isNotFound || probe.loginRequired) {
-    return { status: 'login-required', message: '请先在当前腾讯页面完成登录，然后重新读取简历字段' };
+    return { status: 'login-required', message: '请先在当前腾讯页面完成登录或验证码，然后重新读取简历字段' };
   }
   if (probe.inputCount === 0) {
     return { status: 'manual-required', message: '腾讯简历页没有出现可识别表单，请在当前页面手动检查' };
@@ -244,12 +277,24 @@ async function fillTencentResume(resume, {
   });
 
   const probe = await workspace.run(LOGIN_AND_FORM_PROBE);
+  // 探测失败时先尝试自动过验证码（可能是验证码挡住而非真没登录）
+  if (probe.isNotFound || probe.loginRequired || probe.inputCount === 0) {
+    step('captcha-check', '检测到可能需要验证码，尝试自动通过…');
+    const cleared = await ensureCaptchaCleared(workspace, { onStep });
+    if (cleared) {
+      const reprobe = await workspace.run(LOGIN_AND_FORM_PROBE);
+      if (!reprobe.isNotFound && !reprobe.loginRequired && reprobe.inputCount > 0) {
+        // 过了验证码，继续填写流程（probe 替换为 reprobe）
+        return await fillAfterProbe(workspace, plan, reprobe, resume, step);
+      }
+    }
+  }
   if (probe.isNotFound || probe.loginRequired) {
-    step('login-required', '腾讯简历页需要登录，请在当前页面完成登录');
+    step('login-required', '腾讯简历页需要登录或验证码，请在当前页面完成');
     return {
       ok: false,
       status: 'login-required',
-      message: '请先在当前腾讯页面完成登录，然后重新更新简历'
+      message: '请先在当前腾讯页面完成登录或验证码，然后重新更新简历'
     };
   }
   if (probe.inputCount === 0) {
@@ -258,6 +303,14 @@ async function fillTencentResume(resume, {
       status: 'manual-required',
       message: '腾讯简历页没有出现可识别表单，请在当前页面手动检查'
     };
+  }
+  return await fillAfterProbe(workspace, plan, probe, resume, step);
+}
+
+// 抽出 probe 通过后的填写逻辑，供 fillTencentResume 在验证码通过后复用
+async function fillAfterProbe(workspace, plan, probe, resume, step) {
+  if (probe.inputCount === 0) {
+    return { ok: false, status: 'manual-required', message: '腾讯简历页没有出现可识别表单，请在当前页面手动检查' };
   }
 
   step('filling', `正在匹配 ${plan.length} 个本地简历字段…`);
@@ -290,5 +343,6 @@ module.exports = {
   INSPECT_FORM_FIELDS,
   inspectTencentResume,
   planTencentResumePatch,
-  fillTencentResume
+  fillTencentResume,
+  ensureCaptchaCleared
 };

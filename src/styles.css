@@ -180,6 +180,12 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .cart-rule { display: block; margin-top: 4px; font-size: 9px; }
 .cart-rule.ok { color: var(--green); }
 .cart-rule.blocked { color: var(--danger); font-weight: 700; }
+.cart-cap { display: block; margin-top: 3px; font-size: 9px; padding: 4px 8px; border-radius: 7px; }
+.cart-cap-ok { background: #e9f7f1; color: #3ba57b; }
+.cart-cap-manual { background: #fff7e6; color: #b88300; }
+.cart-cap-unsupported { background: #fff0f3; color: #c0506a; }
+.cart-group.group-unsupported { background: #fffafa; border-color: #f0d4dc; }
+.cart-group-head > div { display: flex; flex-direction: column; gap: 2px; }
 .cart-item { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid #f4f4f8; }
 .cart-item:last-child { border-bottom: 0; }
 .cart-item > div:first-child { flex: 1; }

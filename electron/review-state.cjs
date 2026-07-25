@@ -71,26 +71,51 @@ function isSubmissionSuccess(snapshot) {
   return /申请成功|提交成功|投递成功|已成功投递|已投递/.test(text);
 }
 
+// 购物车前置检查：①每家公司的投递数量限制（applyRule.maxActive）
+// ②每家公司的投递能力（capabilities.apply：unsupported 的不能自动投，manual/degraded 提示需手动）
+// 返回 { ok, blockers: [...], warnings: [...] }，blockers 阻止一键投递，warnings 提示但不阻止
 function validateCartRules({ cart = [], companies = [] }) {
   const countByCompany = new Map();
   for (const job of cart) {
-    countByCompany.set(
-      job.companyId,
-      (countByCompany.get(job.companyId) || 0) + 1
-    );
+    countByCompany.set(job.companyId, (countByCompany.get(job.companyId) || 0) + 1);
   }
+  const blockers = [];
+  const warnings = [];
   for (const company of companies) {
     const count = countByCompany.get(company.id) || 0;
+    if (count === 0) continue;
+    // 数量限制
     if (company.applyRule?.maxActive && count > company.applyRule.maxActive) {
-      return {
-        ok: false,
+      blockers.push({
         companyId: company.id,
-        message: company.applyRule.note ||
-          `${company.name} 当前最多处理 ${company.applyRule.maxActive} 个岗位`
-      };
+        type: 'rule-exceeded',
+        message: company.applyRule.note || `${company.name} 当前最多处理 ${company.applyRule.maxActive} 个岗位`
+      });
+    }
+    // 投递能力
+    const applyCap = company.capabilities?.apply;
+    if (applyCap === 'unsupported' || !applyCap) {
+      blockers.push({
+        companyId: company.id,
+        type: 'apply-unsupported',
+        message: `${company.name} 暂未支持自动投递，需手动在官网完成`
+      });
+    } else if (applyCap === 'manual') {
+      warnings.push({
+        companyId: company.id,
+        type: 'apply-manual',
+        message: `${company.name} 投递需要你在浏览器工作区确认后手动提交`
+      });
     }
   }
-  return { ok: true };
+  // 兼容旧调用：ok 字段表示是否有 blocker
+  return {
+    ok: blockers.length === 0,
+    blockers,
+    warnings,
+    // 旧的 message 字段（取第一个 blocker）保持向后兼容
+    message: blockers[0]?.message
+  };
 }
 
 function taskStatusForAutomation(status) {

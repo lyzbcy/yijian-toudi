@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld('oneClick', {
   toggleFavorite: (jobId) => ipcRenderer.invoke('job:favorite', jobId),
   toggleCart: (jobId) => ipcRenderer.invoke('cart:toggle', jobId),
   applyCart: () => ipcRenderer.invoke('cart:apply'),
+  refreshAppliedStatus: () => ipcRenderer.invoke('applied:refresh-status'),
   refreshJobs: () => ipcRenderer.invoke('jobs:refresh'),
   openCompany: (companyId) => ipcRenderer.invoke('company:open', companyId),
   syncEmail: (credentials) => ipcRenderer.invoke('email:sync', credentials),

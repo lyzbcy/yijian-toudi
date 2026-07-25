@@ -4,6 +4,7 @@
 // 每家公司使用 persist:<companyId> session，关闭前刷新 cookie 与存储。
 
 const { WebContentsView, session } = require('electron');
+const { attachStealth } = require('./captcha.cjs');
 
 let currentView = null;
 let currentCompanyId = null;
@@ -12,6 +13,7 @@ let currentTitle = null;
 let currentContext = null;
 let parentWindow = null;
 let onChangeCallback = null;
+let stealthCleanup = null;
 
 const SIDEBAR_WIDTH = 248;
 const TOP_OFFSET = 52;
@@ -35,6 +37,12 @@ function updateBounds() {
 
 function onChange(callback) {
   onChangeCallback = callback;
+}
+
+// 暴露当前 webContents，供 captcha 等需要直接操作页面的模块使用。
+// 调用方负责判空和 isDestroyed 检查。
+function getWebContents() {
+  return currentView?.webContents || null;
 }
 
 function getCurrentUrl() {
@@ -64,6 +72,7 @@ async function flushCurrentSession() {
 }
 
 function destroyCurrentView() {
+  if (stealthCleanup) { try { stealthCleanup(); } catch (e) {} stealthCleanup = null; }
   if (currentView && parentWindow && !parentWindow.isDestroyed()) {
     parentWindow.contentView.removeChildView(currentView);
   }
@@ -112,6 +121,9 @@ async function openWorkspace({
   parentWindow.contentView.addChildView(currentView);
   updateBounds();
   notifyChange();
+
+  // 注入 stealth（隐藏 webdriver 等自动化特征，让腾讯 tcaptcha 尽量不弹验证码）
+  stealthCleanup = attachStealth(currentView.webContents);
 
   currentView.webContents.on('did-navigate', notifyChange);
   currentView.webContents.on('did-navigate-in-page', notifyChange);
@@ -189,6 +201,7 @@ module.exports = {
   run,
   snapshot,
   getStatus,
+  getWebContents,
   isActive: () => Boolean(currentView),
   getActiveCompanyId: () => currentCompanyId,
   getCurrentUrl,

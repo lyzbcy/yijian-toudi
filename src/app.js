@@ -323,7 +323,8 @@
     list.innerHTML = Object.entries(groups).map(([companyId, jobs]) => {
       const company = companies[companyId] || { name: '未知公司', color: '#999' };
       const rule = company.applyRule;
-      // 校验投递限制
+      const applyCap = company.capabilities?.apply || 'unsupported';
+      // 校验投递数量限制
       let blocked = false;
       let ruleNote = '';
       if (rule && jobs.length > rule.maxActive) {
@@ -332,10 +333,27 @@
       } else if (rule) {
         ruleNote = `✓ ${rule.note}`;
       }
-      return `<div class="cart-group">
+      // 投递能力提醒（能力矩阵驱动）
+      let capNote = '';
+      let capCls = 'ok';
+      if (applyCap === 'unsupported') {
+        capNote = '🚫 本软件暂未支持自动投递，请在官网手动完成';
+        capCls = 'unsupported';
+        blocked = true;
+      } else if (applyCap === 'manual') {
+        capNote = '✋ 自动准备表单后，需要你在浏览器工作区确认并手动提交';
+        capCls = 'manual';
+      } else if (applyCap === 'verified') {
+        capNote = '✅ 支持自动准备投递表单（最终提交仍需你确认）';
+      }
+      return `<div class="cart-group ${applyCap === 'unsupported' ? 'group-unsupported' : ''}">
         <div class="cart-group-head">
           ${renderLogo(company)}
-          <div><h4>${escapeHtml(company.name)}</h4>${ruleNote ? `<span class="cart-rule ${blocked ? 'blocked' : ''}">${ruleNote}</span>` : '<span class="cart-rule ok">无投递限制</span>'}</div>
+          <div>
+            <h4>${escapeHtml(company.name)}</h4>
+            ${ruleNote ? `<span class="cart-rule ${blocked ? 'blocked' : ''}">${ruleNote}</span>` : '<span class="cart-rule ok">无投递限制</span>'}
+            ${capNote ? `<span class="cart-cap cart-cap-${capCls}">${capNote}</span>` : ''}
+          </div>
         </div>
         ${jobs.map((job) => `<div class="cart-item">
           <div><strong>${escapeHtml(job.title)}</strong><span>${escapeHtml(job.city || '')} · ${escapeHtml(job.jobType || '')}${job.applyMessage ? ` · ${escapeHtml(job.applyMessage)}` : ''}</span></div>
@@ -344,6 +362,38 @@
         </div>`).join('')}
       </div>`;
     }).join('');
+    // 一键投递按钮：如果有 blocker，加 disabled + 提示
+    const check = validateCartInFrontend();
+    const applyBtn = $('#cartApplyAll');
+    if (applyBtn) {
+      if (check.blockers.length) {
+        applyBtn.disabled = true;
+        applyBtn.title = check.blockers.map((b) => b.message).join('；');
+      } else {
+        applyBtn.disabled = false;
+        applyBtn.title = '';
+      }
+    }
+  }
+
+  // 前端版的购物车能力检查（与后端 validateCartRules 对齐），用于禁用一键投递按钮
+  function validateCartInFrontend() {
+    const cart = state.cart || [];
+    const companies = companyMap();
+    const blockers = [];
+    const countByCompany = new Map();
+    for (const job of cart) countByCompany.set(job.companyId, (countByCompany.get(job.companyId) || 0) + 1);
+    for (const [cid, count] of countByCompany) {
+      const company = companies[cid] || {};
+      if (company.applyRule?.maxActive && count > company.applyRule.maxActive) {
+        blockers.push({ companyId: cid, message: company.applyRule.note || `${company.name} 超出投递上限` });
+      }
+      const applyCap = company.capabilities?.apply || 'unsupported';
+      if (applyCap === 'unsupported') {
+        blockers.push({ companyId: cid, message: `${company.name} 暂未支持自动投递` });
+      }
+    }
+    return { blockers };
   }
 
   // 已投递岗位
@@ -821,7 +871,14 @@ Authorization: Bearer ${state.settings.apiToken}
       renderState();
       return result;
     }, (result) => result.message || '投递流程已启动'));
-    $('#refreshApplied').addEventListener('click', () => toast('已投递状态需要登录对应公司后才能自动刷新，当前显示的是投递时的记录'));
+    $('#refreshApplied').addEventListener('click', (event) => run(event.currentTarget, async () => {
+      const result = await window.oneClick.refreshAppliedStatus();
+      if (result.ok) {
+        state = result.state;
+        renderState();
+      }
+      return result;
+    }, (result) => result.ok ? `已刷新 ${result.count} 条腾讯投递状态` : result.message));
     $('#saveResumeButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
       state = await window.oneClick.saveResume(collectResume());
       renderState();
