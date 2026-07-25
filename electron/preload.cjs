@@ -19,6 +19,14 @@ contextBridge.exposeInMainWorld('oneClick', {
   openLogin: (companyId) => ipcRenderer.invoke('login:open', companyId),
   closeLogin: () => ipcRenderer.invoke('login:close'),
   loginStatus: () => ipcRenderer.invoke('login:status'),
+  workspaceStatus: () => ipcRenderer.invoke('workspace:status'),
+  finishWorkspace: () => ipcRenderer.invoke('workspace:finish'),
+  cancelWorkspace: () => ipcRenderer.invoke('workspace:cancel'),
+  onWorkspaceChanged: (callback) => {
+    const handler = (_event, status) => callback(status);
+    ipcRenderer.on('workspace:changed', handler);
+    return () => ipcRenderer.removeListener('workspace:changed', handler);
+  },
   onStateChanged: (callback) => {
     const handler = (_event, state) => callback(state);
     ipcRenderer.on('state:changed', handler);

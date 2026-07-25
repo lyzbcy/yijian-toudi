@@ -16,6 +16,8 @@ const { _electron: electron } = require('playwright-core');
   try {
     const window = await application.firstWindow();
     await window.waitForSelector('.hero-card');
+    const workspaceControls = await window.locator('#workspaceBar [data-workspace-action]').count();
+    if (workspaceControls < 2) throw new Error(`工作区控制按钮不足：${workspaceControls}`);
     // 首启会弹出 onboarding 选方向 dialog，点"社招"关掉它
     const onboarding = window.locator('#onboardingDialog[open]');
     if (await onboarding.count() > 0) {

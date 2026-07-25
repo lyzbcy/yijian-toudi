@@ -58,10 +58,11 @@
 
       <div id="toastRegion" class="toast-region" aria-live="polite"></div>
 
-      <div class="login-bar hidden" id="loginBar">
-        <span class="login-bar-icon">🔐</span>
-        <div class="login-bar-text"><strong id="loginBarCompany">登录中</strong><span id="loginBarUrl"></span></div>
-        <button class="ghost-button" id="loginBarDone">完成登录</button>
+      <div class="workspace-bar hidden" id="workspaceBar">
+        <span class="workspace-bar-icon">🔐</span>
+        <div class="workspace-bar-text"><strong id="workspaceBarTitle">浏览器工作区</strong><span id="workspaceBarHint"></span></div>
+        <button class="ghost-button" data-workspace-action="cancel" id="workspaceCancel">取消</button>
+        <button class="primary-button" data-workspace-action="finish" id="workspaceFinish">完成</button>
       </div>
 
       <section class="page active" id="page-jobs">

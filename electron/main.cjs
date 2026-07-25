@@ -42,6 +42,9 @@ function createWindow() {
   });
   if (process.argv.includes('--dev')) window.webContents.openDevTools({ mode: 'detach' });
   loginManager.setParent(window);
+  loginManager.onChange((status) => {
+    if (window && !window.isDestroyed()) window.webContents.send('workspace:changed', status);
+  });
 }
 
 function broadcast() {
@@ -480,6 +483,9 @@ app.whenReady().then(async () => {
     companyId: loginManager.getActiveCompanyId(),
     url: loginManager.getCurrentUrl()
   }));
+  ipcMain.handle('workspace:status', () => loginManager.getStatus());
+  ipcMain.handle('workspace:finish', () => loginManager.finishWorkspace());
+  ipcMain.handle('workspace:cancel', () => loginManager.cancelWorkspace());
 });
 
 app.on('window-all-closed', async () => {

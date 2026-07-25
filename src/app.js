@@ -425,15 +425,37 @@ Authorization: Bearer ${state.settings.apiToken}
     }
   }
 
+  function renderWorkspaceStatus(status) {
+    const bar = $('#workspaceBar');
+    if (!status?.active) {
+      bar.classList.add('hidden');
+      return;
+    }
+    const labels = {
+      login: ['🔐', status.title || '登录招聘网站', '完成登录'],
+      'resume-review': ['▤', status.title || '核对平台简历', '完成核对'],
+      'application-review': ['🛒', status.title || '核对岗位投递', '完成投递检查'],
+      browse: ['◎', status.title || '浏览招聘网站', '完成']
+    };
+    const [icon, title, action] = labels[status.mode] || labels.browse;
+    $('#workspaceBar .workspace-bar-icon').textContent = icon;
+    $('#workspaceBarTitle').textContent = title;
+    $('#workspaceBarHint').textContent = status.url || '网页加载中…';
+    $('#workspaceFinish').textContent = action;
+    bar.classList.remove('hidden');
+  }
+
+  async function refreshWorkspaceStatus() {
+    renderWorkspaceStatus(await window.oneClick.workspaceStatus());
+  }
+
   // 在软件内嵌入某公司招聘官网，让用户登录，登录态由 Electron session 持久化
   async function openEmbeddedLogin(companyId) {
     const company = companyMap()[companyId];
     if (!company) return;
     try {
       await window.oneClick.openLogin(companyId);
-      $('#loginBarCompany').textContent = `正在登录 ${company.name}`;
-      $('#loginBarUrl').textContent = company.portal;
-      $('#loginBar').classList.remove('hidden');
+      await refreshWorkspaceStatus();
       toast(`${company.name} 招聘官网已在软件内打开，请登录`);
     } catch (error) {
       toast(error.message || '打开登录失败', 'error');
@@ -458,6 +480,8 @@ Authorization: Bearer ${state.settings.apiToken}
     state = await window.oneClick.getState();
     renderState();
     window.oneClick.onStateChanged((next) => { state = next; renderState(); });
+    window.oneClick.onWorkspaceChanged(renderWorkspaceStatus);
+    await refreshWorkspaceStatus();
 
     // 首次启动引导：让用户选校招/社招方向
     if (!state.meta?.onboardingSeen) showOnboarding();
@@ -589,10 +613,16 @@ Authorization: Bearer ${state.settings.apiToken}
       renderState();
     }, '设置已保存'));
     $('#promoButton').addEventListener('click', () => $('#promoDialog').showModal());
-    $('#loginBarDone').addEventListener('click', async () => {
-      await window.oneClick.closeLogin();
-      $('#loginBar').classList.add('hidden');
-      toast('登录态已保存，后续投递会自动复用');
+    $('#workspaceFinish').addEventListener('click', async () => {
+      const result = await window.oneClick.finishWorkspace();
+      renderWorkspaceStatus(null);
+      const mode = result.status?.mode;
+      toast(mode === 'login' ? '登录态已保存，后续操作会自动复用' : '已结束本次网页核对');
+    });
+    $('#workspaceCancel').addEventListener('click', async () => {
+      await window.oneClick.cancelWorkspace();
+      renderWorkspaceStatus(null);
+      toast('已取消本次网页操作');
     });
     $('#refreshLogsButton').addEventListener('click', () => run($('#refreshLogsButton'), async () => {
       const logs = await window.oneClick.getLogs();
