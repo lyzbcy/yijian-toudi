@@ -25,12 +25,19 @@ const { listJdJobs } = require('./jd.cjs');
 const { listMeituanJobs } = require('./meituan.cjs');
 
 const { createManualPrepareApplication } = require('./_manual-apply.cjs');
+const { createManualFillResume } = require('./_manual-fill.cjs');
 // 五家（字节/小米/京东/美团/百度）的 prepareApplication：打开详情页让用户手动投递
 const manualApplyBytedance = createManualPrepareApplication('字节跳动');
 const manualApplyXiaomi = createManualPrepareApplication('小米');
 const manualApplyJd = createManualPrepareApplication('京东');
 const manualApplyMeituan = createManualPrepareApplication('美团');
 const manualApplyBaidu = createManualPrepareApplication('百度');
+// 五家的 fillResume：打开官网简历页让用户手动填（manual 级别）
+const manualFillBytedance = createManualFillResume('bytedance', '字节跳动');
+const manualFillXiaomi = createManualFillResume('xiaomi', '小米');
+const manualFillJd = createManualFillResume('jd', '京东');
+const manualFillMeituan = createManualFillResume('meituan', '美团');
+const manualFillBaidu = createManualFillResume('baidu', '百度');
 
 // 腾讯简历填写/投递按需 require（避免主进程启动就加载 playwright 相关）
 function tencentFill(resume, opts) {
@@ -58,50 +65,50 @@ const REGISTRY = [
     name: '百度',
     idPrefix: 'baidu-',
     listJobs: (opts) => listBaiduJobs(opts),
-    inspectResume: null, planResumePatch: null, fillResume: null,
+    inspectResume: null, planResumePatch: null, fillResume: manualFillBaidu,
     prepareApplication: manualApplyBaidu,
     inspectApplicationStatus: null,
-    capabilities: { jobs: 'verified', login: 'manual', resume: 'unsupported', apply: 'manual', status: 'unsupported' }
+    capabilities: { jobs: 'verified', login: 'manual', resume: 'manual', apply: 'manual', status: 'unsupported' }
   },
   {
     id: 'bytedance',
     name: '字节跳动',
     idPrefix: 'bytedance-',
     listJobs: (opts) => listBytedanceJobs(opts),
-    inspectResume: null, planResumePatch: null, fillResume: null,
+    inspectResume: null, planResumePatch: null, fillResume: manualFillBytedance,
     prepareApplication: manualApplyBytedance,
     inspectApplicationStatus: null,
-    capabilities: { jobs: 'verified', login: 'manual', resume: 'unsupported', apply: 'manual', status: 'unsupported' }
+    capabilities: { jobs: 'verified', login: 'manual', resume: 'manual', apply: 'manual', status: 'unsupported' }
   },
   {
     id: 'xiaomi',
     name: '小米',
     idPrefix: 'xiaomi-',
     listJobs: (opts) => listXiaomiJobs(opts),
-    inspectResume: null, planResumePatch: null, fillResume: null,
+    inspectResume: null, planResumePatch: null, fillResume: manualFillXiaomi,
     prepareApplication: manualApplyXiaomi,
     inspectApplicationStatus: null,
-    capabilities: { jobs: 'verified', login: 'manual', resume: 'unsupported', apply: 'manual', status: 'unsupported' }
+    capabilities: { jobs: 'verified', login: 'manual', resume: 'manual', apply: 'manual', status: 'unsupported' }
   },
   {
     id: 'jd',
     name: '京东',
     idPrefix: 'jd-',
     listJobs: (opts) => listJdJobs(opts),
-    inspectResume: null, planResumePatch: null, fillResume: null,
+    inspectResume: null, planResumePatch: null, fillResume: manualFillJd,
     prepareApplication: manualApplyJd,
     inspectApplicationStatus: null,
-    capabilities: { jobs: 'verified', login: 'manual', resume: 'unsupported', apply: 'manual', status: 'unsupported' }
+    capabilities: { jobs: 'verified', login: 'manual', resume: 'manual', apply: 'manual', status: 'unsupported' }
   },
   {
     id: 'meituan',
     name: '美团',
     idPrefix: 'meituan-',
     listJobs: (opts) => listMeituanJobs(opts),
-    inspectResume: null, planResumePatch: null, fillResume: null,
+    inspectResume: null, planResumePatch: null, fillResume: manualFillMeituan,
     prepareApplication: manualApplyMeituan,
     inspectApplicationStatus: null,
-    capabilities: { jobs: 'verified', login: 'manual', resume: 'unsupported', apply: 'manual', status: 'unsupported' }
+    capabilities: { jobs: 'verified', login: 'manual', resume: 'manual', apply: 'manual', status: 'unsupported' }
   }
 ];
 

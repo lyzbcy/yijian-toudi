@@ -415,13 +415,10 @@
             <p class="setting-hint">更新 APP 只会替换「应用程序」里的应用本体，<strong>不会清除上述数据</strong>，所以更新后不用重填。换电脑时用「备份数据」迁移即可。</p>
             <p class="setting-hint">数据未上传任何服务器。Agent API 只监听 127.0.0.1，仅本机可访问。</p>
           </section>
-          <details class="settings-card dev-mode-details">
-            <summary class="dev-mode-summary">开发者工具<small>日志与诊断（普通用户无需展开）</small></summary>
-            <section class="content-card settings-card dev-log-card">
-              <div class="card-toolbar"><div><h3>开发日志</h3><p>内存中最近 50 条，重启后清空。</p></div><button class="ghost-button" id="refreshLogsButton">刷新</button></div>
-              <div class="dev-log-list" id="devLogList"><p class="dev-log-empty">点击"刷新"查看日志。</p></div>
-            </section>
-          </details>
+          <section class="content-card settings-card dev-log-card">
+            <div class="card-toolbar"><div><h3>运行日志</h3><p>遇到问题时，把这里的内容截图或复制发给开发者。内存中保留最近 50 条，重启清空。</p></div><div class="card-actions"><button class="ghost-button" id="copyLogsButton">复制日志</button><button class="ghost-button" id="refreshLogsButton">刷新</button></div></div>
+            <div class="dev-log-list" id="devLogList"><p class="dev-log-empty">点击"刷新"查看日志。</p></div>
+          </section>
           <section class="content-card settings-card about-card">
             <img src="./assets/stickers/mascot.png" alt="">
             <div><h3>一键投递 v0.3.0</h3><p>一个弱小但有梦想的开发者，想把重复投简历这件事做得轻松一点。</p><a href="https://lyzbcy.github.io/" data-external>关于捞鱼 ↗</a></div>

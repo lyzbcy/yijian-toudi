@@ -529,7 +529,11 @@ input:focus, select:focus, textarea:focus { border-color: #9d93ec; background: #
 .company-button .verified-date { width: 100%; text-align: right; margin-top: 2px; }
 
 /* 嵌入式登录控制条 */
-.workspace-bar { position: fixed; top: 0; left: 248px; right: 0; height: 52px; z-index: 50; display: flex; align-items: center; gap: 14px; padding: 0 20px; background: #26273c; color: #fff; box-shadow: 0 6px 20px rgba(22,23,38,.18); }
+/* workspace 激活时：原生 WebContentsView 铺满上方，sidebar/main 隐藏让位，控制条固定底部 */
+.workspace-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 56px; z-index: 50; display: flex; align-items: center; gap: 14px; padding: 0 20px; background: #26273c; color: #fff; box-shadow: 0 -6px 20px rgba(22,23,38,.18); }
+body.workspace-active .sidebar,
+body.workspace-active .main { display: none !important; }
+body.workspace-active .workspace-bar { display: flex !important; }
 .workspace-bar-icon { font-size: 18px; }
 .workspace-bar-text { flex: 1; min-width: 0; }
 .workspace-bar-text strong { display: block; font-size: 13px; }

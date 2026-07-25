@@ -94,6 +94,7 @@ function updateTaskLive(id, patch) {
 }
 
 async function handleCommand(command) {
+  logger.info('Agent 命令', { action: command.action });
   if (command.action === 'refresh_jobs') return refreshJobs();
   if (command.action === 'open_company') return openCompany(command.companyId);
   if (command.action === 'favorite_job') {
@@ -646,39 +647,48 @@ app.whenReady().then(async () => {
       throw error;
     }
   });
-  // 一键更新所有支持简历填写的平台（agent.md 核心目标）：遍历 registry 里 resume=verified 的公司，
-  // 依次用各自 workspace 填写。每家公司独立 workspace，遇到 login-required/captcha 会停下。
+  // 一键更新所有支持简历填写的平台（agent.md 核心目标）：遍历 resume 能力非 unsupported 的公司
+  // （含腾讯 verified 自动填 + 五家 manual 打开官网手动填）。每家独立 workspace，遇到 login/captcha 停下。
   ipcMain.handle('resume:fill-all', async () => {
     const currentState = store.get();
     const resume = currentState.resume;
-    // 筛选 resume 能力为 verified 的公司（capabilities 由 seed 事实源驱动）
-    const targets = currentState.companies.filter((c) => c.capabilities?.resume === 'verified');
+    // 筛选 resume 能力为 verified 或 manual 的公司（unsupported 跳过）
+    const targets = currentState.companies.filter((c) => {
+      const r = c.capabilities?.resume;
+      return r === 'verified' || r === 'manual';
+    });
     if (targets.length === 0) {
-      return { ok: false, message: '当前没有公司支持自动简历更新' };
+      return { ok: false, message: '当前没有公司支持简历更新' };
     }
+    logger.info('一键更新简历开始', { targets: targets.map((c) => c.id), count: targets.length });
     const results = [];
     for (const company of targets) {
       const adapter = registry.getAdapter(company.id);
       if (!adapter?.fillResume) continue;
+      logger.info('开始更新简历', { company: company.id, capability: company.capabilities?.resume });
       const id = addTask({ type: 'browser', title: `更新简历到${company.name}`, detail: `正在打开${company.name}简历页…` });
       try {
         const result = await adapter.fillResume(resume, {
           workspace: loginManager,
           company,
           taskId: id,
-          onStep: (info) => updateTaskLive(id, { detail: info.message })
+          onStep: (info) => { updateTaskLive(id, { detail: info.message }); logger.info(`${company.name}简历填写`, { step: info.step, msg: info.message }); }
         });
         finishTask(id, taskStatusForAutomation(result.status), result.message);
+        logger.info('简历填写完成', { company: company.id, status: result.status });
         results.push({ companyId: company.id, companyName: company.name, ...result });
-        // 遇到需要用户接管的状态（login-required/captcha 没过），停下让用户处理
+        // 遇到需要用户接管的状态（login-required/captcha 没过/manual 需核对），停下让用户处理
         if (result.status === 'login-required' || result.status === 'manual-required') {
+          logger.warn('简历填写需用户接管', { company: company.id, status: result.status });
           return { ok: false, message: `${company.name}需要你登录或核对后再继续`, partial: results };
         }
       } catch (error) {
         finishTask(id, 'error', error.message);
+        logger.error('简历填写失败', { company: company.id, error: error.message });
         results.push({ companyId: company.id, companyName: company.name, ok: false, status: 'failed', message: error.message });
       }
     }
+    logger.info('一键更新简历完成', { success: results.filter((r) => r.ok).length, total: results.length });
     return { ok: true, results };
   });
   // 读取简历同步能力矩阵：哪些公司支持简历更新、状态如何

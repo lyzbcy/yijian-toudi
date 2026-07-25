@@ -16,7 +16,8 @@ let onChangeCallback = null;
 let stealthCleanup = null;
 
 const SIDEBAR_WIDTH = 248;
-const TOP_OFFSET = 52;
+const TOP_OFFSET = 0;       // workspace 激活时前端会隐藏 sidebar，view 从顶部 0 开始铺满
+const BOTTOM_BAR_HEIGHT = 56; // 底部留出空间给「取消/完成」控制条（原生 view 盖 HTML，放底部避免被盖）
 const SNAPSHOT_TEXT_LIMIT = 2400;
 
 function setParent(win) {
@@ -27,11 +28,14 @@ function setParent(win) {
 function updateBounds() {
   if (!currentView || !parentWindow || parentWindow.isDestroyed()) return;
   const [winW, winH] = parentWindow.getSize();
+  // workspace 激活时：view 铺满除底部控制条外的整个窗口（前端会隐藏 sidebar）。
+  // 底部留 BOTTOM_BAR_HEIGHT 给「取消/完成」原生 HTML 控制条——原生 view 盖 HTML，
+  // 把控制条放底部、view 不覆盖底部，才能保证按钮可点。
   currentView.setBounds({
-    x: SIDEBAR_WIDTH,
-    y: TOP_OFFSET,
-    width: Math.max(0, winW - SIDEBAR_WIDTH),
-    height: Math.max(0, winH - TOP_OFFSET)
+    x: 0,
+    y: 0,
+    width: Math.max(0, winW),
+    height: Math.max(0, winH - BOTTOM_BAR_HEIGHT)
   });
 }
 

@@ -113,6 +113,10 @@
     $('#pageTitle').textContent = title;
     $('#pageSubtitle').textContent = subtitle;
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    // 进设置页自动刷新日志，让用户第一时间看到运行记录
+    if (page === 'settings') {
+      window.oneClick.getLogs().then(renderLogs).catch(() => {});
+    }
   }
 
   function companyMap() {
@@ -825,8 +829,11 @@ Authorization: Bearer ${state.settings.apiToken}
     const bar = $('#workspaceBar');
     if (!status?.active) {
       bar.classList.add('hidden');
+      document.body.classList.remove('workspace-active');
       return;
     }
+    // workspace 激活：隐藏 sidebar 和主区域（原生 view 会铺满上方），只留底部控制条
+    document.body.classList.add('workspace-active');
     const labels = {
       login: ['🔐', status.title || '登录招聘网站', '完成登录'],
       'resume-review': ['▤', status.title || '核对平台简历', '完成核对'],
@@ -1209,6 +1216,13 @@ Authorization: Bearer ${state.settings.apiToken}
       const logs = await window.oneClick.getLogs();
       renderLogs(logs);
     }));
+    // 复制日志（用户遇到问题时一键复制发给开发者）
+    $('#copyLogsButton')?.addEventListener('click', async () => {
+      const logs = await window.oneClick.getLogs();
+      const text = logs.map((e) => `[${e.ts}] ${e.level.toUpperCase()} ${e.msg}${e.meta ? ' ' + JSON.stringify(e.meta) : ''}`).join('\n');
+      await navigator.clipboard.writeText(text || '(暂无日志)');
+      toast(`已复制 ${logs.length} 条日志`);
+    });
   }
 
   // 渲染开发日志（内存最近 50 条）
