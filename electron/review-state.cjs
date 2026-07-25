@@ -93,10 +93,17 @@ function validateCartRules({ cart = [], companies = [] }) {
   return { ok: true };
 }
 
+function taskStatusForAutomation(status) {
+  if (status === 'submitted' || status === 'done') return 'done';
+  if (status === 'review-required') return 'waiting';
+  return 'error';
+}
+
 module.exports = {
   STATUS_LABELS,
   settleCart,
   applyResultToCart,
   isSubmissionSuccess,
-  validateCartRules
+  validateCartRules,
+  taskStatusForAutomation
 };

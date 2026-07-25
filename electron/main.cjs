@@ -16,7 +16,8 @@ const loginManager = require('./login-manager.cjs');
 const {
   applyResultToCart,
   isSubmissionSuccess,
-  validateCartRules
+  validateCartRules,
+  taskStatusForAutomation
 } = require('./review-state.cjs');
 
 let window;
@@ -70,7 +71,18 @@ function addTask({ type, title, status = 'running', detail = '', progress = 10 }
 function finishTask(id, status, detail) {
   store.update((state) => {
     const task = state.tasks.find((item) => item.id === id);
-    if (task) Object.assign(task, { status, detail, progress: status === 'done' ? 100 : task.progress, finishedAt: new Date().toISOString() });
+    if (task) {
+      Object.assign(task, {
+        status,
+        detail,
+        progress: status === 'done' ? 100 : task.progress
+      });
+      if (status === 'done' || status === 'error') {
+        task.finishedAt = new Date().toISOString();
+      } else {
+        delete task.finishedAt;
+      }
+    }
     return state;
   });
   broadcast();
@@ -319,6 +331,7 @@ async function applyCart() {
       const adapterResult = await adapter.apply(job, {
         workspace: loginManager,
         company,
+        taskId: id,
         onStep: (info) => updateTaskLive(id, { detail: info.message })
       });
       result = {
@@ -349,9 +362,7 @@ async function applyCart() {
   });
   broadcast();
 
-  const taskStatus = result.status === 'review-required'
-    ? 'waiting'
-    : (result.status === 'submitted' ? 'done' : 'error');
+  const taskStatus = taskStatusForAutomation(result.status);
   finishTask(id, taskStatus, result.message);
   logger.info('投递准备结束', { job: job.id, status: result.status });
   return {
@@ -425,9 +436,10 @@ app.whenReady().then(async () => {
       const result = await fillTencentResume(resume, {
         workspace: loginManager,
         company,
+        taskId: id,
         onStep: (info) => updateTaskLive(id, { detail: info.message })
       });
-      finishTask(id, result.ok ? 'done' : 'error', result.message);
+      finishTask(id, taskStatusForAutomation(result.status), result.message);
       logger.info('简历填写腾讯', { status: result.status, filled: result.filledCount });
       return result;
     } catch (error) {
@@ -526,6 +538,10 @@ app.whenReady().then(async () => {
   ipcMain.handle('workspace:finish', async () => {
     const result = await loginManager.finishWorkspace();
     const context = result.status?.context;
+    if (context?.action === 'fill-resume' && context.taskId) {
+      finishTask(context.taskId, 'done', '用户已完成腾讯简历核对');
+      return result;
+    }
     if (context?.action !== 'apply-job' || !context.jobId) return result;
 
     const submitted = isSubmissionSuccess(result.snapshot);
@@ -548,12 +564,23 @@ app.whenReady().then(async () => {
       return state;
     });
     broadcast();
+    if (context.taskId) {
+      finishTask(
+        context.taskId,
+        taskStatusForAutomation(applicationResult.status),
+        applicationResult.message
+      );
+    }
     return { ...result, applicationResult };
   });
   ipcMain.handle('workspace:cancel', async () => {
     const status = loginManager.getStatus();
     const result = await loginManager.cancelWorkspace();
     const context = status.context;
+    if (context?.action === 'fill-resume' && context.taskId) {
+      finishTask(context.taskId, 'error', '用户取消了腾讯简历核对');
+      return result;
+    }
     if (context?.action !== 'apply-job' || !context.jobId) return result;
 
     store.update((state) => {
@@ -572,6 +599,7 @@ app.whenReady().then(async () => {
       return state;
     });
     broadcast();
+    if (context.taskId) finishTask(context.taskId, 'error', '用户取消了本次投递检查');
     return result;
   });
 });

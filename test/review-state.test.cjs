@@ -4,7 +4,8 @@ const {
   settleCart,
   applyResultToCart,
   isSubmissionSuccess,
-  validateCartRules
+  validateCartRules,
+  taskStatusForAutomation
 } = require('../electron/review-state.cjs');
 
 test('只有明确提交成功的岗位移入已投递', () => {
@@ -101,4 +102,10 @@ test('购物车超过公司的投递上限时阻止启动', () => {
   assert.equal(blocked.ok, false);
   assert.match(blocked.message, /最多投递 3 个/);
   assert.deepEqual(allowed, { ok: true });
+});
+
+test('需要用户审核的自动化任务保持等待状态', () => {
+  assert.equal(taskStatusForAutomation('review-required'), 'waiting');
+  assert.equal(taskStatusForAutomation('submitted'), 'done');
+  assert.equal(taskStatusForAutomation('failed'), 'error');
 });

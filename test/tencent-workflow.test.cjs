@@ -28,6 +28,7 @@ test('腾讯简历填写保留可见工作区并返回逐字段报告', async ()
     },
     {
       workspace,
+      taskId: 'task-resume-1',
       company: {
         id: 'tencent',
         name: '腾讯',
@@ -37,6 +38,7 @@ test('腾讯简历填写保留可见工作区并返回逐字段报告', async ()
   );
 
   assert.equal(opened[0].mode, 'resume-review');
+  assert.equal(opened[0].context.taskId, 'task-resume-1');
   assert.equal(result.status, 'review-required');
   assert.deepEqual(result.report.filled, ['basic.name']);
   assert.deepEqual(result.report.manual, ['basic.email']);
@@ -71,6 +73,7 @@ test('腾讯岗位投递只准备可见审核页面，不宣称已经提交', as
     },
     {
       workspace,
+      taskId: 'task-apply-1',
       company: {
         id: 'tencent',
         name: '腾讯',
@@ -81,6 +84,7 @@ test('腾讯岗位投递只准备可见审核页面，不宣称已经提交', as
 
   assert.equal(opened[0].mode, 'application-review');
   assert.equal(opened[0].context.jobId, 'tencent-123');
+  assert.equal(opened[0].context.taskId, 'task-apply-1');
   assert.equal(result.status, 'review-required');
   assert.equal(result.ok, true);
 });

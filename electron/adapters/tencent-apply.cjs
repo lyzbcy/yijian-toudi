@@ -39,6 +39,7 @@ function resolveTencentJobUrl(job) {
 async function applyTencentJob(job, {
   workspace,
   company,
+  taskId,
   onStep
 } = {}) {
   if (!workspace?.openWorkspace || !workspace?.run) {
@@ -58,7 +59,8 @@ async function applyTencentJob(job, {
     context: {
       action: 'apply-job',
       companyId: 'tencent',
-      jobId: job.id
+      jobId: job.id,
+      taskId: taskId || null
     }
   });
 

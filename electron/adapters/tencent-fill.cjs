@@ -106,6 +106,7 @@ function buildFillScript(plan) {
 async function fillTencentResume(resume, {
   workspace,
   company,
+  taskId,
   onStep
 } = {}) {
   if (!workspace?.openWorkspace || !workspace?.run) {
@@ -131,7 +132,8 @@ async function fillTencentResume(resume, {
     title: '核对腾讯简历',
     context: {
       action: 'fill-resume',
-      companyId: 'tencent'
+      companyId: 'tencent',
+      taskId: taskId || null
     }
   });
 

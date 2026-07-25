@@ -68,3 +68,34 @@ test('Agent API 要求 Token 并返回岗位', async () => {
     await server.stop();
   }
 });
+
+test('Agent API 明确标注需要用户审核的命令结果', async () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'yjt-api-review-'));
+  const store = new JsonStore(directory);
+  const state = store.init();
+  const server = new AgentServer({
+    store,
+    onCommand: async () => ({
+      status: 'review-required',
+      message: '请回到一键投递完成核对'
+    })
+  });
+  const port = await server.start(0);
+  try {
+    const response = await fetch(`http://127.0.0.1:${port}/v1/commands`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${state.settings.apiToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ action: 'fill_resume' })
+    });
+    const data = await response.json();
+
+    assert.equal(response.status, 202);
+    assert.equal(data.requiresReview, true);
+    assert.equal(data.result.status, 'review-required');
+  } finally {
+    await server.stop();
+  }
+});

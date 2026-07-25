@@ -70,7 +70,13 @@ class AgentServer {
           return this.send(response, 400, { error: 'unsupported_action', allowed });
         }
         const result = await this.onCommand(body);
-        return this.send(response, 202, { accepted: true, result });
+        return this.send(response, 202, {
+          accepted: true,
+          requiresReview: result?.status === 'review-required' ||
+            result?.status === 'login-required' ||
+            result?.status === 'manual-required',
+          result
+        });
       }
       return this.send(response, 404, { error: 'not_found' });
     } catch (error) {
