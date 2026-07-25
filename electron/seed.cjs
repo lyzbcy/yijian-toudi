@@ -40,15 +40,81 @@ const jobs = [];
 // 招聘邮件：不内置演示数据。由 QQ 邮箱同步按需拉取。
 const messages = [];
 
-// 多份简历：basic/skills/extras 为全局共享，intention/education/experience/projects 按求职方向 profile 各存一套。
+// 多份简历：basic/skills/extras/family/compliance 为全局共享，intention/education/experience/projects 按求职方向 profile 各存一套。
 // activeProfileId 指向当前编辑的那份；profiles 列表里第一份是默认 profile（id 固定 'default'）。
 // 经历段数不限，前端按需增删；UI 在段数较多时会提醒「部分招聘网站只接受前 N 段」，但不强制截断。
-function emptyEducation() { return { school: '', major: '', degree: '', start: '', end: '', rank: '', courses: '' }; }
-function emptyExperience() { return { company: '', role: '', start: '', end: '', description: '', achievements: '' }; }
-function emptyProject() { return { name: '', role: '', start: '', end: '', description: '', link: '' }; }
+//
+// 字段覆盖 11 家大厂调研结论（2026-07）：腾讯/字节/阿里/百度/美团/京东/小米/网易/华为/米哈游/拼多多
+// 包含校招高频字段（籍贯/民族/政治面貌/全日制/双一流/导师/家庭成员）和社招高频字段（部门/职级/外包/离职原因）
+// sensitive 字段（idCard/家庭电话）只在本地保存，不会进 Agent 脱敏快照，按目标公司按需暴露。
+
+function emptyEducation() {
+  return {
+    school: '', major: '', degree: '', degreeName: '', // degree=学历层次(大专/本科/硕士/博士), degreeName=学位(学士/硕士/博士)
+    start: '', end: '', rank: '', courses: '',
+    isFullTime: true, isUnified: true, is211: '', // 全日制/统招/双一流(自动/是/否)
+    advisor: '', researchDirection: '', thesisTitle: '' // 导师/研究方向/毕业论文(校招/博士岗)
+  };
+}
+function emptyExperience() {
+  return {
+    company: '', department: '', role: '', level: '', // 公司/部门/职位/职级(如P6/T5)
+    start: '', end: '', employmentType: '全职', isOutsource: false, // 起止/该段类型(全职/实习/兼职)/是否外包
+    description: '', achievements: '', leaveReason: '', // 工作描述/业绩/离职原因
+    reportTo: '', teamSize: '' // 汇报对象/团队规模(管理岗)
+  };
+}
+function emptyProject() {
+  return {
+    name: '', role: '', start: '', end: '',
+    description: '', contribution: '', // 项目描述/个人贡献(校招技术岗要求拆分)
+    techStack: '', outcome: '', scale: '', // 技术栈/量化成果/项目规模
+    link: '', client: '' // 链接/客户(toB)
+  };
+}
+function emptyFamily() {
+  return { name: '', relation: '', company: '', position: '', phone: '' }; // 华为校招必填
+}
 
 function defaultIntention() {
-  return { roles: '', cities: '', salary: '', availability: '', employmentType: '全职' };
+  return {
+    roles: '', cities: '', salary: '', salaryUnit: '月薪', // 期望职位/城市/薪资/薪资单位(月薪/年薪/14薪/期权)
+    availability: '', employmentType: '全职', // 到岗时间/工作类型(全职/实习/兼职/远程)
+    referralCode: '', channel: '', // 内推码(11家全有)/渠道来源
+    willingness: { travel: false, relocate: false, overtime: false, nightShift: false }, // 接受出差/外派/加班/夜班
+    preferredLocations: '' // 多期望城市排序(配合多志愿)
+  };
+}
+
+function defaultBasic() {
+  return {
+    name: '', gender: '', birthday: '', phone: '', email: '', wechat: '',
+    city: '', nativePlace: '', nationality: '中国', // 现居/籍贯/国籍
+    ethnicity: '', politicalStatus: '', // 民族/政治面貌(校招)
+    idCard: '', avatarUrl: '', // 身份证(加密)/证件照
+    website: '', github: '', // 个人主页/GitHub(拆分，技术岗高频)
+    maritalStatus: '', height: '' // 婚姻/身高(罕用)
+  };
+}
+
+function defaultSkills() {
+  return {
+    keywords: '', proficiency: '', // 专业技能/熟练度(了解/熟悉/熟练/精通 分级)
+    languages: '', certificates: '', certificateIds: '', // 语言/证书/证书编号
+    portfolio: '', portfolioUrl: '', interests: '' // 作品集(文件)/作品集链接/兴趣特长
+  };
+}
+
+function defaultExtras() {
+  return { summary: '', awards: '', campus: '', publications: '', patents: '' };
+}
+
+function defaultCompliance() {
+  return {
+    previouslyInterviewed: false, previouslyEmployed: false, // 是否曾被本公司面试/录用
+    hasRelativeAtCompany: false, relativeDetail: '', // 是否有亲属在本公司
+    criminalRecord: false // 无犯罪声明(部分岗位)
+  };
 }
 
 function createResumeProfile({ id, label, intention, education, experience, projects }) {
@@ -66,9 +132,11 @@ const resume = {
   updatedAt: null,
   completion: 36,
   activeProfileId: 'default',
-  basic: { name: '', phone: '', email: '', city: '', gender: '', birthday: '', wechat: '', website: '' },
-  skills: { keywords: '', languages: '', certificates: '', portfolio: '' },
-  extras: { summary: '', awards: '', campus: '', publications: '', patents: '' },
+  basic: defaultBasic(),
+  skills: defaultSkills(),
+  extras: defaultExtras(),
+  family: [emptyFamily()], // 家庭成员（全局，华为校招必填）
+  compliance: defaultCompliance(), // 合规声明（全局，每家公司都有）
   // 兼容读取：activeProfile 是当前 profile 的快照视图，由 store 每次保存时刷新，便于旧代码读 resume.intention/education/...
   // 写入永远走 profiles + activeProfileId，不直接写这里。
   profiles: [createResumeProfile({ id: 'default', label: '默认简历' })]
@@ -108,4 +176,4 @@ function createSeed() {
   };
 }
 
-module.exports = { createSeed, createResumeProfile, emptyEducation, emptyExperience, emptyProject, defaultIntention };
+module.exports = { createSeed, createResumeProfile, emptyEducation, emptyExperience, emptyProject, emptyFamily, defaultIntention, defaultBasic, defaultSkills, defaultExtras, defaultCompliance };

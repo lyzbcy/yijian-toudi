@@ -476,35 +476,55 @@
   }
 
   // 多段经历的字段模板：每个 group 一组字段定义，与后端 REPEATABLE_GROUPS 对齐。
+  // 覆盖 11 家大厂调研字段（2026-07）：education 含学位/全日制/导师，experience 含部门/职级/离职原因，
+  // projects 含技术栈/个人贡献/成果（校招技术岗要求拆「项目背景+我的贡献」），family 含华为校招必填模块。
   const REPEATABLE_TEMPLATES = {
     education: [
       { key: 'school', label: '学校', placeholder: '学校名称', type: 'input' },
       { key: 'major', label: '专业', placeholder: '专业名称', type: 'input' },
-      { key: 'degree', label: '学历', type: 'select', options: ['', '大专', '本科', '硕士', '博士'], optionLabels: ['请选择', '大专', '本科', '硕士', '博士'] },
-      { key: 'rank', label: '成绩/排名', placeholder: '例如：前 10%', type: 'input' },
-      { key: 'start', label: '开始时间', type: 'month' },
-      { key: 'end', label: '结束时间', type: 'month' },
-      { key: 'courses', label: '主修课程', placeholder: '与目标岗位相关的课程', type: 'textarea', rows: 3, span: true }
+      { key: 'degree', label: '学历', type: 'select', options: ['', '大专', '本科', '硕士', '博士', 'MBA'], optionLabels: ['请选择', '大专', '本科', '硕士', '博士', 'MBA'] },
+      { key: 'degreeName', label: '学位', placeholder: '学士/硕士/博士（≠学历）', type: 'input' },
+      { key: 'rank', label: '成绩/排名', placeholder: '例如：前 10% / GPA 3.8', type: 'input' },
+      { key: 'start', label: '入学时间', type: 'month' },
+      { key: 'end', label: '毕业时间', type: 'month' },
+      { key: 'isFullTime', label: '全日制', type: 'select', options: ['true', 'false'], optionLabels: ['是', '否'] },
+      { key: 'is211', label: '双一流', placeholder: '是/否/自动判定', type: 'input' },
+      { key: 'advisor', label: '导师', placeholder: '选填（华为校招/博士岗）', type: 'input' },
+      { key: 'courses', label: '主修课程', placeholder: '与目标岗位相关的课程', type: 'textarea', rows: 2, span: true }
     ],
     experience: [
       { key: 'company', label: '公司', placeholder: '公司名称', type: 'input' },
+      { key: 'department', label: '部门', placeholder: '所在部门', type: 'input' },
       { key: 'role', label: '职位', placeholder: '职位名称', type: 'input' },
+      { key: 'level', label: '职级', placeholder: '如 P6/T5（选填）', type: 'input' },
       { key: 'start', label: '开始时间', type: 'month' },
       { key: 'end', label: '结束时间', placeholder: '至今', type: 'month' },
-      { key: 'description', label: '工作描述', placeholder: '负责什么、如何推进、产生什么结果', type: 'textarea', rows: 5, span: true },
-      { key: 'achievements', label: '关键成果', placeholder: '尽量用数字描述', type: 'textarea', rows: 3, span: true }
+      { key: 'employmentType', label: '类型', type: 'select', options: ['全职', '实习', '兼职', '外包'], optionLabels: ['全职', '实习', '兼职', '外包'] },
+      { key: 'description', label: '工作描述', placeholder: '负责什么、如何推进、产生什么结果', type: 'textarea', rows: 4, span: true },
+      { key: 'achievements', label: '关键成果', placeholder: '尽量用数字描述', type: 'textarea', rows: 2, span: true },
+      { key: 'leaveReason', label: '离职原因', placeholder: '选填（社招常见）', type: 'input', span: true }
     ],
     projects: [
       { key: 'name', label: '项目名称', placeholder: '项目名称', type: 'input' },
-      { key: 'role', label: '担任角色', placeholder: '例如：产品负责人', type: 'input' },
+      { key: 'role', label: '担任角色', placeholder: '例如：独立开发', type: 'input' },
       { key: 'start', label: '开始时间', type: 'month' },
       { key: 'end', label: '结束时间', type: 'month' },
-      { key: 'link', label: '项目链接', placeholder: 'https://', type: 'input', span: true },
-      { key: 'description', label: '项目说明', placeholder: '背景、你的贡献、最终结果', type: 'textarea', rows: 5, span: true }
+      { key: 'techStack', label: '技术栈', placeholder: 'React,Python,Unity…', type: 'input', span: true },
+      { key: 'description', label: '项目背景', placeholder: '项目解决的痛点、背景', type: 'textarea', rows: 3, span: true },
+      { key: 'contribution', label: '个人贡献', placeholder: '你具体做了什么（校招要求与项目背景拆分）', type: 'textarea', rows: 3, span: true },
+      { key: 'outcome', label: '项目成果', placeholder: '量化结果，如「性能提升 40%」', type: 'textarea', rows: 2, span: true },
+      { key: 'link', label: '项目链接', placeholder: 'https://', type: 'input', span: true }
+    ],
+    family: [
+      { key: 'name', label: '姓名', placeholder: '家庭成员姓名', type: 'input' },
+      { key: 'relation', label: '关系', placeholder: '如：父亲/母亲/配偶', type: 'input' },
+      { key: 'company', label: '工作单位', placeholder: '选填', type: 'input' },
+      { key: 'position', label: '职务', placeholder: '选填', type: 'input' },
+      { key: 'phone', label: '联系电话', placeholder: '选填（仅本机保存）', type: 'input' }
     ]
   };
 
-  const GROUP_LABELS = { education: '教育经历', experience: '工作经历', projects: '项目经历' };
+  const GROUP_LABELS = { education: '教育经历', experience: '工作经历', projects: '项目经历', family: '家庭成员' };
 
   // 简历一键更新能力清单：展示每家公司简历能力（verified/manual/unsupported）
   async function renderResumeSyncStatus() {
@@ -613,17 +633,24 @@
   function fillResume() {
     const viewFingerprint = `${state.resume.activeProfileId || 'default'}@${state.resume.updatedAt || 'seed'}`;
     // 段数指纹：activeProfileId + 三个 group 的段数。只有这个变了才重建 DOM。
-    const segFingerprint = `${state.resume.activeProfileId || 'default'}|edu:${(state.resume.education||[]).length}|exp:${(state.resume.experience||[]).length}|proj:${(state.resume.projects||[]).length}`;
+    const segFingerprint = `${state.resume.activeProfileId || 'default'}|edu:${(state.resume.education||[]).length}|exp:${(state.resume.experience||[]).length}|proj:${(state.resume.projects||[]).length}|fam:${(state.resume.family||[]).length}`;
     if (segFingerprint !== renderedFingerprint) {
       renderRepeatableSegments('education');
       renderRepeatableSegments('experience');
       renderRepeatableSegments('projects');
+      renderRepeatableSegments('family');
       renderedFingerprint = segFingerprint;
     }
     // 值回填：指纹变化时（保存过、切了 profile、新建/删除 profile）
     if ($('#resumeForm').dataset.loaded !== viewFingerprint) {
       $$('[name]', $('#resumeForm')).forEach((field) => {
-        if (field.name) field.value = pathGet(state.resume, field.name) ?? (field.type === 'select' ? '' : '');
+        if (!field.name) return;
+        const v = pathGet(state.resume, field.name);
+        if (field.type === 'checkbox') {
+          field.checked = Boolean(v);
+        } else {
+          field.value = v ?? '';
+        }
       });
       $('#resumeForm').dataset.loaded = viewFingerprint;
     }
@@ -632,7 +659,7 @@
   function collectResume() {
     const resume = collectResumeWithoutTrimming();
     // 清理尾部全空段（保留至少一段），避免攒一堆空段；中间的空段保留，因为段序号有意义
-    for (const groupKey of ['education', 'experience', 'projects']) {
+    for (const groupKey of ['education', 'experience', 'projects', 'family']) {
       const template = REPEATABLE_TEMPLATES[groupKey];
       while (resume[groupKey].length > 1) {
         const last = resume[groupKey][resume[groupKey].length - 1];
@@ -648,7 +675,7 @@
   // 添加段时用它，避免「用户加了空段→collectResume 清掉→save→又只剩 1 段」。
   function collectResumeWithoutTrimming() {
     const resume = structuredClone(state.resume);
-    for (const groupKey of ['education', 'experience', 'projects']) {
+    for (const groupKey of ['education', 'experience', 'projects', 'family']) {
       const existing = resume[groupKey] || [];
       const indices = new Set();
       $$(`[data-repeat="${groupKey}"] [name]`).forEach((field) => {
@@ -662,7 +689,10 @@
       }
       resume[groupKey] = newArr;
     }
-    $$('[name]', $('#resumeForm')).forEach((field) => pathSet(resume, field.name, field.value.trim()));
+    $$('[name]', $('#resumeForm')).forEach((field) => {
+      const value = field.type === 'checkbox' ? field.checked : field.value.trim();
+      pathSet(resume, field.name, value);
+    });
     return resume;
   }
 

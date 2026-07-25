@@ -45,7 +45,7 @@ const { _electron: electron } = require('playwright-core');
     const eduSegments = await window.locator('[data-repeat="education"] .repeatable-segment').count();
     if (eduSegments < 1) throw new Error(`教育经历应至少有 1 段，实际 ${eduSegments}`);
     const addBtns = await window.locator('[data-add-segment]').count();
-    if (addBtns !== 3) throw new Error(`应有 3 个添加段按钮（教育/工作/项目），实际 ${addBtns}`);
+    if (addBtns !== 4) throw new Error(`应有 4 个添加段按钮（教育/工作/项目/家庭），实际 ${addBtns}`);
     await window.screenshot({ path: path.join(output, 'desktop-resume.png'), fullPage: true });
     await window.locator('[data-page="agent"]').first().click();
     await window.waitForSelector('#agentPrompt');

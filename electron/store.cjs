@@ -1,7 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
-const { createSeed, createResumeProfile, emptyEducation, emptyExperience, emptyProject, defaultIntention } = require('./seed.cjs');
+const { createSeed, createResumeProfile, emptyEducation, emptyExperience, emptyProject, emptyFamily, defaultIntention, defaultBasic, defaultSkills, defaultExtras, defaultCompliance } = require('./seed.cjs');
 
 // 把旧版扁平 resume schema（顶层 intention/education/...，无 profiles）迁成多 profile。
 // 幂等：已有 profiles 的不动。备份恢复和 migrate 都调它，确保 syncResumeActiveView 之前 profiles 一定存在。
@@ -158,6 +158,51 @@ class JsonStore {
     // 5. 简历 schema 升级到多 profile（v0.3）：把旧的扁平 intention/education/experience/projects 迁移进 default profile
     if (this.state.resume) {
       migrateFlatResumeToProfiles(this.state.resume);
+      // v0.4 字段扩展（2026-07 大厂调研）：补全新增字段，不丢已有值
+      const r = this.state.resume;
+      // 全局字段补全（basic/skills/extras/family/compliance）
+      if (!r.basic || typeof r.basic !== 'object') r.basic = defaultBasic();
+      else {
+        const b = defaultBasic();
+        for (const k of Object.keys(b)) if (r.basic[k] === undefined) r.basic[k] = b[k];
+        // 拆分：旧 website 里如果有 github 链接，拆到 github 字段
+        if (!r.basic.github && r.basic.website && /github\.com/i.test(r.basic.website)) {
+          r.basic.github = r.basic.website;
+          changed = true;
+        }
+      }
+      if (!r.skills || typeof r.skills !== 'object') r.skills = defaultSkills();
+      else {
+        const s = defaultSkills();
+        for (const k of Object.keys(s)) if (r.skills[k] === undefined) r.skills[k] = s[k];
+      }
+      if (!r.extras || typeof r.extras !== 'object') r.extras = defaultExtras();
+      else {
+        const e = defaultExtras();
+        for (const k of Object.keys(e)) if (r.extras[k] === undefined) r.extras[k] = e[k];
+      }
+      if (!Array.isArray(r.family)) r.family = [emptyFamily()];
+      if (!r.compliance || typeof r.compliance !== 'object') r.compliance = defaultCompliance();
+      // 每个 profile 的 intention/education/experience/projects 补全新字段
+      for (const profile of r.profiles || []) {
+        if (profile.intention) {
+          const di = defaultIntention();
+          for (const k of Object.keys(di)) if (profile.intention[k] === undefined) profile.intention[k] = di[k];
+        } else profile.intention = defaultIntention();
+        for (const edu of profile.education || []) {
+          const de = emptyEducation();
+          for (const k of Object.keys(de)) if (edu[k] === undefined) edu[k] = de[k];
+        }
+        for (const exp of profile.experience || []) {
+          const de = emptyExperience();
+          for (const k of Object.keys(de)) if (exp[k] === undefined) exp[k] = de[k];
+        }
+        for (const proj of profile.projects || []) {
+          const dp = emptyProject();
+          for (const k of Object.keys(dp)) if (proj[k] === undefined) proj[k] = dp[k];
+        }
+      }
+      changed = true;
     }
     if (changed) this.flush();
   }
