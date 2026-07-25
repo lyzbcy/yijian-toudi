@@ -89,7 +89,8 @@ test('Agent API 明确标注需要用户审核的命令结果', async () => {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${state.settings.apiToken}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Idempotency-Key': 'fill-resume-review-test'
       },
       body: JSON.stringify({ action: 'fill_resume' })
     });

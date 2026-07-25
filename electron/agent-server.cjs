@@ -1,5 +1,10 @@
 const http = require('node:http');
 const { URL } = require('node:url');
+const {
+  commandFingerprint,
+  createAuditEntry,
+  normalizeIdempotencyKey
+} = require('./agent-command.cjs');
 
 class AgentServer {
   constructor({ store, onCommand }) {
@@ -69,14 +74,108 @@ class AgentServer {
         if (!allowed.includes(body.action)) {
           return this.send(response, 400, { error: 'unsupported_action', allowed });
         }
-        const result = await this.onCommand(body);
-        return this.send(response, 202, {
-          accepted: true,
-          requiresReview: result?.status === 'review-required' ||
-            result?.status === 'login-required' ||
-            result?.status === 'manual-required',
-          result
+        const idempotencyKey = normalizeIdempotencyKey(
+          request.headers['idempotency-key']
+        );
+        if (!idempotencyKey) {
+          return this.send(response, 428, {
+            error: 'idempotency_key_required',
+            message: '写命令必须提供 Idempotency-Key'
+          });
+        }
+
+        const fingerprint = commandFingerprint(body);
+        const latestState = this.store.get();
+        const cached = latestState.idempotency?.[idempotencyKey];
+        if (cached) {
+          if (cached.fingerprint !== fingerprint) {
+            return this.send(response, 409, {
+              error: 'idempotency_key_conflict',
+              message: '同一个 Idempotency-Key 不能用于不同命令'
+            });
+          }
+          if (cached.status === 'pending') {
+            return this.send(response, 409, {
+              error: 'request_in_progress',
+              message: '相同命令仍在执行中'
+            });
+          }
+          return this.send(response, cached.httpStatus, cached.response);
+        }
+
+        const target = body.companyId || body.jobId || body.action;
+        this.store.update((next) => {
+          next.idempotency[idempotencyKey] = {
+            fingerprint,
+            status: 'pending',
+            createdAt: new Date().toISOString()
+          };
+          next.audit.unshift(createAuditEntry({
+            action: body.action,
+            source: 'agent-api',
+            target,
+            status: 'accepted',
+            message: '命令已接收'
+          }));
+          next.audit = next.audit.slice(0, 200);
+          return next;
         });
+
+        try {
+          const result = await this.onCommand(body);
+          const payload = {
+            accepted: true,
+            requiresReview: result?.status === 'review-required' ||
+              result?.status === 'login-required' ||
+              result?.status === 'manual-required',
+            result
+          };
+          this.store.update((next) => {
+            next.idempotency[idempotencyKey] = {
+              ...next.idempotency[idempotencyKey],
+              status: 'completed',
+              finishedAt: new Date().toISOString(),
+              httpStatus: 202,
+              response: payload
+            };
+            next.audit.unshift(createAuditEntry({
+              action: body.action,
+              source: 'agent-api',
+              target,
+              status: result?.status || 'done',
+              message: result?.message || '命令执行完成'
+            }));
+            next.audit = next.audit.slice(0, 200);
+            trimIdempotency(next.idempotency);
+            return next;
+          });
+          return this.send(response, 202, payload);
+        } catch (error) {
+          const payload = {
+            error: 'command_failed',
+            message: error.message
+          };
+          this.store.update((next) => {
+            next.idempotency[idempotencyKey] = {
+              ...next.idempotency[idempotencyKey],
+              status: 'failed',
+              finishedAt: new Date().toISOString(),
+              httpStatus: 500,
+              response: payload
+            };
+            next.audit.unshift(createAuditEntry({
+              action: body.action,
+              source: 'agent-api',
+              target,
+              status: 'failed',
+              message: error.message
+            }));
+            next.audit = next.audit.slice(0, 200);
+            trimIdempotency(next.idempotency);
+            return next;
+          });
+          return this.send(response, 500, payload);
+        }
       }
       return this.send(response, 404, { error: 'not_found' });
     } catch (error) {
@@ -114,6 +213,17 @@ class AgentServer {
     response.setHeader('Cache-Control', 'no-store');
     response.end(payload === null ? '' : JSON.stringify(payload));
   }
+}
+
+function trimIdempotency(records, limit = 200) {
+  const entries = Object.entries(records || {});
+  if (entries.length <= limit) return;
+  entries
+    .sort((left, right) =>
+      String(right[1].createdAt || '').localeCompare(String(left[1].createdAt || ''))
+    )
+    .slice(limit)
+    .forEach(([key]) => delete records[key]);
 }
 
 module.exports = { AgentServer };

@@ -376,16 +376,18 @@ Authorization: Bearer ${state.settings.apiToken}
 
 可提交命令：
 - POST /v1/commands
+- Header：Idempotency-Key: <本次动作的唯一键>
 - Body 例：{"action":"refresh_jobs"}
 - 可用动作：refresh_jobs、open_company、favorite_job、export_snapshot、fill_resume、apply_cart
 
 规则：
 1. 先读取状态，再执行动作；
-2. 最终投递、发送信息或修改外部网站前必须让我确认；
-3. 登录或验证码出现时提示我接管；
-4. 岗位数据来自真实抓取，请如实反映每个岗位的数据来源；
-5. 当响应里的 requiresReview 为 true，或状态为 review-required、login-required、manual-required 时，必须提醒我回到“一键投递”处理，不得宣称动作已完成；
-6. 不要在回复中泄露这段 Token。`;
+2. 每个写命令生成唯一 Idempotency-Key；重试同一动作复用原键，新动作必须换键；
+3. 最终投递、发送信息或修改外部网站前必须让我确认；
+4. 登录或验证码出现时提示我接管；
+5. 岗位数据来自真实抓取，请如实反映每个岗位的数据来源；
+6. 当响应里的 requiresReview 为 true，或状态为 review-required、login-required、manual-required 时，必须提醒我回到“一键投递”处理，不得宣称动作已完成；
+7. 不要在回复中泄露这段 Token。`;
   }
 
   function showJob(id) {
