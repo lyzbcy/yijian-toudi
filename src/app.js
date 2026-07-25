@@ -135,6 +135,7 @@
     renderProfileTabs();
     fillResume();
     renderAgentPrompt();
+    renderResumeSyncStatus();
 
     if (!$('#companyFilter').dataset.ready) {
       $('#companyFilter').innerHTML = `<option value="">所有公司</option>${state.companies.map((company) => `<option value="${company.id}">${escapeHtml(company.name)}</option>`).join('')}`;
@@ -467,6 +468,22 @@
   };
 
   const GROUP_LABELS = { education: '教育经历', experience: '工作经历', projects: '项目经历' };
+
+  // 简历一键更新能力清单：展示每家公司简历能力（verified/manual/unsupported）
+  async function renderResumeSyncStatus() {
+    const box = $('#resumeSyncStatus');
+    if (!box) return;
+    let companies;
+    try { companies = await window.oneClick.getResumeSyncStatus(); }
+    catch (e) { return; }
+    if (!Array.isArray(companies) || companies.length === 0) { box.innerHTML = ''; return; }
+    const chips = companies.map((c) => {
+      const cls = c.resume === 'verified' ? 'sync-verified' : (c.resume === 'manual' ? 'sync-manual' : 'sync-unsupported');
+      const label = c.resume === 'verified' ? '可自动更新' : (c.resume === 'manual' ? '手动同步' : '即将支持');
+      return `<span class="sync-chip ${cls}">${renderLogo({ logoUrl: c.logoUrl, color: c.color, short: c.short, name: c.name }, 'sync-logo')}<b>${escapeHtml(c.name)}</b><i>${label}</i></span>`;
+    }).join('');
+    box.innerHTML = `<div class="sync-chips">${chips}</div>`;
+  }
 
   // 多份简历 profile 切换条。basic/skills/extras 全局共享，intention+经历 按 profile 隔离。
   // 切换 profile → 后端切 activeProfileId + syncResumeActiveView → 前端 fillResume 重建段结构 + 回填值。
@@ -967,6 +984,19 @@ Authorization: Bearer ${state.settings.apiToken}
       }
       return result;
     }, (result) => result?.message || '已更新到腾讯'));
+    // 一键更新所有支持简历填写的平台（agent.md 核心目标）
+    $('#fillResumeAllButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
+      // 一键更新前先保存当前编辑，避免用旧数据填到各平台
+      await window.oneClick.saveResume(collectResume());
+      const result = await window.oneClick.fillResumeToAll();
+      return result;
+    }, (result) => {
+      if (result.ok) {
+        const ok = (result.results || []).filter((r) => r.ok).length;
+        return `已更新 ${ok} 个平台简历`;
+      }
+      return result.message || '更新未完成，请按提示处理';
+    }));
     $('#exportSnapshotButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportSnapshot(), '脱敏快照已导出'));
     $('#backupExportButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportBackup(), (result) => result.canceled ? '已取消备份' : '备份已保存'));
     $('#backupRestoreButton').addEventListener('click', (event) => run(event.currentTarget, async () => {

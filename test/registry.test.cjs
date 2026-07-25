@@ -30,13 +30,14 @@ test('腾讯 entry 的 fillResume/prepareApplication 是函数且五维能力正
   assert.equal(tencent.capabilities.apply, 'verified');
 });
 
-test('非腾讯公司的 fillResume/prepareApplication 为 null（待 T2 补齐）', () => {
+test('非腾讯公司的 fillResume 为 null，prepareApplication 为 manual 骨架（T2 阶段）', () => {
   for (const id of ['baidu', 'bytedance', 'xiaomi', 'jd', 'meituan']) {
     const adapter = registry.getAdapter(id);
     assert.equal(adapter.fillResume, null, `${id}.fillResume 应为 null`);
-    assert.equal(adapter.prepareApplication, null, `${id}.prepareApplication 应为 null`);
+    assert.equal(typeof adapter.prepareApplication, 'function', `${id}.prepareApplication 应为 manual 骨架函数`);
     assert.equal(adapter.capabilities.resume, 'unsupported');
-    assert.equal(adapter.capabilities.apply, 'unsupported');
+    assert.equal(adapter.capabilities.apply, 'manual'); // 升级：能打开官网手动投
+    assert.equal(adapter.capabilities.status, 'unsupported');
   }
 });
 

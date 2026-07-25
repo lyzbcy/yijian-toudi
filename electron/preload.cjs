@@ -8,6 +8,8 @@ contextBridge.exposeInMainWorld('oneClick', {
   deleteProfile: (profileId) => ipcRenderer.invoke('resume:delete-profile', profileId),
   renameProfile: (profileId, label) => ipcRenderer.invoke('resume:rename-profile', profileId, label),
   fillResumeToTencent: () => ipcRenderer.invoke('resume:fill-tencent'),
+  fillResumeToAll: () => ipcRenderer.invoke('resume:fill-all'),
+  getResumeSyncStatus: () => ipcRenderer.invoke('resume:sync-status'),
   toggleFavorite: (jobId) => ipcRenderer.invoke('job:favorite', jobId),
   toggleCart: (jobId) => ipcRenderer.invoke('cart:toggle', jobId),
   applyCart: () => ipcRenderer.invoke('cart:apply'),

@@ -234,6 +234,17 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .profiles-label strong { font-size: 12px; color: var(--ink); }
 .profiles-label small { font-size: 9px; color: var(--muted); }
 .profiles-tabs { display: flex; flex-wrap: wrap; gap: 8px; flex: 1; }
+.resume-sync-status { margin-top: 12px; }
+.sync-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.sync-chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px 6px 7px; border-radius: 999px; font-size: 10px; background: #fff; border: 1px solid var(--line); }
+.sync-chip b { font-weight: 700; color: var(--ink); }
+.sync-chip i { font-style: normal; color: var(--muted); font-size: 9px; }
+.sync-chip.sync-verified { border-color: #b5e4cf; background: #f0faf4; }
+.sync-chip.sync-verified i { color: #3ba57b; }
+.sync-chip.sync-manual { border-color: #ffe3a8; background: #fff9ec; }
+.sync-chip.sync-manual i { color: #b88300; }
+.sync-chip.sync-unsupported { border-color: var(--line); opacity: 0.65; }
+.sync-logo { width: 18px; height: 18px; font-size: 8px; }
 .profile-tab { display: inline-flex; align-items: center; gap: 6px; padding: 7px 13px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: #66697c; font-size: 11px; font-weight: 700; cursor: pointer; transition: .15s; }
 .profile-tab:hover { border-color: #c9c2f5; background: #faf9ff; }
 .profile-tab.active { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }

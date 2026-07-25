@@ -530,6 +530,48 @@ app.whenReady().then(async () => {
       throw error;
     }
   });
+  // 一键更新所有支持简历填写的平台（agent.md 核心目标）：遍历 registry 里 resume=verified 的公司，
+  // 依次用各自 workspace 填写。每家公司独立 workspace，遇到 login-required/captcha 会停下。
+  ipcMain.handle('resume:fill-all', async () => {
+    const currentState = store.get();
+    const resume = currentState.resume;
+    // 筛选 resume 能力为 verified 的公司（capabilities 由 seed 事实源驱动）
+    const targets = currentState.companies.filter((c) => c.capabilities?.resume === 'verified');
+    if (targets.length === 0) {
+      return { ok: false, message: '当前没有公司支持自动简历更新' };
+    }
+    const results = [];
+    for (const company of targets) {
+      const adapter = registry.getAdapter(company.id);
+      if (!adapter?.fillResume) continue;
+      const id = addTask({ type: 'browser', title: `更新简历到${company.name}`, detail: `正在打开${company.name}简历页…` });
+      try {
+        const result = await adapter.fillResume(resume, {
+          workspace: loginManager,
+          company,
+          taskId: id,
+          onStep: (info) => updateTaskLive(id, { detail: info.message })
+        });
+        finishTask(id, taskStatusForAutomation(result.status), result.message);
+        results.push({ companyId: company.id, companyName: company.name, ...result });
+        // 遇到需要用户接管的状态（login-required/captcha 没过），停下让用户处理
+        if (result.status === 'login-required' || result.status === 'manual-required') {
+          return { ok: false, message: `${company.name}需要你登录或核对后再继续`, partial: results };
+        }
+      } catch (error) {
+        finishTask(id, 'error', error.message);
+        results.push({ companyId: company.id, companyName: company.name, ok: false, status: 'failed', message: error.message });
+      }
+    }
+    return { ok: true, results };
+  });
+  // 读取简历同步能力矩阵：哪些公司支持简历更新、状态如何
+  ipcMain.handle('resume:sync-status', () => {
+    const currentState = store.get();
+    return currentState.companies
+      .filter((c) => c.capabilities?.jobs && c.capabilities.jobs !== 'unsupported')
+      .map((c) => ({ id: c.id, name: c.name, resume: c.capabilities.resume, logoUrl: c.logoUrl, color: c.color, short: c.short }));
+  });
   ipcMain.handle('job:favorite', (_event, id) => toggleFavorite(id));
   ipcMain.handle('cart:toggle', (_event, id) => toggleCart(id));
   ipcMain.handle('cart:apply', () => applyCart());
