@@ -37,7 +37,7 @@
           <h1>少一点重复，<br><em>多一点选择。</em></h1>
           <p>把不同大厂的岗位放在一起比较，只维护一份完整简历，再统一管理面试、测评和 Offer。登录态与求职数据留在你的电脑里。</p>
           <div class="actions"><a class="primary" href="https://github.com/lyzbcy/yijian-toudi/releases/latest">立即下载 macOS 版</a><a class="secondary" href="#agent">连接我的 Agent</a></div>
-          <p class="microcopy">当前 v0.1.0 内测版 · 未签名应用附带一键安装授权脚本</p>
+          <p class="microcopy">当前 v0.2.0 内测版 · 未签名应用附带一键安装授权脚本</p>
         </div>
         <div class="preview">
           <div class="preview-card">
@@ -59,8 +59,8 @@
       <div class="wrap">
         <header class="section-head"><span class="pill">三个核心工作区</span><h2>求职流程终于在一个地方</h2><p>首版先把数据模型、桌面体验和安全边界做稳，再逐站增加招聘网站适配器。</p></header>
         <div class="features">
-          <article class="feature"><span class="feature-icon">⌁</span><h3>招聘项目</h3><p>用公司、城市、时间、技能和收藏状态横向筛选岗位，所有岗位均从招聘官网真实抓取。</p><small>6 家已适配</small></article>
-          <article class="feature"><span class="feature-icon">▤</span><h3>统一简历</h3><p>涵盖基本信息、教育、工作、项目、技能、证书与长尾字段，一次填写，未来按平台映射。</p><small class="real">本地保存可用</small></article>
+          <article class="feature"><span class="feature-icon">⌁</span><h3>招聘项目</h3><p>用公司、城市、时间、技能和收藏状态横向筛选岗位，六家公司岗位已从招聘官网真实抓取。</p><small class="real">六家岗位已验证</small></article>
+          <article class="feature"><span class="feature-icon">▤</span><h3>统一简历</h3><p>涵盖基本信息、教育、工作、项目、技能、证书与长尾字段；腾讯支持自动准备字段并交给用户确认保存，其他平台继续适配。</p><small class="real">腾讯审核式填写</small></article>
           <article class="feature"><span class="feature-icon">✉</span><h3>招聘信息</h3><p>通过 QQ 邮箱 IMAP 读取近期邮件，只保留可能与招聘有关的内容并分类。</p><small class="real">QQ 邮箱可用</small></article>
         </div>
       </div>
@@ -89,7 +89,7 @@
   </main>
   <footer>由 <a href="https://lyzbcy.github.io/" target="_blank" rel="noopener">捞鱼</a> 制作 · 求职数据属于你自己</footer>
   <script>
-    var PAGE_V=1;
+    var PAGE_V=2;
     fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(d){if(PAGE_V!==d.v){var el=document.getElementById('g-load');el.style.display='block';var last=0;try{last=parseInt(sessionStorage.getItem('yjt_refreshed_at')||'0')}catch(e){}if(Date.now()-last<3000)return;try{sessionStorage.setItem('yjt_refreshed_at',String(Date.now()))}catch(e){}setTimeout(function(){location.reload(true)},800)}}).catch(function(){});
     document.getElementById('copy').addEventListener('click',function(){navigator.clipboard.writeText(document.getElementById('prompt').textContent).then(function(){document.getElementById('copy').textContent='已复制 ✓'})});
   </script>
