@@ -12,7 +12,7 @@
 // 3. 可能弹出确认/补充信息 → 暂停等用户
 // 4. 用户确认提交
 
-const { WebContentsView, session } = require('electron');
+const { WebContentsView } = require('electron');
 
 const APPLY_BUTTON_SELECTOR = '.default-btn';
 
@@ -36,9 +36,10 @@ async function applyTencentJob(job, { onStep } = {}) {
   }
   if (!detailUrl) throw new Error('岗位缺少 URL，无法投递');
 
-  // 用 persist:tencent session（WebContentsView 创建时会自动从磁盘加载 cookie）
-  const ses = session.fromPartition('persist:tencent');
-  const view = new WebContentsView({ session: ses });
+  // 用 persist:tencent session（与 login-manager.cjs 一致的 webPreferences.partition 写法）。
+  // 注意：Electron 43 的 WebContentsView 构造函数只认 options.webPreferences，
+  // 顶层 `session` 选项会被静默忽略（会落到 default session），必须用 webPreferences.partition。
+  const view = new WebContentsView({ webPreferences: { partition: 'persist:tencent', contextIsolation: true, sandbox: true } });
   step('loading', '正在打开岗位详情页…');
   await view.webContents.loadURL(detailUrl, { waitUntil: 'domcontentloaded', timeout: 20000 }).catch((e) => {
     throw new Error(`打开详情页失败：${e.message}`);

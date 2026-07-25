@@ -26,17 +26,17 @@ async function fillTencentResume(resume, { onStep } = {}) {
   const step = (s, m) => { if (onStep) onStep({ step: s, message: m }); };
   step('start', '开始填写腾讯简历');
 
-  // 检查登录态
+  // 检查登录态（cookie 预检，可能为空——腾讯登录态未必同步到内存 cookie，
+  // 真正判定还是要靠加载页面后看页面内容）
   const ses = session.fromPartition('persist:tencent');
-  const cookies = await ses.cookies.get({ domain: 'tencent.com' });
-  if (cookies.length === 0) {
-    step('error', '未检测到腾讯登录态，请先登录');
-    return { ok: false, status: 'login-required', message: '未登录腾讯' };
-  }
-  step('login-ok', '登录态正常');
+  const cookies = await ses.cookies.get({ domain: 'tencent.com' }).catch(() => []);
+  const hasCookie = cookies.length > 0;
+  step(hasCookie ? 'login-ok' : 'login-uncertain', hasCookie ? '检测到登录 cookie' : '未检测到 cookie，继续尝试加载页面判定');
 
-  // 打开简历页
-  const view = new WebContentsView({ session: ses });
+  // 打开简历页。
+  // 注意：Electron 43 的 WebContentsView 构造函数只认 options.webPreferences，
+  // 顶层 `session` 选项会被静默忽略（会落到 default session），必须用 webPreferences.partition。
+  const view = new WebContentsView({ webPreferences: { partition: 'persist:tencent', contextIsolation: true, sandbox: true } });
   step('loading', '正在打开腾讯简历页…');
   await view.webContents.loadURL(RESUME_URL, { waitUntil: 'domcontentloaded', timeout: 20000 }).catch((e) => {
     throw new Error(`打开简历页失败：${e.message}`);
