@@ -51,13 +51,21 @@ const resume = {
 function createSeed() {
   const now = new Date().toISOString();
   return {
-    meta: { schemaVersion: 1, createdAt: now, updatedAt: now, onboardingSeen: false },
+    meta: {
+      schemaVersion: 2,
+      createdAt: now,
+      updatedAt: now,
+      onboardingSeen: false,
+      privacyAcceptedAt: null
+    },
     companies,
     jobs,
     messages,
     resume,
     cart: [],
     applied: [],
+    audit: [],
+    idempotency: {},
     tasks: [
       { id: 'task-welcome', type: 'system', title: '已就绪', status: 'done', progress: 100, createdAt: now, detail: '点击“刷新全部岗位”开始抓取真实招聘数据。' }
     ],

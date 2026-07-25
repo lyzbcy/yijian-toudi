@@ -16,6 +16,9 @@ test('JsonStore 首次启动生成空状态并能持久化收藏', () => {
   assert.equal(seed.settings.dataMode, 'live');
   assert.ok(seed.settings.jobs.daysBack, 30);
   assert.ok(seed.settings.apiToken.length >= 20);
+  assert.equal(seed.meta.privacyAcceptedAt, null);
+  assert.deepEqual(seed.audit, []);
+  assert.deepEqual(seed.idempotency, {});
   // 插入一条岗位后验证 favorite 持久化
   const id = 'test-job-001';
   store.update((state) => {

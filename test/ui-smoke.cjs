@@ -18,6 +18,12 @@ const { _electron: electron } = require('playwright-core');
     await window.waitForSelector('.hero-card');
     const workspaceControls = await window.locator('#workspaceBar [data-workspace-action]').count();
     if (workspaceControls < 2) throw new Error(`工作区控制按钮不足：${workspaceControls}`);
+    const privacyText = await window.locator('#onboardingPrivacy').textContent();
+    if (!privacyText.includes('保存在本机') || !privacyText.includes('最终投递')) {
+      throw new Error(`首次隐私说明不完整：${privacyText}`);
+    }
+    const backupControls = await window.locator('#backupExportButton, #backupRestoreButton').count();
+    if (backupControls !== 2) throw new Error(`备份恢复按钮数量不正确：${backupControls}`);
     // 首启会弹出 onboarding 选方向 dialog，点"社招"关掉它
     const onboarding = window.locator('#onboardingDialog[open]');
     if (await onboarding.count() > 0) {

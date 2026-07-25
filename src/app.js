@@ -589,6 +589,15 @@ Authorization: Bearer ${state.settings.apiToken}
     $('#exportResumeButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportSnapshot(), '求职快照已导出'));
     $('#fillResumeTencentButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.fillResumeToTencent(), (result) => result.message));
     $('#exportSnapshotButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportSnapshot(), '脱敏快照已导出'));
+    $('#backupExportButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportBackup(), (result) => result.canceled ? '已取消备份' : '备份已保存'));
+    $('#backupRestoreButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
+      const result = await window.oneClick.restoreBackup();
+      if (!result.canceled) {
+        state = await window.oneClick.getState();
+        renderState();
+      }
+      return result;
+    }, (result) => result.canceled ? '已取消恢复' : '备份已恢复'));
     $('#syncEmailButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
       state = await window.oneClick.syncEmail({ address: $('#emailAddress').value.trim(), authorizationCode: $('#emailCode').value.trim() });
       $('#emailCode').value = '';

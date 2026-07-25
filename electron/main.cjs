@@ -19,6 +19,7 @@ const {
   validateCartRules,
   taskStatusForAutomation
 } = require('./review-state.cjs');
+const { createBackup, restoreBackup } = require('./backup.cjs');
 
 let window;
 let store;
@@ -382,6 +383,63 @@ async function exportSnapshot(showDialog = true) {
   return { file };
 }
 
+async function exportBackup() {
+  const defaultPath = path.join(
+    app.getPath('documents'),
+    `一键投递备份-${new Date().toISOString().slice(0, 10)}.json`
+  );
+  const selected = await dialog.showSaveDialog(window, {
+    title: '备份一键投递数据',
+    defaultPath,
+    filters: [{ name: '一键投递备份', extensions: ['json'] }]
+  });
+  if (selected.canceled || !selected.filePath) return { canceled: true };
+  const backup = createBackup(store.get(), app.getVersion());
+  fs.writeFileSync(selected.filePath, `${JSON.stringify(backup, null, 2)}\n`, 'utf8');
+  return { canceled: false, file: selected.filePath };
+}
+
+async function restoreBackupFromFile() {
+  const selected = await dialog.showOpenDialog(window, {
+    title: '选择一键投递备份',
+    properties: ['openFile'],
+    filters: [{ name: '一键投递备份', extensions: ['json'] }]
+  });
+  if (selected.canceled || !selected.filePaths[0]) return { canceled: true };
+
+  const file = selected.filePaths[0];
+  const backup = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const restored = restoreBackup(store.get(), backup);
+  const confirmation = await dialog.showMessageBox(window, {
+    type: 'warning',
+    title: '确认恢复备份',
+    message: '恢复会替换当前简历、岗位、消息和购物车。',
+    detail: '软件会先在本机自动保存一份恢复前备份；Agent Token、邮箱授权码和网站登录态不会被替换。',
+    buttons: ['取消', '确认恢复'],
+    defaultId: 0,
+    cancelId: 0
+  });
+  if (confirmation.response !== 1) return { canceled: true };
+
+  const backupDirectory = path.join(app.getPath('userData'), 'backups');
+  fs.mkdirSync(backupDirectory, { recursive: true });
+  const automaticBackup = path.join(
+    backupDirectory,
+    `恢复前自动备份-${new Date().toISOString().replace(/[:.]/g, '-')}.json`
+  );
+  fs.writeFileSync(
+    automaticBackup,
+    `${JSON.stringify(createBackup(store.get(), app.getVersion()), null, 2)}\n`,
+    'utf8'
+  );
+  store.update(() => restored);
+  await agentServer?.stop();
+  agentServer = null;
+  if (store.get().settings.apiEnabled) await startAgentServer();
+  broadcast();
+  return { canceled: false, file, automaticBackup };
+}
+
 function encryptSecret(value) {
   if (!safeStorage.isEncryptionAvailable()) throw new Error('系统安全存储当前不可用');
   return safeStorage.encryptString(value).toString('base64');
@@ -495,6 +553,7 @@ app.whenReady().then(async () => {
         state.settings.jobs = { ...state.settings.jobs, recruitType: patch.recruitType };
         // 选择求职方向后，标记 onboarding 已完成
         state.meta.onboardingSeen = true;
+        state.meta.privacyAcceptedAt = state.meta.privacyAcceptedAt || new Date().toISOString();
         delete patch.recruitType;
       }
       state.settings = { ...state.settings, ...patch, email: { ...state.settings.email, ...(patch.email || {}) } };
@@ -509,6 +568,8 @@ app.whenReady().then(async () => {
     return next;
   });
   ipcMain.handle('snapshot:export', () => exportSnapshot(true));
+  ipcMain.handle('backup:export', () => exportBackup());
+  ipcMain.handle('backup:restore', () => restoreBackupFromFile());
   ipcMain.handle('external:open', (_event, url) => {
     if (!/^https?:\/\//.test(url)) throw new Error('只允许打开 http(s) 链接');
     return shell.openExternal(url);

@@ -345,6 +345,14 @@
             <label class="switch-row"><span><strong>开启本地 Agent API</strong><small>关闭后外部 Agent 无法查询数据</small></span><input id="apiEnabled" type="checkbox"><i></i></label>
             <label>端口<input id="apiPort" type="number" min="1024" max="65535"></label>
           </section>
+          <section class="content-card settings-card">
+            <h3>本机数据备份</h3>
+            <p>备份包含简历、岗位、招聘消息和购物车，不包含 Agent Token、邮箱授权码或网站登录态。</p>
+            <div class="settings-actions">
+              <button class="primary-button" id="backupExportButton">备份数据</button>
+              <button class="ghost-button" id="backupRestoreButton">恢复备份</button>
+            </div>
+          </section>
           <section class="content-card settings-card dev-log-card">
             <div class="card-toolbar"><div><h3>开发日志</h3><p>内存中最近 50 条，重启后清空。</p></div><button class="ghost-button" id="refreshLogsButton">刷新</button></div>
             <div class="dev-log-list" id="devLogList"><p class="dev-log-empty">点击"刷新"查看日志。</p></div>
@@ -363,6 +371,10 @@
       <img src="./assets/stickers/hello.png" alt="">
       <h2>你好，先选一个方向</h2>
       <p>软件会优先抓取你对应方向的岗位。之后可以在设置里随时更改。</p>
+      <div class="onboarding-privacy" id="onboardingPrivacy">
+        <strong>🔒 你的求职数据保存在本机</strong>
+        <p>简历、招聘消息和网站登录态默认不会上传；邮箱使用 IMAP 授权码并由系统安全存储加密；Agent API 只监听 127.0.0.1；最终投递和简历保存始终由你确认。</p>
+      </div>
       <div class="onboarding-choices">
         <button class="onboarding-choice" data-recruit="social"><span class="choice-icon">👔</span><strong>社招</strong><small>有工作经验，找全职</small></button>
         <button class="onboarding-choice" data-recruit="campus"><span class="choice-icon">🎓</span><strong>校招</strong><small>应届毕业生，找全职</small></button>

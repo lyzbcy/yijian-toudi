@@ -13,6 +13,8 @@ contextBridge.exposeInMainWorld('oneClick', {
   checkUpdate: () => ipcRenderer.invoke('update:check'),
   updateSettings: (settings) => ipcRenderer.invoke('settings:update', settings),
   exportSnapshot: () => ipcRenderer.invoke('snapshot:export'),
+  exportBackup: () => ipcRenderer.invoke('backup:export'),
+  restoreBackup: () => ipcRenderer.invoke('backup:restore'),
   openExternal: (url) => ipcRenderer.invoke('external:open', url),
   showItem: (path) => ipcRenderer.invoke('item:show', path),
   getLogs: () => ipcRenderer.invoke('log:get'),

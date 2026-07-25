@@ -71,6 +71,23 @@ class JsonStore {
     // 3c. 补全 cart/applied（购物车功能，新字段）
     if (!Array.isArray(this.state.cart)) { this.state.cart = []; changed = true; }
     if (!Array.isArray(this.state.applied)) { this.state.applied = []; changed = true; }
+    // 3d. 内测版隐私确认、审计与 Agent 幂等记录
+    if (this.state.meta.privacyAcceptedAt === undefined) {
+      this.state.meta.privacyAcceptedAt = null;
+      changed = true;
+    }
+    if (this.state.meta.schemaVersion < 2) {
+      this.state.meta.schemaVersion = 2;
+      changed = true;
+    }
+    if (!Array.isArray(this.state.audit)) {
+      this.state.audit = [];
+      changed = true;
+    }
+    if (!this.state.idempotency || typeof this.state.idempotency !== 'object') {
+      this.state.idempotency = {};
+      changed = true;
+    }
     // 4. dataMode 旧的 'demo' 已废弃，统一改 'live'
     if (this.state.settings.dataMode === 'demo') {
       this.state.settings.dataMode = 'live';
