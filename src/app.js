@@ -36,6 +36,26 @@
     return String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
   }
 
+  // 能力矩阵 helpers：取代旧的 adapterStatus === 'adapter-ready' 判断
+  // 主区门槛：jobs 至少 degraded（能抓到岗位，哪怕降级）；完全 unsupported 的进次区折叠
+  function isPrimaryCompany(c) {
+    const j = c?.capabilities?.jobs;
+    return j && j !== 'unsupported';
+  }
+  // 点公司卡片：jobs verified 直接打开官网浏览；否则走嵌入式登录/接管
+  function companyClickMode(c) {
+    return c?.capabilities?.jobs === 'verified' ? 'browse' : 'login';
+  }
+  // 五维能力徽章：5 个小圆点 + 中文首字，颜色按 verified/manual/degraded/unsupported 区分
+  function renderCapabilityBadge(caps) {
+    const order = [['jobs', '岗位'], ['login', '登录'], ['resume', '简历'], ['apply', '投递'], ['status', '状态']];
+    const dots = order.map(([key, label]) => {
+      const v = caps?.[key] || 'unsupported';
+      return `<span class="cap-dot cap-${v}" title="${label}：${({ verified: '已验证', manual: '可手动接管', degraded: '降级可用', unsupported: '未适配' })[v]}">${label[0]}</span>`;
+    }).join('');
+    return `<span class="cap-badge">${dots}</span>`;
+  }
+
   // 统一渲染公司 logo：有 logoUrl 用图片（加载失败自动回退字母方块），否则用品牌色字母方块
   function renderLogo(company, sizeClass = '') {
     if (company?.logoUrl) {
@@ -112,6 +132,7 @@
     renderRefreshProgress();
     renderCart();
     renderApplied();
+    renderProfileTabs();
     fillResume();
     renderAgentPrompt();
 
@@ -191,17 +212,29 @@
     }).join('') + (hasMore ? `<div class="load-more"><button class="ghost-button" data-load-more>显示更多岗位（剩余 ${jobs.length - jobPageSize} 个）</button></div>` : '');
   }
 
+  // 公司展示分两区：主区放 jobs≥degraded 的（五维徽章），次区折叠 jobs=unsupported 的。
   function renderCompanies() {
-    $('#companyGrid').innerHTML = state.companies.map((company) => {
-      const statusBadge = company.adapterStatus === 'adapter-ready'
-        ? '<span class="login-status logged-in">可抓取</span>'
-        : '<span class="login-status logged-out">需登录</span>';
-      return `<div class="company-button" data-company="${company.id}">
-        <span class="company-logo-wrap-sm">${renderLogo(company)}</span>
-        <span class="company-name">${escapeHtml(company.name)}</span>
-        ${statusBadge}
-      </div>`;
-    }).join('');
+    const primary = state.companies.filter(isPrimaryCompany);
+    const soon = state.companies.filter((c) => !isPrimaryCompany(c));
+    const primaryEl = $('#companyGridPrimary');
+    const soonEl = $('#companyGridSoon');
+    if (primaryEl) primaryEl.innerHTML = primary.map(renderCompanyCard).join('');
+    if (soonEl) soonEl.innerHTML = soon.map(renderCompanyCard).join('');
+    const soonCount = $('#soonCount');
+    if (soonCount) soonCount.textContent = `${soon.length} 家公司`;
+  }
+
+  function renderCompanyCard(company) {
+    const badge = renderCapabilityBadge(company.capabilities);
+    const dateHtml = company.lastVerifiedAt
+      ? `<span class="verified-date" title="最后验证日期">${escapeHtml(company.lastVerifiedAt)}</span>`
+      : '<span class="verified-date placeholder">未验证</span>';
+    return `<div class="company-button" data-company="${company.id}">
+      <span class="company-logo-wrap-sm">${renderLogo(company)}</span>
+      <span class="company-name">${escapeHtml(company.name)}</span>
+      ${badge}
+      ${dateHtml}
+    </div>`;
   }
 
   // 渲染公司标签筛选 chip：从所有公司的 tags 聚合去重
@@ -337,25 +370,165 @@
     return path.split('.').reduce((value, part) => value?.[part], object);
   }
 
+  // pathSet 支持数字路径段（如 education.0.school）：根据「下一个 part 是不是数字」决定建数组还是对象，
+  // 保证写入后结构完整、不会有稀疏空洞。collectResume 已先把经历数组按 DOM 段数建好，这里只回填字段值。
   function pathSet(object, path, value) {
     const parts = path.split('.');
     const last = parts.pop();
     let target = object;
-    for (const part of parts) {
-      if (target[part] === undefined) target[part] = /^\d+$/.test(part) ? [] : {};
+    parts.forEach((part, i) => {
+      const next = parts[i + 1] || last;
+      const nextIsIndex = /^\d+$/.test(next);
+      if (target[part] === undefined || target[part] === null) {
+        target[part] = nextIsIndex ? [] : {};
+      }
       target = target[part];
-    }
+    });
     target[last] = value;
   }
 
+  // 多段经历的字段模板：每个 group 一组字段定义，与后端 REPEATABLE_GROUPS 对齐。
+  const REPEATABLE_TEMPLATES = {
+    education: [
+      { key: 'school', label: '学校', placeholder: '学校名称', type: 'input' },
+      { key: 'major', label: '专业', placeholder: '专业名称', type: 'input' },
+      { key: 'degree', label: '学历', type: 'select', options: ['', '大专', '本科', '硕士', '博士'], optionLabels: ['请选择', '大专', '本科', '硕士', '博士'] },
+      { key: 'rank', label: '成绩/排名', placeholder: '例如：前 10%', type: 'input' },
+      { key: 'start', label: '开始时间', type: 'month' },
+      { key: 'end', label: '结束时间', type: 'month' },
+      { key: 'courses', label: '主修课程', placeholder: '与目标岗位相关的课程', type: 'textarea', rows: 3, span: true }
+    ],
+    experience: [
+      { key: 'company', label: '公司', placeholder: '公司名称', type: 'input' },
+      { key: 'role', label: '职位', placeholder: '职位名称', type: 'input' },
+      { key: 'start', label: '开始时间', type: 'month' },
+      { key: 'end', label: '结束时间', placeholder: '至今', type: 'month' },
+      { key: 'description', label: '工作描述', placeholder: '负责什么、如何推进、产生什么结果', type: 'textarea', rows: 5, span: true },
+      { key: 'achievements', label: '关键成果', placeholder: '尽量用数字描述', type: 'textarea', rows: 3, span: true }
+    ],
+    projects: [
+      { key: 'name', label: '项目名称', placeholder: '项目名称', type: 'input' },
+      { key: 'role', label: '担任角色', placeholder: '例如：产品负责人', type: 'input' },
+      { key: 'start', label: '开始时间', type: 'month' },
+      { key: 'end', label: '结束时间', type: 'month' },
+      { key: 'link', label: '项目链接', placeholder: 'https://', type: 'input', span: true },
+      { key: 'description', label: '项目说明', placeholder: '背景、你的贡献、最终结果', type: 'textarea', rows: 5, span: true }
+    ]
+  };
+
+  const GROUP_LABELS = { education: '教育经历', experience: '工作经历', projects: '项目经历' };
+
+  // 多份简历 profile 切换条。basic/skills/extras 全局共享，intention+经历 按 profile 隔离。
+  // 切换 profile → 后端切 activeProfileId + syncResumeActiveView → 前端 fillResume 重建段结构 + 回填值。
+  function renderProfileTabs() {
+    const bar = $('#profileTabs');
+    if (!bar) return;
+    const profiles = state.resume.profiles || [];
+    const activeId = state.resume.activeProfileId || profiles[0]?.id;
+    bar.innerHTML = profiles.map((profile) => {
+      const isActive = profile.id === activeId;
+      const canDelete = profiles.length > 1 && profile.id !== 'default';
+      const delBtn = canDelete ? `<button type="button" class="profile-del" data-del-profile="${escapeHtml(profile.id)}" title="删除这份简历">×</button>` : '';
+      return `<button type="button" class="profile-tab ${isActive ? 'active' : ''}" data-profile="${escapeHtml(profile.id)}">
+        <span class="profile-tab-label" data-rename-profile="${escapeHtml(profile.id)}">${escapeHtml(profile.label || profile.id)}</span>
+        ${delBtn}
+      </button>`;
+    }).join('') + `<button type="button" class="profile-tab profile-add" data-add-profile title="新建一份简历">＋</button>`;
+  }
+
+  // 渲染多段经历容器。如实显示 state 里的数组（包括用户刚加的空段），不在渲染层做过滤——
+  // 空段清理放到 collectResume 保存时做，避免「加了段却看不到」。
+  function renderRepeatableSegments(groupKey) {
+    const container = $(`[data-repeat="${groupKey}"]`);
+    if (!container) return;
+    const arr = (state.resume[groupKey] || []).slice();
+    // state 里经历数组不应为空（至少一段），兜底
+    if (arr.length === 0) arr.push({});
+    const ordinals = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+    container.innerHTML = arr.map((item, index) => {
+      const segLabel = `${GROUP_LABELS[groupKey]} ${index + 1}`;
+      const ordinal = ordinals[index] || (index + 1);
+      const fields = REPEATABLE_TEMPLATES[groupKey].map((field) => {
+        const name = `${groupKey}.${index}.${field.key}`;
+        const spanClass = field.span ? ' span-2' : '';
+        if (field.type === 'select') {
+          const options = field.options.map((opt, i) => `<option value="${escapeHtml(opt)}"${item?.[field.key] === opt ? ' selected' : ''}>${escapeHtml(field.optionLabels[i])}</option>`).join('');
+          return `<label class="${spanClass}">${escapeHtml(field.label)}<select name="${name}">${options}</select></label>`;
+        }
+        if (field.type === 'textarea') {
+          return `<label class="${spanClass}">${escapeHtml(field.label)}<textarea name="${name}" rows="${field.rows || 3}" placeholder="${escapeHtml(field.placeholder || '')}">${escapeHtml(item?.[field.key] || '')}</textarea></label>`;
+        }
+        return `<label class="${spanClass}">${escapeHtml(field.label)}<input name="${name}" type="${field.type}" placeholder="${escapeHtml(field.placeholder || '')}" value="${escapeHtml(item?.[field.key] || '')}"></label>`;
+      }).join('');
+      const removeBtn = arr.length > 1
+        ? `<button type="button" class="ghost-button remove-segment" data-remove-segment="${groupKey}" data-index="${index}">删除第${ordinal}段</button>`
+        : '';
+      const warn = index >= 5 ? `<div class="segment-warn">⚠️ 第 ${index + 1} 段可能超出部分招聘网站的保存上限，自动填写时会标记为「需手动填写」</div>` : '';
+      return `<div class="repeatable-segment" data-segment="${index}">
+        <div class="segment-head"><strong>${escapeHtml(segLabel)}</strong>${removeBtn}</div>
+        <div class="form-grid">${fields}</div>
+        ${warn}
+      </div>`;
+    }).join('');
+  }
+
   function fillResume() {
-    if ($('#resumeForm').dataset.loaded === state.resume.updatedAt) return;
-    $$('[name]', $('#resumeForm')).forEach((field) => { field.value = pathGet(state.resume, field.name) || ''; });
-    $('#resumeForm').dataset.loaded = state.resume.updatedAt || 'seed';
+    // 「当前展示的 profile + 数据版本」指纹。切换 profile 或保存后都会变，触发回填；
+    // 用户正在输入时这个指纹不变，不会覆盖输入。
+    const viewFingerprint = `${state.resume.activeProfileId || 'default'}@${state.resume.updatedAt || 'seed'}`;
+    // 段结构只在「段数变化」时重建，避免用户输入到一半被 innerHTML 重置打断。
+    const needsRebuild = ['education', 'experience', 'projects'].some((groupKey) => {
+      const stateCount = Math.max(1, (state.resume[groupKey] || []).length);
+      const domCount = $(`[data-repeat="${groupKey}"] .repeatable-segment`)?.length || 0;
+      return stateCount !== domCount;
+    });
+    if (needsRebuild) {
+      renderRepeatableSegments('education');
+      renderRepeatableSegments('experience');
+      renderRepeatableSegments('projects');
+    }
+    // 值回填：指纹变化时（保存过、切了 profile、新建/删除 profile）
+    if ($('#resumeForm').dataset.loaded !== viewFingerprint) {
+      $$('[name]', $('#resumeForm')).forEach((field) => {
+        if (field.name) field.value = pathGet(state.resume, field.name) ?? (field.type === 'select' ? '' : '');
+      });
+      $('#resumeForm').dataset.loaded = viewFingerprint;
+    }
   }
 
   function collectResume() {
+    const resume = collectResumeWithoutTrimming();
+    // 清理尾部全空段（保留至少一段），避免攒一堆空段；中间的空段保留，因为段序号有意义
+    for (const groupKey of ['education', 'experience', 'projects']) {
+      const template = REPEATABLE_TEMPLATES[groupKey];
+      while (resume[groupKey].length > 1) {
+        const last = resume[groupKey][resume[groupKey].length - 1];
+        const allEmpty = template.every((field) => !String(last?.[field.key] || '').trim());
+        if (allEmpty) resume[groupKey].pop();
+        else break;
+      }
+    }
+    return resume;
+  }
+
+  // collectResume 的不清理版本：如实保留 DOM 里的所有段（包括尾部空段）。
+  // 添加段时用它，避免「用户加了空段→collectResume 清掉→save→又只剩 1 段」。
+  function collectResumeWithoutTrimming() {
     const resume = structuredClone(state.resume);
+    for (const groupKey of ['education', 'experience', 'projects']) {
+      const existing = resume[groupKey] || [];
+      const indices = new Set();
+      $$(`[data-repeat="${groupKey}"] [name]`).forEach((field) => {
+        const match = field.name.match(new RegExp(`^${groupKey}\\.(\\d+)\\.`));
+        if (match) indices.add(Number(match[1]));
+      });
+      const maxIndex = indices.size ? Math.max(...indices) : 0;
+      const newArr = [];
+      for (let i = 0; i <= maxIndex; i++) {
+        newArr.push(existing[i] || {});
+      }
+      resume[groupKey] = newArr;
+    }
     $$('[name]', $('#resumeForm')).forEach((field) => pathSet(resume, field.name, field.value.trim()));
     return resume;
   }
@@ -388,6 +561,45 @@ Authorization: Bearer ${state.settings.apiToken}
 5. 岗位数据来自真实抓取，请如实反映每个岗位的数据来源；
 6. 当响应里的 requiresReview 为 true，或状态为 review-required、login-required、manual-required 时，必须提醒我回到“一键投递”处理，不得宣称动作已完成；
 7. 不要在回复中泄露这段 Token。`;
+  }
+
+  // 腾讯简历填写后的差异报告弹窗：展示每个本地字段的计划动作（fill/skip/manual）+ 风险提示
+  function showResumeReport(result) {
+    const plan = result.patchPlan;
+    const actionLabels = {
+      fill: { text: '将填写', cls: 'action-fill' },
+      skip: { text: '已一致', cls: 'action-skip' },
+      manual: { text: '需手动', cls: 'action-manual' }
+    };
+    const rows = plan.patches.map((p) => {
+      const a = actionLabels[p.action] || actionLabels.manual;
+      const fieldValue = (v) => v ? escapeHtml(v) : '<span class="empty">（空）</span>';
+      return `<tr>
+        <td><code>${escapeHtml(p.key)}</code>${p.segmentLabel ? `<small>${escapeHtml(p.segmentLabel)}</small>` : ''}</td>
+        <td>${fieldValue(p.localValue)}</td>
+        <td>${fieldValue(p.remoteValue)}</td>
+        <td><span class="report-action ${a.cls}">${a.text}</span></td>
+        <td>${p.matchedField ? `<span class="matched-field">${escapeHtml(p.matchedField)}</span>` : '<span class="empty">未匹配</span>'}<small>${escapeHtml(p.risk || '')}</small></td>
+      </tr>`;
+    }).join('');
+    const s = plan.summary;
+    $('#resumeReportContent').innerHTML = `
+      <div class="report-head">
+        <h2>腾讯简历字段核对</h2>
+        <p>软件已按本地简历自动填写，<strong>没有点击保存</strong>。请在右侧浏览器工作区逐项核对后，自行点击官网保存按钮。</p>
+        <div class="report-summary">
+          <span class="chip chip-fill">将填写 ${s.fill}</span>
+          <span class="chip chip-skip">已一致 ${s.skip}</span>
+          <span class="chip chip-manual">需手动 ${s.manual}</span>
+        </div>
+      </div>
+      <div class="report-table-wrap">
+        <table class="report-table">
+          <thead><tr><th>本地字段</th><th>本地值</th><th>腾讯当前值</th><th>动作</th><th>匹配 / 风险</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+    $('#resumeReportDialog').showModal();
   }
 
   function showJob(id) {
@@ -484,7 +696,15 @@ Authorization: Bearer ${state.settings.apiToken}
   async function init() {
     state = await window.oneClick.getState();
     renderState();
-    window.oneClick.onStateChanged((next) => { state = next; renderState(); });
+    // onStateChanged 是异步广播，可能在本地操作（saveResume/switchProfile 等）返回后被旧事件覆盖。
+    // 本地发起写操作时记一个序号，操作完成前收到的广播一律忽略，完成后再放行。
+    let localWriteInFlight = false;
+    window.oneClick.onStateChanged((next) => {
+      if (!next) return;
+      if (localWriteInFlight) return; // 本地写操作进行中，忽略中间广播
+      state = next;
+      renderState();
+    });
     window.oneClick.onWorkspaceChanged(renderWorkspaceStatus);
     await refreshWorkspaceStatus();
 
@@ -529,6 +749,24 @@ Authorization: Bearer ${state.settings.apiToken}
         renderState();
         return;
       }
+      const removeSegmentBtn = event.target.closest('[data-remove-segment]');
+      if (removeSegmentBtn) {
+        const groupKey = removeSegmentBtn.dataset.removeSegment;
+        const index = Number(removeSegmentBtn.dataset.index);
+        // 删除前确认：非空段才确认，避免删空段还要点确认
+        const arr = state.resume[groupKey] || [];
+        const seg = arr[index];
+        const template = REPEATABLE_TEMPLATES[groupKey];
+        const hasContent = seg && template.some((f) => String(seg[f.key] || '').trim());
+        if (hasContent && !confirm(`确定删除第 ${index + 1} 段${GROUP_LABELS[groupKey]}吗？这一段的内容会从本机简历移除。`)) return;
+        // 用不清理版本收集，避免其他空段也被误删
+        const currentResume = collectResumeWithoutTrimming();
+        currentResume[groupKey].splice(index, 1);
+        if (currentResume[groupKey].length === 0) currentResume[groupKey].push({}); // 至少保留一段
+        state = await window.oneClick.saveResume(currentResume);
+        renderState();
+        return;
+      }
       const emptyRefresh = event.target.closest('[data-empty-refresh]');
       if (emptyRefresh) {
         run(emptyRefresh, () => window.oneClick.refreshJobs(), (result) => result.message);
@@ -546,8 +784,8 @@ Authorization: Bearer ${state.settings.apiToken}
       if (company) {
         const id = company.dataset.company || company.dataset.openCompany;
         const c = companyMap()[id];
-        // adapter-ready 的公司抓取不需要登录，直接打开官网浏览；其余公司引导在软件内登录
-        if (c?.adapterStatus === 'adapter-ready') {
+        // jobs verified 的公司抓取不需要登录，直接打开官网浏览；其余公司引导在软件内登录/接管
+        if (companyClickMode(c) === 'browse') {
           await run(company, () => window.oneClick.openCompany(id), '招聘官网已在浏览器中打开');
         } else {
           await openEmbeddedLogin(id);
@@ -588,8 +826,90 @@ Authorization: Bearer ${state.settings.apiToken}
       state = await window.oneClick.saveResume(collectResume());
       renderState();
     }, '简历已安全保存在本机'));
+    // 新建简历 profile
+    $('#resumeProfilesBar').addEventListener('click', async (event) => {
+      const addBtn = event.target.closest('[data-add-profile]');
+      if (addBtn) {
+        const label = prompt('给这份简历起个名字（比如：产品方向、运营方向、实习）', '');
+        if (label === null) return; // 用户取消
+        const result = await window.oneClick.addProfile(label);
+        state = result.state;
+        renderState();
+        toast(`已创建「${label || '简历 ' + state.resume.profiles.length}」`);
+        return;
+      }
+      const delBtn = event.target.closest('[data-del-profile]');
+      if (delBtn) {
+        event.stopPropagation();
+        const profileId = delBtn.dataset.delProfile;
+        const profile = state.resume.profiles.find((p) => p.id === profileId);
+        if (!confirm(`确定删除「${profile?.label || profileId}」吗？这份的意向和经历会从本机移除（联系方式等共享信息不受影响）。`)) return;
+        state = await window.oneClick.deleteProfile(profileId);
+        renderState();
+        toast('已删除这份简历');
+        return;
+      }
+      // 单击 tab → 切换（label 也在 tab 内，点击 label 同样切换）
+      const tab = event.target.closest('[data-profile]');
+      if (tab) {
+        const profileId = tab.dataset.profile;
+        if (profileId === state.resume.activeProfileId) return;
+        // 切换前保存当前编辑（避免丢输入），再切。两次写操作期间会有广播，
+        // 用 localWriteInFlight 标记屏蔽中间广播；切换后主动 getState 拿权威最新状态，
+        // 避免 switchProfile 返回值被积压的旧广播（saveResume 时的，active=旧 profile）覆盖。
+        localWriteInFlight = true;
+        try {
+          await window.oneClick.saveResume(collectResume());
+          await window.oneClick.switchProfile(profileId);
+          state = await window.oneClick.getState();
+        } catch (e) {
+          toast(e.message || '切换失败', 'error');
+        } finally {
+          localWriteInFlight = false;
+        }
+        renderState();
+        const p = state.resume.profiles.find((x) => x.id === profileId);
+        toast(`已切换到「${p?.label || profileId}」`);
+        return;
+      }
+    });
+    // 双击 label → 重命名（避免和单击切换冲突）
+    $('#resumeProfilesBar').addEventListener('dblclick', async (event) => {
+      const renameTarget = event.target.closest('[data-rename-profile]');
+      if (!renameTarget) return;
+      event.preventDefault();
+      const profileId = renameTarget.dataset.renameProfile;
+      const profile = state.resume.profiles.find((p) => p.id === profileId);
+      const label = prompt('重命名这份简历', profile?.label || '');
+      if (label === null || !label.trim()) return;
+      state = await window.oneClick.renameProfile(profileId, label.trim());
+      renderState();
+      toast('已重命名');
+    });
+    // 多段经历：添加段。直接基于 DOM 当前段数追加空段，不经过 collectResume 的尾部清理
+    // （否则用户没填内容的空段会被清掉，导致「加了又没了」）。
+    $$('[data-add-segment]').forEach((button) => button.addEventListener('click', async () => {
+      const groupKey = button.dataset.addSegment;
+      // 从 DOM 读取当前所有段的值（不清理），再追加一个空段
+      const currentResume = collectResumeWithoutTrimming();
+      currentResume[groupKey] = [...(currentResume[groupKey] || []), {}];
+      state = await window.oneClick.saveResume(currentResume);
+      renderState();
+      // 滚动到新加的段
+      const segments = $$(`[data-repeat="${groupKey}"] .repeatable-segment`);
+      segments[segments.length - 1]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      toast(`已添加第 ${segments.length} 段${GROUP_LABELS[groupKey]}`);
+    }));
+    // 删除段：事件委托在 document 上（见 init 末尾的全局 click 委托），这里不单独绑
     $('#exportResumeButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportSnapshot(), '求职快照已导出'));
-    $('#fillResumeTencentButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.fillResumeToTencent(), (result) => result.message));
+    $('#fillResumeTencentButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
+      const result = await window.oneClick.fillResumeToTencent();
+      // 填写后若带回差异报告（patchPlan），弹窗展示逐字段命中情况，让用户核对
+      if (result?.patchPlan?.patches?.length) {
+        showResumeReport(result);
+      }
+      return result;
+    }, (result) => result?.message || '已更新到腾讯'));
     $('#exportSnapshotButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportSnapshot(), '脱敏快照已导出'));
     $('#backupExportButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportBackup(), (result) => result.canceled ? '已取消备份' : '备份已保存'));
     $('#backupRestoreButton').addEventListener('click', (event) => run(event.currentTarget, async () => {

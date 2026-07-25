@@ -1,16 +1,11 @@
 const { app, BrowserWindow, ipcMain, shell, dialog, safeStorage, net } = require('electron');
 const fs = require('node:fs');
 const path = require('node:path');
-const { JsonStore, calculateResumeCompletion } = require('./store.cjs');
+const { JsonStore, calculateResumeCompletion, applyResumeEdit, switchProfile, addProfile, deleteProfile, renameProfile, migrateFlatResumeToProfiles } = require('./store.cjs');
 const { BrowserAutomation } = require('./automation.cjs');
 const { AgentServer } = require('./agent-server.cjs');
 const { syncQqMail } = require('./mail.cjs');
-const { listTencentJobs } = require('./adapters/tencent.cjs');
-const { listBaiduJobs } = require('./adapters/baidu.cjs');
-const { listBytedanceJobs } = require('./adapters/bytedance.cjs');
-const { listXiaomiJobs } = require('./adapters/xiaomi.cjs');
-const { listJdJobs } = require('./adapters/jd.cjs');
-const { listMeituanJobs } = require('./adapters/meituan.cjs');
+const registry = require('./adapters/registry.cjs');
 const { logger } = require('./logger.cjs');
 const loginManager = require('./login-manager.cjs');
 const {
@@ -107,9 +102,9 @@ async function handleCommand(command) {
   if (command.action === 'apply_cart') return applyCart();
   if (command.action === 'fill_resume') {
     const currentState = store.get();
-    const { fillTencentResume } = require('./adapters/tencent-fill.cjs');
+    const adapter = registry.getAdapter('tencent');
     const company = currentState.companies.find((item) => item.id === 'tencent');
-    return fillTencentResume(currentState.resume, {
+    return adapter.fillResume(currentState.resume, {
       workspace: loginManager,
       company
     });
@@ -141,14 +136,14 @@ async function startAgentServer() {
 
 // 已适配的公司抓取器。每加一家，在这里登记一行即可被 refreshJobs 自动调用。
 // idPrefix 用于合并时按公司清理旧数据、保留已收藏岗位。
-const JOB_ADAPTERS = [
-  { companyId: 'tencent', name: '腾讯', idPrefix: 'tencent-', fetch: (opts) => listTencentJobs(opts) },
-  { companyId: 'baidu', name: '百度', idPrefix: 'baidu-', fetch: (opts) => listBaiduJobs(opts) },
-  { companyId: 'bytedance', name: '字节跳动', idPrefix: 'bytedance-', fetch: (opts) => listBytedanceJobs(opts) },
-  { companyId: 'xiaomi', name: '小米', idPrefix: 'xiaomi-', fetch: (opts) => listXiaomiJobs(opts) },
-  { companyId: 'jd', name: '京东', idPrefix: 'jd-', fetch: (opts) => listJdJobs(opts) },
-  { companyId: 'meituan', name: '美团', idPrefix: 'meituan-', fetch: (opts) => listMeituanJobs(opts) }
-];
+// registry 里每个 entry 用 listJobs/id/...，这里转成 refreshJobs 期望的字段名（fetch/companyId），
+// 让 refreshJobs 不用改。后续 refreshJobs 重构时可直接消费 registry.listJobAdapters()。
+const JOB_ADAPTERS = registry.listJobAdapters().map((adapter) => ({
+  companyId: adapter.id,
+  name: adapter.name,
+  idPrefix: adapter.idPrefix,
+  fetch: (opts) => adapter.listJobs(opts)
+}));
 
 async function refreshJobs() {
   const settings = store.get().settings;
@@ -285,10 +280,12 @@ async function toggleCart(jobId) {
 }
 
 // 一键投递：用已登录 session 打开招聘网站执行真实投递（agent.md 核心目标）
-// 每家公司的投递由对应适配器执行，底层复用 persist:<companyId> session
-const APPLY_ADAPTERS = {
-  tencent: { apply: (job, opts) => require('./adapters/tencent-apply.cjs').applyTencentJob(job, opts) }
-};
+// 每家公司的投递由对应适配器执行，底层复用 persist:<companyId> session。
+// registry 里 prepareApplication 为 null 的公司，applyCart 会标 manual-required（让用户手动接管）。
+function getApplyAdapter(companyId) {
+  const adapter = registry.getAdapter(companyId);
+  return adapter?.prepareApplication ? adapter : null;
+}
 
 async function applyCart() {
   const currentState = store.get();
@@ -311,7 +308,7 @@ async function applyCart() {
 
   const job = cart[0];
   const company = currentState.companies.find((item) => item.id === job.companyId);
-  const adapter = APPLY_ADAPTERS[job.companyId];
+  const adapter = getApplyAdapter(job.companyId);
   const id = addTask({
     type: 'browser',
     title: `准备投递：${job.title}`,
@@ -329,7 +326,7 @@ async function applyCart() {
     logger.warn('无投递适配器', { company: job.companyId, job: job.id });
   } else {
     try {
-      const adapterResult = await adapter.apply(job, {
+      const adapterResult = await adapter.prepareApplication(job, {
         workspace: loginManager,
         company,
         taskId: id,
@@ -432,7 +429,13 @@ async function restoreBackupFromFile() {
     `${JSON.stringify(createBackup(store.get(), app.getVersion()), null, 2)}\n`,
     'utf8'
   );
-  store.update(() => restored);
+  store.update((state) => {
+    // 旧版备份（v0.2）的 resume 是扁平 schema（无 profiles），恢复后先迁成多 profile，
+    // 否则 update 末尾的 syncResumeActiveView 会把顶层 intention/education 当空模板清掉、丢数据。
+    migrateFlatResumeToProfiles(state.resume);
+    return state;
+  });
+  store.migrate(); // 顺带补公司 capabilities 等其它字段
   await agentServer?.stop();
   agentServer = null;
   if (store.get().settings.apiEnabled) await startAgentServer();
@@ -477,9 +480,31 @@ app.whenReady().then(async () => {
   ipcMain.handle('state:get', () => store.get());
   ipcMain.handle('resume:save', (_event, resume) => {
     const next = store.update((state) => {
-      state.resume = { ...resume, updatedAt: new Date().toISOString(), completion: calculateResumeCompletion(resume) };
+      state.resume = applyResumeEdit(state.resume, resume);
       return state;
     });
+    broadcast();
+    return next;
+  });
+  // 多份简历：切换/新建/删除/重命名。这些操作只改 profiles 结构，不碰字段内容。
+  ipcMain.handle('resume:switch-profile', (_event, profileId) => {
+    const next = store.update((state) => { switchProfile(state.resume, profileId); return state; });
+    broadcast();
+    return next;
+  });
+  ipcMain.handle('resume:add-profile', (_event, label) => {
+    let newId;
+    const next = store.update((state) => { newId = addProfile(state.resume, label); return state; });
+    broadcast();
+    return { state: next, profileId: newId };
+  });
+  ipcMain.handle('resume:delete-profile', (_event, profileId) => {
+    const next = store.update((state) => { deleteProfile(state.resume, profileId); return state; });
+    broadcast();
+    return next;
+  });
+  ipcMain.handle('resume:rename-profile', (_event, profileId, label) => {
+    const next = store.update((state) => { renameProfile(state.resume, profileId, label); return state; });
     broadcast();
     return next;
   });
@@ -488,10 +513,10 @@ app.whenReady().then(async () => {
     const currentState = store.get();
     const resume = currentState.resume;
     const company = currentState.companies.find((item) => item.id === 'tencent');
-    const { fillTencentResume } = require('./adapters/tencent-fill.cjs');
+    const adapter = registry.getAdapter('tencent');
     const id = addTask({ type: 'browser', title: '更新简历到腾讯', detail: '正在打开腾讯简历页…' });
     try {
-      const result = await fillTencentResume(resume, {
+      const result = await adapter.fillResume(resume, {
         workspace: loginManager,
         company,
         taskId: id,

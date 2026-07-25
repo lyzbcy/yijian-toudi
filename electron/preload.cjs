@@ -3,6 +3,10 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('oneClick', {
   getState: () => ipcRenderer.invoke('state:get'),
   saveResume: (resume) => ipcRenderer.invoke('resume:save', resume),
+  switchProfile: (profileId) => ipcRenderer.invoke('resume:switch-profile', profileId),
+  addProfile: (label) => ipcRenderer.invoke('resume:add-profile', label),
+  deleteProfile: (profileId) => ipcRenderer.invoke('resume:delete-profile', profileId),
+  renameProfile: (profileId, label) => ipcRenderer.invoke('resume:rename-profile', profileId, label),
   fillResumeToTencent: () => ipcRenderer.invoke('resume:fill-tencent'),
   toggleFavorite: (jobId) => ipcRenderer.invoke('job:favorite', jobId),
   toggleCart: (jobId) => ipcRenderer.invoke('cart:toggle', jobId),

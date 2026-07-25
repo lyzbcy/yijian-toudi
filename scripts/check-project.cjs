@@ -30,8 +30,16 @@ if (pageVersion === version.v) pass(`介绍页 PAGE_V 与 version.json 一致（
 else fail(`介绍页版本不一致：PAGE_V=${pageVersion}, version.json=${version.v}`);
 
 const formFields = [...appHtml.matchAll(/<(?:input|select|textarea)[^>]+name=["']([^"']+)["']/g)].map((match) => match[1]);
-if (formFields.length >= 30) pass(`统一简历表单包含 ${formFields.length} 个字段`);
-else fail(`简历字段不足：${formFields.length}`);
+// 多段经历（教育/工作/项目）改成动态渲染后，HTML 里只剩全局字段；这三类的字段模板在 app.js 的 REPEATABLE_TEMPLATES。
+// 静态检查改为：全局字段 ≥ 20 且三组「添加段」按钮都存在，即视为简历结构完整。
+const addSegmentBtns = [...appHtml.matchAll(/data-add-segment=["']([^"']+)["']/g)].map((match) => match[1]);
+const requiredGroups = ['education', 'experience', 'projects'];
+const hasAllGroups = requiredGroups.every((g) => addSegmentBtns.includes(g));
+if (formFields.length >= 20 && hasAllGroups) {
+  pass(`统一简历表单包含 ${formFields.length} 个全局字段 + 3 组动态多段经历`);
+} else {
+  fail(`简历结构不完整：全局字段 ${formFields.length} 个，多段组 [${addSegmentBtns.join(',')}]`);
+}
 
 const packageJson = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
 if (packageJson.build?.mac && packageJson.build?.win) pass('打包配置同时保留 macOS 与 Windows');

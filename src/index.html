@@ -137,14 +137,22 @@
           <div class="progress-ring" id="resumeRing"><b id="resumeCompletion">0%</b><span>完整度</span></div>
           <div>
             <span class="soft-label">统一简历源</span>
-            <h2>只维护这一份，适配器负责填到各平台</h2>
-            <p>字段按招聘网站常见要求设计；保存只写入本机，不会自动上传。</p>
+            <h2>按求职方向维护多份，基本信息共享</h2>
+            <p>联系方式、技能、证书等通用信息在所有简历间共享；意向和经历按方向独立保存。</p>
           </div>
           <div class="resume-summary-actions">
             <button class="ghost-button" id="exportResumeButton">导出求职快照</button>
             <button class="ghost-button" id="fillResumeTencentButton">更新到腾讯</button>
             <button class="primary-button" id="saveResumeButton">保存简历</button>
           </div>
+        </div>
+
+        <div class="resume-profiles content-card" id="resumeProfilesBar">
+          <div class="profiles-label">
+            <strong>当前编辑</strong>
+            <small>切换不同方向，意向和经历各自独立</small>
+          </div>
+          <div class="profiles-tabs" id="profileTabs"></div>
         </div>
 
         <form id="resumeForm" class="resume-layout">
@@ -184,38 +192,19 @@
               </div>
             </section>
             <section class="form-section content-card" id="resume-education">
-              <div class="section-heading"><span>03</span><div><h3>教育经历</h3><p>首版支持一段主要学历</p></div></div>
-              <div class="form-grid">
-                <label>学校<input name="education.0.school" placeholder="学校名称"></label>
-                <label>专业<input name="education.0.major" placeholder="专业名称"></label>
-                <label>学历<select name="education.0.degree"><option value="">请选择</option><option>大专</option><option>本科</option><option>硕士</option><option>博士</option></select></label>
-                <label>成绩/排名<input name="education.0.rank" placeholder="例如：前 10%"></label>
-                <label>开始时间<input name="education.0.start" type="month"></label>
-                <label>结束时间<input name="education.0.end" type="month"></label>
-                <label class="span-2">主修课程<textarea name="education.0.courses" rows="3" placeholder="与目标岗位相关的课程"></textarea></label>
-              </div>
+              <div class="section-heading"><span>03</span><div><h3>教育经历</h3><p>可加多段；多数招聘网站最多保存前 3-5 段，多余的会被标记为需手动填写</p></div></div>
+              <div class="repeatable-list" data-repeat="education"></div>
+              <button type="button" class="ghost-button add-segment" data-add-segment="education">＋ 添加一段教育经历</button>
             </section>
             <section class="form-section content-card" id="resume-experience">
-              <div class="section-heading"><span>04</span><div><h3>工作经历</h3><p>建议使用“行动 + 结果”表达</p></div></div>
-              <div class="form-grid">
-                <label>公司<input name="experience.0.company" placeholder="公司名称"></label>
-                <label>职位<input name="experience.0.role" placeholder="职位名称"></label>
-                <label>开始时间<input name="experience.0.start" type="month"></label>
-                <label>结束时间<input name="experience.0.end" type="month" placeholder="至今"></label>
-                <label class="span-2">工作描述<textarea name="experience.0.description" rows="5" placeholder="负责什么、如何推进、产生什么结果"></textarea></label>
-                <label class="span-2">关键成果<textarea name="experience.0.achievements" rows="3" placeholder="尽量用数字描述"></textarea></label>
-              </div>
+              <div class="section-heading"><span>04</span><div><h3>工作经历</h3><p>可加多段；建议倒序（最近的工作写第一段）。多余段在招聘网站会被标记为需手动填写</p></div></div>
+              <div class="repeatable-list" data-repeat="experience"></div>
+              <button type="button" class="ghost-button add-segment" data-add-segment="experience">＋ 添加一段工作经历</button>
             </section>
             <section class="form-section content-card" id="resume-project">
-              <div class="section-heading"><span>05</span><div><h3>项目经历</h3><p>展示与你的目标岗位最相关的项目</p></div></div>
-              <div class="form-grid">
-                <label>项目名称<input name="projects.0.name" placeholder="项目名称"></label>
-                <label>担任角色<input name="projects.0.role" placeholder="例如：产品负责人"></label>
-                <label>开始时间<input name="projects.0.start" type="month"></label>
-                <label>结束时间<input name="projects.0.end" type="month"></label>
-                <label class="span-2">项目链接<input name="projects.0.link" placeholder="https://"></label>
-                <label class="span-2">项目说明<textarea name="projects.0.description" rows="5" placeholder="背景、你的贡献、最终结果"></textarea></label>
-              </div>
+              <div class="section-heading"><span>05</span><div><h3>项目经历</h3><p>展示与你的目标岗位最相关的项目；可加多段</p></div></div>
+              <div class="repeatable-list" data-repeat="projects"></div>
+              <button type="button" class="ghost-button add-segment" data-add-segment="projects">＋ 添加一段项目经历</button>
             </section>
             <section class="form-section content-card" id="resume-skills">
               <div class="section-heading"><span>06</span><div><h3>技能与证书</h3><p>用于关键词匹配和平台字段映射</p></div></div>
@@ -288,9 +277,16 @@
             <button class="primary-button" id="syncEmailButton">连接并同步</button>
           </article>
           <article class="content-card connection-card">
-            <div class="connection-head"><span class="company-logo chrome">●</span><div><h3>招聘网站浏览器</h3><p>独立资料目录保留登录态</p></div><b>本地</b></div>
-            <p class="connection-copy">点击公司后会打开系统 Chrome/Edge。出现验证码时，请在真实浏览器里接管。</p>
-            <div class="company-grid" id="companyGrid"></div>
+            <div class="connection-head"><span class="company-logo chrome">●</span><div><h3>招聘网站浏览器</h3><p>五维能力一目了然，独立资料目录保留登录态</p></div><b>本地</b></div>
+            <p class="connection-copy">能力徽章：<b>岗</b>位抓取 · <b>登</b>录 · <b>简</b>历 · <b>投</b>递 · <b>状</b>态。绿色=已验证，黄色=可手动接管，橙色=降级，灰色=未适配。</p>
+            <div class="company-section">
+              <div class="company-section-head"><strong>已接入</strong><span>岗位可抓取，逐项能力真实展示</span></div>
+              <div class="company-grid company-grid-primary" id="companyGridPrimary"></div>
+            </div>
+            <details class="company-section company-section-soon">
+              <summary><strong>即将支持</strong><span class="soon-count" id="soonCount">0 家公司</span><small>展开查看</small></summary>
+              <div class="company-grid company-grid-soon" id="companyGridSoon"></div>
+            </details>
           </article>
         </div>
       </section>
@@ -398,6 +394,11 @@
     </div>
   </dialog>
   <button id="promoButton" class="promo-button">🐟 关于捞鱼</button>
+
+  <dialog id="resumeReportDialog" class="dialog resume-report-dialog">
+    <button class="dialog-close" aria-label="关闭">×</button>
+    <div id="resumeReportContent"></div>
+  </dialog>
 
   <script src="./app.js"></script>
 </body>

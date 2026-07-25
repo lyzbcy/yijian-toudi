@@ -41,6 +41,11 @@ const { _electron: electron } = require('playwright-core');
     await window.waitForSelector('#resume-basic');
     const fields = await window.locator('#resumeForm [name]').count();
     if (fields < 30) throw new Error(`简历字段数量不足：${fields}`);
+    // 多段经历：默认每个 group 至少 1 段，且有「添加段」按钮
+    const eduSegments = await window.locator('[data-repeat="education"] .repeatable-segment').count();
+    if (eduSegments < 1) throw new Error(`教育经历应至少有 1 段，实际 ${eduSegments}`);
+    const addBtns = await window.locator('[data-add-segment]').count();
+    if (addBtns !== 3) throw new Error(`应有 3 个添加段按钮（教育/工作/项目），实际 ${addBtns}`);
     await window.screenshot({ path: path.join(output, 'desktop-resume.png'), fullPage: true });
     await window.locator('[data-page="agent"]').first().click();
     await window.waitForSelector('#agentPrompt');
