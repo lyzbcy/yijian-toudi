@@ -18,6 +18,7 @@ contextBridge.exposeInMainWorld('oneClick', {
   openCompany: (companyId) => ipcRenderer.invoke('company:open', companyId),
   syncEmail: (credentials) => ipcRenderer.invoke('email:sync', credentials),
   checkUpdate: () => ipcRenderer.invoke('update:check'),
+  downloadUpdate: (info) => ipcRenderer.invoke('update:download', info),
   updateSettings: (settings) => ipcRenderer.invoke('settings:update', settings),
   exportSnapshot: () => ipcRenderer.invoke('snapshot:export'),
   exportApplied: () => ipcRenderer.invoke('applied:export'),

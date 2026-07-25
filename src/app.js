@@ -210,7 +210,7 @@
       empty.classList.remove('hidden');
       empty.innerHTML = hasAnyJobs
         ? '<span>⌕</span><h3>没有找到匹配岗位</h3><p>换个关键词或清空筛选试试。</p>'
-        : '<span>↻</span><h3>还没有岗位数据</h3><p>点击下方按钮，从各大厂招聘官网抓取真实岗位。</p><button class="primary-button" data-empty-refresh>刷新全部岗位</button>';
+        : '<img src="./assets/stickers/sparkle.png" alt="" class="empty-sticker"><h3>还没有岗位数据</h3><p>点击下方按钮，从各大厂招聘官网抓取真实岗位。</p><button class="primary-button" data-empty-refresh>刷新全部岗位</button>';
     }
     const visible = jobs.slice(0, jobPageSize);
     const hasMore = jobs.length > jobPageSize;
@@ -288,7 +288,7 @@
     $('#stageTabs').innerHTML = stages.map((stage) => `<button class="${activeStage === stage ? 'active' : ''}" data-stage="${stage}">${stage} <span>${stage === '全部' ? state.messages.length : state.messages.filter((message) => message.stage === stage).length}</span></button>`).join('');
     const messages = state.messages.filter((message) => activeStage === '全部' || message.stage === activeStage);
     if (messages.length === 0) {
-      $('#messageList').innerHTML = `<div class="empty-state"><span>✉</span><h3>还没有招聘邮件</h3><p>连接 QQ 邮箱后，这里会自动同步面试、测评和 Offer 邮件。</p><button class="ghost-button" data-page="connections">去连接邮箱</button></div>`;
+      $('#messageList').innerHTML = `<div class="empty-state"><img src="./assets/stickers/hello.png" alt="" class="empty-sticker"><h3>还没有招聘邮件</h3><p>连接 QQ 邮箱后，这里会自动同步面试、测评和 Offer 邮件。</p><button class="ghost-button" data-page="connections">去连接邮箱</button></div>`;
     } else {
       $('#messageList').innerHTML = messages.map((message) => `<article class="message-item ${message.unread ? 'unread' : ''} ${message.id === selectedMessageId ? 'active' : ''}" data-message="${message.id}">
         <span class="message-company">${escapeHtml(message.company.slice(0, 1))}</span>
@@ -591,7 +591,8 @@
         if (field.type === 'textarea') {
           return `<label class="${spanClass}">${escapeHtml(field.label)}<textarea name="${name}" rows="${field.rows || 3}" placeholder="${escapeHtml(field.placeholder || '')}">${escapeHtml(item?.[field.key] || '')}</textarea></label>`;
         }
-        return `<label class="${spanClass}">${escapeHtml(field.label)}<input name="${name}" type="${field.type}" placeholder="${escapeHtml(field.placeholder || '')}" value="${escapeHtml(item?.[field.key] || '')}"></label>`;
+        const inputType = field.type === 'input' ? 'text' : field.type;
+        return `<label class="${spanClass}">${escapeHtml(field.label)}<input name="${name}" type="${inputType}" placeholder="${escapeHtml(field.placeholder || '')}" value="${escapeHtml(item?.[field.key] || '')}"></label>`;
       }).join('');
       const removeBtn = arr.length > 1
         ? `<button type="button" class="ghost-button remove-segment" data-remove-segment="${groupKey}" data-index="${index}">删除第${ordinal}段</button>`
@@ -605,20 +606,18 @@
     }).join('');
   }
 
+  // fillResume 防止频繁广播（如 refreshJobs 抓岗位时）反复重建段结构、清空用户输入。
+  // 用 renderedFingerprint 记录「上次完整渲染的 profile+段数指纹」，只有指纹真变了才重建。
+  let renderedFingerprint = '';
   function fillResume() {
-    // 「当前展示的 profile + 数据版本」指纹。切换 profile 或保存后都会变，触发回填；
-    // 用户正在输入时这个指纹不变，不会覆盖输入。
     const viewFingerprint = `${state.resume.activeProfileId || 'default'}@${state.resume.updatedAt || 'seed'}`;
-    // 段结构只在「段数变化」时重建，避免用户输入到一半被 innerHTML 重置打断。
-    const needsRebuild = ['education', 'experience', 'projects'].some((groupKey) => {
-      const stateCount = Math.max(1, (state.resume[groupKey] || []).length);
-      const domCount = $(`[data-repeat="${groupKey}"] .repeatable-segment`)?.length || 0;
-      return stateCount !== domCount;
-    });
-    if (needsRebuild) {
+    // 段数指纹：activeProfileId + 三个 group 的段数。只有这个变了才重建 DOM。
+    const segFingerprint = `${state.resume.activeProfileId || 'default'}|edu:${(state.resume.education||[]).length}|exp:${(state.resume.experience||[]).length}|proj:${(state.resume.projects||[]).length}`;
+    if (segFingerprint !== renderedFingerprint) {
       renderRepeatableSegments('education');
       renderRepeatableSegments('experience');
       renderRepeatableSegments('projects');
+      renderedFingerprint = segFingerprint;
     }
     // 值回填：指纹变化时（保存过、切了 profile、新建/删除 profile）
     if ($('#resumeForm').dataset.loaded !== viewFingerprint) {
@@ -1100,11 +1099,33 @@ Authorization: Bearer ${state.settings.apiToken}
     });
     $('#checkUpdateButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
       const result = await window.oneClick.checkUpdate();
-      if (!result.configured) return toast('还没有配置 GitHub 更新源');
-      if (result.updateAvailable) {
-        toast(`发现新版本 ${result.latest}`);
+      if (!result.configured) return toast('还没有配置 GitHub 更新源（在设置里填 GitHub 仓库）');
+      if (!result.updateAvailable) return toast(`当前已是最新版 ${result.current}`);
+      // 发现新版本：展示版本+说明，提供「一键下载更新」
+      const notes = (result.releaseNotes || '').slice(0, 300);
+      const canDownload = Boolean(result.download);
+      const msg = `发现新版本 ${result.latest}（当前 ${result.current}）。\n\n${notes ? '更新说明：\n' + notes + '\n\n' : ''}${canDownload ? '点「确定」一键下载到「下载」文件夹，下载完会自动打开文件夹，你把新应用拖到「应用程序」替换旧版即可。' : '本次没有找到自动下载链接，将打开 GitHub Release 页面手动下载。'}`;
+      if (!confirm(msg)) return { canceled: true };
+      if (!canDownload) {
         await window.oneClick.openExternal(result.url);
-      } else toast(`当前已是最新版 ${result.current}`);
+        return { openedExternal: true };
+      }
+      toast(`正在下载 ${result.download.name}…`, 'success');
+      const dl = await window.oneClick.downloadUpdate({
+        downloadUrl: result.download.url,
+        downloadName: result.download.name,
+        sha256Url: result.sha256?.url
+      });
+      if (!dl.ok) throw new Error(dl.message || '下载失败');
+      // 校验结果提示
+      if (dl.shaChecked && !dl.shaOk) {
+        toast('⚠️ 校验未通过：下载文件的 SHA256 与发布的不一致，请勿安装，重新下载或到 GitHub 核对', 'error');
+      } else if (dl.shaChecked && dl.shaOk) {
+        toast(`✅ 已下载并校验通过，已在「下载」文件夹打开，拖到「应用程序」替换即可`);
+      } else {
+        toast(`已下载到「下载」文件夹，拖到「应用程序」替换旧版即可（本次未提供校验值）`);
+      }
+      return dl;
     }));
     $('#saveSettingsButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
       state = await window.oneClick.updateSettings({

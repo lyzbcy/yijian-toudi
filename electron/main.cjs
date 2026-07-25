@@ -697,7 +697,74 @@ app.whenReady().then(async () => {
     if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) return { configured: false, current: app.getVersion() };
     const release = await requestJson(`https://api.github.com/repos/${repo}/releases/latest`);
     const latest = String(release.tag_name || '').replace(/^v/, '');
-    return { configured: true, current: app.getVersion(), latest, updateAvailable: latest && latest !== app.getVersion(), url: release.html_url };
+    // 找 macOS arm64 zip 资产和 SHA256 文件，供一键更新使用
+    const assets = release.assets || [];
+    const zipAsset = assets.find((a) => /macOS.*arm64\.zip$/i.test(a.name) || /arm64.*\.zip$/i.test(a.name));
+    const shaAsset = assets.find((a) => /sha256/i.test(a.name));
+    return {
+      configured: true,
+      current: app.getVersion(),
+      latest,
+      updateAvailable: Boolean(latest && latest !== app.getVersion()),
+      url: release.html_url,
+      releaseNotes: release.body || '',
+      // 一键更新需要的资产信息（#3）
+      download: zipAsset ? { url: zipAsset.browser_download_url, name: zipAsset.name, size: zipAsset.size } : null,
+      sha256: shaAsset ? { url: shaAsset.browser_download_url, name: shaAsset.name } : null
+    };
+  });
+  // 一键更新（#3）：下载 zip 到下载目录、校验 SHA256、打开文件夹、弹教学窗。
+  // 刻意不自动替换 .app / 重启——那需要 helper 进程和真实发布环境验收，风险高。
+  // 当前做到「点一下→下载好→打开文件夹→告诉用户怎么替换」，已比「只给 GitHub 链接」友好得多。
+  let downloadInProgress = false;
+  ipcMain.handle('update:download', async (_event, { downloadUrl, downloadName, sha256Url }) => {
+    if (downloadInProgress) return { ok: false, message: '已有下载在进行中' };
+    if (!downloadUrl) return { ok: false, message: '没有找到可下载的安装包' };
+    downloadInProgress = true;
+    const downloadsDir = app.getPath('downloads');
+    const zipPath = path.join(downloadsDir, downloadName || '一键投递-update.zip');
+    try {
+      // 下载 zip
+      await new Promise((resolve, reject) => {
+        const req = net.request({ url: downloadUrl, redirect: 'follow' });
+        const chunks = [];
+        req.on('response', (resp) => {
+          if (resp.statusCode >= 300) { reject(new Error(`下载失败 HTTP ${resp.statusCode}`)); return; }
+          resp.on('data', (c) => chunks.push(c));
+          resp.on('end', () => { fs.writeFileSync(zipPath, Buffer.concat(chunks)); resolve(); });
+        });
+        req.on('error', reject);
+        req.end();
+      });
+      // 校验 SHA256（如果有提供）
+      let shaOk = null;
+      let expectedSha = null;
+      if (sha256Url) {
+        try {
+          expectedSha = await new Promise((resolve, reject) => {
+            const req = net.request({ url: sha256Url, redirect: 'follow' });
+            let txt = '';
+            req.on('response', (r) => r.on('data', (c) => txt += c.toString()).on('end', () => resolve(txt)));
+            req.on('error', reject);
+            req.end();
+          });
+          // SHA256 文件格式通常：「<hash>  <filename>」取前 64 位
+          expectedSha = (expectedSha.match(/[0-9a-fA-F]{64}/) || [])[0];
+          if (expectedSha) {
+            const fileBuf = fs.readFileSync(zipPath);
+            const actualSha = crypto.createHash('sha256').update(fileBuf).digest('hex');
+            shaOk = actualSha === expectedSha.toLowerCase();
+          }
+        } catch (e) { shaOk = null; /* 校验失败不阻塞，只标注 */ }
+      }
+      // 打开下载目录，让用户看到文件
+      shell.showItemInFolder(zipPath);
+      return { ok: true, file: zipPath, shaChecked: shaOk !== null, shaOk, expectedSha };
+    } catch (error) {
+      return { ok: false, message: error.message };
+    } finally {
+      downloadInProgress = false;
+    }
   });
   ipcMain.handle('settings:update', async (_event, patch) => {
     const before = store.get().settings;

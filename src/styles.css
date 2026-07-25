@@ -195,6 +195,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .applied-item .stage-pill { background: var(--green-soft); color: var(--green); }
 .empty-state { padding: 55px; text-align: center; }
 .empty-state span { font-size: 28px; color: #b7b8c4; }
+.empty-state .empty-sticker { width: 64px; height: 64px; object-fit: contain; margin-bottom: 4px; }
 .empty-state h3 { margin: 12px 0 6px; }
 .empty-state p { color: var(--muted); font-size: 11px; }
 .hidden { display: none !important; }
