@@ -13,6 +13,11 @@ const { listJdJobs } = require('./adapters/jd.cjs');
 const { listMeituanJobs } = require('./adapters/meituan.cjs');
 const { logger } = require('./logger.cjs');
 const loginManager = require('./login-manager.cjs');
+const {
+  applyResultToCart,
+  isSubmissionSuccess,
+  validateCartRules
+} = require('./review-state.cjs');
 
 let window;
 let store;
@@ -273,60 +278,86 @@ const APPLY_ADAPTERS = {
 };
 
 async function applyCart() {
-  const cart = store.get().cart || [];
+  const currentState = store.get();
+  const cart = currentState.cart || [];
   if (cart.length === 0) return { applied: 0, message: '购物车是空的' };
+  if (loginManager.isActive()) {
+    return {
+      status: 'workspace-active',
+      message: '请先完成或取消当前浏览器操作'
+    };
+  }
 
-  const id = addTask({ type: 'browser', title: '一键投递', detail: `正在投递 ${cart.length} 个岗位…`, progress: 10 });
-  const results = [];
-  let appliedCount = 0;
+  const ruleCheck = validateCartRules({
+    cart,
+    companies: currentState.companies
+  });
+  if (!ruleCheck.ok) {
+    return { status: 'blocked', message: ruleCheck.message };
+  }
 
-  for (let i = 0; i < cart.length; i++) {
-    const job = cart[i];
-    const adapter = APPLY_ADAPTERS[job.companyId];
-    updateTaskLive(id, { detail: `投递 ${job.title}（${i + 1}/${cart.length}）…`, progress: Math.round((i / cart.length) * 100) });
+  const job = cart[0];
+  const company = currentState.companies.find((item) => item.id === job.companyId);
+  const adapter = APPLY_ADAPTERS[job.companyId];
+  const id = addTask({
+    type: 'browser',
+    title: `准备投递：${job.title}`,
+    detail: `正在打开 ${company?.name || job.companyId} 招聘官网…`,
+    progress: 20
+  });
 
-    if (!adapter) {
-      results.push({ id: job.id, status: 'manual', message: `${job.companyId} 暂未支持自动投递，请手动投递` });
-      logger.warn('无投递适配器', { company: job.companyId, job: job.id });
-      continue;
-    }
-
+  let result;
+  if (!adapter) {
+    result = {
+      id: job.id,
+      status: 'manual-required',
+      message: `${company?.name || job.companyId} 暂未支持自动投递，请手动完成`
+    };
+    logger.warn('无投递适配器', { company: job.companyId, job: job.id });
+  } else {
     try {
-      const result = await adapter.apply(job, {
+      const adapterResult = await adapter.apply(job, {
+        workspace: loginManager,
+        company,
         onStep: (info) => updateTaskLive(id, { detail: info.message })
       });
-      results.push({ id: job.id, status: result.status, message: result.message });
-      if (result.ok) appliedCount += 1;
+      result = {
+        id: job.id,
+        status: adapterResult.status,
+        message: adapterResult.message
+      };
     } catch (error) {
-      results.push({ id: job.id, status: 'error', message: error.message });
-      logger.error('投递失败', { job: job.id, error: error.message });
+      result = {
+        id: job.id,
+        status: 'failed',
+        message: error.message
+      };
+      logger.error('投递准备失败', { job: job.id, error: error.message });
     }
   }
 
-  // 把投递结果写进 state.applied
-  const next = store.update((state) => {
-    if (!state.applied) state.applied = [];
-    const now = new Date().toISOString().slice(0, 10);
-    for (let i = 0; i < cart.length; i++) {
-      const job = cart[i];
-      const result = results[i];
-      if (state.applied.some((a) => a.id === job.id)) continue;
-      state.applied.unshift({
-        ...job,
-        applyStatus: result.status === 'login-required' ? '需登录' : (result.status === 'submitted' ? '已投递' : '投递中'),
-        appliedAt: now,
-        applyMessage: result.message
-      });
-    }
-    state.cart = [];
+  store.update((state) => {
+    const next = applyResultToCart({
+      cart: state.cart,
+      applied: state.applied,
+      result,
+      today: new Date().toISOString().slice(0, 10)
+    });
+    state.cart = next.cart;
+    state.applied = next.applied;
     return state;
   });
   broadcast();
 
-  const summary = `${appliedCount}/${cart.length} 个投递启动`;
-  finishTask(id, 'done', summary);
-  logger.info('一键投递完成', { applied: appliedCount, total: cart.length });
-  return { applied: appliedCount, total: cart.length, results, message: summary };
+  const taskStatus = result.status === 'review-required'
+    ? 'waiting'
+    : (result.status === 'submitted' ? 'done' : 'error');
+  finishTask(id, taskStatus, result.message);
+  logger.info('投递准备结束', { job: job.id, status: result.status });
+  return {
+    ...result,
+    remaining: store.get().cart.length
+  };
 }
 
 async function exportSnapshot(showDialog = true) {
@@ -492,8 +523,57 @@ app.whenReady().then(async () => {
     url: loginManager.getCurrentUrl()
   }));
   ipcMain.handle('workspace:status', () => loginManager.getStatus());
-  ipcMain.handle('workspace:finish', () => loginManager.finishWorkspace());
-  ipcMain.handle('workspace:cancel', () => loginManager.cancelWorkspace());
+  ipcMain.handle('workspace:finish', async () => {
+    const result = await loginManager.finishWorkspace();
+    const context = result.status?.context;
+    if (context?.action !== 'apply-job' || !context.jobId) return result;
+
+    const submitted = isSubmissionSuccess(result.snapshot);
+    const applicationResult = {
+      id: context.jobId,
+      status: submitted ? 'submitted' : 'review-required',
+      message: submitted
+        ? '腾讯页面已确认投递成功'
+        : '页面没有出现明确成功提示，岗位继续保留在购物车'
+    };
+    store.update((state) => {
+      const next = applyResultToCart({
+        cart: state.cart,
+        applied: state.applied,
+        result: applicationResult,
+        today: new Date().toISOString().slice(0, 10)
+      });
+      state.cart = next.cart;
+      state.applied = next.applied;
+      return state;
+    });
+    broadcast();
+    return { ...result, applicationResult };
+  });
+  ipcMain.handle('workspace:cancel', async () => {
+    const status = loginManager.getStatus();
+    const result = await loginManager.cancelWorkspace();
+    const context = status.context;
+    if (context?.action !== 'apply-job' || !context.jobId) return result;
+
+    store.update((state) => {
+      const next = applyResultToCart({
+        cart: state.cart,
+        applied: state.applied,
+        result: {
+          id: context.jobId,
+          status: 'cancelled',
+          message: '用户取消了本次投递检查'
+        },
+        today: new Date().toISOString().slice(0, 10)
+      });
+      state.cart = next.cart;
+      state.applied = next.applied;
+      return state;
+    });
+    broadcast();
+    return result;
+  });
 });
 
 app.on('window-all-closed', async () => {

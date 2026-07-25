@@ -270,6 +270,7 @@ input:focus, select:focus, textarea:focus { border-color: #9d93ec; background: #
 .task-progress { height: 5px; border-radius: 99px; background: #eeeef4; overflow: hidden; }
 .task-progress i { display: block; height: 100%; background: var(--primary); border-radius: inherit; }
 .task-status { justify-self: end; padding: 5px 8px; border-radius: 99px; font-size: 8px; background: #f3f3f7; color: #888a99; }
+.task-status.waiting { background: #fff4d9; color: #a86500; }
 .task-status.done { background: var(--green-soft); color: var(--green); }
 .task-status.error { background: #fdecee; color: var(--danger); }
 .connections-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }

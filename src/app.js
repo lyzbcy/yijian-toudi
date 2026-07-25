@@ -249,7 +249,7 @@
 
   function renderTasks() {
     const labels = { jobs: '⌁', browser: '◎', email: '✉', system: '✦' };
-    const statusLabels = { running: '执行中', done: '已完成', error: '需处理' };
+    const statusLabels = { running: '执行中', waiting: '等你确认', done: '已完成', error: '需处理' };
     $('#taskList').innerHTML = state.tasks.map((task) => `<article class="task-item">
       <span class="task-type">${labels[task.type] || '↻'}</span>
       <div><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.detail || '')}${task.currentJob ? `<em class="task-current-job">▸ ${escapeHtml(task.currentJob)}</em>` : ''}</p></div>
@@ -305,7 +305,8 @@
           <div><h4>${escapeHtml(company.name)}</h4>${ruleNote ? `<span class="cart-rule ${blocked ? 'blocked' : ''}">${ruleNote}</span>` : '<span class="cart-rule ok">无投递限制</span>'}</div>
         </div>
         ${jobs.map((job) => `<div class="cart-item">
-          <div><strong>${escapeHtml(job.title)}</strong><span>${escapeHtml(job.city || '')} · ${escapeHtml(job.jobType || '')}</span></div>
+          <div><strong>${escapeHtml(job.title)}</strong><span>${escapeHtml(job.city || '')} · ${escapeHtml(job.jobType || '')}${job.applyMessage ? ` · ${escapeHtml(job.applyMessage)}` : ''}</span></div>
+          ${job.applyStatus ? `<span class="stage-pill">${escapeHtml(job.applyStatus)}</span>` : ''}
           <button class="ghost-button cart-remove" data-cart-remove="${escapeHtml(job.id)}">移除</button>
         </div>`).join('')}
       </div>`;
@@ -573,9 +574,11 @@ Authorization: Bearer ${state.settings.apiToken}
     $('#refreshJobsButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.refreshJobs(), (result) => result.message));
     $('#runRefreshTask').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.refreshJobs(), (result) => result.message));
     $('#cartApplyAll').addEventListener('click', (event) => run(event.currentTarget, async () => {
-      state = await window.oneClick.applyCart();
+      const result = await window.oneClick.applyCart();
+      state = await window.oneClick.getState();
       renderState();
-    }, (result) => result.message || '投递完成'));
+      return result;
+    }, (result) => result.message || '投递流程已启动'));
     $('#refreshApplied').addEventListener('click', () => toast('已投递状态需要登录对应公司后才能自动刷新，当前显示的是投递时的记录'));
     $('#saveResumeButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
       state = await window.oneClick.saveResume(collectResume());
@@ -616,12 +619,20 @@ Authorization: Bearer ${state.settings.apiToken}
     $('#workspaceFinish').addEventListener('click', async () => {
       const result = await window.oneClick.finishWorkspace();
       renderWorkspaceStatus(null);
+      if (result.applicationResult) {
+        state = await window.oneClick.getState();
+        renderState();
+        toast(result.applicationResult.message, result.applicationResult.status === 'submitted' ? 'success' : 'error');
+        return;
+      }
       const mode = result.status?.mode;
       toast(mode === 'login' ? '登录态已保存，后续操作会自动复用' : '已结束本次网页核对');
     });
     $('#workspaceCancel').addEventListener('click', async () => {
       await window.oneClick.cancelWorkspace();
       renderWorkspaceStatus(null);
+      state = await window.oneClick.getState();
+      renderState();
       toast('已取消本次网页操作');
     });
     $('#refreshLogsButton').addEventListener('click', () => run($('#refreshLogsButton'), async () => {
