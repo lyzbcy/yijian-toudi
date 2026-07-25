@@ -125,6 +125,11 @@ class JsonStore {
       this.state.settings.jobs.recruitType = 'social';
       changed = true;
     }
+    // 3b2. 补全 autoRefresh（每天自动刷新岗位，T3.2 #8）
+    if (this.state.settings.jobs.autoRefresh === undefined) {
+      this.state.settings.jobs.autoRefresh = true;
+      changed = true;
+    }
     // 3c. 补全 cart/applied（购物车功能，新字段）
     if (!Array.isArray(this.state.cart)) { this.state.cart = []; changed = true; }
     if (!Array.isArray(this.state.applied)) { this.state.applied = []; changed = true; }

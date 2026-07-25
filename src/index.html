@@ -87,6 +87,8 @@
           </div>
         </div>
 
+        <div class="onboarding-tasks content-card" id="onboardingTasks"></div>
+
         <div class="stats-row">
           <article><span class="stat-icon violet">⌁</span><div><b id="statJobs">0</b><small>岗位总数</small></div><em>真实抓取</em></article>
           <article><span class="stat-icon green">✓</span><div><b id="statCompanies">0</b><small>已收录公司</small></div><em>待适配</em></article>
@@ -127,7 +129,7 @@
 
       <section class="page" id="page-applied">
         <div class="content-card" style="padding:26px">
-          <div class="card-toolbar"><div><h3>已投递岗位</h3><p>追踪每个已投岗位的状态变化（需登录后刷新）。</p></div><button class="ghost-button" id="refreshApplied">刷新状态</button></div>
+          <div class="card-toolbar"><div><h3>已投递岗位</h3><p>追踪每个已投岗位的状态变化（需登录后刷新）。</p></div><div class="card-actions"><button class="ghost-button" id="exportAppliedButton">导出 CSV</button><button class="ghost-button" id="refreshApplied">刷新状态</button></div></div>
           <div id="appliedList"></div>
         </div>
       </section>
@@ -272,6 +274,17 @@
           <article class="content-card connection-card email-card">
             <div class="connection-head"><span class="company-logo qq">Q</span><div><h3>QQ 邮箱</h3><p>读取招聘相关邮件</p></div><b id="emailStatus">未连接</b></div>
             <p class="connection-copy">需要在 QQ 邮箱设置中开启 IMAP，并使用授权码而不是登录密码。授权码使用系统安全存储加密。</p>
+            <details class="email-help">
+              <summary>不会获取授权码？点这里看步骤</summary>
+              <ol>
+                <li>电脑浏览器打开 <a href="https://mail.qq.com/" data-external>mail.qq.com</a> 并登录你的 QQ 邮箱</li>
+                <li>点顶部「设置」→「账户」</li>
+                <li>找到「POP3/IMAP/SMTP/Exchange/CardDAV/CalDAV 服务」，开启「IMAP/SMTP 服务」</li>
+                <li>按提示用手机发短信验证，会得到一串 16 位授权码（不是登录密码）</li>
+                <li>把授权码填到下面，点「连接并同步」</li>
+              </ol>
+              <p class="email-help-note">支持 163 / Gmail 等其他邮箱吗？目前只接了 QQ，其他邮箱适配在路上。授权码随时可在邮箱设置里关闭。</p>
+            </details>
             <div class="inline-form">
               <label>邮箱地址<input id="emailAddress" placeholder="123456@qq.com"></label>
               <label>IMAP 授权码<input id="emailCode" type="password" placeholder="首次连接时填写"></label>
@@ -306,6 +319,12 @@
           <article class="content-card">
             <div class="card-toolbar"><div><h3>接入 Prompt</h3><p>Token 只展示在本机，请不要发到公开聊天。</p></div><button class="primary-button" id="copyPromptButton">复制 Prompt</button></div>
             <pre id="agentPrompt" class="prompt-box"></pre>
+            <div class="agent-launch-row">
+              <span class="soft-label">一键打开</span>
+              <button class="ghost-button" data-launch-agent="claude">Claude</button>
+              <button class="ghost-button" data-launch-agent="chatgpt">ChatGPT</button>
+              <button class="ghost-button" data-launch-agent="cursor">Cursor</button>
+            </div>
           </article>
           <aside class="content-card api-status-card">
             <h3>本地服务状态</h3>
@@ -317,6 +336,7 @@
               <div><dt>POST</dt><dd>/v1/commands</dd></div>
             </dl>
             <button class="ghost-button full" id="exportSnapshotButton">导出脱敏快照</button>
+            <button class="ghost-button full" id="resetTokenButton" title="生成新 Token，旧 Token 立即失效">↻ 重置 Agent Token</button>
           </aside>
         </div>
       </section>
@@ -335,6 +355,7 @@
             <p>选择你的求职方向，软件会优先抓取对应类型岗位；再设置抓取时间范围。</p>
             <label>求职方向<select id="recruitType"><option value="social">社招</option><option value="campus">校招</option><option value="summer-intern">暑期实习</option><option value="daily-intern">日常实习</option><option value="all">全部都要</option></select></label>
             <label>抓取范围（天）<input id="jobsDaysBack" type="number" min="1" max="365" placeholder="30"></label>
+            <label class="switch-row"><span><strong>每天自动刷新岗位</strong><small>打开应用时若距上次刷新超过 24 小时则自动抓取</small></span><input id="autoRefreshJobs" type="checkbox"><i></i></label>
             <p class="setting-hint" id="jobsLastRefresh">还没有抓取过岗位。</p>
           </section>
           <section class="content-card settings-card">
@@ -351,10 +372,13 @@
               <button class="ghost-button" id="backupRestoreButton">恢复备份</button>
             </div>
           </section>
-          <section class="content-card settings-card dev-log-card">
-            <div class="card-toolbar"><div><h3>开发日志</h3><p>内存中最近 50 条，重启后清空。</p></div><button class="ghost-button" id="refreshLogsButton">刷新</button></div>
-            <div class="dev-log-list" id="devLogList"><p class="dev-log-empty">点击"刷新"查看日志。</p></div>
-          </section>
+          <details class="settings-card dev-mode-details">
+            <summary class="dev-mode-summary">开发者工具<small>日志与诊断（普通用户无需展开）</small></summary>
+            <section class="content-card settings-card dev-log-card">
+              <div class="card-toolbar"><div><h3>开发日志</h3><p>内存中最近 50 条，重启后清空。</p></div><button class="ghost-button" id="refreshLogsButton">刷新</button></div>
+              <div class="dev-log-list" id="devLogList"><p class="dev-log-empty">点击"刷新"查看日志。</p></div>
+            </section>
+          </details>
           <section class="content-card settings-card about-card">
             <img src="./assets/stickers/mascot.png" alt="">
             <div><h3>一键投递 v0.2.0</h3><p>一个弱小但有梦想的开发者，想把重复投简历这件事做得轻松一点。</p><a href="https://lyzbcy.github.io/" data-external>关于捞鱼 ↗</a></div>

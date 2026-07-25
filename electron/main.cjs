@@ -1,11 +1,13 @@
-const { app, BrowserWindow, ipcMain, shell, dialog, safeStorage, net } = require('electron');
+const { app, BrowserWindow, ipcMain, shell, dialog, safeStorage, net, Notification } = require('electron');
 const fs = require('node:fs');
 const path = require('node:path');
+const crypto = require('node:crypto');
 const { JsonStore, calculateResumeCompletion, applyResumeEdit, switchProfile, addProfile, deleteProfile, renameProfile, migrateFlatResumeToProfiles } = require('./store.cjs');
 const { BrowserAutomation } = require('./automation.cjs');
 const { AgentServer } = require('./agent-server.cjs');
 const { syncQqMail } = require('./mail.cjs');
 const registry = require('./adapters/registry.cjs');
+const { applyJobMatches } = require('./match.cjs');
 const { logger } = require('./logger.cjs');
 const loginManager = require('./login-manager.cjs');
 const {
@@ -145,6 +147,20 @@ const JOB_ADAPTERS = registry.listJobAdapters().map((adapter) => ({
   fetch: (opts) => adapter.listJobs(opts)
 }));
 
+// 启动时检查是否需要自动刷新岗位（settings.jobs.autoRefresh + 距上次>24h）
+function maybeAutoRefreshJobs() {
+  try {
+    const settings = store.get().settings;
+    if (!settings.jobs?.autoRefresh) return;
+    const last = settings.jobs.lastRefreshAt ? new Date(settings.jobs.lastRefreshAt).getTime() : 0;
+    if (Date.now() - last < 24 * 3600 * 1000) return;
+    logger.info('自动刷新岗位（距上次超过 24 小时）');
+    refreshJobs().catch((e) => logger.warn('自动刷新岗位失败', { error: e.message }));
+  } catch (e) {
+    logger.warn('自动刷新检查失败', { error: e.message });
+  }
+}
+
 async function refreshJobs() {
   const settings = store.get().settings;
   const daysBack = settings.jobs?.daysBack || 30;
@@ -225,13 +241,16 @@ async function refreshJobs() {
 
 // 按 idPrefix 合并岗位：清掉该公司的旧数据，写入新数据，保留已收藏状态
 function mergeJobs(idPrefix, newJobs) {
-  const favorites = new Map(store.get().jobs.filter((job) => job.favorite).map((job) => [job.id, job]));
+  const currentState = store.get();
+  const favorites = new Map(currentState.jobs.filter((job) => job.favorite).map((job) => [job.id, job]));
+  // 用当前简历给新岗位算匹配度（T3.9 #23），已存在的岗位也重算（简历可能改过）
+  const allJobs = [
+    ...currentState.jobs.filter((job) => !job.id.startsWith(idPrefix)),
+    ...newJobs.map((job) => (favorites.has(job.id) ? { ...job, favorite: true } : job))
+  ];
+  applyJobMatches(allJobs, currentState.resume);
   store.update((state) => {
-    const others = state.jobs.filter((job) => !job.id.startsWith(idPrefix));
-    state.jobs = [
-      ...others,
-      ...newJobs.map((job) => (favorites.has(job.id) ? { ...job, favorite: true } : job))
-    ];
+    state.jobs = allJobs;
     return state;
   });
 }
@@ -380,6 +399,33 @@ async function exportSnapshot(showDialog = true) {
   return { file };
 }
 
+// 导出投递记录（T3.10 #24）：CSV 格式，方便 Excel/复盘
+async function exportApplied() {
+  const state = store.get();
+  const applied = state.applied || [];
+  const companies = new Map((state.companies || []).map((c) => [c.id, c.name]));
+  const outputDirectory = path.join(app.getPath('documents'), '一键投递导出');
+  fs.mkdirSync(outputDirectory, { recursive: true });
+  const file = path.join(outputDirectory, `投递记录-${new Date().toISOString().slice(0, 10)}.csv`);
+  const header = '公司,岗位,城市,投递时间,当前状态,状态更新时间,数据来源\n';
+  const rows = applied.map((job) => {
+    const cells = [
+      companies.get(job.companyId) || job.companyId || '',
+      job.title || '',
+      job.city || '',
+      job.appliedAt || '',
+      job.applyStatus || '已投递',
+      job.lastStatusUpdate || '',
+      job.statusSource || ''
+    ].map((c) => `"${String(c).replace(/"/g, '""')}"`);
+    return cells.join(',');
+  });
+  // 加 BOM 让 Excel 正确识别 UTF-8
+  fs.writeFileSync(file, `\uFEFF${header}${rows.join('\n')}\n`, 'utf8');
+  await dialog.showMessageBox(window, { type: 'info', title: '导出完成', message: `已导出 ${applied.length} 条投递记录`, detail: file });
+  return { file, count: applied.length };
+}
+
 async function exportBackup() {
   const defaultPath = path.join(
     app.getPath('documents'),
@@ -476,11 +522,15 @@ app.whenReady().then(async () => {
   automation = new BrowserAutomation(app.getPath('userData'));
   await startAgentServer();
   createWindow();
+  // 启动时若开启自动刷新且距上次超过 24 小时，后台抓一次岗位（T3.2 #8）
+  maybeAutoRefreshJobs();
 
   ipcMain.handle('state:get', () => store.get());
   ipcMain.handle('resume:save', (_event, resume) => {
     const next = store.update((state) => {
       state.resume = applyResumeEdit(state.resume, resume);
+      // 简历改了，重新计算所有岗位的匹配度
+      if (Array.isArray(state.jobs)) applyJobMatches(state.jobs, state.resume);
       return state;
     });
     broadcast();
@@ -615,6 +665,8 @@ app.whenReady().then(async () => {
     const id = addTask({ type: 'email', title: '同步 QQ 邮箱招聘信息', detail: '正在读取最近邮件并只保留招聘相关内容…' });
     try {
       const messages = await syncQqMail({ address, authorizationCode });
+      // 同步前已知 message id，用于判断哪些是「新邮件」，新面试/Offer 触发桌面通知（T3.8 #19）
+      const knownIds = new Set((store.get().messages || []).map((m) => m.id));
       const next = store.update((state) => {
         const byId = new Map([...messages, ...state.messages].map((message) => [message.id, message]));
         state.messages = [...byId.values()].sort((a, b) => b.receivedAt.localeCompare(a.receivedAt));
@@ -626,7 +678,14 @@ app.whenReady().then(async () => {
         };
         return state;
       });
-      finishTask(id, 'done', `已识别 ${messages.length} 封招聘相关邮件。`);
+      // 对新增的面试/Offer 邮件发桌面通知
+      const newImportant = messages.filter((m) => !knownIds.has(m.id) && (m.stage === '面试' || m.stage === 'Offer'));
+      for (const m of newImportant) {
+        try {
+          new Notification({ title: `${m.stage}：${m.company || '招聘方'}`, body: m.subject || '点击查看' }).show();
+        } catch (e) { /* 通知失败不影响同步 */ }
+      }
+      finishTask(id, 'done', `已识别 ${messages.length} 封招聘相关邮件${newImportant.length ? `（含 ${newImportant.length} 封新的面试/Offer）` : ''}。`);
       return next;
     } catch (error) {
       finishTask(id, 'error', `邮箱同步失败：${error.message}`);
@@ -655,6 +714,10 @@ app.whenReady().then(async () => {
         state.meta.privacyAcceptedAt = state.meta.privacyAcceptedAt || new Date().toISOString();
         delete patch.recruitType;
       }
+      if (patch.autoRefreshJobs !== undefined) {
+        state.settings.jobs = { ...state.settings.jobs, autoRefresh: patch.autoRefreshJobs };
+        delete patch.autoRefreshJobs;
+      }
       state.settings = { ...state.settings, ...patch, email: { ...state.settings.email, ...(patch.email || {}) } };
       return state;
     });
@@ -666,7 +729,21 @@ app.whenReady().then(async () => {
     broadcast();
     return next;
   });
+  // Agent Token 重置：旧 Token 立即失效，生成新 Token（T3.7 #15）
+  ipcMain.handle('agent:reset-token', async () => {
+    const next = store.update((state) => {
+      state.settings.apiToken = crypto.randomBytes(18).toString('base64url');
+      return state;
+    });
+    // Token 变了，Agent 服务要重启以加载新 Token
+    await agentServer?.stop();
+    agentServer = null;
+    if (next.settings.apiEnabled) await startAgentServer();
+    broadcast();
+    return next;
+  });
   ipcMain.handle('snapshot:export', () => exportSnapshot(true));
+  ipcMain.handle('applied:export', () => exportApplied());
   ipcMain.handle('backup:export', () => exportBackup());
   ipcMain.handle('backup:restore', () => restoreBackupFromFile());
   ipcMain.handle('external:open', (_event, url) => {

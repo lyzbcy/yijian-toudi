@@ -103,7 +103,7 @@ function createSeed() {
       email: { address: '', connected: false, lastSyncAt: null },
       autoCheckUpdates: true,
       dataMode: 'live',
-      jobs: { daysBack: 30, lastRefreshAt: null, recruitType: 'social' }
+      jobs: { daysBack: 30, lastRefreshAt: null, recruitType: 'social', autoRefresh: true }
     }
   };
 }

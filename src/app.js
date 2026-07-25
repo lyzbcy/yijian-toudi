@@ -24,12 +24,40 @@
   // 公司标签筛选：null=不限，'500强'/'AI公司'/'游戏'/'无锡'/'苏州'=只显示该公司标签下的岗位
   let activeTag = null;
 
+  // toast：成功/普通 3.5s 自动消失；错误不自动消失，需手动关，且可点击复制（T3.4 #12）。
+  // 最近 20 条错误留存到 errorLog，方便用户复盘/反馈。
+  const errorLog = [];
   function toast(message, type = 'success') {
     const node = document.createElement('div');
     node.className = `toast ${type}`;
-    node.textContent = message;
-    $('#toastRegion').appendChild(node);
-    setTimeout(() => node.remove(), 3500);
+    const text = document.createElement('span');
+    text.className = 'toast-text';
+    text.textContent = message;
+    node.appendChild(text);
+    if (type === 'error') {
+      // 错误：留存 + 可复制 + 手动关闭
+      errorLog.unshift({ ts: new Date().toISOString(), message });
+      if (errorLog.length > 20) errorLog.pop();
+      const copyBtn = document.createElement('button');
+      copyBtn.className = 'toast-copy';
+      copyBtn.textContent = '复制';
+      copyBtn.title = '复制错误信息';
+      copyBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navigator.clipboard.writeText(message).then(() => { copyBtn.textContent = '已复制 ✓'; });
+      });
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'toast-close';
+      closeBtn.textContent = '×';
+      closeBtn.setAttribute('aria-label', '关闭');
+      closeBtn.addEventListener('click', (e) => { e.stopPropagation(); node.remove(); });
+      node.appendChild(copyBtn);
+      node.appendChild(closeBtn);
+      $('#toastRegion').appendChild(node);
+    } else {
+      $('#toastRegion').appendChild(node);
+      setTimeout(() => node.remove(), 3500);
+    }
   }
 
   function escapeHtml(value) {
@@ -121,6 +149,7 @@
     $('#apiAddress').textContent = `127.0.0.1:${state.settings.apiPort}`;
     $('#jobsDaysBack').value = state.settings.jobs?.daysBack ?? 30;
     $('#recruitType').value = state.settings.jobs?.recruitType ?? 'social';
+    $('#autoRefreshJobs').checked = state.settings.jobs?.autoRefresh !== false;
     const lastRefresh = state.settings.jobs?.lastRefreshAt;
     $('#jobsLastRefresh').textContent = lastRefresh ? `上次抓取：${new Date(lastRefresh).toLocaleString('zh-CN')}` : '还没有抓取过岗位。';
 
@@ -132,6 +161,7 @@
     renderRefreshProgress();
     renderCart();
     renderApplied();
+    renderOnboardingTasks();
     renderProfileTabs();
     fillResume();
     renderAgentPrompt();
@@ -194,6 +224,11 @@
         const cls = internTypes.some((t) => tag.includes(t)) ? 'tag-intern' : (tag === '社招' ? 'tag-social' : '');
         return `<span class="${cls}">${escapeHtml(tag)}</span>`;
       }).join('');
+      // 匹配度标签：基于简历关键词，>0 才显示，明确标注仅供参考（T3.9 #23）
+      const matchVal = Number(job.match) || 0;
+      const matchPill = matchVal > 0
+        ? `<span class="match-pill" title="基于你的简历关键词估算，仅供参考">匹配 ${matchVal}%</span>`
+        : '';
       // summary 截断显示前 2 行（完整内容在详情弹窗）
       const summaryPreview = job.summary ? escapeHtml(job.summary.split('\n')[0].slice(0, 80)) + (job.summary.length > 80 ? '…' : '') : '';
       return `<article class="job-item" data-job-id="${job.id}">
@@ -202,7 +237,7 @@
           <h4>${escapeHtml(job.title)}</h4>
           <p>${escapeHtml(company.name)} · ${escapeHtml(job.department)} · ${escapeHtml(job.city)}${job.experience && job.experience !== '不限' ? ' · ' + escapeHtml(job.experience) : ''}</p>
           ${summaryPreview ? `<p class="job-summary">${summaryPreview}</p>` : ''}
-          <div class="job-tags">${tagHtml}<span class="source-pill">${escapeHtml(job.source)}</span></div>
+          <div class="job-tags">${tagHtml}${matchPill}<span class="source-pill">${escapeHtml(job.source)}</span></div>
         </div>
         <div class="job-time"><i class="fresh-dot"></i>${posted || escapeHtml(job.postedAt)}</div>
         <div class="job-actions">
@@ -483,6 +518,26 @@
       return `<span class="sync-chip ${cls}">${renderLogo({ logoUrl: c.logoUrl, color: c.color, short: c.short, name: c.name }, 'sync-logo')}<b>${escapeHtml(c.name)}</b><i>${label}</i></span>`;
     }).join('');
     box.innerHTML = `<div class="sync-chips">${chips}</div>`;
+  }
+
+  // 新手引导任务清单（T3.1 #6）：4 步走，基于 state 自动判断完成度，全完成则隐藏
+  function renderOnboardingTasks() {
+    const box = $('#onboardingTasks');
+    if (!box) return;
+    const steps = [
+      { key: 'jobs', label: '抓取岗位', hint: '点上方「刷新全部岗位」横向对比大厂', done: state.jobs.length > 0 },
+      { key: 'resume', label: '填写简历', hint: '在「我的简历」维护一份完整信息', done: (state.resume.completion || 0) >= 30 },
+      { key: 'email', label: '连接邮箱', hint: '在「公司与邮箱」连 QQ 邮箱收面试通知', done: state.settings.email?.connected },
+      { key: 'agent', label: '接入 Agent（可选）', hint: '让 AI Agent 帮你筛岗位、更新简历', done: state.settings.apiEnabled }
+    ];
+    const doneCount = steps.filter((s) => s.done).length;
+    if (doneCount === steps.length) { box.innerHTML = ''; box.classList.add('hidden'); return; }
+    box.classList.remove('hidden');
+    box.innerHTML = `<div class="ob-head"><strong>开始使用</strong><span>${doneCount}/${steps.length} 已完成</span></div>
+      <div class="ob-steps">${steps.map((s) => `<div class="ob-step ${s.done ? 'done' : ''}">
+        <span class="ob-check">${s.done ? '✓' : '○'}</span>
+        <div><b>${escapeHtml(s.label)}</b><small>${escapeHtml(s.hint)}</small></div>
+      </div>`).join('')}</div>`;
   }
 
   // 多份简历 profile 切换条。basic/skills/extras 全局共享，intention+经历 按 profile 隔离。
@@ -896,6 +951,7 @@ Authorization: Bearer ${state.settings.apiToken}
       }
       return result;
     }, (result) => result.ok ? `已刷新 ${result.count} 条腾讯投递状态` : result.message));
+    $('#exportAppliedButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportApplied(), (result) => `已导出 ${result.count} 条投递记录为 CSV`));
     $('#saveResumeButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
       state = await window.oneClick.saveResume(collectResume());
       renderState();
@@ -1000,6 +1056,7 @@ Authorization: Bearer ${state.settings.apiToken}
     $('#exportSnapshotButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportSnapshot(), '脱敏快照已导出'));
     $('#backupExportButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportBackup(), (result) => result.canceled ? '已取消备份' : '备份已保存'));
     $('#backupRestoreButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
+      // 后端会弹「选文件」+「二次确认」两个对话框，确认文案已说明 Token/授权码/登录态不会被恢复
       const result = await window.oneClick.restoreBackup();
       if (!result.canceled) {
         state = await window.oneClick.getState();
@@ -1014,7 +1071,21 @@ Authorization: Bearer ${state.settings.apiToken}
     }, 'QQ 邮箱同步完成'));
     $('#copyPromptButton').addEventListener('click', async () => {
       await navigator.clipboard.writeText($('#agentPrompt').textContent);
-      toast('接入 Prompt 已复制');
+      toast('接入 Prompt 已复制，粘贴到你的 AI Agent 即可');
+    });
+    // 一键打开常见 AI Agent（先复制 prompt 再打开网页，T3.7 #15）
+    const agentUrls = { claude: 'https://claude.ai/new', chatgpt: 'https://chat.openai.com/', cursor: 'cursor://chat' };
+    $$('[data-launch-agent]').forEach((btn) => btn.addEventListener('click', async () => {
+      const key = btn.dataset.launchAgent;
+      await navigator.clipboard.writeText($('#agentPrompt').textContent);
+      await window.oneClick.openExternal(agentUrls[key]);
+      toast(`Prompt 已复制，正在打开 ${btn.textContent.trim()}`);
+    }));
+    $('#resetTokenButton').addEventListener('click', async () => {
+      if (!confirm('重置后旧 Token 立即失效，正在用旧 Token 的 Agent 需要重新接入。确定吗？')) return;
+      state = await window.oneClick.resetAgentToken();
+      renderState();
+      toast('已生成新 Agent Token，请重新复制 Prompt');
     });
     $('#checkUpdateButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
       const result = await window.oneClick.checkUpdate();
@@ -1031,7 +1102,8 @@ Authorization: Bearer ${state.settings.apiToken}
         apiEnabled: $('#apiEnabled').checked,
         apiPort: Number($('#apiPort').value),
         jobsDaysBack: Math.min(365, Math.max(1, Number($('#jobsDaysBack').value) || 30)),
-        recruitType: $('#recruitType').value
+        recruitType: $('#recruitType').value,
+        autoRefreshJobs: $('#autoRefreshJobs').checked
       });
       renderState();
     }, '设置已保存'));
