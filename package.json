@@ -19,6 +19,7 @@
     "check": "node scripts/check-project.cjs",
     "pack:mac": "electron-builder --mac dir",
     "dist:mac": "electron-builder --mac dmg zip",
+    "release": "node scripts/release.cjs",
     "preview:site": "node scripts/site-preview.cjs"
   },
   "dependencies": {

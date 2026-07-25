@@ -162,6 +162,7 @@
     renderCart();
     renderApplied();
     renderOnboardingTasks();
+    renderSidebarMotto();
     renderProfileTabs();
     fillResume();
     renderAgentPrompt();
@@ -518,6 +519,16 @@
       return `<span class="sync-chip ${cls}">${renderLogo({ logoUrl: c.logoUrl, color: c.color, short: c.short, name: c.name }, 'sync-logo')}<b>${escapeHtml(c.name)}</b><i>${label}</i></span>`;
     }).join('');
     box.innerHTML = `<div class="sync-chips">${chips}</div>`;
+  }
+
+  // sidebar 鼓励语轮换（agent.md「多用精选表情」氛围）。每会话固定一句，避免每次渲染都跳。
+  let mottoIndex = -1;
+  function renderSidebarMotto() {
+    const el = $('#sidebarMotto');
+    if (!el || mottoIndex >= 0) return;
+    const mottos = ['今天也在认真投递 🌟', '慢慢来，比较快 🐟', '投递交给软件，你只管面试 ✨', '本地优先，隐私在你手里 🔒', '少一点重复，多一点选择 💜'];
+    mottoIndex = Math.floor(Math.random() * mottos.length);
+    el.textContent = mottos[mottoIndex];
   }
 
   // 新手引导任务清单（T3.1 #6）：4 步走，基于 state 自动判断完成度，全完成则隐藏

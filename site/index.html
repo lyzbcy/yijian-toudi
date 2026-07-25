@@ -36,8 +36,8 @@
           <span class="pill">本地优先 · 开源 · macOS 首发</span>
           <h1>少一点重复，<br><em>多一点选择。</em></h1>
           <p>把不同大厂的岗位放在一起比较，只维护一份完整简历，再统一管理面试、测评和 Offer。登录态与求职数据留在你的电脑里。</p>
-          <div class="actions"><a class="primary" href="https://github.com/lyzbcy/yijian-toudi/releases/latest">立即下载 macOS 版</a><a class="secondary" href="#agent">连接我的 Agent</a></div>
-          <p class="microcopy">当前 v0.2.0 内测版 · 未签名应用附带一键安装授权脚本</p>
+          <div class="actions"><a class="primary" href="https://github.com/lyzbcy/yijian-toudi/releases/latest/download/%E4%B8%80%E9%94%AE%E6%8A%95%E9%80%92-0.2.0-macOS-arm64.zip">立即下载 macOS 版</a><a class="secondary" href="#agent">连接我的 Agent</a></div>
+          <p class="microcopy">当前 v0.2.0 内测版（Apple Silicon）· 下载后双击「一键安装.command」即可 · <a href="#install-guide" style="color:var(--purple)">首次安装看这里</a></p>
         </div>
         <div class="preview">
           <div class="preview-card">
@@ -70,6 +70,18 @@
       <div class="wrap">
         <header class="section-head"><span class="pill">人机协作</span><h2>自动化不是黑盒</h2><p>每一步都能看到状态，遇到登录、验证码和最终投递时把控制权交还给你。</p></header>
         <div class="steps"><article class="step"><span>01</span><h3>读取本地资料</h3><p>读取你授权的简历和筛选条件。</p></article><article class="step"><span>02</span><h3>打开真实浏览器</h3><p>独立资料目录保存站点登录态。</p></article><article class="step"><span>03</span><h3>遇到风险就暂停</h3><p>验证码、异常页面和敏感动作等你接管。</p></article><article class="step"><span>04</span><h3>确认后再执行</h3><p>最终投递或外部写入必须明确确认。</p></article></div>
+      </div>
+    </section>
+
+    <section class="block" id="install-guide">
+      <div class="wrap">
+        <header class="section-head"><span class="pill">首次安装</span><h2>macOS 提示「无法打开」怎么办？</h2><p>一键投递是开源软件、未经苹果付费签名，首次双击会被系统拦截。这是正常的，按下面任一方法授权一次即可，之后正常使用。</p></header>
+        <div class="features">
+          <article class="feature"><span class="feature-icon">1</span><h3>方法一：右键打开（最快）</h3><p>在「访达/应用程序」里找到一键投递，<b>右键</b>点「打开」，在弹窗里再点「打开」。这个授权是一次性的，以后双击就能正常启动。</p></article>
+          <article class="feature"><span class="feature-icon">2</span><h3>方法二：用一键安装脚本（推荐）</h3><p>下载的安装包里有「一键安装.command」，双击它，脚本会自动复制应用到「应用程序」、移除隔离属性并启动。终端窗口里按提示输开机密码即可。</p></article>
+          <article class="feature"><span class="feature-icon">3</span><h3>方法三：系统设置允许</h3><p>双击被拦后，打开「系统设置 → 隐私与安全性」，下拉会看到「已阻止打开一键投递」，点「仍要打开」。然后再次双击应用。</p></article>
+        </div>
+        <p style="text-align:center;color:var(--muted);font-size:12px;margin-top:28px">这是开源 macOS 软件的通用情况，不是病毒。源码完全公开在 GitHub，可自行审查。</p>
       </div>
     </section>
 
