@@ -88,9 +88,13 @@ async function handleCommand(command) {
   if (command.action === 'export_snapshot') return exportSnapshot(false);
   if (command.action === 'apply_cart') return applyCart();
   if (command.action === 'fill_resume') {
-    const resume = store.get().resume;
+    const currentState = store.get();
     const { fillTencentResume } = require('./adapters/tencent-fill.cjs');
-    return fillTencentResume(resume);
+    const company = currentState.companies.find((item) => item.id === 'tencent');
+    return fillTencentResume(currentState.resume, {
+      workspace: loginManager,
+      company
+    });
   }
   if (command.action === 'sync_email') {
     throw new Error('出于安全考虑，邮箱同步需在应用内输入本机保存的授权码');
@@ -381,11 +385,15 @@ app.whenReady().then(async () => {
   });
   // 简历一键更新到腾讯：用已登录 session 打开腾讯简历页自动填表（agent.md 核心目标）
   ipcMain.handle('resume:fill-tencent', async () => {
-    const resume = store.get().resume;
+    const currentState = store.get();
+    const resume = currentState.resume;
+    const company = currentState.companies.find((item) => item.id === 'tencent');
     const { fillTencentResume } = require('./adapters/tencent-fill.cjs');
     const id = addTask({ type: 'browser', title: '更新简历到腾讯', detail: '正在打开腾讯简历页…' });
     try {
       const result = await fillTencentResume(resume, {
+        workspace: loginManager,
+        company,
         onStep: (info) => updateTaskLive(id, { detail: info.message })
       });
       finishTask(id, result.ok ? 'done' : 'error', result.message);
