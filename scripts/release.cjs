@@ -19,9 +19,13 @@ if (!newVersion || !/^\d+\.\d+\.\d+/.test(newVersion)) {
 
 const files = {
   'package.json': (content) => content.replace(/"version":\s*"[^"]+"/, `"version": "${newVersion}"`),
-  'src/index.html': (content) => content.replace(/一键投递 v[\d.]+/, `一键投递 v${newVersion}`),
-  'src/index.html': (content) => content.replace(/<span id="appVersion">[\d.]+<\/span>/, `<span id="appVersion">${newVersion}</span>`),
-  'site/index.html': (content) => content.replace(/当前 v[\d.]+ /g, `当前 v${newVersion} `).replace(/一键投递-[\d.]+-macOS-arm64\.zip/g, `一键投递-${newVersion}-macOS-arm64.zip`)
+  'src/index.html': (content) => content
+    .replace(/一键投递 v[\d.]+/g, `一键投递 v${newVersion}`)
+    .replace(/<span id="appVersion">[\d.]+<\/span>/g, `<span id="appVersion">${newVersion}</span>`),
+  'site/index.html': (content) => content
+    .replace(/当前 v[\d.]+ /g, `当前 v${newVersion} `)
+    .replace(/一键投递-[\d.]+-macOS-arm64\.zip/g, `一键投递-${newVersion}-macOS-arm64.zip`)
+};
 };
 
 console.log(`\n📦 准备发布 v${newVersion}\n`);

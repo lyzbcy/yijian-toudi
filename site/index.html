@@ -37,7 +37,7 @@
           <h1>少一点重复，<br><em>多一点选择。</em></h1>
           <p>把不同大厂的岗位放在一起比较，只维护一份完整简历，再统一管理面试、测评和 Offer。登录态与求职数据留在你的电脑里。</p>
           <div class="actions"><a class="primary" href="https://github.com/lyzbcy/yijian-toudi/releases/latest/download/%E4%B8%80%E9%94%AE%E6%8A%95%E9%80%92-0.2.0-macOS-arm64.zip">立即下载 macOS 版</a><a class="secondary" href="#agent">连接我的 Agent</a></div>
-          <p class="microcopy">当前 v0.2.0 内测版（Apple Silicon）· 下载后双击「一键安装.command」即可 · <a href="#install-guide" style="color:var(--purple)">首次安装看这里</a></p>
+          <p class="microcopy">当前 v0.3.0 内测版（Apple Silicon）· 下载后双击「一键安装.command」即可 · <a href="#install-guide" style="color:var(--purple)">首次安装看这里</a></p>
         </div>
         <div class="preview">
           <div class="preview-card">
@@ -101,7 +101,7 @@
   </main>
   <footer>由 <a href="https://lyzbcy.github.io/" target="_blank" rel="noopener">捞鱼</a> 制作 · 求职数据属于你自己</footer>
   <script>
-    var PAGE_V=2;
+    var PAGE_V=3;
     fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(d){if(PAGE_V!==d.v){var el=document.getElementById('g-load');el.style.display='block';var last=0;try{last=parseInt(sessionStorage.getItem('yjt_refreshed_at')||'0')}catch(e){}if(Date.now()-last<3000)return;try{sessionStorage.setItem('yjt_refreshed_at',String(Date.now()))}catch(e){}setTimeout(function(){location.reload(true)},800)}}).catch(function(){});
     document.getElementById('copy').addEventListener('click',function(){navigator.clipboard.writeText(document.getElementById('prompt').textContent).then(function(){document.getElementById('copy').textContent='已复制 ✓'})});
   </script>

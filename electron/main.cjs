@@ -576,6 +576,11 @@ function requestJson(url) {
   });
 }
 
+// 锁定 userData 路径为 'yijian-toudi'（不跟随 productName 变成中文「一键投递」）。
+// 这样开发版（pnpm start）和正式打包版（.app）读同一个数据目录，简历/配置不会因换版而「消失」。
+// 必须在 app.whenReady() 之前调用。
+app.setPath('userData', path.join(app.getPath('appData'), 'yijian-toudi'));
+
 app.whenReady().then(async () => {
   store = new JsonStore(app.getPath('userData'));
   store.init();
