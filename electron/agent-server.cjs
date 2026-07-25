@@ -70,7 +70,14 @@ class AgentServer {
       }
       if (request.method === 'POST' && url.pathname === '/v1/commands') {
         const body = await this.readJson(request);
-        const allowed = ['refresh_jobs', 'sync_email', 'open_company', 'favorite_job', 'export_snapshot', 'apply_cart', 'fill_resume'];
+        const allowed = [
+          // 只读 / 查询
+          'refresh_jobs', 'open_company', 'favorite_job', 'export_snapshot', 'search_jobs',
+          // 本地数据写入（开放：AI 可自由读写，立即生效，无需用户确认）
+          'update_resume', 'manage_profile', 'batch_cart',
+          // 外部写入（需用户确认：涉及招聘网站投递/填表/发送）
+          'apply_cart', 'fill_resume', 'sync_email'
+        ];
         if (!allowed.includes(body.action)) {
           return this.send(response, 400, { error: 'unsupported_action', allowed });
         }

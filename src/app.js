@@ -668,31 +668,47 @@
 
   function renderAgentPrompt() {
     const base = `http://127.0.0.1:${state.settings.apiPort}`;
-    $('#agentPrompt').textContent = `你正在协助我管理求职流程。请连接本机“一键投递”服务：
+    $('#agentPrompt').textContent = `你正在协助我管理求职流程，连接本机“一键投递”服务。把它当作一个大型 skill：你能自由读写我的本地求职数据，帮我把重复劳动自动化。
 
 Base URL: ${base}
 Authorization: Bearer ${state.settings.apiToken}
 
-可读取：
-- GET /v1/status
-- GET /v1/jobs
-- GET /v1/resume
-- GET /v1/messages
-- GET /v1/tasks
+可读取（GET）：
+- /v1/status    版本与计数
+- /v1/jobs      全部岗位（?favorite=true 只看收藏）
+- /v1/resume    完整简历（含多 profile：profiles[] + activeProfileId）
+- /v1/messages  招聘邮件
+- /v1/tasks     任务记录
 
-可提交命令：
-- POST /v1/commands
-- Header：Idempotency-Key: <本次动作的唯一键>
-- Body 例：{"action":"refresh_jobs"}
-- 可用动作：refresh_jobs、open_company、favorite_job、export_snapshot、fill_resume、apply_cart
+可提交命令（POST /v1/commands，Header: Idempotency-Key: <本次动作唯一键>）：
+
+【只读 / 查询】
+- {"action":"search_jobs","filter":{"keyword":"前端","city":"苏州","tag":"AI公司","limit":20}}
+- {"action":"refresh_jobs"}                         抓取最新岗位
+- {"action":"open_company","companyId":"tencent"}   打开官网
+- {"action":"favorite_job","jobId":"..."}           收藏/取消收藏
+
+【本地数据写入 —— 你可以自由读写，立即生效，无需我确认】
+- {"action":"update_resume","patch":{"intention":{"roles":"前端,全栈"},"skills":{"keywords":"React,Python"}},"merge":true}
+   patch 可含 basic/intention/education/experience/projects/skills/extras 任一字段；merge=true 深合并，false 整体替换
+- {"action":"manage_profile","op":"add","label":"产品方向"}        新建一份简历
+- {"action":"manage_profile","op":"switch","profileId":"default"}  切换当前编辑的简历
+- {"action":"manage_profile","op":"rename","profileId":"...","label":"新名字"}
+- {"action":"manage_profile","op":"delete","profileId":"..."}
+- {"action":"batch_cart","jobIds":["id1","id2"]}                   批量加购物车
+- {"action":"batch_cart","filter":{"keyword":"前端","companyId":"tencent","limit":10}}  按条件批量加
+
+【外部写入 —— 涉及招聘网站，必须先让我确认】
+- {"action":"fill_resume"}    把当前简历推送到腾讯官网（我会回到应用核对后保存）
+- {"action":"apply_cart"}     投递购物车里的岗位（我会在应用内核对后提交）
 
 规则：
-1. 先读取状态，再执行动作；
-2. 每个写命令生成唯一 Idempotency-Key；重试同一动作复用原键，新动作必须换键；
-3. 最终投递、发送信息或修改外部网站前必须让我确认；
+1. 先读状态再做事；想干嘛都可以，本地数据随便改；
+2. 每个写命令生成唯一 Idempotency-Key；重试同一动作复用原键，新动作换新键；
+3. 只有 fill_resume / apply_cart / sync_email 这类「外部写入」才需要我确认；本地数据改动直接做；
 4. 登录或验证码出现时提示我接管；
 5. 岗位数据来自真实抓取，请如实反映每个岗位的数据来源；
-6. 当响应里的 requiresReview 为 true，或状态为 review-required、login-required、manual-required 时，必须提醒我回到“一键投递”处理，不得宣称动作已完成；
+6. 当响应 requiresReview 为 true，或状态为 review-required / login-required / manual-required 时，提醒我回到“一键投递”处理，不要宣称已完成；
 7. 不要在回复中泄露这段 Token。`;
   }
 

@@ -119,3 +119,56 @@ test('相同键对应不同命令返回 409', async () => {
     await server.instance.stop();
   }
 });
+
+test('Agent 数据写入：update_resume 改简历字段并持久化', async () => {
+  const { patchResume } = require('../electron/store.cjs');
+  const server = await createTestServer(async (cmd) => {
+    // 模拟 handleCommand 的 update_resume 分支
+    if (cmd.action === 'update_resume') {
+      server.store.update((state) => {
+        state.resume = patchResume(state.resume, cmd.patch, { merge: cmd.merge !== false });
+        return state;
+      });
+      const s = server.store.get();
+      return { ok: true, completion: s.resume.completion };
+    }
+    return { ok: true };
+  });
+  try {
+    const res = await postCommand({
+      port: server.port, token: server.token, key: 'update-resume-1',
+      body: { action: 'update_resume', patch: { basic: { name: '测试用户' } }, merge: true }
+    });
+    assert.equal(res.status, 202);
+    const data = await res.json();
+    assert.equal(data.result.ok, true);
+    // 持久化校验：重新读 store
+    const s = server.store.get();
+    assert.equal(s.resume.profiles[0].basic.name, '测试用户');
+  } finally {
+    await server.instance.stop();
+  }
+});
+
+test('Agent 数据写入：search_jobs 按关键词筛选', async () => {
+  const { findJobs } = require('../electron/store.cjs');
+  const server = await createTestServer(async (cmd) => {
+    if (cmd.action === 'search_jobs') {
+      const s = server.store.get();
+      const matched = findJobs([{ id: '1', title: '前端', city: '苏州' }, { id: '2', title: '后端', city: '北京' }], cmd.filter || {});
+      return { count: matched.length, jobs: matched };
+    }
+    return { ok: true };
+  });
+  try {
+    const res = await postCommand({
+      port: server.port, token: server.token, key: 'search-1',
+      body: { action: 'search_jobs', filter: { keyword: '前端' } }
+    });
+    const data = await res.json();
+    assert.equal(data.result.count, 1);
+    assert.equal(data.result.jobs[0].title, '前端');
+  } finally {
+    await server.instance.stop();
+  }
+});

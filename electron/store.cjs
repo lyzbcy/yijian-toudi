@@ -294,6 +294,76 @@ function deleteProfile(resume, profileId) {
   return resume;
 }
 
+// Agent 开放数据写入（design: 「当大型 skill」——AI 可自由读写本地数据）
+// 这些都是纯本地数据操作，不涉及外部网站，无需用户确认即可生效。
+
+// 按 patch 更新 active profile 的指定字段。patch 形如 { intention: {...}, education: [...], ... }
+// 或扁平 'basic.name'。merge=true 时深合并，false 时整体替换该字段。
+function patchResume(resume, patch, { merge = true } = {}) {
+  const profileId = resume.activeProfileId || 'default';
+  const profiles = Array.isArray(resume.profiles) ? resume.profiles : [];
+  let changed = false;
+  const newProfiles = profiles.map((profile) => {
+    if (profile.id !== profileId) return profile;
+    changed = true;
+    const updated = { ...profile };
+    for (const [key, value] of Object.entries(patch)) {
+      if (['intention', 'education', 'experience', 'projects'].includes(key)) {
+        updated[key] = merge && profile[key] && typeof profile[key] === 'object' && !Array.isArray(profile[key])
+          ? { ...profile[key], ...value }
+          : value;
+      } else if (['basic', 'skills', 'extras'].includes(key)) {
+        // 全局字段也同步写（basic/skills/extras 跨 profile 共享）
+        updated[key] = merge && profile[key] && typeof profile[key] === 'object' && !Array.isArray(profile[key])
+          ? { ...profile[key], ...value }
+          : value;
+      }
+    }
+    return updated;
+  });
+  if (!changed && profiles.length === 0) {
+    // 兜底：没 profile 时建一个
+    return patchResume({ ...resume, profiles: [createResumeProfile({ id: 'default', label: '默认简历' })] }, patch, { merge });
+  }
+  const newResume = { ...resume, profiles: newProfiles };
+  syncResumeActiveView(newResume);
+  newResume.updatedAt = new Date().toISOString();
+  newResume.completion = calculateResumeCompletion(newResume);
+  return newResume;
+}
+
+// 批量把岗位加入购物车（AI 可按规则一次加多个）。返回新增数量。
+function batchAddToCart(state, jobIds) {
+  const ids = Array.isArray(jobIds) ? jobIds : [jobIds];
+  const existing = new Set((state.cart || []).map((c) => c.id));
+  const jobsById = new Map((state.jobs || []).map((j) => [j.id, j]));
+  let added = 0;
+  for (const id of ids) {
+    if (existing.has(id) || !jobsById.has(id)) continue;
+    state.cart = [...(state.cart || []), { ...jobsById.get(id) }];
+    existing.add(id);
+    added++;
+  }
+  return { added, total: state.cart.length };
+}
+
+// 按条件筛选岗位 ID（AI 用：如「前端 苏州」、某公司、某标签）
+function findJobs(jobs, { companyId, tag, city, keyword, favoriteOnly, limit } = {}) {
+  let result = (jobs || []).filter((job) => {
+    if (companyId && job.companyId !== companyId) return false;
+    if (favoriteOnly && !job.favorite) return false;
+    if (city && job.city !== city) return false;
+    if (tag && !(job.tags || []).includes(tag)) return false;
+    if (keyword) {
+      const text = [job.title, job.department, job.city, (job.tags || []).join(' '), job.summary || ''].join(' ').toLowerCase();
+      if (!text.includes(keyword.toLowerCase())) return false;
+    }
+    return true;
+  });
+  if (limit && result.length > limit) result = result.slice(0, limit);
+  return result;
+}
+
 // 重命名 profile。label 为空时拒绝。
 function renameProfile(resume, profileId, label) {
   const trimmed = String(label || '').trim();
@@ -308,4 +378,4 @@ function renameProfile(resume, profileId, label) {
   return resume;
 }
 
-module.exports = { JsonStore, calculateResumeCompletion, syncResumeActiveView, applyResumeEdit, switchProfile, addProfile, deleteProfile, renameProfile, migrateFlatResumeToProfiles, adapterStatusToCapabilities };
+module.exports = { JsonStore, calculateResumeCompletion, syncResumeActiveView, applyResumeEdit, switchProfile, addProfile, deleteProfile, renameProfile, migrateFlatResumeToProfiles, adapterStatusToCapabilities, patchResume, batchAddToCart, findJobs };

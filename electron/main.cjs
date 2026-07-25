@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, shell, dialog, safeStorage, net, Notificati
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
-const { JsonStore, calculateResumeCompletion, applyResumeEdit, switchProfile, addProfile, deleteProfile, renameProfile, migrateFlatResumeToProfiles } = require('./store.cjs');
+const { JsonStore, calculateResumeCompletion, applyResumeEdit, switchProfile, addProfile, deleteProfile, renameProfile, migrateFlatResumeToProfiles, patchResume, batchAddToCart, findJobs } = require('./store.cjs');
 const { BrowserAutomation } = require('./automation.cjs');
 const { AgentServer } = require('./agent-server.cjs');
 const { syncQqMail } = require('./mail.cjs');
@@ -113,6 +113,66 @@ async function handleCommand(command) {
   }
   if (command.action === 'sync_email') {
     throw new Error('出于安全考虑，邮箱同步需在应用内输入本机保存的授权码');
+  }
+  // ===== Agent 开放数据写入（design: 「当大型 skill」——AI 可自由读写本地数据）=====
+  // 这些都是纯本地数据操作，立即生效、无需用户确认（外部写入如投递/填简历到官网仍需确认）。
+  // update_resume：改 active profile 的任意字段（basic/intention/education/experience/projects/skills/extras）
+  if (command.action === 'update_resume') {
+    if (!command.patch || typeof command.patch !== 'object') throw new Error('update_resume 需要 patch 字段（对象）');
+    const next = store.update((state) => {
+      state.resume = patchResume(state.resume, command.patch, { merge: command.merge !== false });
+      if (Array.isArray(state.jobs)) applyJobMatches(state.jobs, state.resume);
+      return state;
+    });
+    broadcast();
+    return { ok: true, completion: next.resume.completion, activeProfileId: next.resume.activeProfileId };
+  }
+  // manage_profile：新建/切换/删除/重命名 profile
+  if (command.action === 'manage_profile') {
+    const op = command.op; // 'add' | 'switch' | 'delete' | 'rename'
+    let result;
+    const next = store.update((state) => {
+      if (op === 'add') {
+        const newId = addProfile(state.resume, command.label);
+        result = { op, profileId: newId };
+      } else if (op === 'switch') {
+        switchProfile(state.resume, command.profileId);
+        result = { op, activeProfileId: command.profileId };
+      } else if (op === 'delete') {
+        deleteProfile(state.resume, command.profileId);
+        result = { op, deleted: command.profileId, activeProfileId: state.resume.activeProfileId };
+      } else if (op === 'rename') {
+        renameProfile(state.resume, command.profileId, command.label);
+        result = { op, profileId: command.profileId, label: command.label };
+      } else {
+        throw new Error('manage_profile 的 op 必须是 add/switch/delete/rename');
+      }
+      return state;
+    });
+    broadcast();
+    return { ok: true, ...result, profiles: next.resume.profiles.map((p) => ({ id: p.id, label: p.label })) };
+  }
+  // batch_cart：批量加岗位到购物车（按 jobIds 或按筛选条件）
+  if (command.action === 'batch_cart') {
+    let added;
+    const next = store.update((state) => {
+      let jobIds = command.jobIds;
+      if (!Array.isArray(jobIds)) {
+        // 按筛选条件找
+        const matched = findJobs(state.jobs, command.filter || {});
+        jobIds = matched.map((j) => j.id);
+      }
+      added = batchAddToCart(state, jobIds);
+      return state;
+    });
+    broadcast();
+    return { ok: true, ...added };
+  }
+  // search_jobs：按条件筛岗位（只读，但通过 commands 走方便 AI 统一调用）
+  if (command.action === 'search_jobs') {
+    const state = store.get();
+    const matched = findJobs(state.jobs, command.filter || {});
+    return { count: matched.length, jobs: matched };
   }
 }
 
