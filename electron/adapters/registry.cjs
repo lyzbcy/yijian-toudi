@@ -23,21 +23,25 @@ const { listBytedanceJobs } = require('./bytedance.cjs');
 const { listXiaomiJobs } = require('./xiaomi.cjs');
 const { listJdJobs } = require('./jd.cjs');
 const { listMeituanJobs } = require('./meituan.cjs');
+const { listAlibabaJobs } = require('./alibaba.cjs');
+const { listBossJobs } = require('./boss.cjs');
 
 const { createManualPrepareApplication } = require('./_manual-apply.cjs');
-const { createManualFillResume } = require('./_manual-fill.cjs');
+const { createGenericResumeFill } = require('./generic-resume-fill.cjs');
 // 五家（字节/小米/京东/美团/百度）的 prepareApplication：打开详情页让用户手动投递
 const manualApplyBytedance = createManualPrepareApplication('字节跳动');
 const manualApplyXiaomi = createManualPrepareApplication('小米');
 const manualApplyJd = createManualPrepareApplication('京东');
 const manualApplyMeituan = createManualPrepareApplication('美团');
 const manualApplyBaidu = createManualPrepareApplication('百度');
-// 五家的 fillResume：打开官网简历页让用户手动填（manual 级别）
-const manualFillBytedance = createManualFillResume('bytedance', '字节跳动');
-const manualFillXiaomi = createManualFillResume('xiaomi', '小米');
-const manualFillJd = createManualFillResume('jd', '京东');
-const manualFillMeituan = createManualFillResume('meituan', '美团');
-const manualFillBaidu = createManualFillResume('baidu', '百度');
+// 简历填写：字节/阿里/小米/京东/美团/百度走通用自动填写引擎（inspect→匹配→写入→延迟回读，保存永远留给用户）
+const genericFillBytedance = createGenericResumeFill('bytedance', '字节跳动');
+const genericFillXiaomi = createGenericResumeFill('xiaomi', '小米');
+const genericFillJd = createGenericResumeFill('jd', '京东');
+const genericFillMeituan = createGenericResumeFill('meituan', '美团');
+const genericFillBaidu = createGenericResumeFill('baidu', '百度');
+const genericFillAlibaba = createGenericResumeFill('alibaba', '阿里巴巴');
+const manualApplyAlibaba = createManualPrepareApplication('阿里巴巴');
 
 // 腾讯简历填写/投递按需 require（避免主进程启动就加载 playwright 相关）
 function tencentFill(resume, opts) {
@@ -58,57 +62,77 @@ const REGISTRY = [
     fillResume: tencentFill,
     prepareApplication: tencentApply,
     inspectApplicationStatus: (opts) => require('./tencent-status.cjs').inspectTencentApplicationStatus(opts),
-    capabilities: { jobs: 'verified', login: 'manual', resume: 'verified', apply: 'verified', status: 'manual' }
+    capabilities: { jobs: 'verified', login: 'manual', resume: 'degraded', apply: 'manual', status: 'manual' }
   },
   {
     id: 'baidu',
     name: '百度',
     idPrefix: 'baidu-',
     listJobs: (opts) => listBaiduJobs(opts),
-    inspectResume: null, planResumePatch: null, fillResume: manualFillBaidu,
+    inspectResume: null, planResumePatch: null, fillResume: genericFillBaidu,
     prepareApplication: manualApplyBaidu,
     inspectApplicationStatus: null,
-    capabilities: { jobs: 'verified', login: 'manual', resume: 'manual', apply: 'manual', status: 'unsupported' }
+    capabilities: { jobs: 'verified', login: 'manual', resume: 'degraded', apply: 'manual', status: 'unsupported' }
   },
   {
     id: 'bytedance',
     name: '字节跳动',
     idPrefix: 'bytedance-',
     listJobs: (opts) => listBytedanceJobs(opts),
-    inspectResume: null, planResumePatch: null, fillResume: manualFillBytedance,
+    inspectResume: null, planResumePatch: null, fillResume: genericFillBytedance,
     prepareApplication: manualApplyBytedance,
     inspectApplicationStatus: null,
-    capabilities: { jobs: 'verified', login: 'manual', resume: 'manual', apply: 'manual', status: 'unsupported' }
+    capabilities: { jobs: 'verified', login: 'manual', resume: 'degraded', apply: 'manual', status: 'unsupported' }
   },
   {
     id: 'xiaomi',
     name: '小米',
     idPrefix: 'xiaomi-',
     listJobs: (opts) => listXiaomiJobs(opts),
-    inspectResume: null, planResumePatch: null, fillResume: manualFillXiaomi,
+    inspectResume: null, planResumePatch: null, fillResume: genericFillXiaomi,
     prepareApplication: manualApplyXiaomi,
     inspectApplicationStatus: null,
-    capabilities: { jobs: 'verified', login: 'manual', resume: 'manual', apply: 'manual', status: 'unsupported' }
+    capabilities: { jobs: 'verified', login: 'manual', resume: 'degraded', apply: 'manual', status: 'unsupported' }
   },
   {
     id: 'jd',
     name: '京东',
     idPrefix: 'jd-',
     listJobs: (opts) => listJdJobs(opts),
-    inspectResume: null, planResumePatch: null, fillResume: manualFillJd,
+    inspectResume: null, planResumePatch: null, fillResume: genericFillJd,
     prepareApplication: manualApplyJd,
     inspectApplicationStatus: null,
-    capabilities: { jobs: 'verified', login: 'manual', resume: 'manual', apply: 'manual', status: 'unsupported' }
+    capabilities: { jobs: 'verified', login: 'manual', resume: 'degraded', apply: 'manual', status: 'unsupported' }
   },
   {
     id: 'meituan',
     name: '美团',
     idPrefix: 'meituan-',
     listJobs: (opts) => listMeituanJobs(opts),
-    inspectResume: null, planResumePatch: null, fillResume: manualFillMeituan,
+    inspectResume: null, planResumePatch: null, fillResume: genericFillMeituan,
     prepareApplication: manualApplyMeituan,
     inspectApplicationStatus: null,
-    capabilities: { jobs: 'verified', login: 'manual', resume: 'manual', apply: 'manual', status: 'unsupported' }
+    capabilities: { jobs: 'verified', login: 'manual', resume: 'degraded', apply: 'manual', status: 'unsupported' }
+  },
+  {
+    id: 'alibaba',
+    name: '阿里巴巴',
+    idPrefix: 'alibaba-',
+    listJobs: (opts) => listAlibabaJobs(opts),
+    inspectResume: null, planResumePatch: null, fillResume: genericFillAlibaba,
+    prepareApplication: manualApplyAlibaba,
+    inspectApplicationStatus: null,
+    capabilities: { jobs: 'manual', login: 'manual', resume: 'degraded', apply: 'manual', status: 'unsupported' }
+  },
+  {
+    id: 'boss',
+    name: 'BOSS直聘',
+    idPrefix: 'boss-',
+    listJobs: (opts) => listBossJobs(opts),
+    inspectResume: null, planResumePatch: null, fillResume: null,
+    prepareApplication: null,
+    inspectApplicationStatus: null,
+    capabilities: { jobs: 'manual', login: 'unsupported', resume: 'unsupported', apply: 'unsupported', status: 'unsupported' }
   }
 ];
 
@@ -120,7 +144,7 @@ function getAdapter(companyId) {
 
 // 用于 refreshJobs：只返回 jobs 能力非 unsupported 的（即能抓岗位的）
 function listJobAdapters() {
-  return REGISTRY.filter((a) => a.capabilities.jobs !== 'unsupported');
+  return REGISTRY.filter((a) => a.capabilities.jobs === 'verified' || a.capabilities.jobs === 'degraded');
 }
 
 // 用于能力矩阵展示：返回 [{id, name, ...capabilities}]

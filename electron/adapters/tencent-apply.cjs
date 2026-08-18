@@ -20,20 +20,20 @@ const APPLY_PAGE_PROBE = `(() => {
   };
 })()`;
 
-const CLICK_APPLY_BUTTON = `(() => {
-  const button = document.querySelector('[data-yjt-apply-button="true"]');
-  if (!button) return { clicked: false };
-  button.click();
-  return { clicked: true };
-})()`;
-
 function resolveTencentJobUrl(job) {
-  if (/^https:\/\/careers\.tencent\.com\//.test(job?.url || '')) return job.url;
+  // 腾讯 API 返回的 PostURL 常是 http://，腾讯会 302 到 https——但 302 链路不稳，
+  // 且 http 链接在部分网络环境会失败。统一规范化为 https。
+  const raw = String(job?.url || '').trim();
+  if (/^https:\/\/careers\.tencent\.com\//.test(raw)) return raw;
+  if (/^http:\/\/careers\.tencent\.com\//.test(raw)) return raw.replace(/^http:/, 'https:');
+  // url 缺失时从 id 反推 postId（id 形如 tencent-<postId> / tencent-campus-<postId>）。
+  // 反推不出就回退到 job.url（即便为空也让 openWorkspace 自己报「工作区只允许 http(s)」，
+  // 比直接 throw 更可控——throw 会让调用方走 catch，而 catch 路径不一定关 workspace）。
   const postId = String(job?.id || '').replace(/^tencent(-campus)?-/, '');
-  if (!postId || postId === String(job?.id || '')) {
-    throw new Error('岗位缺少可信的腾讯详情链接');
+  if (postId && postId !== String(job?.id || '')) {
+    return `https://careers.tencent.com/jobdesc.html?postId=${encodeURIComponent(postId)}`;
   }
-  return `https://careers.tencent.com/jobdesc.html?postId=${encodeURIComponent(postId)}`;
+  return raw;
 }
 
 async function applyTencentJob(job, {
@@ -66,23 +66,15 @@ async function applyTencentJob(job, {
 
   const page = await workspace.run(APPLY_PAGE_PROBE);
   if (page.isNotFound) {
+    // 岗位下线/404：必须关 workspace，否则腾讯404页会一直挂在窗口上，
+    // 用户被困住只能点腾讯页内的「返回首页」然后彻底卡死（用户实测痛点）。
+    // login-required/manual-required 分支不关——那是要留给用户登录或手动接管的。
+    await workspace.closeWorkspaceIfOpen();
     return {
       ok: false,
       status: 'failed',
       message: '岗位详情页不存在，岗位可能已经下线'
     };
-  }
-  // 探测失败时先尝试自动过验证码（可能是验证码挡住而非真没登录）
-  if (page.loginRequired || !page.applyButton) {
-    step('captcha-check', '检测到可能需要验证码，尝试自动通过…');
-    const { ensureCaptchaCleared } = require('./tencent-fill.cjs');
-    const cleared = await ensureCaptchaCleared(workspace, { onStep });
-    if (cleared) {
-      const repage = await workspace.run(APPLY_PAGE_PROBE);
-      if (!repage.isNotFound && !repage.loginRequired && repage.applyButton) {
-        return await applyAfterProbe(workspace, job, step, repage);
-      }
-    }
   }
   if (page.loginRequired) {
     step('login-required', '腾讯登录态已失效或需要验证码，请在当前页面完成');
@@ -92,41 +84,19 @@ async function applyTencentJob(job, {
       message: '请先在当前腾讯页面完成登录或验证码，然后重新投递'
     };
   }
-  return await applyAfterProbe(workspace, job, step, page);
-}
-
-// 抽出 probe 通过后的投递逻辑，供验证码通过后复用
-async function applyAfterProbe(workspace, job, step, page) {
-  if (!page.applyButton) {
-    return {
-      ok: false,
-      status: 'manual-required',
-      message: '未找到可靠的申请按钮，请在当前页面手动检查'
-    };
-  }
-
-  step('preparing', `已找到“${page.applyButton.text || '申请岗位'}”，正在打开投递流程…`);
-  const click = await workspace.run(CLICK_APPLY_BUTTON);
-  if (!click.clicked) {
-    return {
-      ok: false,
-      status: 'manual-required',
-      message: '申请按钮已变化，请在当前页面手动继续'
-    };
-  }
-
-  const message = '已打开腾讯投递流程，请核对信息后在官网完成最终提交';
-  step('review-required', message);
+  const message = page.applyButton
+    ? `已打开岗位详情页并找到“${page.applyButton.text || '申请岗位'}”；请由你本人点击，软件不会触发任何申请或投递按钮`
+    : '已打开岗位详情页；请由你本人检查并操作，软件不会触发任何申请或投递按钮';
+  step('manual-required', message);
   return {
     ok: true,
-    status: 'review-required',
+    status: 'manual-required',
     message
   };
 }
 
 module.exports = {
   APPLY_PAGE_PROBE,
-  CLICK_APPLY_BUTTON,
   resolveTencentJobUrl,
   applyTencentJob
 };

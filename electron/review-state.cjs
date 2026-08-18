@@ -68,7 +68,7 @@ function applyResultToCart({
 function isSubmissionSuccess(snapshot) {
   const text = String(snapshot?.text || '');
   if (/提交失败|投递失败|申请失败|未成功/.test(text)) return false;
-  return /申请成功|提交成功|投递成功|已成功投递|已投递/.test(text);
+  return /申请成功|提交成功|投递成功|已成功投递/.test(text);
 }
 
 // 购物车前置检查：①每家公司的投递数量限制（applyRule.maxActive）
@@ -120,7 +120,7 @@ function validateCartRules({ cart = [], companies = [] }) {
 
 function taskStatusForAutomation(status) {
   if (status === 'submitted' || status === 'done') return 'done';
-  if (status === 'review-required') return 'waiting';
+  if (['review-required', 'login-required', 'manual-required'].includes(status)) return 'waiting';
   return 'error';
 }
 

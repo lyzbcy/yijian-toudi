@@ -6,6 +6,7 @@ const path = require('node:path');
 const { JsonStore, calculateResumeCompletion, applyResumeEdit, switchProfile, addProfile, deleteProfile, renameProfile, migrateFlatResumeToProfiles } = require('../electron/store.cjs');
 const { classifyRecruitingMail, looksLikeRecruitingMail } = require('../electron/recruiting.cjs');
 const { AgentServer } = require('../electron/agent-server.cjs');
+const { createSeed } = require('../electron/seed.cjs');
 
 test('JsonStore 首次启动生成空状态并能持久化收藏', () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'yjt-store-'));
@@ -103,7 +104,7 @@ test('旧版扁平简历 schema 升级到多 profile（迁移不丢已有经历�
   // capabilities 迁移：fixture 里的腾讯（adapter-ready）应被 seed 的最新 capabilities 覆盖（含 resume/apply verified）
   assert.ok(state.companies[0].capabilities);
   assert.equal(state.companies[0].capabilities.jobs, 'verified');
-  assert.equal(state.companies[0].capabilities.resume, 'verified');
+  assert.equal(state.companies[0].capabilities.resume, 'degraded');
 });
 
 test('能力矩阵：旧 adapterStatus 迁移成五维 capabilities，login-only 公司 jobs 为 degraded', () => {
@@ -126,14 +127,42 @@ test('能力矩阵：旧 adapterStatus 迁移成五维 capabilities，login-only
   const tencent = state.companies.find((c) => c.id === 'tencent');
   const oldCorp = state.companies.find((c) => c.id === 'old-corp');
   // 腾讯走 seed 覆盖：拿到真实五维（resume/apply verified）
-  assert.equal(tencent.capabilities.resume, 'verified');
-  assert.equal(tencent.capabilities.apply, 'verified');
+  assert.equal(tencent.capabilities.resume, 'degraded');
+  assert.equal(tencent.capabilities.apply, 'manual');
   assert.equal(tencent.lastVerifiedAt, '2026-07-25');
   // old-corp 不在 seed，走 adapterStatus 兜底：login-only → jobs degraded
   assert.equal(oldCorp.capabilities.jobs, 'degraded');
   assert.equal(oldCorp.capabilities.login, 'manual');
   assert.equal(oldCorp.capabilities.resume, 'unsupported');
   assert.equal(oldCorp.lastVerifiedAt, null);
+});
+
+test('旧版默认 false 合规答案迁移为未回答，避免把系统默认值当用户声明', () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'yjt-tristate-'));
+  const state = createSeed();
+  state.meta.schemaVersion = 2;
+  state.resume.compliance.previouslyInterviewed = false;
+  state.resume.compliance.criminalRecord = false;
+  state.resume.profiles[0].intention.acceptAdjustment = false;
+  fs.writeFileSync(path.join(directory, 'state.json'), JSON.stringify(state));
+  const migrated = new JsonStore(directory).init();
+  assert.equal(migrated.resume.compliance.previouslyInterviewed, '');
+  assert.equal(migrated.resume.compliance.criminalRecord, '');
+  assert.equal(migrated.resume.intention.acceptAdjustment, '');
+  assert.equal(migrated.meta.schemaVersion, 4);
+});
+
+test('旧版教育默认 true 迁移为未回答，避免自动声明全日制或统招', () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'yjt-education-tristate-'));
+  const state = createSeed();
+  state.meta.schemaVersion = 3;
+  state.resume.profiles[0].education[0].isFullTime = 'true';
+  state.resume.profiles[0].education[0].isUnified = 'true';
+  fs.writeFileSync(path.join(directory, 'state.json'), JSON.stringify(state));
+  const migrated = new JsonStore(directory).init();
+  assert.equal(migrated.resume.education[0].isFullTime, '');
+  assert.equal(migrated.resume.education[0].isUnified, '');
+  assert.equal(migrated.meta.schemaVersion, 4);
 });
 
 test('applyResumeEdit 把前端编辑的顶层经历写回 active profile（不丢用户输入）', () => {
@@ -390,7 +419,7 @@ test('Agent API 要求 Token 并返回岗位', async () => {
   }
 });
 
-test('Agent API 明确标注需要用户审核的命令结果', async () => {
+test('Agent API 在执行官网写入前要求回到应用由用户发起', async () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'yjt-api-review-'));
   const store = new JsonStore(directory);
   const state = store.init();
@@ -414,9 +443,8 @@ test('Agent API 明确标注需要用户审核的命令结果', async () => {
     });
     const data = await response.json();
 
-    assert.equal(response.status, 202);
-    assert.equal(data.requiresReview, true);
-    assert.equal(data.result.status, 'review-required');
+    assert.equal(response.status, 409);
+    assert.equal(data.error, 'interactive_confirmation_required');
   } finally {
     await server.stop();
   }

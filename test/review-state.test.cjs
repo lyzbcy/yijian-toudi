@@ -79,6 +79,7 @@ test('只有明确的页面成功文案才判定为已提交', () => {
   assert.equal(isSubmissionSuccess({ text: '申请成功，感谢您的投递' }), true);
   assert.equal(isSubmissionSuccess({ text: '请确认信息后提交申请' }), false);
   assert.equal(isSubmissionSuccess({ text: '提交失败，请稍后重试' }), false);
+  assert.equal(isSubmissionSuccess({ text: '我的投递 已投递岗位 3 个' }), false);
 });
 
 test('购物车超过公司的投递上限时阻止启动', () => {

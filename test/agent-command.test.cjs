@@ -115,6 +115,7 @@ test('相同键对应不同命令返回 409', async () => {
       body: { action: 'apply_cart' }
     });
     assert.equal(conflict.status, 409);
+    assert.equal((await conflict.json()).error, 'interactive_confirmation_required');
   } finally {
     await server.instance.stop();
   }

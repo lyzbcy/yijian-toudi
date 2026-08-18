@@ -26,7 +26,6 @@ const files = {
     .replace(/当前 v[\d.]+ /g, `当前 v${newVersion} `)
     .replace(/一键投递-[\d.]+-macOS-arm64\.zip/g, `一键投递-${newVersion}-macOS-arm64.zip`)
 };
-};
 
 console.log(`\n📦 准备发布 v${newVersion}\n`);
 

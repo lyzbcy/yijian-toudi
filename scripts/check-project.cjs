@@ -7,7 +7,7 @@ const failures = [];
 const pass = (message) => console.log(`✓ ${message}`);
 const fail = (message) => { failures.push(message); console.error(`✗ ${message}`); };
 
-for (const file of ['electron/main.cjs', 'electron/preload.cjs', 'electron/store.cjs', 'electron/mail.cjs', 'electron/agent-server.cjs', 'src/app.js', 'scripts/site-preview.cjs']) {
+for (const file of ['electron/main.cjs', 'electron/preload.cjs', 'electron/store.cjs', 'electron/mail.cjs', 'electron/agent-server.cjs', 'src/app.js', 'scripts/site-preview.cjs', 'scripts/release.cjs']) {
   const result = spawnSync(process.execPath, ['--check', path.join(root, file)], { encoding: 'utf8' });
   if (result.status === 0) pass(`${file} 语法通过`);
   else fail(`${file} 语法错误：${result.stderr}`);

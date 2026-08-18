@@ -13,7 +13,8 @@ Renderer（src）
 Main Process（electron）
   ├─ JsonStore：本地原子写入
   ├─ Mail：QQ IMAP + 邮件分类
-  ├─ BrowserAutomation：系统 Chrome/Edge + 独立 profile
+  ├─ WebContentsView：招聘登录/简历核对，共用 persist:<company> 会话并保留退出栏
+  ├─ Browser collectors：少数动态岗位页使用 Playwright 渲染采集
   ├─ AgentServer：127.0.0.1 本地 HTTP API
   └─ Update：GitHub Releases 检查
 ```
@@ -23,7 +24,7 @@ Main Process（electron）
 - `state.json` 位于 Electron `userData` 目录，不进入项目仓库。
 - QQ 邮箱授权码由 Electron `safeStorage` 使用系统能力加密后保存。
 - Agent API 只监听 `127.0.0.1`，并要求随机 Bearer Token。
-- 导出快照会删除 Agent Token；目前仍含用户主动填写的简历内容，分享前需用户自行确认。
+- Agent/导出脱敏快照会删除 Token、联系方式、身份、家庭、合规和邮件正文；仍保留教育/工作/项目内容供求职分析，不等同匿名公开简历。
 
 ## 跨平台约束
 

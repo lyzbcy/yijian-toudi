@@ -7,19 +7,22 @@
 const VERIFIED = '2026-07-25';
 const companies = [
   // ===== 互联网头部（已适配或待适配） =====
-  { id: 'tencent', name: '腾讯', short: 'T', color: '#1664ff', logoUrl: './assets/logos/tencent.png', portal: 'https://careers.tencent.com/', tags: ['500强', 'AI公司'], adapterStatus: 'adapter-ready', capabilities: { jobs: 'verified', login: 'manual', resume: 'verified', apply: 'verified', status: 'manual' }, lastVerifiedAt: VERIFIED, applyRule: { maxActive: 3, cooldown: '7天', note: '腾讯 7 天内最多投递 3 个岗位' }, enabled: true },
-  { id: 'baidu', name: '百度', short: '百', color: '#2932e1', logoUrl: './assets/logos/baidu.svg', portal: 'https://talent.baidu.com/', tags: ['500强', 'AI公司'], adapterStatus: 'adapter-ready', capabilities: { jobs: 'verified', login: 'manual', resume: 'manual', apply: 'manual', status: 'unsupported' }, lastVerifiedAt: VERIFIED, enabled: true },
-  { id: 'bytedance', name: '字节跳动', short: '字', color: '#111827', logoUrl: './assets/logos/bytedance.svg', portal: 'https://jobs.bytedance.com/', tags: ['500强', 'AI公司'], adapterStatus: 'adapter-ready', capabilities: { jobs: 'verified', login: 'manual', resume: 'manual', apply: 'manual', status: 'unsupported' }, lastVerifiedAt: VERIFIED, enabled: true },
-  { id: 'alibaba', name: '阿里巴巴', short: 'A', color: '#ff6a00', portal: 'https://talent.alibaba.com/', tags: ['500强', 'AI公司'], adapterStatus: 'adapter-needed', capabilities: { jobs: 'unsupported', login: 'manual', resume: 'unsupported', apply: 'unsupported', status: 'unsupported' }, lastVerifiedAt: null, enabled: true },
-  { id: 'meituan', name: '美团', short: '美', color: '#ffc300', logoUrl: './assets/logos/meituan.svg', portal: 'https://zhaopin.meituan.com/', tags: ['500强'], adapterStatus: 'adapter-ready', capabilities: { jobs: 'verified', login: 'manual', resume: 'manual', apply: 'manual', status: 'unsupported' }, lastVerifiedAt: VERIFIED, enabled: true },
-  { id: 'jd', name: '京东', short: '京', color: '#e1251b', logoUrl: './assets/logos/jd.png', portal: 'https://zhaopin.jd.com/', tags: ['500强'], adapterStatus: 'adapter-ready', capabilities: { jobs: 'verified', login: 'manual', resume: 'manual', apply: 'manual', status: 'unsupported' }, lastVerifiedAt: VERIFIED, enabled: true },
-  { id: 'xiaomi', name: '小米', short: '米', color: '#ff6900', logoUrl: './assets/logos/xiaomi.svg', portal: 'https://xiaomi.jobs.f.mioffice.cn/', tags: ['500强'], adapterStatus: 'adapter-ready', capabilities: { jobs: 'verified', login: 'manual', resume: 'manual', apply: 'manual', status: 'unsupported' }, lastVerifiedAt: VERIFIED, enabled: true },
+  { id: 'tencent', name: '腾讯', short: 'T', color: '#1664ff', logoUrl: './assets/logos/tencent.png', portal: 'https://careers.tencent.com/', tags: ['500强', 'AI公司'], adapterStatus: 'adapter-ready', capabilities: { jobs: 'verified', login: 'manual', resume: 'degraded', apply: 'manual', status: 'manual' }, lastVerifiedAt: VERIFIED, applyRule: { maxActive: 3, cooldown: '7天', note: '腾讯 7 天内最多投递 3 个岗位' }, enabled: true },
+  { id: 'baidu', name: '百度', short: '百', color: '#2932e1', logoUrl: './assets/logos/baidu.svg', portal: 'https://talent.baidu.com/', tags: ['500强', 'AI公司'], adapterStatus: 'adapter-ready', capabilities: { jobs: 'verified', login: 'manual', resume: 'degraded', apply: 'manual', status: 'unsupported' }, lastVerifiedAt: VERIFIED, enabled: true },
+  { id: 'bytedance', name: '字节跳动', short: '字', color: '#111827', logoUrl: './assets/logos/bytedance.svg', portal: 'https://jobs.bytedance.com/', tags: ['500强', 'AI公司'], adapterStatus: 'adapter-ready', capabilities: { jobs: 'verified', login: 'manual', resume: 'degraded', apply: 'manual', status: 'unsupported' }, lastVerifiedAt: VERIFIED, enabled: true },
+  { id: 'alibaba', name: '阿里巴巴', short: 'A', color: '#ff6a00', portal: 'https://talent.alibaba.com/', tags: ['500强', 'AI公司'], adapterStatus: 'login-only', capabilities: { jobs: 'manual', login: 'manual', resume: 'degraded', apply: 'manual', status: 'unsupported' }, lastVerifiedAt: null, enabled: true },
+  { id: 'meituan', name: '美团', short: '美', color: '#ffc300', logoUrl: './assets/logos/meituan.svg', portal: 'https://zhaopin.meituan.com/', tags: ['500强'], adapterStatus: 'adapter-ready', capabilities: { jobs: 'verified', login: 'manual', resume: 'degraded', apply: 'manual', status: 'unsupported' }, lastVerifiedAt: VERIFIED, enabled: true },
+  { id: 'jd', name: '京东', short: '京', color: '#e1251b', logoUrl: './assets/logos/jd.png', portal: 'https://zhaopin.jd.com/', tags: ['500强'], adapterStatus: 'adapter-ready', capabilities: { jobs: 'verified', login: 'manual', resume: 'degraded', apply: 'manual', status: 'unsupported' }, lastVerifiedAt: VERIFIED, enabled: true },
+  { id: 'xiaomi', name: '小米', short: '米', color: '#ff6900', logoUrl: './assets/logos/xiaomi.svg', portal: 'https://xiaomi.jobs.f.mioffice.cn/', tags: ['500强'], adapterStatus: 'adapter-ready', capabilities: { jobs: 'verified', login: 'manual', resume: 'degraded', apply: 'manual', status: 'unsupported' }, lastVerifiedAt: VERIFIED, enabled: true },
   { id: 'pdd', name: '拼多多', short: '拼', color: '#e1251b', portal: 'https://careers.pddglobalhr.com/', tags: ['500强'], adapterStatus: 'adapter-needed', capabilities: { jobs: 'unsupported', login: 'manual', resume: 'unsupported', apply: 'unsupported', status: 'unsupported' }, lastVerifiedAt: null, enabled: true },
   { id: 'huawei', name: '华为', short: '华', color: '#cf0a2c', logoUrl: './assets/logos/huawei.svg', portal: 'https://career.huawei.com/cn', tags: ['500强', 'AI公司'], adapterStatus: 'adapter-needed', capabilities: { jobs: 'unsupported', login: 'manual', resume: 'unsupported', apply: 'unsupported', status: 'unsupported' }, lastVerifiedAt: null, enabled: true },
 
   // ===== 游戏 =====
   { id: 'mihoyo', name: '米哈游', short: '米哈', color: '#5a8dee', logoUrl: './assets/logos/mihoyo.svg', portal: 'https://app.mihoyo.com/', tags: ['游戏', 'AI公司'], adapterStatus: 'adapter-needed', capabilities: { jobs: 'unsupported', login: 'manual', resume: 'unsupported', apply: 'unsupported', status: 'unsupported' }, lastVerifiedAt: null, applyRule: { maxActive: 1, cooldown: '30天', note: '米哈游 30 天内只能投递一个岗位' }, enabled: true },
   { id: 'netease', name: '网易', short: '易', color: '#e1251b', logoUrl: './assets/logos/netease.png', portal: 'https://hr.163.com/', tags: ['500强', '游戏', 'AI公司'], adapterStatus: 'login-only', capabilities: { jobs: 'degraded', login: 'manual', resume: 'unsupported', apply: 'unsupported', status: 'unsupported' }, lastVerifiedAt: null, enabled: true },
+
+  // ===== 第三方招聘平台 =====
+  { id: 'boss', name: 'BOSS直聘', short: 'B', color: '#00bebd', portal: 'https://www.zhipin.com/web/geek/job', tags: ['第三方招聘平台'], adapterStatus: 'login-only', capabilities: { jobs: 'manual', login: 'unsupported', resume: 'unsupported', apply: 'unsupported', status: 'unsupported' }, lastVerifiedAt: null, enabled: true },
 
   // ===== 无锡本地 AI/芯片（T0，调研 2026-07-24） =====
   { id: 'xuelang', name: '雪浪数制', short: '雪', color: '#2eb872', logoUrl: './assets/logos/xuelang.png', portal: 'https://www.xuelangyun.com/', tags: ['AI公司', '无锡'], adapterStatus: 'adapter-needed', capabilities: { jobs: 'unsupported', login: 'manual', resume: 'unsupported', apply: 'unsupported', status: 'unsupported' }, lastVerifiedAt: null, enabled: true },
@@ -50,16 +53,16 @@ const messages = [];
 
 function emptyEducation() {
   return {
-    school: '', major: '', degree: '', degreeName: '', // degree=学历层次(大专/本科/硕士/博士), degreeName=学位(学士/硕士/博士)
-    start: '', end: '', rank: '', courses: '',
-    isFullTime: true, isUnified: true, is211: '', // 全日制/统招/双一流(自动/是/否)
-    advisor: '', researchDirection: '', thesisTitle: '' // 导师/研究方向/毕业论文(校招/博士岗)
+    school: '', department: '', major: '', degree: '', degreeName: '', // 学校/学院/专业/学历层次/学位
+    start: '', end: '', rank: '', gpa: '', gpaBase: '', courses: '', // 起止/排名/GPA+满分/课程
+    isFullTime: '', isUnified: '', is211: '', // 三态：未回答不自动代答
+    advisor: '', researchDirection: '', thesisTitle: '', laboratory: '' // 导师/研究方向/毕业论文/实验室
   };
 }
 function emptyExperience() {
   return {
     company: '', department: '', role: '', level: '', // 公司/部门/职位/职级(如P6/T5)
-    start: '', end: '', employmentType: '全职', isOutsource: false, // 起止/该段类型(全职/实习/兼职)/是否外包
+    start: '', end: '', employmentType: '全职', isOutsource: '', // 起止/该段类型(全职/实习/兼职)/是否外包（''=未标记，与 UI「不填写」对齐）
     description: '', achievements: '', leaveReason: '', // 工作描述/业绩/离职原因
     reportTo: '', teamSize: '' // 汇报对象/团队规模(管理岗)
   };
@@ -81,39 +84,46 @@ function defaultIntention() {
     roles: '', cities: '', salary: '', salaryUnit: '月薪', // 期望职位/城市/薪资/薪资单位(月薪/年薪/14薪/期权)
     availability: '', employmentType: '全职', // 到岗时间/工作类型(全职/实习/兼职/远程)
     referralCode: '', channel: '', // 内推码(11家全有)/渠道来源
-    willingness: { travel: false, relocate: false, overtime: false, nightShift: false }, // 接受出差/外派/加班/夜班
-    preferredLocations: '' // 多期望城市排序(配合多志愿)
+    willingness: { travel: '', relocate: '', overtime: '', nightShift: '' }, // 三态：'' 未回答，'true' 是，'false' 否
+    preferredLocations: '', // 多期望城市排序(配合多志愿)
+    workYears: '', interviewCity: '', businessGroup: '', // 工作年限(社招)/面试城市/意向事业群(校招)
+    acceptAdjustment: '', acceptCityDeployment: '', // 三态：未回答不自动填写
+    expectCountry: '中国内地', // 期望工作国家/地区（腾讯等有独立选择器，与现居国家可能不同）
+    expectCities: [] // 期望工作城市（数组，适配各家预设城市映射；与 cities 文本互补，cities 是自由文本兜底）
   };
 }
 
 function defaultBasic() {
   return {
-    name: '', gender: '', birthday: '', phone: '', email: '', wechat: '',
-    city: '', nativePlace: '', nationality: '中国', // 现居/籍贯/国籍
+    name: '', gender: '', birthday: '', phone: '', email: '', wechat: '', qq: '',
+    city: '', province: '', nativePlace: '', nationality: '中国', // 现居城市/省份/籍贯/国籍（省/市拆分适配级联选择器）
     ethnicity: '', politicalStatus: '', // 民族/政治面貌(校招)
-    idCard: '', avatarUrl: '', // 身份证(加密)/证件照
+    idCard: '', idType: '', idNumber: '', avatarUrl: '', // 身份证(旧,兼容)/证件类型/证件号码/证件照
     website: '', github: '', // 个人主页/GitHub(拆分，技术岗高频)
-    maritalStatus: '', height: '' // 婚姻/身高(罕用)
+    maritalStatus: '', height: '', emergencyContact: '', // 婚姻/身高(罕用)/紧急联系人(≠亲属)
+    resumeFile: '' // 用户上传的简历文件名（存储在 app 数据目录 resumes/ 下，用户自己设计的 PDF/DOC）
   };
 }
 
 function defaultSkills() {
   return {
     keywords: '', proficiency: '', // 专业技能/熟练度(了解/熟悉/熟练/精通 分级)
-    languages: '', certificates: '', certificateIds: '', // 语言/证书/证书编号
+    languages: '', devLanguages: '', // 语言能力/开发语言(腾讯/京东校招独立项)
+    englishLevel: '', englishScore: '', // 英语等级(枚举)/英语分数
+    certificates: '', certificateIds: '', // 证书/证书编号
     portfolio: '', portfolioUrl: '', interests: '' // 作品集(文件)/作品集链接/兴趣特长
   };
 }
 
 function defaultExtras() {
-  return { summary: '', awards: '', campus: '', publications: '', patents: '' };
+  return { summary: '', awards: '', campus: '', publications: '', patents: '', certifier: '' };
 }
 
 function defaultCompliance() {
   return {
-    previouslyInterviewed: false, previouslyEmployed: false, // 是否曾被本公司面试/录用
-    hasRelativeAtCompany: false, relativeDetail: '', // 是否有亲属在本公司
-    criminalRecord: false // 无犯罪声明(部分岗位)
+    previouslyInterviewed: '', previouslyEmployed: '', // 三态：'' 未回答，'true' 是，'false' 否
+    hasRelativeAtCompany: '', relativeDetail: '',
+    criminalRecord: ''
   };
 }
 
@@ -146,7 +156,7 @@ function createSeed() {
   const now = new Date().toISOString();
   return {
     meta: {
-      schemaVersion: 2,
+      schemaVersion: 4,
       createdAt: now,
       updatedAt: now,
       onboardingSeen: false,
@@ -171,7 +181,9 @@ function createSeed() {
       email: { address: '', connected: false, lastSyncAt: null },
       autoCheckUpdates: true,
       dataMode: 'live',
-      jobs: { daysBack: 30, lastRefreshAt: null, recruitType: 'social', autoRefresh: true }
+      jobs: { daysBack: 30, lastRefreshAt: null, recruitType: 'social', autoRefresh: true },
+      // 旧设置保留仅为数据兼容；自动快捷登录已停用，所有授权由用户在内嵌页操作。
+      wechatQuickLogin: false
     }
   };
 }

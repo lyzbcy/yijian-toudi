@@ -8,6 +8,8 @@
 
 // 构造一个 prepareApplication 函数。siteName 用于任务标题和提示。
 // job.url 必须是有效的招聘网站详情页链接。
+const { isAllowedWorkspaceUrl } = require('../navigation-policy.cjs');
+
 function createManualPrepareApplication(siteName) {
   return async function prepareApplication(job, { workspace, company, taskId, onStep } = {}) {
     if (!workspace?.openWorkspace) throw new Error('浏览器工作区未就绪');
@@ -19,6 +21,13 @@ function createManualPrepareApplication(siteName) {
         ok: false,
         status: 'manual-required',
         message: `${siteName} 岗位缺少详情页链接，请手动打开官网投递`
+      };
+    }
+    if (!isAllowedWorkspaceUrl(company.id, url)) {
+      return {
+        ok: false,
+        status: 'manual-required',
+        message: `岗位详情页不属于${siteName}官网，已拒绝在登录会话中打开`
       };
     }
 

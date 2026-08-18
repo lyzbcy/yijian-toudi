@@ -4,7 +4,12 @@
 // 每家公司使用 persist:<companyId> session，关闭前刷新 cookie 与存储。
 
 const { WebContentsView, session } = require('electron');
-const { attachStealth } = require('./captcha.cjs');
+const { calculateWorkspaceBounds } = require('./workspace-layout.cjs');
+const {
+  assertAllowedWorkspaceUrl,
+  isAllowedWorkspaceUrl,
+  isRecoverableNavigationAbort
+} = require('./navigation-policy.cjs');
 
 let currentView = null;
 let currentCompanyId = null;
@@ -13,30 +18,27 @@ let currentTitle = null;
 let currentContext = null;
 let parentWindow = null;
 let onChangeCallback = null;
-let stealthCleanup = null;
 
-const SIDEBAR_WIDTH = 248;
-const TOP_OFFSET = 0;       // workspace 激活时前端会隐藏 sidebar，view 从顶部 0 开始铺满
-const BOTTOM_BAR_HEIGHT = 56; // 底部留出空间给「取消/完成」控制条（原生 view 盖 HTML，放底部避免被盖）
+// 控制条放顶部：顶部位置稳定（紧贴标题栏），且原生 view 不覆盖顶部，按钮 100% 可见可点；
+// 放底部时一旦 bounds 算偏或腾讯页内底部有「返回首页」按钮，用户就找不到「取消」。
 const SNAPSHOT_TEXT_LIMIT = 2400;
 
 function setParent(win) {
   parentWindow = win;
-  win.on('resize', () => updateBounds());
+  // 任何可能改变窗口内容区尺寸的事件都要刷新 bounds，否则原生 view 会停在旧尺寸/旧位置。
+  // resize 覆盖大部分；maximize/unmaximize/fullscreen 在某些 macOS 版本不冒泡到 resize，显式补上。
+  for (const evt of ['resize', 'maximize', 'unmaximize', 'enter-full-screen', 'leave-full-screen']) {
+    win.on(evt, () => updateBounds());
+  }
 }
 
 function updateBounds() {
   if (!currentView || !parentWindow || parentWindow.isDestroyed()) return;
-  const [winW, winH] = parentWindow.getSize();
-  // workspace 激活时：view 铺满除底部控制条外的整个窗口（前端会隐藏 sidebar）。
-  // 底部留 BOTTOM_BAR_HEIGHT 给「取消/完成」原生 HTML 控制条——原生 view 盖 HTML，
-  // 把控制条放底部、view 不覆盖底部，才能保证按钮可点。
-  currentView.setBounds({
-    x: 0,
-    y: 0,
-    width: Math.max(0, winW),
-    height: Math.max(0, winH - BOTTOM_BAR_HEIGHT)
-  });
+  // 必须用 getContentSize()：它返回的是「内容区」尺寸（不含原生标题栏/边框），
+  // 而 getSize() 返回外框尺寸——WebContentsView 的 bounds 是相对内容区的。
+  // 用 getSize 会让 view 偏高 ~28px，盖住顶部红绿黄交通灯。
+  const [contentW, contentH] = parentWindow.getContentSize();
+  currentView.setBounds(calculateWorkspaceBounds(contentW, contentH));
 }
 
 function onChange(callback) {
@@ -71,12 +73,14 @@ function notifyChange() {
 async function flushCurrentSession() {
   if (!currentCompanyId) return;
   const activeSession = session.fromPartition(`persist:${currentCompanyId}`);
-  await activeSession.cookies.flushStore().catch(() => {});
-  await activeSession.flushStorageData().catch(() => {});
+  // 某些 Electron 版本/会话状态下 flushStore/flushStorageData 可能返回 undefined 而非 Promise，
+  // 对 undefined 调 .catch 会抛「Cannot read properties of undefined (reading 'catch')」。
+  // 用 Promise.resolve 包一层，保证永远是 thenable。
+  await Promise.resolve(activeSession.cookies.flushStore()).catch(() => {});
+  await Promise.resolve(activeSession.flushStorageData()).catch(() => {});
 }
 
 function destroyCurrentView() {
-  if (stealthCleanup) { try { stealthCleanup(); } catch (e) {} stealthCleanup = null; }
   if (currentView && parentWindow && !parentWindow.isDestroyed()) {
     parentWindow.contentView.removeChildView(currentView);
   }
@@ -97,6 +101,13 @@ async function closeWorkspace() {
   notifyChange();
 }
 
+// 幂等关闭：view 不存在时直接 resolve，不抛错、不广播。
+// 供 adapter 在失败分支（404/抛错）安全调用，避免「必关未关」泄漏原生页。
+async function closeWorkspaceIfOpen() {
+  if (!currentView) return;
+  await closeWorkspace();
+}
+
 async function openWorkspace({
   company,
   url = company?.portal,
@@ -107,8 +118,13 @@ async function openWorkspace({
   if (!parentWindow || parentWindow.isDestroyed()) throw new Error('主窗口未就绪');
   if (!company?.id) throw new Error('缺少公司信息');
   if (!/^https?:\/\//.test(url || '')) throw new Error('工作区只允许打开 http(s) 链接');
-
-  await closeWorkspace();
+  // 程序主动 loadURL 不依赖 will-navigate 兜底：创建带持久登录分区的 view 前先做平台官网白名单校验。
+  assertAllowedWorkspaceUrl(company.id, url);
+  if (currentView) {
+    const error = new Error('当前有网页正在登录或核对，请先点顶部“完成”或“取消并返回”');
+    error.code = 'WORKSPACE_ACTIVE';
+    throw error;
+  }
 
   currentCompanyId = company.id;
   currentMode = mode;
@@ -126,8 +142,19 @@ async function openWorkspace({
   updateBounds();
   notifyChange();
 
-  // 注入 stealth（隐藏 webdriver 等自动化特征，让腾讯 tcaptcha 尽量不弹验证码）
-  stealthCleanup = attachStealth(currentView.webContents);
+  currentView.webContents.setWindowOpenHandler(({ url: popupUrl }) => {
+    if (isAllowedWorkspaceUrl(company.id, popupUrl)) {
+      currentView?.webContents.loadURL(popupUrl).catch(() => {});
+    }
+    // 未知域名一律拦截；官网不能在无用户确认时强制拉起外部网站。
+    return { action: 'deny' };
+  });
+  const enforceNavigationPolicy = (event, targetUrl) => {
+    if (isAllowedWorkspaceUrl(company.id, targetUrl)) return;
+    event.preventDefault();
+  };
+  currentView.webContents.on('will-navigate', enforceNavigationPolicy);
+  currentView.webContents.on('will-redirect', enforceNavigationPolicy);
 
   currentView.webContents.on('did-navigate', notifyChange);
   currentView.webContents.on('did-navigate-in-page', notifyChange);
@@ -137,15 +164,24 @@ async function openWorkspace({
     notifyChange();
     return getStatus();
   } catch (error) {
+    // Electron 在某些服务端/JS 重定向中会让初始 loadURL 以 ERR_ABORTED 结束，
+    // 即使 WebContents 已经正常落到白名单内的登录页。此时保留工作区给用户登录；
+    // 其他错误或越域落点仍立即关闭，不扩大导航权限。
+    const landedUrl = getCurrentUrl();
+    if (isRecoverableNavigationAbort(error, company.id, landedUrl)) {
+      notifyChange();
+      return getStatus();
+    }
     await closeWorkspace();
     throw new Error(`打开网页失败：${error.message}`);
   }
 }
 
 function openLoginView(company) {
+  const { resolvePlatformUrl } = require('./platform-manifests.cjs');
   return openWorkspace({
     company,
-    url: company.portal,
+    url: resolvePlatformUrl(company.id, 'social', 'login'),
     mode: 'login',
     title: `登录 ${company.name}`,
     context: { action: 'login', companyId: company.id }
@@ -156,7 +192,15 @@ async function run(script) {
   if (!currentView?.webContents || currentView.webContents.isDestroyed()) {
     throw new Error('浏览器工作区未打开');
   }
-  return currentView.webContents.executeJavaScript(script);
+  // 页面在脚本执行期间跳转（如重定向到登录页）会让 executeJavaScript 的 Promise 永远不 settle。
+  // 必须加超时兜底，否则一键更新会永久卡在当前站点。
+  const SCRIPT_TIMEOUT_MS = 15000;
+  return Promise.race([
+    currentView.webContents.executeJavaScript(script),
+    new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('页面脚本执行超时（页面可能正在跳转），请稍后重试')), SCRIPT_TIMEOUT_MS);
+    })
+  ]);
 }
 
 async function snapshot() {
@@ -199,6 +243,7 @@ module.exports = {
   openWorkspace,
   openLoginView,
   closeWorkspace,
+  closeWorkspaceIfOpen,
   closeLoginView: closeWorkspace,
   finishWorkspace,
   cancelWorkspace,

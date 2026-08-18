@@ -246,6 +246,23 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .sync-chip.sync-manual { border-color: #ffe3a8; background: #fff9ec; }
 .sync-chip.sync-manual i { color: #b88300; }
 .sync-chip.sync-unsupported { border-color: var(--line); opacity: 0.65; }
+
+/* 招聘网站登录状态卡片（自动化中心） */
+.login-status-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; margin-top: 14px; }
+.login-status-item { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; }
+.login-status-item.logged-in { border-color: #b5e4cf; background: #f0faf4; }
+.login-status-item.logged-out { border-color: #ffc9c9; background: #fff5f5; }
+.login-status-item.checking { opacity: 0.6; }
+.login-status-logo { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.login-status-body { flex: 1; min-width: 0; }
+.login-status-body b { display: block; font-size: 12px; color: var(--ink); }
+.login-status-body small { display: block; font-size: 10px; color: var(--muted); margin-top: 2px; }
+.login-status-item.logged-in .login-status-body small { color: #3ba57b; }
+.login-status-item.logged-out .login-status-body small { color: #d9534f; }
+.login-status-action { font-size: 10px; padding: 5px 10px; border-radius: 6px; border: 1px solid var(--line); background: #fff; cursor: pointer; white-space: nowrap; transition: .15s; }
+.login-status-action:hover { border-color: #c9c2f5; background: #faf9ff; }
+.login-status-item.logged-out .login-status-action { background: #6c5ce7; color: #fff; border-color: #6c5ce7; }
+.login-status-item.logged-out .login-status-action:hover { background: #5b4bd6; }
 .sync-logo { width: 18px; height: 18px; font-size: 8px; }
 .profile-tab { display: inline-flex; align-items: center; gap: 6px; padding: 7px 13px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: #66697c; font-size: 11px; font-weight: 700; cursor: pointer; transition: .15s; }
 .profile-tab:hover { border-color: #c9c2f5; background: #faf9ff; }
@@ -458,6 +475,7 @@ input:focus, select:focus, textarea:focus { border-color: #9d93ec; background: #
 .toast-region { position: fixed; z-index: 30; right: 26px; top: 90px; display: grid; gap: 8px; pointer-events: none; }
 .toast { min-width: 240px; max-width: 380px; padding: 12px 15px; border: 1px solid var(--line); border-radius: 12px; background: #fff; box-shadow: var(--shadow); color: #55586d; font-size: 10px; animation: toastIn .25s ease; }
 .toast.error { border-color: #f4ccd2; color: var(--danger); display: flex; align-items: center; gap: 10px; }
+.toast.warn { border-color: #ffe3a8; background: #fff9ec; color: #b88300; }
 .toast .toast-text { flex: 1; line-height: 1.6; word-break: break-word; }
 .toast .toast-copy { padding: 4px 9px; border: 1px solid #f4ccd2; border-radius: 7px; background: #fff5f7; color: var(--danger); font-size: 9px; cursor: pointer; white-space: nowrap; }
 .toast .toast-copy:hover { background: #ffeef2; }
@@ -521,6 +539,7 @@ input:focus, select:focus, textarea:focus { border-color: #9d93ec; background: #
 .cap-verified { background: #3ba57b; }
 .cap-manual { background: #e0a93a; }
 .cap-degraded { background: #ef9a55; }
+.permission-note { flex: 0 0 auto; padding: 2px 7px; border-radius: 999px; background: #fff7e6; color: #9a6900; font-size: 8px; }
 .cap-unsupported { background: #c8c9d6; }
 .verified-date { font-size: 8px; color: var(--muted); margin-left: 6px; white-space: nowrap; }
 .verified-date.placeholder { color: #c8c9d6; }
@@ -528,9 +547,12 @@ input:focus, select:focus, textarea:focus { border-color: #9d93ec; background: #
 .company-button .cap-badge { margin-left: auto; width: 100%; justify-content: flex-end; margin-top: 4px; }
 .company-button .verified-date { width: 100%; text-align: right; margin-top: 2px; }
 
-/* 嵌入式登录控制条 */
-/* workspace 激活时：原生 WebContentsView 铺满上方，sidebar/main 隐藏让位，控制条固定底部 */
-.workspace-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 56px; z-index: 50; display: flex; align-items: center; gap: 14px; padding: 0 20px; background: #26273c; color: #fff; box-shadow: 0 -6px 20px rgba(22,23,38,.18); }
+/* 嵌入式浏览器控制条（workspace 激活时显示） */
+/* 控制条固定顶部：原生 WebContentsView 的 bounds 从 y:52 起始（workspace-layout.cjs TOP_BAR_HEIGHT），
+   不覆盖顶部 52px，所以这里的「取消/完成」按钮 100% 可见可点。
+   之前放底部依赖「view 不覆盖底部」的推断，bounds 一偏或腾讯页底部有干扰按钮用户就找不到取消——
+   用户实测因此被困在腾讯404页。移顶部从根上消除这个问题。 */
+.workspace-bar { position: fixed; top: 0; left: 0; right: 0; height: 52px; z-index: 50; display: flex; align-items: center; gap: 14px; padding: 0 20px 0 84px; background: #26273c; color: #fff; box-shadow: 0 6px 20px rgba(22,23,38,.18); }
 body.workspace-active .sidebar,
 body.workspace-active .main { display: none !important; }
 body.workspace-active .workspace-bar { display: flex !important; }

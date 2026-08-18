@@ -15,6 +15,7 @@
     "test:ui:resume": "node test/ui-resume-segments.cjs",
     "test:ui:profiles": "node test/ui-resume-profiles.cjs",
     "test:ui:caps": "node test/ui-capabilities.cjs",
+    "test:ui:workspace": "node test/ui-workspace-exit.cjs",
     "test:ui:sync-all": "node test/ui-resume-sync-all.cjs",
     "test:ui:sync-cancel": "node test/ui-resume-sync-cancel.cjs",
     "test:site": "node test/site-smoke.cjs",

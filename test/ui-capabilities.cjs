@@ -26,38 +26,40 @@ const { _electron: electron } = require('playwright-core');
     const errors = [];
     const check = (cond, msg) => { if (!cond) errors.push(msg); };
 
-    // 1. 主区应有 10 家（6 家 jobs=verified + 4 家 jobs=degraded: 网易/华润微/长电/SK海力士）
+    // 1. 主区应有 12 家（6 verified + 6 degraded，新增阿里目录与 BOSS 手动入口）
     const primaryCards = await window.locator('#companyGridPrimary .company-button').count();
-    check(primaryCards === 10, `主区应有 10 家公司（6 verified + 4 degraded），实际 ${primaryCards}`);
+    check(primaryCards === 12, `主区应有 12 家公司，实际 ${primaryCards}`);
 
-    // 2. 腾讯卡片应有 5 个五维徽章，且 resume/apply 是 verified（绿）
+    // 2. 腾讯卡片应有 5 个五维徽章；简历需核对、投递本人操作，不能虚标 verified。
     const tencentCard = window.locator('#companyGridPrimary .company-button[data-company="tencent"]');
     const tencentDots = await tencentCard.locator('.cap-dot').count();
     check(tencentDots === 5, `腾讯卡片应有 5 个能力徽章，实际 ${tencentDots}`);
     const tencentResumeClass = await tencentCard.locator('.cap-dot').nth(2).evaluate((el) => el.className);
-    check(tencentResumeClass.includes('cap-verified'), `腾讯简历能力应为 verified(绿)，class=${tencentResumeClass}`);
+    check(tencentResumeClass.includes('cap-degraded'), `腾讯简历能力应为 degraded(橙)，class=${tencentResumeClass}`);
     const tencentApplyClass = await tencentCard.locator('.cap-dot').nth(3).evaluate((el) => el.className);
-    check(tencentApplyClass.includes('cap-verified'), `腾讯投递能力应为 verified(绿)，class=${tencentApplyClass}`);
+    check(tencentApplyClass.includes('cap-manual'), `腾讯投递能力应为 manual(黄)，class=${tencentApplyClass}`);
     // 腾讯状态是 manual（黄）
     const tencentStatusClass = await tencentCard.locator('.cap-dot').nth(4).evaluate((el) => el.className);
     check(tencentStatusClass.includes('cap-manual'), `腾讯状态能力应为 manual(黄)，class=${tencentStatusClass}`);
 
-    // 3. 百度简历/投递是 unsupported（灰）
+    // 3. 百度已升级为通用自动填写引擎，简历能力是 degraded（橙）
     const baiduCard = window.locator('#companyGridPrimary .company-button[data-company="baidu"]');
     const baiduResumeClass = await baiduCard.locator('.cap-dot').nth(2).evaluate((el) => el.className);
-    check(baiduResumeClass.includes('cap-unsupported'), `百度简历能力应为 unsupported(灰)，class=${baiduResumeClass}`);
+    check(baiduResumeClass.includes('cap-degraded'), `百度简历能力应为 degraded(橙)，class=${baiduResumeClass}`);
+    const bossRestriction = await window.locator('#companyGridPrimary .company-button[data-company="boss"] .permission-note').textContent();
+    check(bossRestriction.includes('协议限制'), `BOSS 主卡应直接显示协议限制，实际「${bossRestriction}」`);
 
     // 4. 腾讯有验证日期，百度也应有
     const tencentDate = await tencentCard.locator('.verified-date').first().textContent();
     check(/^\d{4}-\d{2}-\d{2}$/.test(tencentDate.trim()), `腾讯应有验证日期，实际「${tencentDate}」`);
 
-    // 5. 次区「即将支持」应有 9 家（19 - 10）
+    // 5. 次区「即将支持」应有 8 家（BOSS 新增后总数 20，主区 12）
     const soonText = await window.locator('#soonCount').textContent();
-    check(soonText.includes('9'), `次区应有 9 家公司，实际「${soonText}」`);
+    check(soonText.includes('8'), `次区应有 8 家公司，实际「${soonText}」`);
     await window.locator('.company-section-soon summary').click();
     await window.waitForTimeout(300);
     const soonCards = await window.locator('#companyGridSoon .company-button').count();
-    check(soonCards === 9, `次区展开后应有 9 家公司，实际 ${soonCards}`);
+    check(soonCards === 8, `次区展开后应有 8 家公司，实际 ${soonCards}`);
 
     // 6. 点击行为：jobs=verified 的走 openCompany（外部浏览器），degraded/unsupported 走嵌入式登录。
     //    测试环境不真实打开外部浏览器，仅验证 companyClickMode 逻辑在前端代码里正确（已由单元测试覆盖）。

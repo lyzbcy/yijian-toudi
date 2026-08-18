@@ -4,6 +4,10 @@ const {
   createBackup,
   restoreBackup
 } = require('../electron/backup.cjs');
+const { JsonStore } = require('../electron/store.cjs');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
 
 function sampleState(name) {
   return {
@@ -68,4 +72,21 @@ test('恢复拒绝未知格式且不修改当前对象', () => {
     /备份格式/
   );
   assert.deepEqual(current, before);
+});
+
+test('JsonStore.replace 会把恢复结果真正写回磁盘和内存', () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'yjt-restore-'));
+  const jsonStore = new JsonStore(directory);
+  jsonStore.init();
+  const current = jsonStore.get();
+  const replacement = structuredClone(current);
+  replacement.resume.basic.name = '备份里的姓名';
+  const profile = replacement.resume.profiles.find((item) => item.id === replacement.resume.activeProfileId);
+  if (profile) profile.label = '恢复后的简历';
+
+  jsonStore.replace(replacement);
+  assert.equal(jsonStore.get().resume.basic.name, '备份里的姓名');
+  const reloaded = new JsonStore(directory);
+  reloaded.init();
+  assert.equal(reloaded.get().resume.basic.name, '备份里的姓名');
 });

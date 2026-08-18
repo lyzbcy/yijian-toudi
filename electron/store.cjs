@@ -204,6 +204,39 @@ class JsonStore {
       }
       changed = true;
     }
+    // v3：把旧 UI checkbox 的默认 false 迁成“未回答”。旧结构无法区分用户明确选否与
+    // 系统默认 false，安全上宁可要求重新选择，也不能代替用户作合规声明。
+    if (this.state.meta.schemaVersion < 3 && this.state.resume) {
+      const triStatePaths = [
+        ['compliance', 'previouslyInterviewed'], ['compliance', 'previouslyEmployed'],
+        ['compliance', 'hasRelativeAtCompany'], ['compliance', 'criminalRecord']
+      ];
+      for (const [group, key] of triStatePaths) {
+        if (this.state.resume[group]?.[key] === false) this.state.resume[group][key] = '';
+      }
+      for (const profile of this.state.resume.profiles || []) {
+        for (const key of ['acceptAdjustment', 'acceptCityDeployment']) {
+          if (profile.intention?.[key] === false) profile.intention[key] = '';
+        }
+        for (const key of ['travel', 'relocate', 'overtime', 'nightShift']) {
+          if (profile.intention?.willingness?.[key] === false) profile.intention.willingness[key] = '';
+        }
+      }
+      this.state.meta.schemaVersion = 3;
+      changed = true;
+    }
+    // v4：旧版本把全日制/统招默认设为 true，无法证明这是用户本人选择；统一清空重答。
+    if (this.state.meta.schemaVersion < 4 && this.state.resume) {
+      for (const profile of this.state.resume.profiles || []) {
+        for (const education of profile.education || []) {
+          for (const key of ['isFullTime', 'isUnified']) {
+            if (education[key] === true || education[key] === 'true') education[key] = '';
+          }
+        }
+      }
+      this.state.meta.schemaVersion = 4;
+      changed = true;
+    }
     if (changed) this.flush();
   }
 
@@ -219,6 +252,15 @@ class JsonStore {
     // 保存前刷新简历兼容视图，保证 resume.intention/education/... 与 activeProfile 同步
     if (result.resume) syncResumeActiveView(result.resume);
     this.state = result;
+    this.flush();
+    return this.get();
+  }
+
+  replace(nextState) {
+    if (!nextState || typeof nextState !== 'object') throw new Error('恢复数据无效');
+    this.state = structuredClone(nextState);
+    this.migrate();
+    syncResumeActiveView(this.state.resume);
     this.flush();
     return this.get();
   }

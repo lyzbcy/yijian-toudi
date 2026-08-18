@@ -5,6 +5,7 @@ const {
   createAuditEntry,
   normalizeIdempotencyKey
 } = require('./agent-command.cjs');
+const { redactResume } = require('./redact.cjs');
 
 class AgentServer {
   constructor({ store, onCommand }) {
@@ -60,7 +61,7 @@ class AgentServer {
         return this.send(response, 200, { jobs, companies: state.companies });
       }
       if (request.method === 'GET' && url.pathname === '/v1/resume') {
-        return this.send(response, 200, { resume: state.resume });
+        return this.send(response, 200, { resume: redactResume(state.resume), redacted: true });
       }
       if (request.method === 'GET' && url.pathname === '/v1/messages') {
         return this.send(response, 200, { messages: state.messages });
@@ -70,13 +71,19 @@ class AgentServer {
       }
       if (request.method === 'POST' && url.pathname === '/v1/commands') {
         const body = await this.readJson(request);
+        const interactiveOnly = new Set(['apply_cart', 'fill_resume', 'fill_all', 'inspect_resume', 'sync_email']);
+        if (interactiveOnly.has(body.action)) {
+          return this.send(response, 409, {
+            error: 'interactive_confirmation_required',
+            message: '该操作会打开官网、写入网页或读取邮箱，请在一键投递应用界面由用户本人发起'
+          });
+        }
         const allowed = [
           // 只读 / 查询
           'refresh_jobs', 'open_company', 'favorite_job', 'export_snapshot', 'search_jobs',
           // 本地数据写入（开放：AI 可自由读写，立即生效，无需用户确认）
           'update_resume', 'manage_profile', 'batch_cart',
-          // 外部写入（需用户确认：涉及招聘网站投递/填表/发送）
-          'apply_cart', 'fill_resume', 'sync_email'
+          // Agent 仅管理本地数据；外部网页/邮箱动作必须回到应用界面由用户发起。
         ];
         if (!allowed.includes(body.action)) {
           return this.send(response, 400, { error: 'unsupported_action', allowed });
