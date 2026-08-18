@@ -57,7 +57,7 @@ const PLATFORM_MANIFESTS = Object.freeze({
       social: {
         resume: 'https://zhaopin.jd.com/web/personal/resume',
         login: 'https://zhaopin.jd.com/web/login',
-        jobs: 'https://zhaopin.jd.com/web/job/job-list'
+        jobs: 'https://zhaopin.jd.com/web/job/job_info_list/3'
       },
       campus: {
         resume: 'https://campus.jd.com/#/resume?type=present',

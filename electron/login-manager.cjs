@@ -18,6 +18,8 @@ let currentTitle = null;
 let currentContext = null;
 let parentWindow = null;
 let onChangeCallback = null;
+// 当前工作区打开的 SSO 弹窗子窗口（与主视图共用 persist:<companyId> 分区）
+const popupWindows = new Set();
 
 // 控制条放顶部：顶部位置稳定（紧贴标题栏），且原生 view 不覆盖顶部，按钮 100% 可见可点；
 // 放底部时一旦 bounds 算偏或腾讯页内底部有「返回首页」按钮，用户就找不到「取消」。
@@ -81,6 +83,11 @@ async function flushCurrentSession() {
 }
 
 function destroyCurrentView() {
+  // 先关掉本工作区拉起的 SSO 弹窗子窗口，避免留下游离的原生窗口
+  for (const popup of popupWindows) {
+    if (!popup.isDestroyed()) popup.destroy();
+  }
+  popupWindows.clear();
   if (currentView && parentWindow && !parentWindow.isDestroyed()) {
     parentWindow.contentView.removeChildView(currentView);
   }
@@ -142,12 +149,44 @@ async function openWorkspace({
   updateBounds();
   notifyChange();
 
+  // SSO 弹窗子窗口：微信扫码等登录流需要真正的 window.open 弹窗（window.opener/postMessage 回调才成立），
+  // 且子窗口必须共用同一 persist:<companyId> 分区，Cookie 才会写进我们的登录态而不是丢失。
+  // 只允许白名单内的 URL 开子窗口；未知域名仍然一律拦截。
+  for (const popup of popupWindows) {
+    if (!popup.isDestroyed()) popup.destroy();
+  }
+  popupWindows.clear();
   currentView.webContents.setWindowOpenHandler(({ url: popupUrl }) => {
     if (isAllowedWorkspaceUrl(company.id, popupUrl)) {
-      currentView?.webContents.loadURL(popupUrl).catch(() => {});
+      return {
+        action: 'allow',
+        overrideBrowserWindowOptions: {
+          width: 480,
+          height: 640,
+          title: `${company.name || company.id} 登录`,
+          webPreferences: {
+            partition: `persist:${company.id}`,
+            contextIsolation: true,
+            sandbox: true,
+            nodeIntegration: false
+          }
+        }
+      };
     }
     // 未知域名一律拦截；官网不能在无用户确认时强制拉起外部网站。
     return { action: 'deny' };
+  });
+  currentView.webContents.on('did-create-window', (childWindow) => {
+    popupWindows.add(childWindow);
+    const enforceChildPolicy = (event, targetUrl) => {
+      if (isAllowedWorkspaceUrl(company.id, targetUrl)) return;
+      event.preventDefault();
+    };
+    childWindow.webContents.on('will-navigate', enforceChildPolicy);
+    childWindow.webContents.on('will-redirect', enforceChildPolicy);
+    childWindow.on('closed', () => popupWindows.delete(childWindow));
+    // 子窗口登录完成后通常自关闭；主视图跳转时要刷新状态
+    childWindow.webContents.on('did-navigate', notifyChange);
   });
   const enforceNavigationPolicy = (event, targetUrl) => {
     if (isAllowedWorkspaceUrl(company.id, targetUrl)) return;
