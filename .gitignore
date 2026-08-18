@@ -14,3 +14,4 @@ site/assets/
 _plaintext.html
 _search_index.js
 _final_verify.mjs
+.zcode/
