@@ -72,6 +72,7 @@
   }
   // 点公司卡片：jobs verified 直接打开官网浏览；否则走嵌入式登录/接管
   function companyClickMode(c) {
+    if (c?.capabilities?.login === 'unsupported') return 'external';
     return c?.capabilities?.jobs === 'verified' ? 'browse' : 'login';
   }
   // 五维能力徽章：5 个小圆点 + 中文首字，颜色按 verified/manual/degraded/unsupported 区分
@@ -82,6 +83,12 @@
       return `<span class="cap-dot cap-${v}" title="${label}：${({ verified: '已验证', manual: '可手动接管', degraded: '降级可用', unsupported: '未适配' })[v]}">${label[0]}</span>`;
     }).join('');
     return `<span class="cap-badge">${dots}</span>`;
+  }
+
+  function renderBossRestriction(company) {
+    return company?.id === 'boss'
+      ? '<span class="permission-note" title="受平台协议限制：仅打开官方页面，由本人操作">协议限制·本人操作</span>'
+      : '';
   }
 
   // 统一渲染公司 logo：有 logoUrl 用图片（加载失败自动回退字母方块），否则用品牌色字母方块
@@ -153,6 +160,7 @@
     $('#jobsDaysBack').value = state.settings.jobs?.daysBack ?? 30;
     $('#recruitType').value = state.settings.jobs?.recruitType ?? 'social';
     $('#autoRefreshJobs').checked = state.settings.jobs?.autoRefresh !== false;
+    $('#wechatQuickLogin').checked = Boolean(state.settings.wechatQuickLogin);
     const lastRefresh = state.settings.jobs?.lastRefreshAt;
     $('#jobsLastRefresh').textContent = lastRefresh ? `上次抓取：${new Date(lastRefresh).toLocaleString('zh-CN')}` : '还没有抓取过岗位。';
 
@@ -172,6 +180,8 @@
     fillResume();
     renderAgentPrompt();
     renderResumeSyncStatus();
+    renderLoginStatusList();
+    renderResumeFile();
 
     if (!$('#companyFilter').dataset.ready) {
       $('#companyFilter').innerHTML = `<option value="">所有公司</option>${state.companies.map((company) => `<option value="${company.id}">${escapeHtml(company.name)}</option>`).join('')}`;
@@ -275,6 +285,7 @@
       <span class="company-logo-wrap-sm">${renderLogo(company)}</span>
       <span class="company-name">${escapeHtml(company.name)}</span>
       ${badge}
+      ${renderBossRestriction(company)}
       ${dateHtml}
     </div>`;
   }
@@ -379,7 +390,9 @@
       let capNote = '';
       let capCls = 'ok';
       if (applyCap === 'unsupported') {
-        capNote = '🚫 本软件暂未支持自动投递，请在官网手动完成';
+        capNote = companyId === 'boss'
+          ? '🚫 平台协议限制：仅可在系统浏览器由本人操作'
+          : '🚫 本软件暂未支持自动投递，请在官网手动完成';
         capCls = 'unsupported';
         blocked = true;
       } else if (applyCap === 'manual') {
@@ -485,15 +498,22 @@
   const REPEATABLE_TEMPLATES = {
     education: [
       { key: 'school', label: '学校', placeholder: '学校名称', type: 'input' },
+      { key: 'department', label: '学院', placeholder: '学院/系名称（腾讯/京东校招要）', type: 'input' },
       { key: 'major', label: '专业', placeholder: '专业名称', type: 'input' },
       { key: 'degree', label: '学历', type: 'select', options: ['', '大专', '本科', '硕士', '博士', 'MBA'], optionLabels: ['请选择', '大专', '本科', '硕士', '博士', 'MBA'] },
       { key: 'degreeName', label: '学位', placeholder: '学士/硕士/博士（≠学历）', type: 'input' },
-      { key: 'rank', label: '成绩/排名', placeholder: '例如：前 10% / GPA 3.8', type: 'input' },
+      { key: 'rank', label: '成绩/排名', placeholder: '例如：前 10% / 3/120', type: 'input' },
+      { key: 'gpa', label: 'GPA', placeholder: '如 3.8（腾讯/京东校招要）', type: 'input' },
+      { key: 'gpaBase', label: 'GPA满分', placeholder: '如 4.0（与 GPA 配对）', type: 'input' },
+      { key: 'laboratory', label: '实验室', placeholder: '选填（腾讯/京东校招硕博）', type: 'input' },
       { key: 'start', label: '入学时间', type: 'month' },
       { key: 'end', label: '毕业时间', type: 'month' },
-      { key: 'isFullTime', label: '全日制', type: 'select', options: ['true', 'false'], optionLabels: ['是', '否'] },
+      { key: 'isFullTime', label: '全日制', type: 'select', options: ['', 'true', 'false'], optionLabels: ['未回答', '是', '否'] },
+      { key: 'isUnified', label: '统招', type: 'select', options: ['', 'true', 'false'], optionLabels: ['不填写', '是', '否'] },
       { key: 'is211', label: '双一流', placeholder: '是/否/自动判定', type: 'input' },
       { key: 'advisor', label: '导师', placeholder: '选填（华为校招/博士岗）', type: 'input' },
+      { key: 'researchDirection', label: '研究方向', placeholder: '选填（硕博岗）', type: 'input' },
+      { key: 'thesisTitle', label: '毕业论文', placeholder: '选填（校招）', type: 'input', span: true },
       { key: 'courses', label: '主修课程', placeholder: '与目标岗位相关的课程', type: 'textarea', rows: 2, span: true }
     ],
     experience: [
@@ -504,9 +524,12 @@
       { key: 'start', label: '开始时间', type: 'month' },
       { key: 'end', label: '结束时间', placeholder: '至今', type: 'month' },
       { key: 'employmentType', label: '类型', type: 'select', options: ['全职', '实习', '兼职', '外包'], optionLabels: ['全职', '实习', '兼职', '外包'] },
+      { key: 'isOutsource', label: '是否外包/派遣', type: 'select', options: ['', 'true', 'false'], optionLabels: ['不填写', '是', '否'] },
       { key: 'description', label: '工作描述', placeholder: '负责什么、如何推进、产生什么结果', type: 'textarea', rows: 4, span: true },
       { key: 'achievements', label: '关键成果', placeholder: '尽量用数字描述', type: 'textarea', rows: 2, span: true },
-      { key: 'leaveReason', label: '离职原因', placeholder: '选填（社招常见）', type: 'input', span: true }
+      { key: 'leaveReason', label: '离职原因', placeholder: '选填（社招常见）', type: 'input', span: true },
+      { key: 'reportTo', label: '汇报对象', placeholder: '选填（管理岗）', type: 'input' },
+      { key: 'teamSize', label: '团队规模', placeholder: '选填（管理岗，如 8 人）', type: 'input' }
     ],
     projects: [
       { key: 'name', label: '项目名称', placeholder: '项目名称', type: 'input' },
@@ -517,6 +540,8 @@
       { key: 'description', label: '项目背景', placeholder: '项目解决的痛点、背景', type: 'textarea', rows: 3, span: true },
       { key: 'contribution', label: '个人贡献', placeholder: '你具体做了什么（校招要求与项目背景拆分）', type: 'textarea', rows: 3, span: true },
       { key: 'outcome', label: '项目成果', placeholder: '量化结果，如「性能提升 40%」', type: 'textarea', rows: 2, span: true },
+      { key: 'scale', label: '项目规模', placeholder: '选填，如团队人数/用户量', type: 'input' },
+      { key: 'client', label: '客户', placeholder: '选填（toB 项目）', type: 'input' },
       { key: 'link', label: '项目链接', placeholder: 'https://', type: 'input', span: true }
     ],
     family: [
@@ -539,11 +564,112 @@
     catch (e) { return; }
     if (!Array.isArray(companies) || companies.length === 0) { box.innerHTML = ''; return; }
     const chips = companies.map((c) => {
-      const cls = c.resume === 'verified' ? 'sync-verified' : (c.resume === 'manual' ? 'sync-manual' : 'sync-unsupported');
-      const label = c.resume === 'verified' ? '可自动更新' : (c.resume === 'manual' ? '手动同步' : '即将支持');
-      return `<span class="sync-chip ${cls}">${renderLogo({ logoUrl: c.logoUrl, color: c.color, short: c.short, name: c.name }, 'sync-logo')}<b>${escapeHtml(c.name)}</b><i>${label}</i></span>`;
+      const cls = c.resume === 'verified' ? 'sync-verified' : (['degraded', 'manual'].includes(c.resume) ? 'sync-manual' : 'sync-unsupported');
+      const label = c.resume === 'verified' ? '已实测自动填写' : (c.resume === 'degraded' ? '自动填写·需核对' : (c.resume === 'manual' ? '手动同步' : '即将支持'));
+      const restriction = c.id === 'boss' ? '·协议限制' : '';
+      return `<span class="sync-chip ${cls}">${renderLogo({ logoUrl: c.logoUrl, color: c.color, short: c.short, name: c.name }, 'sync-logo')}<b>${escapeHtml(c.name)}</b><i>${label}${restriction}</i></span>`;
     }).join('');
     box.innerHTML = `<div class="sync-chips">${chips}</div>`;
+  }
+
+  // 简历附件文件：渲染当前已上传的简历文件名，绑定上传/删除按钮
+  function renderResumeFile() {
+    const span = $('#resumeFileName');
+    const delBtn = $('#deleteResumeBtn');
+    if (!span) return;
+    const filename = state.resume?.basic?.resumeFile || '';
+    if (filename) {
+      span.textContent = '📄 ' + filename;
+      span.style.color = 'var(--ink)';
+      if (delBtn) delBtn.style.display = '';
+    } else {
+      span.textContent = '未上传（附件仅保存在本机，不会自动上传官网）';
+      span.style.color = 'var(--muted)';
+      if (delBtn) delBtn.style.display = 'none';
+    }
+  }
+
+  // 登录和填表统一使用同一个内嵌 WebContentsView 持久会话；不再用另一套
+  // Playwright profile 做“看似已登录、真正填表却未登录”的预检。
+  let resumeSyncContinueCompanyId = null;
+  let resumeSyncPausedCompanyId = null;
+  let resumeSyncNextCompanyId = null;
+  let resumeSyncPauseStatus = null;
+  let resumeSyncAtEnd = false;
+  let resumeSyncRunFinished = false;
+  let resumeSyncTransitioning = false;
+  let resumeSyncGeneration = 0;
+  const resumeSyncRunResults = new Map();
+  const {
+    decideResumeSyncContinuation,
+    mergeResumeSyncStage,
+    summarizeResumeSyncRun
+  } = window.ResumeSyncFlow;
+
+  function absorbResumeSyncResult(result = {}) {
+    const merged = mergeResumeSyncStage({
+      pausedCompanyId: resumeSyncPausedCompanyId,
+      nextCompanyId: resumeSyncNextCompanyId,
+      pauseStatus: resumeSyncPauseStatus,
+      atEnd: resumeSyncAtEnd
+    }, result);
+    if (!merged.changed) return result;
+    for (const entry of result.results || []) resumeSyncRunResults.set(entry.companyId, entry);
+    resumeSyncPausedCompanyId = merged.pausedCompanyId;
+    resumeSyncNextCompanyId = merged.nextCompanyId;
+    resumeSyncPauseStatus = merged.pauseStatus;
+    resumeSyncAtEnd = merged.atEnd;
+    if (result.completed) {
+      resumeSyncRunFinished = true;
+      resumeSyncContinueCompanyId = null;
+    }
+    return result;
+  }
+
+  async function runResumeSyncStage(startCompanyId, generation) {
+    const result = await window.oneClick.fillResumeToAll(startCompanyId, generation);
+    if (generation !== resumeSyncGeneration) return { status: 'ignored', ignored: true };
+    return absorbResumeSyncResult(result);
+  }
+
+  function resumeSyncSummaryMessage() {
+    const summary = summarizeResumeSyncRun([...resumeSyncRunResults.values()]);
+    return `本轮完成：已核验 ${summary.verified}，需人工 ${summary.needsUser}，失败 ${summary.failed}`;
+  }
+  async function renderLoginStatusList() {
+    const list = $('#loginStatusList');
+    if (!list) return;
+    // 取支持简历填写的公司（与 autofill 引擎 COMPANY_URLS 对齐的）
+    const companies = (state.companies || []).filter((c) => {
+      const r = c.capabilities?.resume;
+      return ['verified', 'degraded', 'manual'].includes(r) && ['tencent', 'bytedance', 'xiaomi', 'jd', 'meituan', 'baidu', 'alibaba'].includes(c.id);
+    });
+    if (companies.length === 0) { list.innerHTML = '<p style="color:var(--muted);text-align:center;padding:20px">暂无支持的招聘网站</p>'; return; }
+    const items = companies.map((c) => {
+      const manualNote = '与一键更新共用同一登录态';
+      const complianceTitle = manualNote;
+      return `<div class="login-status-item" title="${escapeHtml(complianceTitle)}">
+        <span class="login-status-logo" style="background:${escapeHtml(c.color || '#999')}">${escapeHtml(c.short || c.name.slice(0, 1))}</span>
+        <div class="login-status-body"><b>${escapeHtml(c.name)}</b><small>${manualNote}</small></div>
+        <button class="login-status-action" data-login-company="${escapeHtml(c.id)}">打开登录页</button>
+      </div>`;
+    }).join('');
+    list.innerHTML = items;
+    // 绑定「去登录」按钮
+    $$('[data-login-company]', list).forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const companyId = btn.dataset.loginCompany;
+        const company = companies.find((c) => c.id === companyId);
+        await openEmbeddedLogin(companyId);
+      });
+    });
+  }
+
+  // 不做跨站批量登录预检：登录页本身包含输入框，自动猜登录态既不准又会产生两套会话。
+  async function checkAllLoginStatus() {
+    const btn = $('#checkAllLoginBtn');
+    if (btn) btn.textContent = '登录随更新检查';
+    toast('一键更新会在同一个内嵌会话里逐站检查登录；遇到未登录时会停住让你处理');
   }
 
   // sidebar 鼓励语轮换（agent.md「多用精选表情」氛围）。每会话固定一句，避免每次渲染都跳。
@@ -710,7 +836,7 @@ Authorization: Bearer ${state.settings.apiToken}
 可读取（GET）：
 - /v1/status    版本与计数
 - /v1/jobs      全部岗位（?favorite=true 只看收藏）
-- /v1/resume    完整简历（含多 profile：profiles[] + activeProfileId）
+- /v1/resume    脱敏简历（含多 profile；身份与家庭等敏感信息不会提供给 Agent）
 - /v1/messages  招聘邮件
 - /v1/tasks     任务记录
 
@@ -732,14 +858,13 @@ Authorization: Bearer ${state.settings.apiToken}
 - {"action":"batch_cart","jobIds":["id1","id2"]}                   批量加购物车
 - {"action":"batch_cart","filter":{"keyword":"前端","companyId":"tencent","limit":10}}  按条件批量加
 
-【外部写入 —— 涉及招聘网站，必须先让我确认】
-- {"action":"fill_resume"}    把当前简历推送到腾讯官网（我会回到应用核对后保存）
-- {"action":"apply_cart"}     投递购物车里的岗位（我会在应用内核对后提交）
+【外部操作】
+- 招聘官网填表、投递和邮箱同步不能由 Agent 直接启动；请提示我回到“一键投递”应用，由我本人点击并核对。
 
 规则：
 1. 先读状态再做事；想干嘛都可以，本地数据随便改；
 2. 每个写命令生成唯一 Idempotency-Key；重试同一动作复用原键，新动作换新键；
-3. 只有 fill_resume / apply_cart / sync_email 这类「外部写入」才需要我确认；本地数据改动直接做；
+3. 本地数据改动可以直接做；任何招聘官网或邮箱动作只给建议，不发送对应命令；
 4. 登录或验证码出现时提示我接管；
 5. 岗位数据来自真实抓取，请如实反映每个岗位的数据来源；
 6. 当响应 requiresReview 为 true，或状态为 review-required / login-required / manual-required 时，提醒我回到“一键投递”处理，不要宣称已完成；
@@ -828,11 +953,21 @@ Authorization: Bearer ${state.settings.apiToken}
   function renderWorkspaceStatus(status) {
     const bar = $('#workspaceBar');
     if (!status?.active) {
+      if (resumeSyncTransitioning) {
+        document.body.classList.add('workspace-active');
+        $('#workspaceBarHint').textContent = '正在继续下一个简历目标…';
+        $('#workspaceFinish').disabled = true;
+        $('#workspaceCancel').disabled = false;
+        bar.classList.remove('hidden');
+        return;
+      }
       bar.classList.add('hidden');
       document.body.classList.remove('workspace-active');
+      $('#workspaceFinish').disabled = false;
       return;
     }
-    // workspace 激活：隐藏 sidebar 和主区域（原生 view 会铺满上方），只留底部控制条
+    // workspace 激活：隐藏 sidebar 和主区域（原生 view 会铺满顶部以下区域），只留顶部控制条。
+    // 控制条放顶部（styles.css .workspace-bar top:0）——原生 view 不覆盖顶部 52px，按钮永远可见。
     document.body.classList.add('workspace-active');
     const labels = {
       login: ['🔐', status.title || '登录招聘网站', '完成登录'],
@@ -843,8 +978,16 @@ Authorization: Bearer ${state.settings.apiToken}
     const [icon, title, action] = labels[status.mode] || labels.browse;
     $('#workspaceBar .workspace-bar-icon').textContent = icon;
     $('#workspaceBarTitle').textContent = title;
-    $('#workspaceBarHint').textContent = status.url || '网页加载中…';
+    const campusApplyRisk = ['fill-resume', 'manual-fill-resume'].includes(status.context?.action)
+      && ['campus', 'summer-intern', 'daily-intern'].includes(status.context?.recruitType);
+    $('#workspaceBarHint').textContent = campusApplyRisk
+      ? '⚠ 只核对资料：页面中的“提交简历/申请”可能会真实投递，软件不会点击'
+      : (status.url || '网页加载中…');
     $('#workspaceFinish').textContent = action;
+    $('#workspaceFinish').disabled = resumeSyncTransitioning;
+    $('#workspaceCancel').disabled = false;
+    // 双保险显示：hidden class 移除 + body.workspace-active 触发 CSS display:flex !important。
+    // 用户最痛的就是「看不见取消按钮被困住」，这里冗余一点值得。
     bar.classList.remove('hidden');
   }
 
@@ -899,10 +1042,11 @@ Authorization: Bearer ${state.settings.apiToken}
 
     // 启动时自动检查更新（agent.md 第66行：每次打开自动检查版本号）
     if (state.settings?.autoCheckUpdates) {
-      try {
-        const result = await window.oneClick.checkUpdate();
+      // 更新服务偶尔会慢；不能在这里 await，否则后面的按钮事件尚未绑定，
+      // 用户会看到界面却点不了「取消并返回」等关键操作。
+      window.oneClick.checkUpdate().then((result) => {
         if (result.configured && result.updateAvailable) toast(`发现新版本 ${result.latest}，建议更新`);
-      } catch { /* 静默失败，不打扰用户 */ }
+      }).catch(() => { /* 静默失败，不打扰用户 */ });
     }
 
 
@@ -971,7 +1115,7 @@ Authorization: Bearer ${state.settings.apiToken}
         const id = company.dataset.company || company.dataset.openCompany;
         const c = companyMap()[id];
         // jobs verified 的公司抓取不需要登录，直接打开官网浏览；其余公司引导在软件内登录/接管
-        if (companyClickMode(c) === 'browse') {
+        if (['browse', 'external'].includes(companyClickMode(c))) {
           await run(company, () => window.oneClick.openCompany(id), '招聘官网已在浏览器中打开');
         } else {
           await openEmbeddedLogin(id);
@@ -1001,6 +1145,34 @@ Authorization: Bearer ${state.settings.apiToken}
     ['jobSearch', 'companyFilter', 'sortJobs'].forEach((id) => $(`#${id}`).addEventListener(id === 'jobSearch' ? 'input' : 'change', () => { jobPageSize = 50; renderJobs(); }));
     $('#refreshJobsButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.refreshJobs(), (result) => result.message));
     $('#runRefreshTask').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.refreshJobs(), (result) => result.message));
+    // 招聘网站登录态：一键检查 + 去登录（自动化中心）
+    const checkAllBtn = $('#checkAllLoginBtn');
+    if (checkAllBtn) checkAllBtn.addEventListener('click', () => checkAllLoginStatus());
+    // 简历附件上传/删除
+    const uploadBtn = $('#uploadResumeBtn');
+    if (uploadBtn) uploadBtn.addEventListener('click', async () => {
+      uploadBtn.disabled = true; uploadBtn.textContent = '选择中…';
+      try {
+        const result = await window.oneClick.uploadResumeFile();
+        if (!result.canceled) {
+          toast(`已上传简历：${result.filename}`);
+          state = await window.oneClick.getState();
+          renderResumeFile();
+        }
+      } catch (e) { toast(`上传失败：${e.message}`, 'warn'); }
+      uploadBtn.disabled = false; uploadBtn.textContent = '选择文件上传';
+    });
+    const delResumeBtn = $('#deleteResumeBtn');
+    if (delResumeBtn) delResumeBtn.addEventListener('click', async () => {
+      const filename = state.resume?.basic?.resumeFile;
+      if (!filename) return;
+      try {
+        await window.oneClick.deleteResumeFile(filename);
+        toast('已删除简历附件');
+        state = await window.oneClick.getState();
+        renderResumeFile();
+      } catch (e) { toast(`删除失败：${e.message}`, 'warn'); }
+    });
     $('#cartApplyAll').addEventListener('click', (event) => run(event.currentTarget, async () => {
       const result = await window.oneClick.applyCart();
       state = await window.oneClick.getState();
@@ -1108,14 +1280,25 @@ Authorization: Bearer ${state.settings.apiToken}
     $('#fillResumeAllButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
       // 一键更新前先保存当前编辑，避免用旧数据填到各平台
       await window.oneClick.saveResume(collectResume());
-      const result = await window.oneClick.fillResumeToAll();
-      return result;
-    }, (result) => {
-      if (result.ok) {
-        const ok = (result.results || []).filter((r) => r.ok).length;
-        return `已更新 ${ok} 个平台简历`;
+      // 登录检查与填写必须使用同一个内嵌会话。统一编排器会逐站打开，遇到未登录只暂停当前站，
+      // 不再由另一套 Playwright profile 预检并整批阻断。
+      const startsNewRun = resumeSyncGeneration === 0 || resumeSyncRunFinished;
+      if (startsNewRun) {
+        resumeSyncRunResults.clear();
+        resumeSyncRunFinished = false;
+        resumeSyncContinueCompanyId = null;
       }
-      return result.message || '更新未完成，请按提示处理';
+      const generation = resumeSyncGeneration + 1;
+      resumeSyncGeneration = generation;
+      return runResumeSyncStage(resumeSyncContinueCompanyId, generation);
+    }, (result) => {
+      if (result.ignored) return '已取消本轮简历同步';
+      if (result.completed) return resumeSyncSummaryMessage();
+      if (result.ok) {
+        const ok = result.summary?.verifiedPlatforms || 0;
+        return `已写入并核验 ${ok} 个平台简历`;
+      }
+      return result.message || '已暂停，请在保留退出栏的官网页面完成登录或核对';
     }));
     $('#exportSnapshotButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportSnapshot(), '脱敏快照已导出'));
     $('#backupExportButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportBackup(), (result) => result.canceled ? '已取消备份' : '备份已保存'));
@@ -1188,25 +1371,64 @@ Authorization: Bearer ${state.settings.apiToken}
         apiPort: Number($('#apiPort').value),
         jobsDaysBack: Math.min(365, Math.max(1, Number($('#jobsDaysBack').value) || 30)),
         recruitType: $('#recruitType').value,
-        autoRefreshJobs: $('#autoRefreshJobs').checked
+        autoRefreshJobs: $('#autoRefreshJobs').checked,
+        wechatQuickLogin: $('#wechatQuickLogin').checked
       });
       renderState();
     }, '设置已保存'));
     $('#promoButton').addEventListener('click', () => $('#promoDialog').showModal());
     $('#workspaceFinish').addEventListener('click', async () => {
-      const result = await window.oneClick.finishWorkspace();
-      renderWorkspaceStatus(null);
-      if (result.applicationResult) {
-        state = await window.oneClick.getState();
-        renderState();
-        toast(result.applicationResult.message, result.applicationResult.status === 'submitted' ? 'success' : 'error');
-        return;
+      if (resumeSyncTransitioning) return;
+      const generation = resumeSyncGeneration;
+      const finishButton = $('#workspaceFinish');
+      resumeSyncTransitioning = true;
+      finishButton.disabled = true;
+      try {
+        const result = await window.oneClick.finishWorkspace({ resumeSyncGeneration: generation });
+        if (generation !== resumeSyncGeneration) return;
+        if (result.applicationResult) {
+          state = await window.oneClick.getState();
+          renderState();
+          toast(result.applicationResult.message, result.applicationResult.toastType || 'error');
+          return;
+        }
+        const continuation = decideResumeSyncContinuation(result);
+        if (continuation.type === 'complete') {
+          resumeSyncRunFinished = true;
+          resumeSyncContinueCompanyId = null;
+          toast(resumeSyncSummaryMessage());
+          return;
+        }
+        if (continuation.type === 'continue') {
+          resumeSyncContinueCompanyId = continuation.companyId;
+          const nextResult = await runResumeSyncStage(continuation.companyId, generation);
+          if (nextResult.ignored) return;
+          toast(nextResult.completed ? resumeSyncSummaryMessage() : (nextResult.message || '已继续到下一个简历目标'));
+          return;
+        }
+        const mode = result.status?.mode;
+        toast(mode === 'login'
+          ? '页面已关闭；如果你已成功登录，登录态会在下次更新时复用'
+          : '已结束本次网页核对');
+      } finally {
+        if (generation === resumeSyncGeneration) {
+          resumeSyncTransitioning = false;
+          finishButton.disabled = false;
+          await refreshWorkspaceStatus();
+        }
       }
-      const mode = result.status?.mode;
-      toast(mode === 'login' ? '登录态已保存，后续操作会自动复用' : '已结束本次网页核对');
     });
     $('#workspaceCancel').addEventListener('click', async () => {
-      await window.oneClick.cancelWorkspace();
+      const cancelledGeneration = resumeSyncGeneration;
+      resumeSyncGeneration += 1;
+      resumeSyncTransitioning = false;
+      $('#workspaceFinish').disabled = false;
+      const result = await window.oneClick.cancelWorkspace({ resumeSyncGeneration: cancelledGeneration });
+      if (result.stale) {
+        await refreshWorkspaceStatus();
+        return;
+      }
+      if (result.resumeSyncDecision === 'retry') resumeSyncContinueCompanyId = result.session?.continueCompanyId || result.companyId || resumeSyncPausedCompanyId;
       renderWorkspaceStatus(null);
       state = await window.oneClick.getState();
       renderState();

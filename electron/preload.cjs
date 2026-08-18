@@ -8,7 +8,7 @@ contextBridge.exposeInMainWorld('oneClick', {
   deleteProfile: (profileId) => ipcRenderer.invoke('resume:delete-profile', profileId),
   renameProfile: (profileId, label) => ipcRenderer.invoke('resume:rename-profile', profileId, label),
   fillResumeToTencent: () => ipcRenderer.invoke('resume:fill-tencent'),
-  fillResumeToAll: () => ipcRenderer.invoke('resume:fill-all'),
+  fillResumeToAll: (startCompanyId, resumeSyncGeneration) => ipcRenderer.invoke('resume:fill-all', { startCompanyId, resumeSyncGeneration }),
   getResumeSyncStatus: () => ipcRenderer.invoke('resume:sync-status'),
   toggleFavorite: (jobId) => ipcRenderer.invoke('job:favorite', jobId),
   toggleCart: (jobId) => ipcRenderer.invoke('cart:toggle', jobId),
@@ -32,9 +32,14 @@ contextBridge.exposeInMainWorld('oneClick', {
   openLogin: (companyId) => ipcRenderer.invoke('login:open', companyId),
   closeLogin: () => ipcRenderer.invoke('login:close'),
   loginStatus: () => ipcRenderer.invoke('login:status'),
+  // 简历附件文件管理（用户上传自己设计的简历 PDF/DOC）
+  uploadResumeFile: () => ipcRenderer.invoke('resume:upload-file'),
+  getResumeFilePath: () => ipcRenderer.invoke('resume:get-file-path'),
+  listResumeFiles: () => ipcRenderer.invoke('resume:list-files'),
+  deleteResumeFile: (filename) => ipcRenderer.invoke('resume:delete-file', filename),
   workspaceStatus: () => ipcRenderer.invoke('workspace:status'),
-  finishWorkspace: () => ipcRenderer.invoke('workspace:finish'),
-  cancelWorkspace: () => ipcRenderer.invoke('workspace:cancel'),
+  finishWorkspace: ({ resumeSyncGeneration } = {}) => ipcRenderer.invoke('workspace:finish', { resumeSyncGeneration }),
+  cancelWorkspace: ({ resumeSyncGeneration } = {}) => ipcRenderer.invoke('workspace:cancel', { resumeSyncGeneration }),
   onWorkspaceChanged: (callback) => {
     const handler = (_event, status) => callback(status);
     ipcRenderer.on('workspace:changed', handler);

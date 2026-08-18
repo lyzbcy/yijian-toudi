@@ -3,7 +3,6 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { JsonStore, calculateResumeCompletion, applyResumeEdit, switchProfile, addProfile, deleteProfile, renameProfile, migrateFlatResumeToProfiles, patchResume, batchAddToCart, findJobs } = require('./store.cjs');
-const { BrowserAutomation } = require('./automation.cjs');
 const { AgentServer } = require('./agent-server.cjs');
 const { syncQqMail } = require('./mail.cjs');
 const registry = require('./adapters/registry.cjs');
@@ -17,11 +16,137 @@ const {
   taskStatusForAutomation
 } = require('./review-state.cjs');
 const { createBackup, restoreBackup } = require('./backup.cjs');
+const {
+  runResumeSync,
+  ResumeSyncSession,
+  expandResumeSyncTargets,
+  createResumeSyncExecutionQueue,
+  isWorkspaceGenerationStale,
+  createResumeSyncGenerationRegistry
+} = require('./resume-sync.cjs');
+const { createRedactedSnapshot } = require('./redact.cjs');
+const { manualApplicationOutcome } = require('./workspace-outcome.cjs');
+const { resolveResumeFilePath } = require('./resume-files.cjs');
 
 let window;
 let store;
-let automation;
 let agentServer;
+let resumeSyncSession = null;
+let resumeSyncSessionGeneration = null;
+const resumeSyncGenerations = createResumeSyncGenerationRegistry({ limit: 64 });
+const resumeSyncExecutionQueue = createResumeSyncExecutionQueue();
+
+function cancelledResumeSyncResult() {
+  return {
+    ok: false,
+    status: 'cancelled',
+    message: '已取消本轮简历同步',
+    results: [],
+    completed: false,
+    session: resumeSyncSession?.snapshot() || null
+  };
+}
+
+function resumeSyncWorkspace(generation) {
+  const closeOwnWorkspace = async () => {
+    const activeGeneration = loginManager.getStatus().context?.resumeSyncGeneration;
+    if (activeGeneration === generation) await loginManager.closeWorkspaceIfOpen();
+  };
+  return {
+    ...loginManager,
+    openWorkspace: async (options = {}) => {
+      if (resumeSyncGenerations.isCancelled(generation)) {
+        const error = new Error('已取消本轮简历同步');
+        error.code = 'RESUME_SYNC_CANCELLED';
+        throw error;
+      }
+      const result = await loginManager.openWorkspace({
+        ...options,
+        context: { ...(options.context || {}), resumeSyncGeneration: generation }
+      });
+      if (resumeSyncGenerations.isCancelled(generation)) {
+        await closeOwnWorkspace();
+        const error = new Error('已取消本轮简历同步');
+        error.code = 'RESUME_SYNC_CANCELLED';
+        throw error;
+      }
+      return result;
+    },
+    closeWorkspaceIfOpen: closeOwnWorkspace
+  };
+}
+
+function resumeSyncTargets(currentState) {
+  return currentState.companies.filter((company) => {
+    const capability = company.capabilities?.resume;
+    return ['verified', 'degraded', 'manual'].includes(capability) && registry.getAdapter(company.id)?.fillResume;
+  });
+}
+
+async function executeResumeSync({ startCompanyId, resumeSyncGeneration, pauseOnReview = true, createTasks = false, newRun = false } = {}) {
+  if (resumeSyncGenerations.isCancelled(resumeSyncGeneration)) return cancelledResumeSyncResult();
+  if (loginManager.isActive()) {
+    return {
+      ok: false,
+      status: 'workspace-active',
+      message: '当前有网页正在登录或核对，请先用顶部栏完成或取消',
+      results: [],
+      session: resumeSyncSession?.snapshot() || null
+    };
+  }
+  const currentState = store.get();
+  const recruitType = currentState.settings?.jobs?.recruitType || 'social';
+  const targets = expandResumeSyncTargets(resumeSyncTargets(currentState), recruitType);
+  const targetIds = targets.map((company) => company.syncTargetId);
+  const targetSetChanged = resumeSyncSession
+    && JSON.stringify(resumeSyncSession.companyIds) !== JSON.stringify(targetIds);
+  if (!resumeSyncSession || resumeSyncSession.completed || newRun || targetSetChanged) {
+    resumeSyncSession = new ResumeSyncSession(targetIds);
+  }
+  resumeSyncSessionGeneration = resumeSyncGeneration;
+  const sessionForRun = resumeSyncSession;
+  const taskIds = new Map();
+  const result = await runResumeSync({
+    resume: currentState.resume,
+    companies: targets,
+    getAdapter: (companyId) => registry.getAdapter(companyId),
+    recruitType,
+    workspace: resumeSyncWorkspace(resumeSyncGeneration),
+    startCompanyId: sessionForRun.startCompanyId() || startCompanyId,
+    pauseOnReview,
+    shouldAbort: () => resumeSyncGenerations.isCancelled(resumeSyncGeneration),
+    onCompanyStart: createTasks
+      ? (company) => {
+          const direction = ['campus', 'summer-intern', 'daily-intern'].includes(company.resumeRecruitType) ? '校招' : '社招';
+          const syncTargetId = company.syncTargetId || company.id;
+          const taskId = addTask({
+            type: 'browser',
+            title: `更新简历到${company.name}（${direction}）`,
+            detail: `正在打开${company.name}${direction}简历页…`
+          });
+          taskIds.set(syncTargetId, taskId);
+          return taskId;
+        }
+      : undefined,
+    onStep: createTasks
+      ? (info) => {
+          const taskId = taskIds.get(info.syncTargetId);
+          if (taskId) updateTaskLive(taskId, { detail: info.message });
+        }
+      : undefined
+  });
+  const cancelled = result.status === 'cancelled' || resumeSyncGenerations.isCancelled(resumeSyncGeneration);
+  if (cancelled) return { ...result, status: 'cancelled', session: resumeSyncSession?.snapshot() || null };
+  for (const entry of result.results || []) {
+    const taskId = taskIds.get(entry.companyId);
+    if (taskId) finishTask(taskId, taskStatusForAutomation(entry.status), entry.message);
+  }
+  if (resumeSyncSessionGeneration !== resumeSyncGeneration || resumeSyncSession !== sessionForRun) {
+    return { ...result, ignored: true, session: resumeSyncSession?.snapshot() || null };
+  }
+  sessionForRun.acceptStage(result);
+  return { ...result, session: sessionForRun.snapshot() };
+}
 
 function createWindow() {
   window = new BrowserWindow({
@@ -102,19 +227,6 @@ async function handleCommand(command) {
     return { jobId: command.jobId };
   }
   if (command.action === 'export_snapshot') return exportSnapshot(false);
-  if (command.action === 'apply_cart') return applyCart();
-  if (command.action === 'fill_resume') {
-    const currentState = store.get();
-    const adapter = registry.getAdapter('tencent');
-    const company = currentState.companies.find((item) => item.id === 'tencent');
-    return adapter.fillResume(currentState.resume, {
-      workspace: loginManager,
-      company
-    });
-  }
-  if (command.action === 'sync_email') {
-    throw new Error('出于安全考虑，邮箱同步需在应用内输入本机保存的授权码');
-  }
   // ===== Agent 开放数据写入（design: 「当大型 skill」——AI 可自由读写本地数据）=====
   // 这些都是纯本地数据操作，立即生效、无需用户确认（外部写入如投递/填简历到官网仍需确认）。
   // update_resume：改 active profile 的任意字段（basic/intention/education/experience/projects/skills/extras）
@@ -319,11 +431,11 @@ function mergeJobs(idPrefix, newJobs) {
 async function openCompany(companyId) {
   const company = store.get().companies.find((item) => item.id === companyId);
   if (!company) throw new Error('未找到公司');
-  const id = addTask({ type: 'browser', title: `打开 ${company.name} 招聘官网`, detail: '将使用独立的本地浏览器资料目录保留登录态。' });
+  const id = addTask({ type: 'browser', title: `打开 ${company.name} 招聘官网`, detail: '正在使用系统默认浏览器打开官网。' });
   try {
-    const result = await automation.openPortal(company);
-    finishTask(id, 'done', `已打开 ${company.name} 招聘官网；如出现登录或验证码，请在浏览器中完成。`);
-    return result;
+    await shell.openExternal(company.portal);
+    finishTask(id, 'done', `已在系统浏览器打开 ${company.name} 招聘官网。`);
+    return { ok: true, url: company.portal, browser: 'system-default' };
   } catch (error) {
     finishTask(id, 'error', error.message);
     throw error;
@@ -418,6 +530,9 @@ async function applyCart() {
         message: adapterResult.message
       };
     } catch (error) {
+      // adapter 抛错时 workspace 可能还开着（loadURL 之后的脚本错误不会走 openWorkspace 内部 catch），
+      // 必须兜底关闭，否则腾讯页会卡在窗口上。
+      await loginManager.closeWorkspaceIfOpen();
       result = {
         id: job.id,
         status: 'failed',
@@ -425,6 +540,13 @@ async function applyCart() {
       };
       logger.error('投递准备失败', { job: job.id, error: error.message });
     }
+  }
+
+  // adapter 返回 failed（如岗位下线/404）时，adapter 内部理论上已关 workspace，
+  // 但这里再保险关一次（closeWorkspaceIfOpen 是幂等的）——绝不能让原生页残留把用户困住。
+  // review-required / manual-required / login-required 的 workspace 故意保留（留给用户接管）。
+  if (result.status === 'failed') {
+    await loginManager.closeWorkspaceIfOpen();
   }
 
   store.update((state) => {
@@ -450,8 +572,7 @@ async function applyCart() {
 }
 
 async function exportSnapshot(showDialog = true) {
-  const snapshot = store.get();
-  delete snapshot.settings.apiToken;
+  const snapshot = createRedactedSnapshot(store.get());
   const outputDirectory = path.join(app.getPath('documents'), '一键投递导出');
   fs.mkdirSync(outputDirectory, { recursive: true });
   const file = path.join(outputDirectory, `求职快照-${new Date().toISOString().slice(0, 10)}.json`);
@@ -536,13 +657,9 @@ async function restoreBackupFromFile() {
     `${JSON.stringify(createBackup(store.get(), app.getVersion()), null, 2)}\n`,
     'utf8'
   );
-  store.update((state) => {
-    // 旧版备份（v0.2）的 resume 是扁平 schema（无 profiles），恢复后先迁成多 profile，
-    // 否则 update 末尾的 syncResumeActiveView 会把顶层 intention/education 当空模板清掉、丢数据。
-    migrateFlatResumeToProfiles(state.resume);
-    return state;
-  });
-  store.migrate(); // 顺带补公司 capabilities 等其它字段
+  // 真正替换当前状态，再由 store 的迁移器补齐新版字段；Token/邮箱授权码已由 restoreBackup 保留。
+  migrateFlatResumeToProfiles(restored.resume);
+  store.replace(restored);
   await agentServer?.stop();
   agentServer = null;
   if (store.get().settings.apiEnabled) await startAgentServer();
@@ -577,15 +694,21 @@ function requestJson(url) {
   });
 }
 
-// 锁定 userData 路径为 'yijian-toudi'（不跟随 productName 变成中文「一键投递」）。
-// 这样开发版（pnpm start）和正式打包版（.app）读同一个数据目录，简历/配置不会因换版而「消失」。
+// 正常启动时锁定 userData 路径为 'yijian-toudi'（不跟随 productName 变成中文「一键投递」）。
+// UI 测试会显式传 --user-data-dir=<临时目录>；必须尊重这个参数，避免测试读取或修改真实简历数据。
 // 必须在 app.whenReady() 之前调用。
-app.setPath('userData', path.join(app.getPath('appData'), 'yijian-toudi'));
+const userDataArgument = process.argv.find((argument) => argument.startsWith('--user-data-dir='));
+const requestedUserDataPath = userDataArgument?.slice('--user-data-dir='.length);
+app.setPath(
+  'userData',
+  requestedUserDataPath
+    ? path.resolve(requestedUserDataPath)
+    : path.join(app.getPath('appData'), 'yijian-toudi')
+);
 
 app.whenReady().then(async () => {
   store = new JsonStore(app.getPath('userData'));
   store.init();
-  automation = new BrowserAutomation(app.getPath('userData'));
   await startAgentServer();
   createWindow();
   // 启动时若开启自动刷新且距上次超过 24 小时，后台抓一次岗位（T3.2 #8）
@@ -626,70 +749,61 @@ app.whenReady().then(async () => {
     return next;
   });
   // 简历一键更新到腾讯：用已登录 session 打开腾讯简历页自动填表（agent.md 核心目标）
-  ipcMain.handle('resume:fill-tencent', async () => {
+  // 按当前 recruitType 选社招页（careers.tencent.com）或校招页（join.qq.com）。
+  ipcMain.handle('resume:fill-tencent', () => resumeSyncExecutionQueue.run(async () => {
     const currentState = store.get();
     const resume = currentState.resume;
     const company = currentState.companies.find((item) => item.id === 'tencent');
     const adapter = registry.getAdapter('tencent');
-    const id = addTask({ type: 'browser', title: '更新简历到腾讯', detail: '正在打开腾讯简历页…' });
+    const recruitType = currentState.settings?.jobs?.recruitType || 'social';
+    if (recruitType === 'all') {
+      return { ok: false, status: 'direction-required', message: '“全部都要”包含社招和校招，请使用「一键更新」按两个方向依次核对' };
+    }
+    if (loginManager.isActive()) {
+      return { ok: false, status: 'workspace-active', message: '当前有网页正在登录或核对，请先用顶部栏完成或取消' };
+    }
+    const campus = ['campus', 'summer-intern', 'daily-intern'].includes(recruitType);
+    const direction = campus ? '校招' : '社招';
+    const id = addTask({ type: 'browser', title: `更新简历到腾讯（${direction}）`, detail: `正在打开腾讯${direction}简历页…` });
     try {
       const result = await adapter.fillResume(resume, {
         workspace: loginManager,
         company,
         taskId: id,
+        recruitType,
         onStep: (info) => updateTaskLive(id, { detail: info.message })
       });
       finishTask(id, taskStatusForAutomation(result.status), result.message);
-      logger.info('简历填写腾讯', { status: result.status, filled: result.filledCount });
+      logger.info('简历填写腾讯', { status: result.status, filled: result.filledCount, recruitType: campus ? 'campus' : 'social' });
       return result;
     } catch (error) {
       finishTask(id, 'error', error.message);
       throw error;
     }
-  });
+  }));
   // 一键更新所有支持简历填写的平台（agent.md 核心目标）：遍历 resume 能力非 unsupported 的公司
   // （含腾讯 verified 自动填 + 五家 manual 打开官网手动填）。每家独立 workspace，遇到 login/captcha 停下。
-  ipcMain.handle('resume:fill-all', async () => {
-    const currentState = store.get();
-    const resume = currentState.resume;
-    // 筛选 resume 能力为 verified 或 manual 的公司（unsupported 跳过）
-    const targets = currentState.companies.filter((c) => {
-      const r = c.capabilities?.resume;
-      return r === 'verified' || r === 'manual';
-    });
-    if (targets.length === 0) {
-      return { ok: false, message: '当前没有公司支持简历更新' };
+  // 跟随当前 recruitType：校招模式只更校招简历页，社招模式只更社招页。
+  ipcMain.handle('resume:fill-all', async (_event, request = {}) => {
+    const { startCompanyId, resumeSyncGeneration } = typeof request === 'object'
+      ? request
+      : { startCompanyId: request, resumeSyncGeneration: null };
+    const targets = resumeSyncTargets(store.get());
+    if (targets.length === 0) return { ok: false, message: '当前没有公司支持简历更新', results: [] };
+    logger.info('一键更新简历开始', { targets: targets.map((company) => company.id) });
+    resumeSyncGenerations.start(resumeSyncGeneration);
+    try {
+      const result = await resumeSyncExecutionQueue.run(() => executeResumeSync({
+        startCompanyId,
+        resumeSyncGeneration,
+        createTasks: true,
+        pauseOnReview: true
+      }));
+      logger.info('一键更新简历阶段结束', { status: result.status, summary: result.summary, nextCompanyId: result.nextCompanyId });
+      return result;
+    } finally {
+      resumeSyncGenerations.finish(resumeSyncGeneration);
     }
-    logger.info('一键更新简历开始', { targets: targets.map((c) => c.id), count: targets.length });
-    const results = [];
-    for (const company of targets) {
-      const adapter = registry.getAdapter(company.id);
-      if (!adapter?.fillResume) continue;
-      logger.info('开始更新简历', { company: company.id, capability: company.capabilities?.resume });
-      const id = addTask({ type: 'browser', title: `更新简历到${company.name}`, detail: `正在打开${company.name}简历页…` });
-      try {
-        const result = await adapter.fillResume(resume, {
-          workspace: loginManager,
-          company,
-          taskId: id,
-          onStep: (info) => { updateTaskLive(id, { detail: info.message }); logger.info(`${company.name}简历填写`, { step: info.step, msg: info.message }); }
-        });
-        finishTask(id, taskStatusForAutomation(result.status), result.message);
-        logger.info('简历填写完成', { company: company.id, status: result.status });
-        results.push({ companyId: company.id, companyName: company.name, ...result });
-        // 遇到需要用户接管的状态（login-required/captcha 没过/manual 需核对），停下让用户处理
-        if (result.status === 'login-required' || result.status === 'manual-required') {
-          logger.warn('简历填写需用户接管', { company: company.id, status: result.status });
-          return { ok: false, message: `${company.name}需要你登录或核对后再继续`, partial: results };
-        }
-      } catch (error) {
-        finishTask(id, 'error', error.message);
-        logger.error('简历填写失败', { company: company.id, error: error.message });
-        results.push({ companyId: company.id, companyName: company.name, ok: false, status: 'failed', message: error.message });
-      }
-    }
-    logger.info('一键更新简历完成', { success: results.filter((r) => r.ok).length, total: results.length });
-    return { ok: true, results };
   });
   // 读取简历同步能力矩阵：哪些公司支持简历更新、状态如何
   ipcMain.handle('resume:sync-status', () => {
@@ -700,9 +814,12 @@ app.whenReady().then(async () => {
   });
   ipcMain.handle('job:favorite', (_event, id) => toggleFavorite(id));
   ipcMain.handle('cart:toggle', (_event, id) => toggleCart(id));
-  ipcMain.handle('cart:apply', () => applyCart());
+  ipcMain.handle('cart:apply', () => resumeSyncExecutionQueue.run(() => applyCart()));
   // 刷新已投递岗位状态：目前只有腾讯实现了 inspectApplicationStatus（capabilities.status=manual）
-  ipcMain.handle('applied:refresh-status', async () => {
+  ipcMain.handle('applied:refresh-status', () => resumeSyncExecutionQueue.run(async () => {
+    if (loginManager.isActive()) {
+      return { ok: false, status: 'workspace-active', message: '当前有网页正在登录或核对，请先用顶部栏完成或取消' };
+    }
     const currentState = store.get();
     const tencent = currentState.companies.find((item) => item.id === 'tencent');
     const adapter = registry.getAdapter('tencent');
@@ -726,13 +843,19 @@ app.whenReady().then(async () => {
         finishTask(id, 'done', `已读取 ${result.count} 条腾讯投递记录`);
         return { ok: true, state: next, count: result.count };
       }
+      // login-required/manual-required 的 workspace 留给用户接管；其余失败状态关闭，避免卡住。
+      if (result.status !== 'login-required' && result.status !== 'manual-required') {
+        await loginManager.closeWorkspaceIfOpen();
+      }
       finishTask(id, taskStatusForAutomation(result.status), result.message);
       return { ok: false, message: result.message, status: result.status };
     } catch (error) {
+      // 抛错时 workspace 可能还开着（adapter 内 loadURL 之后的脚本错误），兜底关闭。
+      if (error.code !== 'WORKSPACE_ACTIVE') await loginManager.closeWorkspaceIfOpen();
       finishTask(id, 'error', error.message);
       return { ok: false, message: error.message };
     }
-  });
+  }));
   ipcMain.handle('jobs:refresh', () => refreshJobs());
   ipcMain.handle('company:open', (_event, id) => openCompany(id));
   ipcMain.handle('email:sync', async (_event, credentials) => {
@@ -895,72 +1018,186 @@ app.whenReady().then(async () => {
     return shell.openExternal(url);
   });
   ipcMain.handle('item:show', (_event, itemPath) => shell.showItemInFolder(itemPath));
+  // ===== 简历附件文件管理（用户上传自己设计的 PDF/DOC 简历）=====
+  // 存储在 userData/resumes/ 下，basic.resumeFile 只保存应用生成的文件名；当前不会自动上传到官网。
+  const resumesDir = path.join(app.getPath('userData'), 'resumes');
+  if (!fs.existsSync(resumesDir)) fs.mkdirSync(resumesDir, { recursive: true });
+  // 上传：用户选文件 → 复制到 resumes/ → 返回文件名（存到 basic.resumeFile）
+  ipcMain.handle('resume:upload-file', async () => {
+    const result = await dialog.showOpenDialog({
+      title: '选择简历文件',
+      filters: [{ name: '简历文件', extensions: ['pdf', 'doc', 'docx'] }],
+      properties: ['openFile']
+    });
+    if (result.canceled || !result.filePaths.length) return { canceled: true };
+    const src = result.filePaths[0];
+    const filename = `resume-${Date.now()}${path.extname(src)}`;
+    const dest = path.join(resumesDir, filename);
+    fs.copyFileSync(src, dest);
+    // 更新 basic.resumeFile
+    store.update((state) => { state.resume.basic.resumeFile = filename; return state; });
+    broadcast();
+    logger.info('简历文件已上传', { filename });
+    return { canceled: false, filename, path: dest };
+  });
+  // 获取当前简历文件的完整路径（供用户本地查看；自动上传尚未开放）
+  ipcMain.handle('resume:get-file-path', () => {
+    const filename = store.get().resume?.basic?.resumeFile;
+    if (!filename) return null;
+    let filePath;
+    try { filePath = resolveResumeFilePath(resumesDir, filename); } catch { return null; }
+    return fs.existsSync(filePath) ? filePath : null;
+  });
+  // 列出 resumes/ 下所有文件（供前端展示历史简历）
+  ipcMain.handle('resume:list-files', () => {
+    return fs.readdirSync(resumesDir).map((name) => {
+      const fp = path.join(resumesDir, name);
+      const stat = fs.statSync(fp);
+      return { name, size: stat.size, mtime: stat.mtime };
+    }).sort((a, b) => b.mtime - a.mtime);
+  });
+  // 删除简历文件
+  ipcMain.handle('resume:delete-file', (_event, filename) => {
+    const fp = resolveResumeFilePath(resumesDir, filename);
+    if (fs.existsSync(fp)) fs.unlinkSync(fp);
+    store.update((state) => {
+      if (state.resume.basic.resumeFile === filename) state.resume.basic.resumeFile = '';
+      return state;
+    });
+    broadcast();
+    return { ok: true };
+  });
   // 开发日志：返回内存中最近 50 条（见 logger.cjs）
   ipcMain.handle('log:get', () => logger.recent());
 
   // 嵌入式登录（见 login-manager.cjs）
-  ipcMain.handle('login:open', (_event, companyId) => {
+  ipcMain.handle('login:open', (_event, companyId) => resumeSyncExecutionQueue.run(async () => {
     const company = store.get().companies.find((item) => item.id === companyId);
     if (!company) throw new Error('未找到公司');
     logger.info('打开嵌入式登录', { company: company.name, portal: company.portal });
     return loginManager.openLoginView(company);
-  });
-  ipcMain.handle('login:close', async () => {
+  }));
+  ipcMain.handle('login:close', () => resumeSyncExecutionQueue.run(async () => {
     logger.info('关闭嵌入式登录');
     await loginManager.closeLoginView();
     return { ok: true };
-  });
+  }));
   ipcMain.handle('login:status', () => ({
     active: loginManager.isActive(),
     companyId: loginManager.getActiveCompanyId(),
     url: loginManager.getCurrentUrl()
   }));
   ipcMain.handle('workspace:status', () => loginManager.getStatus());
-  ipcMain.handle('workspace:finish', async () => {
-    const result = await loginManager.finishWorkspace();
-    const context = result.status?.context;
-    if (context?.action === 'fill-resume' && context.taskId) {
-      finishTask(context.taskId, 'done', '用户已完成腾讯简历核对');
-      return result;
-    }
-    if (context?.action !== 'apply-job' || !context.jobId) return result;
+  ipcMain.handle('workspace:finish', (_event, { resumeSyncGeneration } = {}) => {
+    resumeSyncGenerations.start(resumeSyncGeneration);
+    return resumeSyncExecutionQueue.run(async () => {
+      const activeStatus = loginManager.getStatus();
+      const activeGeneration = activeStatus.context?.resumeSyncGeneration;
+      if (isWorkspaceGenerationStale(activeGeneration, resumeSyncGeneration)
+        || resumeSyncGenerations.isCancelled(activeGeneration)) {
+        return {
+          status: 'ignored',
+          stale: true,
+          workspace: activeStatus,
+          session: resumeSyncSession?.snapshot() || null
+        };
+      }
+      const result = await loginManager.finishWorkspace();
+      const context = result.status?.context;
+      const workspaceGeneration = context?.resumeSyncGeneration;
+      if (isWorkspaceGenerationStale(workspaceGeneration, resumeSyncGeneration)
+        || resumeSyncGenerations.isCancelled(workspaceGeneration)) {
+        return { ...result, resumeSyncDecision: 'ignored', stale: true };
+      }
+      if (['fill-resume', 'manual-fill-resume'].includes(context?.action)) {
+        const company = store.get().companies.find((item) => item.id === context.companyId);
+        const syncTargetId = context.syncTargetId || context.companyId;
+        const pendingStatus = resumeSyncSession?.pendingStatus(syncTargetId);
+        if (context.taskId) finishTask(
+          context.taskId,
+          pendingStatus === 'login-required' ? 'waiting' : 'done',
+          pendingStatus === 'login-required'
+            ? `已结束${company?.name || '该平台'}登录处理，等待重新检查简历页`
+            : `用户已结束${company?.name || '该平台'}简历核对（未验证官网保存）`
+        );
+        if (resumeSyncSession?.hasPending(syncTargetId)) {
+          const session = resumeSyncSession.finish(syncTargetId);
+          return { ...result, resumeSyncDecision: 'advance', companyId: syncTargetId, session };
+        }
+        return result;
+      }
+      if (context?.action === 'manual-apply' && context.jobId) {
+        const applicationResult = manualApplicationOutcome('finish', context.jobId);
+        if (context.taskId) finishTask(context.taskId, applicationResult.taskStatus, applicationResult.message);
+        return {
+          ...result,
+          applicationResult
+        };
+      }
+      if (context?.action !== 'apply-job' || !context.jobId) return result;
 
-    const submitted = isSubmissionSuccess(result.snapshot);
-    const applicationResult = {
-      id: context.jobId,
-      status: submitted ? 'submitted' : 'review-required',
-      message: submitted
-        ? '腾讯页面已确认投递成功'
-        : '页面没有出现明确成功提示，岗位继续保留在购物车'
-    };
-    store.update((state) => {
-      const next = applyResultToCart({
-        cart: state.cart,
-        applied: state.applied,
-        result: applicationResult,
-        today: new Date().toISOString().slice(0, 10)
+      const submitted = isSubmissionSuccess(result.snapshot);
+      const applicationResult = {
+        id: context.jobId,
+        status: submitted ? 'submitted' : 'review-required',
+        toastType: submitted ? 'success' : 'error',
+        message: submitted
+          ? '腾讯页面已确认投递成功'
+          : '页面没有出现明确成功提示，岗位继续保留在购物车'
+      };
+      store.update((state) => {
+        const next = applyResultToCart({
+          cart: state.cart,
+          applied: state.applied,
+          result: applicationResult,
+          today: new Date().toISOString().slice(0, 10)
+        });
+        state.cart = next.cart;
+        state.applied = next.applied;
+        return state;
       });
-      state.cart = next.cart;
-      state.applied = next.applied;
-      return state;
-    });
-    broadcast();
-    if (context.taskId) {
-      finishTask(
-        context.taskId,
-        taskStatusForAutomation(applicationResult.status),
-        applicationResult.message
-      );
-    }
-    return { ...result, applicationResult };
+      broadcast();
+      if (context.taskId) {
+        finishTask(
+          context.taskId,
+          taskStatusForAutomation(applicationResult.status),
+          applicationResult.message
+        );
+      }
+      return { ...result, applicationResult };
+    }).finally(() => resumeSyncGenerations.finish(resumeSyncGeneration));
   });
-  ipcMain.handle('workspace:cancel', async () => {
+  ipcMain.handle('workspace:cancel', async (_event, { resumeSyncGeneration } = {}) => {
+    resumeSyncGenerations.cancel(resumeSyncGeneration);
     const status = loginManager.getStatus();
+    const activeGeneration = status.context?.resumeSyncGeneration;
+    if (isWorkspaceGenerationStale(activeGeneration, resumeSyncGeneration)) {
+      return {
+        status: 'ignored',
+        stale: true,
+        workspace: status,
+        session: resumeSyncSession?.snapshot() || null
+      };
+    }
     const result = await loginManager.cancelWorkspace();
     const context = status.context;
-    if (context?.action === 'fill-resume' && context.taskId) {
-      finishTask(context.taskId, 'error', '用户取消了腾讯简历核对');
+    if (['fill-resume', 'manual-fill-resume'].includes(context?.action)) {
+      const company = store.get().companies.find((item) => item.id === context.companyId);
+      if (context.taskId) finishTask(context.taskId, 'error', `用户取消了${company?.name || '该平台'}简历核对`);
+      const syncTargetId = context.syncTargetId || context.companyId;
+      if (resumeSyncSession?.hasPending(syncTargetId)) {
+        const session = resumeSyncSession.cancel(syncTargetId);
+        return { ...result, resumeSyncDecision: 'retry', companyId: syncTargetId, session };
+      }
       return result;
+    }
+    if (context?.action === 'manual-apply' && context.jobId) {
+      const applicationResult = manualApplicationOutcome('cancel', context.jobId);
+      if (context.taskId) finishTask(context.taskId, applicationResult.taskStatus, applicationResult.message);
+      return {
+        ...result,
+        applicationResult
+      };
     }
     if (context?.action !== 'apply-job' || !context.jobId) return result;
 
@@ -986,7 +1223,6 @@ app.whenReady().then(async () => {
 });
 
 app.on('window-all-closed', async () => {
-  await automation?.close();
   await agentServer?.stop();
   if (process.platform !== 'darwin') app.quit();
 });
