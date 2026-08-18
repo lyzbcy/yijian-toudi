@@ -90,7 +90,9 @@ const PLATFORM_MANIFESTS = Object.freeze({
     id: 'baidu',
     tracks: {
       social: {
-        resume: 'https://talent.baidu.com/applicants/resume',
+        // 2026-08-18 实测校准：/applicants/resume 是 API（返回 illegal-visit/need-login JSON）；
+        // 真实个人中心是 /jobs/center（登录后可见资料与「编辑」弹窗入口）
+        resume: 'https://talent.baidu.com/jobs/center',
         login: 'https://talent.baidu.com/jobs/login',
         jobs: 'https://talent.baidu.com/jobs/social-list'
       },

@@ -25,6 +25,11 @@ const popupWindows = new Set();
 // 放底部时一旦 bounds 算偏或腾讯页内底部有「返回首页」按钮，用户就找不到「取消」。
 const SNAPSHOT_TEXT_LIMIT = 2400;
 
+// 标准 macOS Chrome UA：去掉 Electron 标识，避免招聘站 WAF 拦截
+const CHROME_UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36';
+const CHROME_UA_PREFIX = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/';
+const CHROME_SEC_CH_UA = '"Google Chrome";v="132", "Chromium";v="132", "Not_A Brand";v="99"';
+
 function setParent(win) {
   parentWindow = win;
   // 任何可能改变窗口内容区尺寸的事件都要刷新 bounds，否则原生 view 会停在旧尺寸/旧位置。
@@ -137,6 +142,23 @@ async function openWorkspace({
   currentMode = mode;
   currentTitle = title;
   currentContext = context;
+  // 百度 talent 等站点的 WAF 会拦截带 Electron 标识的 UA（返回 illegal-visit）。
+  // 分区统一伪装成主流 macOS Chrome UA，并把 sec-ch-ua 客户端提示头对齐，
+  // 避免「UA 说 Chrome/132、sec-ch-ua 说 Chromium/43」的自相矛盾被风控识别。
+  const persistSession = session.fromPartition(`persist:${company.id}`);
+  if (!persistSession.getUserAgent().startsWith(CHROME_UA_PREFIX)) {
+    persistSession.setUserAgent(CHROME_UA);
+  }
+  // 请求头对齐每次注册（onBeforeSendHeaders 是单监听器，重复注册幂等）
+  persistSession.webRequest.onBeforeSendHeaders((details, callback) => {
+    const headers = { ...details.requestHeaders };
+    if (headers['sec-ch-ua'] || headers['Sec-CH-UA']) {
+      headers['sec-ch-ua'] = CHROME_SEC_CH_UA;
+      headers['sec-ch-ua-mobile'] = '?0';
+      headers['sec-ch-ua-platform'] = '"macOS"';
+    }
+    callback({ requestHeaders: headers });
+  });
   currentView = new WebContentsView({
     webPreferences: {
       partition: `persist:${company.id}`,
