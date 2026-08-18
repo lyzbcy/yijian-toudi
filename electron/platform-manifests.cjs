@@ -114,7 +114,8 @@ const PLATFORM_MANIFESTS = Object.freeze({
         jobs: 'https://talent.alibaba.com/off-campus/position-list'
       },
       campus: {
-        resume: 'https://campus-talent.alibaba.com/campus/personal-center',
+        // 2026-08-18 实测校准：旧 personal-center 已 404（Whitelabel）；真实校招简历页是 /campus/personal/resume
+        resume: 'https://campus-talent.alibaba.com/campus/personal/resume',
         login: 'https://campus-talent.alibaba.com/campus/index',
         jobs: 'https://campus-talent.alibaba.com/campus/position-list'
       }

@@ -181,7 +181,7 @@ function createSeed() {
       email: { address: '', connected: false, lastSyncAt: null },
       autoCheckUpdates: true,
       dataMode: 'live',
-      jobs: { daysBack: 30, lastRefreshAt: null, recruitType: 'social', autoRefresh: true },
+      jobs: { daysBack: 30, lastRefreshAt: null, recruitType: 'campus', autoRefresh: true },
       // 旧设置保留仅为数据兼容；自动快捷登录已停用，所有授权由用户在内嵌页操作。
       wechatQuickLogin: false
     }

@@ -120,9 +120,9 @@ class JsonStore {
       this.state.settings.jobs = seed.settings.jobs;
       changed = true;
     }
-    // 3b. 补全 recruitType（校招/社招分流，新字段）
+    // 3b. 补全 recruitType（校招/社招分流，新字段；MVP 阶段默认校招）
     if (!this.state.settings.jobs.recruitType) {
-      this.state.settings.jobs.recruitType = 'social';
+      this.state.settings.jobs.recruitType = 'campus';
       changed = true;
     }
     // 3b2. 补全 autoRefresh（每天自动刷新岗位，T3.2 #8）
