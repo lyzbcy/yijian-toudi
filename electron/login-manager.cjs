@@ -80,6 +80,31 @@ function notifyChange() {
 async function flushCurrentSession() {
   if (!currentCompanyId) return;
   const activeSession = session.fromPartition(`persist:${currentCompanyId}`);
+  // 部分招聘站（如腾讯）的登录 Cookie 是会话级（无过期时间），应用退出即丢，
+  // 「记住本机登录态」就失效了。把无过期时间的 Cookie 升级为 90 天持久 Cookie。
+  try {
+    const cookies = await activeSession.cookies.get({});
+    const now = Math.floor(Date.now() / 1000);
+    const expires = now + 90 * 24 * 3600;
+    for (const cookie of cookies) {
+      if (cookie.expirationDate && cookie.expirationDate > now) continue; // 已是持久 Cookie
+      const host = (cookie.domain || '').replace(/^\./, '');
+      if (!host) continue;
+      const secure = cookie.secure !== false;
+      await activeSession.cookies.set({
+        url: `https://${host}${cookie.path || '/'}`,
+        name: cookie.name,
+        value: cookie.value,
+        domain: cookie.domain,
+        path: cookie.path || '/',
+        secure,
+        httpOnly: Boolean(cookie.httpOnly),
+        // sameSite=no_restriction 必须搭配 secure；不安全的 Cookie 用 unspecified 保持兼容
+        sameSite: secure ? (cookie.sameSite || 'no_restriction') : 'unspecified',
+        expirationDate: expires
+      }).catch(() => {});
+    }
+  } catch {}
   // 某些 Electron 版本/会话状态下 flushStore/flushStorageData 可能返回 undefined 而非 Promise，
   // 对 undefined 调 .catch 会抛「Cannot read properties of undefined (reading 'catch')」。
   // 用 Promise.resolve 包一层，保证永远是 thenable。
@@ -209,9 +234,37 @@ async function openWorkspace({
     childWindow.on('closed', () => popupWindows.delete(childWindow));
     // 子窗口登录完成后通常自关闭；主视图跳转时要刷新状态
     childWindow.webContents.on('did-navigate', notifyChange);
+    // 子窗口内的 http→https 升级回调（SSO 回跳常见）
+    const upgradeChildNavigation = (event, targetUrl) => {
+      const upgraded = upgradeToHttps(targetUrl);
+      if (upgraded) {
+        event.preventDefault();
+        childWindow.webContents.loadURL(upgraded).catch(() => {});
+      }
+    };
+    childWindow.webContents.on('will-navigate', upgradeChildNavigation);
+    childWindow.webContents.on('will-redirect', upgradeChildNavigation);
   });
+  // 阿里 mozi SSO 等登录回跳可能使用 http:// 回调；白名单只认 https。
+  // 处理方式：http 回调若域名在白名单内，自动升级为 https 继续导航，而不是拦截（拦截会让登录永远完不成）。
+  const upgradeToHttps = (rawUrl) => {
+    try {
+      const parsed = new URL(rawUrl);
+      if (parsed.protocol !== 'http:') return null;
+      const upgraded = parsed.href.replace(/^http:/, 'https:');
+      return isAllowedWorkspaceUrl(company.id, upgraded) ? upgraded : null;
+    } catch {
+      return null;
+    }
+  };
   const enforceNavigationPolicy = (event, targetUrl) => {
     if (isAllowedWorkspaceUrl(company.id, targetUrl)) return;
+    const upgraded = upgradeToHttps(targetUrl);
+    if (upgraded) {
+      event.preventDefault();
+      currentView?.webContents.loadURL(upgraded).catch(() => {});
+      return;
+    }
     event.preventDefault();
   };
   currentView.webContents.on('will-navigate', enforceNavigationPolicy);

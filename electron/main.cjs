@@ -1227,6 +1227,11 @@ app.on('window-all-closed', async () => {
   if (process.platform !== 'darwin') app.quit();
 });
 
+// 退出前关闭工作区：把会话 Cookie 升级为持久 Cookie 并落盘，保证「记住本机登录态」跨重启生效。
+app.on('before-quit', () => {
+  try { loginManager.closeWorkspaceIfOpen(); } catch {}
+});
+
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
