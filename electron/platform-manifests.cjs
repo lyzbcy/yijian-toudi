@@ -8,7 +8,8 @@ const PLATFORM_MANIFESTS = Object.freeze({
         jobs: 'https://careers.tencent.com/search.html'
       },
       campus: {
-        resume: 'https://join.qq.com/resume.html',
+        // 2026-08-18 实测校准：resume.html 是查看态（1 个输入框），真实编辑页是 resumeedit.html（187 个输入框）
+        resume: 'https://join.qq.com/resumeedit.html',
         login: 'https://join.qq.com/login.html',
         jobs: 'https://join.qq.com/post.html'
       }

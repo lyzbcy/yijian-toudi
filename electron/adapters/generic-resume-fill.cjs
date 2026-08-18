@@ -20,10 +20,18 @@ function planGenericResumeFields(plan, fields) {
       manual.push({ ...item, reason: match.status, confidence: match.confidence });
       continue;
     }
-    if (!match.field.id && !match.field.name) {
-      manual.push({ ...item, reason: 'unstable-control', confidence: match.confidence });
-      continue;
-    }
+    // 美团(mtd)/腾讯校招(el)等组件没有 id/name，但 label 匹配高置信。
+    // 此时用「同页同序号」定位：inspect 与写入发生在同一页面状态，序号确定；写入后仍有回读核验兜底。
+    const radioLocator = match.field.id
+      ? { kind: 'id', value: match.field.id }
+      : (match.field.name
+          ? { kind: 'radio', value: match.field.name, controlValue: match.field.controlValue }
+          : { kind: 'index', value: match.field.index });
+    const plainLocator = match.field.id
+      ? { kind: 'id', value: match.field.id }
+      : (match.field.name
+          ? { kind: 'name', value: match.field.name, type: match.field.type }
+          : { kind: 'index', value: match.field.index });
     used.add(match.field.index);
     writable.push({
       ...item,
@@ -31,13 +39,7 @@ function planGenericResumeFields(plan, fields) {
       fieldType: match.field.type,
       confidence: match.confidence,
       observedBefore: match.field.value
-      , locator: String(match.field.type || '').includes('radio')
-        ? (match.field.id
-            ? { kind: 'id', value: match.field.id }
-            : { kind: 'radio', value: match.field.name, controlValue: match.field.controlValue })
-        : (match.field.id
-            ? { kind: 'id', value: match.field.id }
-            : { kind: 'name', value: match.field.name, type: match.field.type })
+      , locator: String(match.field.type || '').includes('radio') ? radioLocator : plainLocator
     });
   }
   return { writable, manual };
@@ -45,14 +47,24 @@ function planGenericResumeFields(plan, fields) {
 
 function buildExecuteFieldPlanScript(fieldPlan) {
   function execute(planned) {
+    // 与 form-inspection.cjs INSPECT_FORM_FIELDS 保持完全一致的筛选，index 定位才与 inspect 序号对齐
+    const inspectControls = () => [...document.querySelectorAll('input, textarea, select')]
+      .filter((control) => !control.disabled && control.type !== 'hidden' && control.type !== 'button' && control.type !== 'submit')
+      .filter((control) => !control.closest('form[action*="login"], [class*="login"], [class*="captcha"], [class*="auth"], [role="dialog"]'));
     return planned.map((item) => {
-      const selector = item.locator?.kind === 'id'
-        ? '#' + CSS.escape(item.locator.value)
-        : '[name="' + CSS.escape(item.locator?.value || '') + '"]';
-      const candidates = [...document.querySelectorAll(selector)]
-        .filter((candidate) => !candidate.disabled && candidate.type !== 'hidden' && candidate.type !== 'submit')
-        .filter((candidate) => item.locator?.kind !== 'radio' || candidate.value === item.locator.controlValue);
-      const control = candidates.length === 1 ? candidates[0] : null;
+      let control = null;
+      if (item.locator?.kind === 'index') {
+        const all = inspectControls();
+        control = all[item.locator.value] || null;
+      } else {
+        const selector = item.locator?.kind === 'id'
+          ? '#' + CSS.escape(item.locator.value)
+          : '[name="' + CSS.escape(item.locator?.value || '') + '"]';
+        const candidates = [...document.querySelectorAll(selector)]
+          .filter((candidate) => !candidate.disabled && candidate.type !== 'hidden' && candidate.type !== 'submit')
+          .filter((candidate) => item.locator?.kind !== 'radio' || candidate.value === item.locator.controlValue);
+        control = candidates.length === 1 ? candidates[0] : null;
+      }
       if (!control) return { key: item.key, written: false, observed: '', error: 'control-missing' };
       const value = String(item.value ?? '');
       try {
@@ -96,6 +108,7 @@ function mergeExecutionWithInspection(execution, fieldsAfter) {
     ...item,
     observedImmediately: item.observed,
     observed: (() => {
+      if (item.locator?.kind === 'index') return (fieldsAfter || [])[item.locator.value]?.value || '';
       const stable = (fieldsAfter || []).filter((field) => {
         if (item.locator?.kind === 'id') return field.id === item.locator.value;
         if (item.locator?.kind === 'radio') return field.name === item.locator.value && field.controlValue === item.locator.controlValue;

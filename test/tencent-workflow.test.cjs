@@ -202,10 +202,10 @@ test('planTencentResumePatch 标注覆盖风险（远端有值且与本地不同
 // 校招走独立域名 join.qq.com（其「提交简历」会真实投递职位）。
 test('resolveResumeUrl 社招/校招选对不同域名的简历页', () => {
   assert.equal(resolveResumeUrl('social'), 'https://careers.tencent.com/resume.html?operType=1');
-  assert.equal(resolveResumeUrl('campus'), 'https://join.qq.com/resume.html');
+  assert.equal(resolveResumeUrl('campus'), 'https://join.qq.com/resumeedit.html');
   // summer-intern / daily-intern 也归为校招方向
-  assert.equal(resolveResumeUrl('summer-intern'), 'https://join.qq.com/resume.html');
-  assert.equal(resolveResumeUrl('daily-intern'), 'https://join.qq.com/resume.html');
+  assert.equal(resolveResumeUrl('summer-intern'), 'https://join.qq.com/resumeedit.html');
+  assert.equal(resolveResumeUrl('daily-intern'), 'https://join.qq.com/resumeedit.html');
   // 缺省为社招（保住旧调用方不传 recruitType 时的行为）
   assert.equal(resolveResumeUrl(undefined), 'https://careers.tencent.com/resume.html?operType=1');
 });

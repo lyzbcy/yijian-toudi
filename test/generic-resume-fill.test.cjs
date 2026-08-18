@@ -37,13 +37,16 @@ test('执行脚本禁止 submit/apply/click 且文本写入前会清空旧值', 
   assert.doesNotMatch(script, /controls\[item\.fieldIndex\]/);
 });
 
-test('没有稳定 id/name 的控件即使标签精确也转人工，避免动态 DOM 索引错写', () => {
+test('无 id/name 但标签精确的控件用同页序号定位（美团 mtd / 腾讯 el 组件），回读核验兜底', () => {
   const result = planGenericResumeFields(
     [{ key: 'basic.name', value: '张三', keywords: ['姓名'] }],
     [{ index: 0, label: '姓名', type: 'input:text' }]
   );
-  assert.equal(result.writable.length, 0);
-  assert.equal(result.manual[0].reason, 'unstable-control');
+  assert.equal(result.writable.length, 1);
+  assert.deepEqual(result.writable[0].locator, { kind: 'index', value: 0 });
+  // 序号定位脚本必须复刻 INSPECT_FORM_FIELDS 的控件筛选，保证序号对齐
+  const script = buildExecuteFieldPlanScript(result.writable);
+  assert.match(script, /inspectControls/);
 });
 
 test('复选框按 checked 语义写入，不当文本 value 处理', () => {
