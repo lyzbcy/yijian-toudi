@@ -748,6 +748,51 @@ app.whenReady().then(async () => {
     broadcast();
     return next;
   });
+  // ===== 简历 JSON 导出/导入（统一模板格式，见 electron/resume-json.cjs）=====
+  const { createResumeExport, parseResumeImport } = require('./resume-json.cjs');
+  ipcMain.handle('resume:export-json', async () => {
+    const payload = createResumeExport(store.get().resume, app.getVersion());
+    const defaultPath = path.join(
+      app.getPath('documents'),
+      `一键投递简历-${new Date().toISOString().slice(0, 10)}.json`
+    );
+    const selected = await dialog.showSaveDialog(window, {
+      title: '导出简历 JSON',
+      defaultPath,
+      filters: [{ name: '一键投递简历', extensions: ['json'] }]
+    });
+    if (selected.canceled || !selected.filePath) return { canceled: true };
+    fs.writeFileSync(selected.filePath, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
+    return { canceled: false, file: selected.filePath };
+  });
+  ipcMain.handle('resume:import-json', async () => {
+    const selected = await dialog.showOpenDialog(window, {
+      title: '导入简历 JSON',
+      properties: ['openFile'],
+      filters: [{ name: '一键投递简历', extensions: ['json'] }]
+    });
+    if (selected.canceled || !selected.filePaths[0]) return { canceled: true };
+    let imported;
+    try {
+      imported = parseResumeImport(fs.readFileSync(selected.filePaths[0], 'utf8'));
+    } catch (error) {
+      await dialog.showMessageBox(window, { type: 'error', title: '导入失败', message: error.message });
+      return { canceled: true, error: error.message };
+    }
+    const confirmation = await dialog.showMessageBox(window, {
+      type: 'warning',
+      title: '确认导入简历',
+      message: '导入会替换当前所有简历内容（含全部 profile）。',
+      detail: '岗位、购物车、消息、Agent Token 和邮箱授权码不受影响。',
+      buttons: ['取消', '确认导入'],
+      defaultId: 0,
+      cancelId: 0
+    });
+    if (confirmation.response !== 1) return { canceled: true };
+    store.update((state) => { state.resume = imported; return state; });
+    broadcast();
+    return { canceled: false, profileCount: (imported.profiles || []).length || 1 };
+  });
   // 简历一键更新到腾讯：用已登录 session 打开腾讯简历页自动填表（agent.md 核心目标）
   // 按当前 recruitType 选社招页（careers.tencent.com）或校招页（join.qq.com）。
   ipcMain.handle('resume:fill-tencent', () => resumeSyncExecutionQueue.run(async () => {

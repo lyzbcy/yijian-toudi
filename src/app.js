@@ -1268,6 +1268,18 @@ Authorization: Bearer ${state.settings.apiToken}
     }));
     // 删除段：事件委托在 document 上（见 init 末尾的全局 click 委托），这里不单独绑
     $('#exportResumeButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportSnapshot(), '求职快照已导出'));
+    $('#exportResumeJsonButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
+      const result = await window.oneClick.exportResumeJson();
+      if (result && result.canceled) return null;
+      toast(`简历已导出到 ${result.file}`);
+      return result;
+    }));
+    $('#importResumeJsonButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
+      const result = await window.oneClick.importResumeJson();
+      if (result && result.canceled) return null;
+      toast('简历导入成功，所有简历内容已替换');
+      return result;
+    }));
     $('#fillResumeTencentButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
       const result = await window.oneClick.fillResumeToTencent();
       // 填写后若带回差异报告（patchPlan），弹窗展示逐字段命中情况，让用户核对

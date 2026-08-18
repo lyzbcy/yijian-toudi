@@ -7,6 +7,8 @@ contextBridge.exposeInMainWorld('oneClick', {
   addProfile: (label) => ipcRenderer.invoke('resume:add-profile', label),
   deleteProfile: (profileId) => ipcRenderer.invoke('resume:delete-profile', profileId),
   renameProfile: (profileId, label) => ipcRenderer.invoke('resume:rename-profile', profileId, label),
+  exportResumeJson: () => ipcRenderer.invoke('resume:export-json'),
+  importResumeJson: () => ipcRenderer.invoke('resume:import-json'),
   fillResumeToTencent: () => ipcRenderer.invoke('resume:fill-tencent'),
   fillResumeToAll: (startCompanyId, resumeSyncGeneration) => ipcRenderer.invoke('resume:fill-all', { startCompanyId, resumeSyncGeneration }),
   getResumeSyncStatus: () => ipcRenderer.invoke('resume:sync-status'),
