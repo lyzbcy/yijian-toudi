@@ -969,7 +969,11 @@ Authorization: Bearer ${state.settings.apiToken}
   if (window.oneClick?.onFillLog) {
     window.oneClick.onFillLog((entry) => {
       if (!fillLogBody || !fillLogBar) return;
-      if (entry.step === 'loading') { fillLogBody.innerHTML = ''; fillLogCount = 0; fillLogBar.classList.remove('hidden', 'collapsed'); }
+      if (entry.step === 'loading') { fillLogBody.innerHTML = ''; fillLogCount = 0; }
+      // 任意日志事件都确保面板可见（用户手动收起则保持窄条，仅更新角标表情）
+      fillLogBar.classList.remove('hidden');
+      if (!fillLogBar.classList.contains('collapsed')) fillLogBar.classList.remove('collapsed');
+      fillLogBar.querySelector('.fill-log-head img').src = fillLogIcons[entry.step] || './assets/stickers/log/focus.png';
       if (fillLogCount >= 80) { fillLogBody.firstElementChild?.remove(); } else { fillLogCount += 1; }
       const item = document.createElement('div');
       item.className = 'fill-log-item' + (entry.step === 'field-verified' ? ' ok' : (entry.step === 'field-retry' || entry.step === 'field-manual' || entry.step === 'login-required' ? ' warn' : ''));
@@ -983,7 +987,7 @@ Authorization: Bearer ${state.settings.apiToken}
   }
   $('#fillLogToggle')?.addEventListener('click', () => {
     fillLogBar.classList.toggle('collapsed');
-    $('#fillLogToggle').textContent = fillLogBar.classList.contains('collapsed') ? '展开' : '收起';
+    $('#fillLogToggle').textContent = fillLogBar.classList.contains('collapsed') ? '»' : '«';
   });
 
   function renderWorkspaceStatus(status) {

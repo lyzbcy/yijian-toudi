@@ -566,16 +566,25 @@ body.workspace-active .workspace-bar { display: flex !important; }
 .company-button { width: 100%; text-align: left; }
 .company-button .company-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-/* ===== 填写进度日志栏（一键更新时底部悬浮，精选表情播报） ===== */
-.fill-log { position: fixed; left: 16px; right: 16px; bottom: 14px; z-index: 60; background: rgba(38,39,60,.94); color: #fff; border-radius: 14px; box-shadow: 0 10px 32px rgba(22,23,38,.35); backdrop-filter: blur(6px); max-width: 560px; margin: 0 auto; }
+/* ===== 填写进度日志栏（一键更新时右侧停靠，精选表情播报） ===== */
+.fill-log { position: fixed; top: 52px; right: 0; bottom: 0; width: 296px; z-index: 60; background: rgba(30,31,48,.96); color: #fff; border-left: 1px solid rgba(255,255,255,.1); box-shadow: -8px 0 24px rgba(22,23,38,.25); backdrop-filter: blur(8px); display: flex; flex-direction: column; animation: fill-log-slide .22s ease-out; }
 .fill-log.hidden { display: none; }
-.fill-log-head { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,.08); }
-.fill-log-head img { width: 22px; height: 22px; object-fit: contain; }
-.fill-log-head strong { flex: 1; font-size: 12px; }
-.fill-log-head .ghost-button { background: rgba(255,255,255,.12); color: #fff; border-color: transparent; padding: 2px 10px; font-size: 11px; }
-.fill-log-body { max-height: 148px; overflow-y: auto; padding: 8px 12px; display: flex; flex-direction: column; gap: 6px; }
-.fill-log.collapsed .fill-log-body { display: none; }
-.fill-log-item { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: #e7e8f2; animation: fill-log-in .18s ease-out; }
+@keyframes fill-log-slide { from { transform: translateX(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+.fill-log-head { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.fill-log-head img { width: 26px; height: 26px; object-fit: contain; }
+.fill-log-head strong { flex: 1; font-size: 13px; }
+.fill-log-head .ghost-button { background: rgba(255,255,255,.12); color: #fff; border-color: transparent; padding: 3px 10px; font-size: 11px; }
+.fill-log-body { flex: 1; overflow-y: auto; padding: 10px 14px; display: flex; flex-direction: column; gap: 8px; }
+.fill-log.collapsed { width: 44px; }
+.fill-log.collapsed .fill-log-head strong, .fill-log.collapsed .fill-log-body { display: none; }
+.fill-log.collapsed .fill-log-head { flex-direction: column; padding: 10px 0; gap: 6px; }
+.fill-log-item { display: flex; align-items: flex-start; gap: 8px; font-size: 11.5px; line-height: 1.45; color: #e7e8f2; animation: fill-log-in .18s ease-out; }
+.fill-log-item img { width: 18px; height: 18px; object-fit: contain; flex: none; margin-top: 1px; }
+.fill-log-item time { margin-left: auto; color: #8f91ab; font-size: 9.5px; font-family: ui-monospace, monospace; flex: none; }
+.fill-log-item.ok { color: #9fe8b5; }
+.fill-log-item.warn { color: #ffd591; }
+@keyframes fill-log-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
 .fill-log-item img { width: 18px; height: 18px; object-fit: contain; flex: none; }
 .fill-log-item time { margin-left: auto; color: #8f91ab; font-size: 10px; font-family: ui-monospace, monospace; flex: none; }
 .fill-log-item.ok { color: #9fe8b5; }
