@@ -13,6 +13,11 @@ contextBridge.exposeInMainWorld('oneClick', {
   fillResumeToTencent: () => ipcRenderer.invoke('resume:fill-tencent'),
   fillResumeToAll: (startCompanyId, resumeSyncGeneration) => ipcRenderer.invoke('resume:fill-all', { startCompanyId, resumeSyncGeneration }),
   getResumeSyncStatus: () => ipcRenderer.invoke('resume:sync-status'),
+  onFillLog: (callback) => {
+    const listener = (_event, entry) => callback(entry);
+    ipcRenderer.on('resume:fill-log', listener);
+    return () => ipcRenderer.removeListener('resume:fill-log', listener);
+  },
   toggleFavorite: (jobId) => ipcRenderer.invoke('job:favorite', jobId),
   toggleCart: (jobId) => ipcRenderer.invoke('cart:toggle', jobId),
   applyCart: () => ipcRenderer.invoke('cart:apply'),

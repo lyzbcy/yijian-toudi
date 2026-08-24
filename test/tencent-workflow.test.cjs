@@ -30,6 +30,12 @@ test('腾讯简历填写保留可见工作区并返回逐字段报告', async ()
           { key: 'basic.email', fieldIndex: 1, locator: { kind: 'id', value: 'email' }, expected: 'z@example.com', observed: '错误值', written: true }
         ];
       }
+      // 补写重试轮：偶数序号是执行脚本（返回执行记录），奇数序号是回读（返回页面字段）
+      if (scripts.length % 2 === 0) {
+        return [
+          { key: 'basic.email', fieldIndex: 1, locator: { kind: 'id', value: 'email' }, expected: 'z@example.com', observed: '错误值', written: true }
+        ];
+      }
       return [
         { index: 0, id: 'name', name: 'name', value: '张三' },
         { index: 1, id: 'email', name: 'email', value: '错误值' }

@@ -950,6 +950,42 @@ Authorization: Bearer ${state.settings.apiToken}
     }
   }
 
+  // ===== 填写进度日志栏（精选表情播报） =====
+  const fillLogIcons = {
+    loading: './assets/stickers/log/focus.png',
+    inspecting: './assets/stickers/log/focus.png',
+    filling: './assets/stickers/log/cheer.png',
+    'field-writing': './assets/stickers/log/writing.png',
+    'field-verified': './assets/stickers/log/happy.png',
+    'field-retry': './assets/stickers/log/hmm.png',
+    'field-manual': './assets/stickers/log/hmm.png',
+    attachment: './assets/stickers/log/cheer.png',
+    'review-required': './assets/stickers/log/salute.png',
+    'login-required': './assets/stickers/log/hmm.png'
+  };
+  const fillLogBody = $('#fillLogBody');
+  const fillLogBar = $('#fillLogBar');
+  let fillLogCount = 0;
+  if (window.oneClick?.onFillLog) {
+    window.oneClick.onFillLog((entry) => {
+      if (!fillLogBody || !fillLogBar) return;
+      if (entry.step === 'loading') { fillLogBody.innerHTML = ''; fillLogCount = 0; fillLogBar.classList.remove('hidden', 'collapsed'); }
+      if (fillLogCount >= 80) { fillLogBody.firstElementChild?.remove(); } else { fillLogCount += 1; }
+      const item = document.createElement('div');
+      item.className = 'fill-log-item' + (entry.step === 'field-verified' ? ' ok' : (entry.step === 'field-retry' || entry.step === 'field-manual' || entry.step === 'login-required' ? ' warn' : ''));
+      const icon = fillLogIcons[entry.step] || './assets/stickers/log/focus.png';
+      const time = new Date(entry.at || Date.now()).toTimeString().slice(0, 8);
+      item.innerHTML = '<img src="' + icon + '" alt=""><span></span><time>' + time + '</time>';
+      item.querySelector('span').textContent = entry.message || entry.step;
+      fillLogBody.appendChild(item);
+      fillLogBody.scrollTop = fillLogBody.scrollHeight;
+    });
+  }
+  $('#fillLogToggle')?.addEventListener('click', () => {
+    fillLogBar.classList.toggle('collapsed');
+    $('#fillLogToggle').textContent = fillLogBar.classList.contains('collapsed') ? '展开' : '收起';
+  });
+
   function renderWorkspaceStatus(status) {
     const bar = $('#workspaceBar');
     if (!status?.active) {

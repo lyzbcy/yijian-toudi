@@ -10,8 +10,7 @@ const { LOGIN_AND_FORM_PROBE, INSPECT_FORM_FIELDS } = require('../form-inspectio
 const { resolvePlatformUrl } = require('../platform-manifests.cjs');
 const {
   planGenericResumeFields,
-  buildExecuteFieldPlanScript,
-  mergeExecutionWithInspection,
+  executeFieldPlanWithRetry,
   summarizeGenericVerification
 } = require('./generic-resume-fill.cjs');
 
@@ -375,12 +374,21 @@ async function fillAfterProbe(workspace, plan, probe, resume, step, campus = fal
   }
   const planned = planGenericResumeFields(plan, fieldsBefore);
   step('filling', `已找到 ${planned.writable.length} 个唯一高置信字段，正在写入并回读…`);
-  const immediateExecution = planned.writable.length
-    ? await workspace.run(buildExecuteFieldPlanScript(planned.writable))
+  // 带补写重试 + 字段级进度日志；只有最终回读一致才算 verified
+  const execution = planned.writable.length
+    ? await executeFieldPlanWithRetry(workspace, plan, fieldsBefore, {
+        onProgress: (info) => {
+          const messages = {
+            writing: `正在填写「${info.field}」…`,
+            verified: `「${info.field}」已写入并核验 ✓`,
+            mismatched: `「${info.field}」回读不一致，稍后重试`,
+            failed: `「${info.field}」写入失败，需手动检查`
+          };
+          const kinds = { writing: 'field-writing', verified: 'field-verified', mismatched: 'field-retry', failed: 'field-manual' };
+          if (messages[info.phase]) step(kinds[info.phase], messages[info.phase]);
+        }
+      })
     : [];
-  if (immediateExecution.length) await new Promise((resolve) => setTimeout(resolve, 250));
-  const fieldsAfter = immediateExecution.length ? await workspace.run(INSPECT_FORM_FIELDS) : [];
-  const execution = mergeExecutionWithInspection(immediateExecution, fieldsAfter);
   // 简历附件：用户在软件里上传过 PDF/DOC 且页面有简历附件输入框时，直接把文件注入
   let attachment = null;
   if (attachmentPath && workspace?.setInputFiles) {

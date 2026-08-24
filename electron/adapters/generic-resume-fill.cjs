@@ -151,7 +151,8 @@ async function probeFormState(workspace) {
 
 // 带重试的字段写入：Vue/React 受控组件会在重渲染时回滚第一步「清空」，导致字段被写空。
 // 每轮写入后立即回读；mismatched/failed 的字段用最新页面索引再补写一轮（最多 2 轮）。
-async function executeFieldPlanWithRetry(workspace, plan, initialFields) {
+async function executeFieldPlanWithRetry(workspace, plan, initialFields, { onProgress } = {}) {
+  const displayName = (item) => item.label || item.segmentLabel || String(item.key || '').split('.').pop();
   const executions = [];
   let pendingPlan = plan;
   let fields = initialFields;
@@ -168,6 +169,7 @@ async function executeFieldPlanWithRetry(workspace, plan, initialFields) {
       }
       break;
     }
+    if (onProgress) for (const item of planned.writable) onProgress({ phase: 'writing', field: displayName(item), pass });
     const immediate = await workspace.run(buildExecuteFieldPlanScript(planned.writable));
     if (!immediate || !immediate.length) break;
     // 表单段重挂载需要足够稳定窗口；读取过早会把暂时消失的字段误判为写入失败
@@ -175,6 +177,13 @@ async function executeFieldPlanWithRetry(workspace, plan, initialFields) {
     const fieldsAfter = await workspace.run(INSPECT_FORM_FIELDS);
     if (!fieldsAfter || !fieldsAfter.length) break;
     const execution = mergeExecutionWithInspection(immediate, fieldsAfter);
+    if (onProgress) {
+      for (const record of execution) {
+        if (record.written === false) onProgress({ phase: 'failed', field: displayName(planned.writable.find((w) => w.key === record.key) || record), pass });
+        else if (normalizeComparableValue(record.expected) === normalizeComparableValue(record.observed)) onProgress({ phase: 'verified', field: displayName(planned.writable.find((w) => w.key === record.key) || record), pass });
+        else onProgress({ phase: 'mismatched', field: displayName(planned.writable.find((w) => w.key === record.key) || record), pass });
+      }
+    }
     for (const record of execution) executions.push(record);
     const verification = summarizeGenericVerification(execution);
     const retryKeys = new Set([...verification.mismatched, ...verification.failed]);
@@ -223,7 +232,18 @@ function createGenericResumeFill(companyId, siteName) {
     const planned = planGenericResumeFields(localPlan, fields);
     // React/Vue 等受控表单可能在重渲染时回滚写入；带一轮补写重试，只有最终可见值一致才算 verified。
     const execution = planned.writable.length
-      ? await executeFieldPlanWithRetry(workspace, localPlan, fields)
+      ? await executeFieldPlanWithRetry(workspace, localPlan, fields, {
+          onProgress: (info) => {
+            const messages = {
+              writing: `正在填写「${info.field}」…`,
+              verified: `「${info.field}」已写入并核验 ✓`,
+              mismatched: `「${info.field}」回读不一致，稍后重试`,
+              failed: `「${info.field}」写入失败，需手动检查`
+            };
+            const kinds = { writing: 'field-writing', verified: 'field-verified', mismatched: 'field-retry', failed: 'field-manual' };
+            if (messages[info.phase]) step(kinds[info.phase], messages[info.phase]);
+          }
+        })
       : [];
     // 简历附件：用户在软件里上传过 PDF/DOC 且页面有简历附件输入框时，直接把文件注入
     let attachment = null;

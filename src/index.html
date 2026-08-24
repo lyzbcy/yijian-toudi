@@ -15,6 +15,16 @@
     <button class="primary-button" data-workspace-action="finish" id="workspaceFinish">完成</button>
   </div>
 
+  <!-- 填写进度日志栏：一键更新时悬浮在底部，精选表情实时播报每一步 -->
+  <div class="fill-log hidden" id="fillLogBar">
+    <div class="fill-log-head">
+      <img src="./assets/stickers/log/focus.png" alt="填写中">
+      <strong>填写进度</strong>
+      <button class="ghost-button" id="fillLogToggle" type="button">收起</button>
+    </div>
+    <div class="fill-log-body" id="fillLogBody"></div>
+  </div>
+
   <div class="app-shell">
     <aside class="sidebar">
       <div class="brand">

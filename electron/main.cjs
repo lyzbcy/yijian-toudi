@@ -139,12 +139,20 @@ async function executeResumeSync({ startCompanyId, resumeSyncGeneration, pauseOn
           return taskId;
         }
       : undefined,
-    onStep: createTasks
-      ? (info) => {
-          const taskId = taskIds.get(info.syncTargetId);
-          if (taskId) updateTaskLive(taskId, { detail: info.message });
-        }
-      : undefined
+    onStep: (info) => {
+      // 字段级进度日志：广播给渲染进程的填写日志栏
+      if (window && !window.isDestroyed()) {
+        window.webContents.send('resume:fill-log', {
+          step: info.step || '',
+          message: info.message || '',
+          syncTargetId: info.syncTargetId || null,
+          companyId: info.companyId || null,
+          at: Date.now()
+        });
+      }
+      const taskId = taskIds.get(info.syncTargetId);
+      if (taskId) updateTaskLive(taskId, { detail: info.message });
+    }
   });
   const cancelled = result.status === 'cancelled' || resumeSyncGenerations.isCancelled(resumeSyncGeneration);
   if (cancelled) return { ...result, status: 'cancelled', session: resumeSyncSession?.snapshot() || null };
@@ -853,7 +861,18 @@ app.whenReady().then(async () => {
         taskId: id,
         recruitType,
         attachmentPath,
-        onStep: (info) => updateTaskLive(id, { detail: info.message })
+        onStep: (info) => {
+          if (window && !window.isDestroyed()) {
+            window.webContents.send('resume:fill-log', {
+              step: info.step || '',
+              message: info.message || '',
+              syncTargetId: 'tencent',
+              companyId: 'tencent',
+              at: Date.now()
+            });
+          }
+          updateTaskLive(id, { detail: info.message });
+        }
       });
       finishTask(id, taskStatusForAutomation(result.status), result.message);
       logger.info('简历填写腾讯', { status: result.status, filled: result.filledCount, recruitType: campus ? 'campus' : 'social' });
