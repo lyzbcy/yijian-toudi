@@ -66,3 +66,10 @@ test('Reactive Resume v5 导入兼容：同时输出 name/url/score 双键', () 
   // ISO 日期格式符合 RR 导入器的 iso8601 正则（YYYY / YYYY-MM / YYYY-MM-DD）
   assert.match(jr.work[0].startDate, /^([1-2][0-9]{3}(-[0-1][0-9](-[0-3][0-9])?)?)$/);
 });
+
+test('awards 不输出空 date（空字符串会违反 Reactive Resume 的 iso8601 校验）', () => {
+  const jr = createJsonResume(sample);
+  for (const award of jr.awards) {
+    assert.ok(award.date === undefined || /^([1-2][0-9]{3}(-[0-1][0-9](-[0-3][0-9])?)?)$/.test(award.date));
+  }
+});

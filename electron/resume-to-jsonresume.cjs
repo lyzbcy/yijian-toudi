@@ -108,10 +108,8 @@ function createJsonResume(resume) {
         : [])
     ],
     awards: splitKeywords(extras.awards).map((title) => ({
-      title,
-      date: '',
-      awarder: '',
-      summary: ''
+      title
+      // date/awarder 留空会违反 RR 导入器的 iso8601 校验，未知时直接省略
     })),
     languages: splitKeywords(skills.languages).map((name) => ({ language: name, fluency: '' })),
     interests: splitKeywords(skills.interests).map((name) => ({ name }))
