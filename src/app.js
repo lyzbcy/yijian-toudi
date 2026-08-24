@@ -1003,12 +1003,15 @@ Authorization: Bearer ${state.settings.apiToken}
       }
       bar.classList.add('hidden');
       document.body.classList.remove('workspace-active');
+      $('#fillLogBar')?.classList.add('hidden');
       $('#workspaceFinish').disabled = false;
       return;
     }
     // workspace 激活：隐藏 sidebar 和主区域（原生 view 会铺满顶部以下区域），只留顶部控制条。
     // 控制条放顶部（styles.css .workspace-bar top:0）——原生 view 不覆盖顶部 52px，按钮永远可见。
     document.body.classList.add('workspace-active');
+    // resume-review 模式下主进程已把内嵌页面右侧收窄 FILL_LOG_RAIL_WIDTH，面板渲染在预留空档
+    if (status.mode === 'resume-review') $('#fillLogBar')?.classList.remove('hidden');
     const labels = {
       login: ['🔐', status.title || '登录招聘网站', '完成登录'],
       'resume-review': ['▤', status.title || '核对平台简历', '完成核对'],

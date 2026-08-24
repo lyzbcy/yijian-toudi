@@ -23,3 +23,11 @@ test('极小内容区不会产生负尺寸', () => {
     height: 0
   });
 });
+
+test('resume-review 模式右侧预留进度日志栏空间，其余模式全宽', () => {
+  const full = calculateWorkspaceBounds(1440, 900);
+  assert.equal(full.width, 1440);
+  const withRail = calculateWorkspaceBounds(1440, 900, { reserveFillLogRail: true });
+  assert.equal(withRail.width, 1440 - 296);
+  assert.equal(withRail.x + withRail.width, 1144);
+});

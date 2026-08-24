@@ -45,7 +45,8 @@ function updateBounds() {
   // 而 getSize() 返回外框尺寸——WebContentsView 的 bounds 是相对内容区的。
   // 用 getSize 会让 view 偏高 ~28px，盖住顶部红绿黄交通灯。
   const [contentW, contentH] = parentWindow.getContentSize();
-  currentView.setBounds(calculateWorkspaceBounds(contentW, contentH));
+  // 简历核对模式下右侧留出进度日志栏的真实空间，避免原生页面盖住面板
+  currentView.setBounds(calculateWorkspaceBounds(contentW, contentH, { reserveFillLogRail: currentMode === 'resume-review' }));
 }
 
 function onChange(callback) {
