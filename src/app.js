@@ -1268,6 +1268,13 @@ Authorization: Bearer ${state.settings.apiToken}
     }));
     // 删除段：事件委托在 document 上（见 init 末尾的全局 click 委托），这里不单独绑
     $('#exportResumeButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportSnapshot(), '求职快照已导出'));
+    $('#makePdfResumeButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
+      const result = await window.oneClick.exportJsonResume();
+      if (result && result.canceled) return null;
+      await window.oneClick.openExternal('https://rxresu.me/import');
+      toast(`已导出 ${result.file}；浏览器已打开 rxresu.me，选择 Import → JSON Resume 导入该文件，挑模板后一键下载 PDF`);
+      return result;
+    }));
     $('#exportResumeJsonButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
       const result = await window.oneClick.exportResumeJson();
       if (result && result.canceled) return null;

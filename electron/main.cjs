@@ -750,6 +750,23 @@ app.whenReady().then(async () => {
   });
   // ===== 简历 JSON 导出/导入（统一模板格式，见 electron/resume-json.cjs）=====
   const { createResumeExport, parseResumeImport } = require('./resume-json.cjs');
+  // 导出 JSON Resume 标准格式：导入 rxresu.me（Reactive Resume）选 50+ 模板一键生成 PDF
+  const { createJsonResume } = require('./resume-to-jsonresume.cjs');
+  ipcMain.handle('resume:export-jsonresume', async () => {
+    const payload = createJsonResume(store.get().resume);
+    const defaultPath = path.join(
+      app.getPath('documents'),
+      `JSONResume-${(store.get().resume.basic?.name || '简历').replace(/\s+/g, '')}.json`
+    );
+    const selected = await dialog.showSaveDialog(window, {
+      title: '导出 JSON Resume 标准格式',
+      defaultPath,
+      filters: [{ name: 'JSON Resume', extensions: ['json'] }]
+    });
+    if (selected.canceled || !selected.filePath) return { canceled: true };
+    fs.writeFileSync(selected.filePath, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
+    return { canceled: false, file: selected.filePath };
+  });
   ipcMain.handle('resume:export-json', async () => {
     const payload = createResumeExport(store.get().resume, app.getVersion());
     const defaultPath = path.join(
