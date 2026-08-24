@@ -57,9 +57,10 @@ function scoreField(item, field) {
     if (strippedLabelHead === keyword) score = Math.max(score, 0.88);
     // 去前缀后的 placeholder 包含关键词：次强信号（覆盖「请输入邮箱地址」←「邮箱」）
     if (keyword.length >= 2 && strippedPlaceholder.includes(keyword)) score = Math.max(score, 0.76);
-    // 中文长关键词（≥4字）被 label/placeholder 包含：特异性强，按次强信号计
-    //（覆盖腾讯「…期望工作城市*」「最早可入职时间*」这类后缀式 label）
-    if (keyword.length >= 4 && (label.includes(keyword) || placeholder.includes(keyword))) score = Math.max(score, 0.8);
+    // 中文长关键词（≥4字）被包含：特异性强。placeholder 直指者 0.82，仅祖先 label 命中者 0.78
+    //（差距大于歧义阈值，避免同区块兄弟字段因祖先文本污染被判 ambiguous）
+    if (keyword.length >= 4 && placeholder.includes(keyword)) score = Math.max(score, 0.82);
+    else if (keyword.length >= 4 && label.includes(keyword)) score = Math.max(score, 0.78);
     // 单选项：控件值与期望一致且 label 含关键词（如「男 … 性别*」），强信号
     if (String(field.type || '').includes('radio')
       && normalizeText(field.controlValue) === normalizeComparableValue(item.value).toLowerCase()

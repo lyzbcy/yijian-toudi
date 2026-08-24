@@ -80,6 +80,7 @@ const REPEATABLE_GROUPS = [
   {
     arrayPath: 'education',
     label: '教育经历',
+    pageAliases: ['教育经历'],
     fields: [
       ['school', ['学校名称', '毕业院校', '学校', 'school']],
       ['department', ['学院名称', '院系', '学院', 'department']],
@@ -104,6 +105,7 @@ const REPEATABLE_GROUPS = [
   {
     arrayPath: 'experience',
     label: '工作经历',
+    pageAliases: ['实习经历', '工作经历'],
     fields: [
       ['company', ['公司名称', '企业名称', '工作单位', '公司', 'company']],
       ['department', ['部门', '所在部门', 'department']],
@@ -123,6 +125,7 @@ const REPEATABLE_GROUPS = [
   {
     arrayPath: 'projects',
     label: '项目经历',
+    pageAliases: ['项目经历'],
     fields: [
       ['name', ['项目名称', 'project name']],
       ['role', ['项目角色', '担任角色']],
@@ -214,7 +217,8 @@ function createTencentResumePlan(resume, { recruitType = 'social' } = {}) {
           group: group.arrayPath,
           segmentIndex: index,
           segmentNumber,
-          segmentLabel: `${group.label} ${segmentNumber}`
+          segmentLabel: `${group.label} ${segmentNumber}`,
+          sectionHint: { aliases: group.pageAliases || [group.label], number: segmentNumber }
         });
       }
     });

@@ -54,8 +54,40 @@ const INSPECT_FORM_FIELDS = `(() => {
   const controls = [...document.querySelectorAll('input, textarea, select')]
     .filter((control) => !control.disabled && control.type !== 'hidden' && control.type !== 'button' && control.type !== 'submit')
     .filter((control) => !control.closest('form[action*="login"], [class*="login"], [class*="captcha"], [class*="auth"], [role="dialog"]'));
+  // 字段所在的经历区块（如「实习经历-1」「项目经历-2」）：供按段匹配，避免兄弟字段的祖先文本互相污染。
+  // 区块标题不是输入框的祖先节点，用「标题叶子节点按视觉位置分区」：每个字段归属它上方最近的区块标题。
+  // 区块标题节点形如「实习经历-1 删除…」：遍历文本节点找「X经历-N」标题（线性复杂度，避免全量元素扫描），
+  // 同一区块只留一个标题，按视觉位置（top）分区
+  const headerCandidates = new Map();
+  try {
+  if (typeof document.createTreeWalker !== 'function') throw new Error('no-walker');
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+  let textNode;
+  while ((textNode = walker.nextNode())) {
+    const match = String(textNode.textContent || '').match(/((?:实习|项目|游戏|教育|工作)经历)\\s*[-－]?\\s*(\\d+)/);
+    if (!match) continue;
+    const key = match[1] + '-' + match[2];
+    const length = String(textNode.textContent).trim().length;
+    const existing = headerCandidates.get(key);
+    if (!existing || length < existing.length) {
+      const rect = textNode.parentElement.getBoundingClientRect();
+      headerCandidates.set(key, { key, length, top: rect.top });
+    }
+  }
+  } catch (error) {}
+  const headerNodes = [...headerCandidates.values()].sort((a, b) => a.top - b.top);
+  const sectionOf = (control) => {
+    if (typeof control.getBoundingClientRect !== 'function') return '';
+    const top = control.getBoundingClientRect().top;
+    let section = '';
+    for (const header of headerNodes) {
+      if (header.top <= top) section = header.key; else break;
+    }
+    return section;
+  };
   return controls.map((control, index) => ({
     index,
+    section: sectionOf(control),
     label: describe(control).slice(0, 240),
     type: control.tagName.toLowerCase() + (control.type ? ':' + control.type : ''),
     value: control.type === 'radio'

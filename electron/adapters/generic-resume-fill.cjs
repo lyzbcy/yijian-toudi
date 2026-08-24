@@ -7,14 +7,26 @@ function planGenericResumeFields(plan, fields) {
   const writable = [];
   const manual = [];
   const used = new Set();
+  // 页面是否带经历区块信息（实习经历-1/项目经历-2…）
+  const hasSections = (fields || []).some((field) => field.section);
   for (const item of plan) {
     const expected = normalizeComparableValue(item.value);
-    const available = (fields || []).filter((field) => {
+    let available = (fields || []).filter((field) => {
       if (used.has(field.index)) return false;
       if (!String(field.type || '').includes('radio')) return true;
       const optionValue = normalizeComparableValue(field.controlValue || field.label?.split(/\s+/).at(-1));
       return !optionValue || optionValue === expected;
     });
+    // 按经历区块限定候选：兄弟区块的祖先文本不再互相污染（项目名称 只在本区块内匹配）
+    if (hasSections && item.sectionHint) {
+      const scoped = available.filter((field) => {
+        if (!field.section) return false;
+        const matchesAlias = item.sectionHint.aliases.some((alias) => field.section.startsWith(alias));
+        const seg = field.section.match(/(\d+)$/);
+        return matchesAlias && seg && Number(seg[1]) === item.sectionHint.number;
+      });
+      if (scoped.length) available = scoped;
+    }
     const match = matchField(item, available);
     if (match.status !== 'matched') {
       manual.push({ ...item, reason: match.status, confidence: match.confidence });
@@ -152,7 +164,12 @@ async function probeFormState(workspace) {
 // 带重试的字段写入：Vue/React 受控组件会在重渲染时回滚第一步「清空」，导致字段被写空。
 // 每轮写入后立即回读；mismatched/failed 的字段用最新页面索引再补写一轮（最多 2 轮）。
 async function executeFieldPlanWithRetry(workspace, plan, initialFields, { onProgress } = {}) {
-  const displayName = (item) => item.label || item.segmentLabel || String(item.key || '').split('.').pop();
+  // 日志显示名：优先中文关键词（如「姓名」「手机号」），经历组带上段序号（「项目经历 1·项目名称」）
+  const displayName = (item) => {
+    if (item.label) return item.label;
+    const keyword = (item.keywords || []).find((kw) => /^[\u4e00-\u9fa5]{2,8}$/.test(kw)) || String(item.key || '').split('.').pop();
+    return item.segmentLabel ? `${item.segmentLabel}·${keyword}` : keyword;
+  };
   const executions = [];
   let pendingPlan = plan;
   let fields = initialFields;
