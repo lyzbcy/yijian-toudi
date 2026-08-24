@@ -73,3 +73,9 @@ test('awards 不输出空 date（空字符串会违反 Reactive Resume 的 iso86
     assert.ok(award.date === undefined || /^([1-2][0-9]{3}(-[0-1][0-9](-[0-3][0-9])?)?)$/.test(award.date));
   }
 });
+
+test('空 URL 字段整体省略（空字符串违反 RR 的 z.url() 校验）', () => {
+  const jr = createJsonResume({ ...sample, basic: { ...sample.basic, website: '' }, projects: [{ ...sample.projects[0], link: '' }] });
+  assert.ok(!('url' in jr.basics) && !('website' in jr.basics));
+  assert.ok(!('url' in jr.projects[0]));
+});

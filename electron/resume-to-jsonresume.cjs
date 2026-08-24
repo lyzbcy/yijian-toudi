@@ -46,9 +46,8 @@ function createJsonResume(resume) {
       label: Array.isArray(headline) ? headline.join(' / ') : String(headline || ''),
       email: basic.email || '',
       phone: basic.phone || '',
-      // 官方标准是 url；同时输出 website 兼容旧生态
-      url: basic.website || '',
-      website: basic.website || '',
+      // 官方标准是 url；同时输出 website 兼容旧生态（为空时省略，空字符串违反 RR 的 URL 校验）
+      ...(basic.website ? { url: basic.website, website: basic.website } : {}),
       summary: extras.summary || '',
       location: {
         city: basic.city || '',
@@ -58,14 +57,14 @@ function createJsonResume(resume) {
       },
       profiles: [
         ...(basic.github ? [{ network: 'GitHub', username: 'lyzbcy', url: basic.github }] : [])
-      ]
+      ],
+      image: basic.avatarUrl && /^https?:\/\//.test(basic.avatarUrl) ? basic.avatarUrl : undefined
     },
     work: (resume.experience || []).filter((e) => e.company || e.role).map((e) => ({
       company: e.company || '',
       // Reactive Resume v5 导入器读 name；官方标准是 company，两者都输出
       name: e.company || '',
       position: e.role || '',
-      website: '',
       startDate: isoDate(e.start),
       endDate: e.end ? isoDate(e.end) : undefined,
       summary: e.description ? String(e.description).slice(0, 400) : '',
@@ -89,7 +88,7 @@ function createJsonResume(resume) {
       keywords: splitKeywords(p.techStack),
       startDate: isoDate(p.start),
       endDate: p.end ? isoDate(p.end) : undefined,
-      url: p.link || '',
+      ...(p.link ? { url: p.link } : {}),
       roles: p.role ? [p.role] : [],
       entity: p.client || '',
       type: 'project'
