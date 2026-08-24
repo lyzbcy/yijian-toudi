@@ -160,6 +160,7 @@ function createResumeSyncStageWorkspace(workspace, syncTargetId, recruitType) {
 
 async function runResumeSync({
   resume,
+  attachmentPath = null,
   companies,
   getAdapter,
   recruitType = 'social',
@@ -212,6 +213,7 @@ async function runResumeSync({
         company,
         recruitType: targetRecruitType,
         syncTargetId: targetId,
+        attachmentPath,
         taskId,
         onStep: (info) => onStep?.({ ...info, syncTargetId: targetId, companyId })
       });

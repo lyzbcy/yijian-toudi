@@ -288,7 +288,8 @@ async function fillTencentResume(resume, {
   syncTargetId,
   taskId,
   onStep,
-  recruitType = 'social'
+  recruitType = 'social',
+  attachmentPath
 } = {}) {
   if (!workspace?.openWorkspace || !workspace?.run) {
     throw new Error('浏览器工作区未就绪');
@@ -331,7 +332,7 @@ async function fillTencentResume(resume, {
       const reprobe = await probeFormState(workspace);
       if (!reprobe.isNotFound && !reprobe.loginRequired && reprobe.inputCount > 0) {
         // 未检测到验证码且页面已就绪，继续填写流程。
-        return await fillAfterProbe(workspace, plan, reprobe, resume, step, campus);
+        return await fillAfterProbe(workspace, plan, reprobe, resume, step, campus, { attachmentPath, workspace });
       }
     }
   }
@@ -350,13 +351,13 @@ async function fillTencentResume(resume, {
       message: '腾讯简历页没有出现可识别表单，请在当前页面手动检查'
     };
   }
-  return await fillAfterProbe(workspace, plan, probe, resume, step, campus);
+  return await fillAfterProbe(workspace, plan, probe, resume, step, campus, { attachmentPath, workspace });
 }
 
 // 抽出 probe 通过后的填写逻辑，供 fillTencentResume 在验证码通过后复用。
 // campus=true 时（join.qq.com 校招页）：「提交简历」会真实投递职位，文案必须强调只填不提交，
 // 并在返回值带 applyRisk 字段警示调用方/前端。
-async function fillAfterProbe(workspace, plan, probe, resume, step, campus = false) {
+async function fillAfterProbe(workspace, plan, probe, resume, step, campus = false, { attachmentPath } = {}) {
   if (probe.inputCount === 0) {
     return { ok: false, status: 'manual-required', message: '腾讯简历页没有出现可识别表单，请在当前页面手动检查' };
   }
@@ -380,13 +381,23 @@ async function fillAfterProbe(workspace, plan, probe, resume, step, campus = fal
   if (immediateExecution.length) await new Promise((resolve) => setTimeout(resolve, 250));
   const fieldsAfter = immediateExecution.length ? await workspace.run(INSPECT_FORM_FIELDS) : [];
   const execution = mergeExecutionWithInspection(immediateExecution, fieldsAfter);
+  // 简历附件：用户在软件里上传过 PDF/DOC 且页面有简历附件输入框时，直接把文件注入
+  let attachment = null;
+  if (attachmentPath && workspace?.setInputFiles) {
+    step('attachment', '检测到简历附件入口，正在上传你的简历文件…');
+    try {
+      attachment = await workspace.setInputFiles(attachmentPath);
+    } catch (error) {
+      attachment = { uploaded: false, reason: error.message.slice(0, 80) };
+    }
+  }
   const verification = summarizeGenericVerification(execution);
   const manualKeys = [
     ...planned.manual.map((item) => item.key),
     ...verification.mismatched,
     ...verification.failed
   ];
-  const report = { filled: verification.verified, manual: [...new Set(manualKeys)], verification };
+  const report = { filled: verification.verified, manual: [...new Set(manualKeys)], verification, attachment };
   // 同时读一遍远端当前字段，生成填写后的差异快照（design §4.2：逐字段命中报告）
   let patchPlan = null;
   try {

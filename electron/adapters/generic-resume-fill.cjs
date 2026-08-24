@@ -144,7 +144,7 @@ async function probeFormState(workspace) {
 }
 
 function createGenericResumeFill(companyId, siteName) {
-  return async function fillResume(resume, { workspace, company, recruitType = 'social', syncTargetId, taskId, onStep } = {}) {
+  return async function fillResume(resume, { workspace, company, recruitType = 'social', syncTargetId, taskId, onStep, attachmentPath } = {}) {
     if (!workspace?.openWorkspace || !workspace?.run) throw new Error('浏览器工作区未就绪');
     const url = resolvePlatformUrl(companyId, recruitType, 'resume');
     const step = (name, message) => onStep?.({ step: name, message });
@@ -182,6 +182,16 @@ function createGenericResumeFill(companyId, siteName) {
     if (immediateExecution.length) await new Promise((resolve) => setTimeout(resolve, 250));
     const fieldsAfter = immediateExecution.length ? await workspace.run(INSPECT_FORM_FIELDS) : [];
     const execution = mergeExecutionWithInspection(immediateExecution, fieldsAfter);
+    // 简历附件：用户在软件里上传过 PDF/DOC 且页面有简历附件输入框时，直接把文件注入
+    let attachment = null;
+    if (attachmentPath && workspace?.setInputFiles) {
+      step('attachment', '检测到简历附件入口，正在上传你的简历文件…');
+      try {
+        attachment = await workspace.setInputFiles(attachmentPath);
+      } catch (error) {
+        attachment = { uploaded: false, reason: error.message.slice(0, 80) };
+      }
+    }
     const verification = summarizeGenericVerification(execution);
     const verifiedCount = verification.verified.length;
     const needsReview = planned.manual.length + verification.mismatched.length + verification.failed.length;
@@ -191,7 +201,7 @@ function createGenericResumeFill(companyId, siteName) {
       ok: verifiedCount > 0,
       status: 'review-required',
       message,
-      report: { ...verification, manual: planned.manual.map((item) => item.key) },
+      report: { ...verification, manual: planned.manual.map((item) => item.key), attachment },
       applyRisk: 'review-before-save'
     };
   };

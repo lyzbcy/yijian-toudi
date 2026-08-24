@@ -317,6 +317,54 @@ async function run(script) {
   ]);
 }
 
+// 给页面上的简历附件上传控件注入本地文件。
+// Chromium 允许页内把 DataTransfer.files 赋给 input.files（与用户选文件等价的合法途径），
+// 天然免疫 React/Vue 重渲染替换节点的问题（antd 等组件会消化文件后重置 input，属正常行为）。
+// 只允许注入 userData/resumes/ 下由用户主动上传的简历文件（调用方负责校验路径）。
+const RESUME_ATTACHMENT_MAX_BYTES = 15 * 1024 * 1024;
+
+async function setInputFiles(absolutePath) {
+  if (!currentView?.webContents || currentView.webContents.isDestroyed()) {
+    throw new Error('浏览器工作区未打开');
+  }
+  const nodeFs = require('node:fs');
+  const stat = nodeFs.statSync(absolutePath);
+  if (!stat.isFile()) throw new Error('简历文件不存在');
+  if (stat.size > RESUME_ATTACHMENT_MAX_BYTES) throw new Error('简历文件超过 15MB，多数招聘站不接受');
+  const bytes = nodeFs.readFileSync(absolutePath);
+  const filename = require('node:path').basename(absolutePath);
+  const ext = require('node:path').extname(absolutePath).slice(1).toLowerCase();
+  const mime = ext === 'pdf' ? 'application/pdf' : 'application/msword';
+  const base64 = bytes.toString('base64');
+  const result = await run(`(() => {
+    const bytes = Uint8Array.from(atob(${JSON.stringify(base64)}), (c) => c.charCodeAt(0));
+    const file = new File([bytes], ${JSON.stringify(filename)}, { type: ${JSON.stringify(mime)} });
+    // 评分定位「简历附件」输入框：accept 支持 pdf/doc 或旁标签含 简历/附件/resume
+    const scored = [...document.querySelectorAll('input[type=file]')].map((input) => {
+      const accept = (input.accept || '').toLowerCase();
+      const labelText = [
+        input.closest('label')?.innerText, input.parentElement?.innerText,
+        input.getAttribute('aria-label'), input.name, input.id
+      ].filter(Boolean).join(' ');
+      let score = 0;
+      if (/pdf|doc/.test(accept)) score += 4;
+      if (/简历|附件|resume/.test(labelText)) score += 3;
+      return { input, score };
+    }).filter((item) => item.score >= 3).sort((a, b) => b.score - a.score);
+    if (!scored.length) return { uploaded: false, reason: 'no-resume-file-input' };
+    const input = scored[0].input;
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    input.files = dt.files;
+    const attached = input.files && input.files.length === 1;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+    // antd 等组件会在 change 里立刻消化文件并重置 input，因此以「赋值瞬间成功」为判据
+    return attached ? { uploaded: true, filename: input.files[0].name } : { uploaded: false, reason: 'file-not-attached' };
+  })()`);
+  return result;
+}
+
 async function snapshot() {
   if (!currentView) return null;
   return run(`(() => ({
@@ -362,6 +410,7 @@ module.exports = {
   finishWorkspace,
   cancelWorkspace,
   run,
+  setInputFiles,
   snapshot,
   getStatus,
   getWebContents,

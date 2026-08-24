@@ -106,8 +106,19 @@ async function executeResumeSync({ startCompanyId, resumeSyncGeneration, pauseOn
   resumeSyncSessionGeneration = resumeSyncGeneration;
   const sessionForRun = resumeSyncSession;
   const taskIds = new Map();
+  // 简历附件：用户在软件里上传过 PDF/DOC 时，把绝对路径传给适配器用于自动上传
+  const attachmentFilename = currentState.resume?.basic?.resumeFile || '';
+  let attachmentPath = null;
+  if (attachmentFilename) {
+    try {
+      const fsMod = require('node:fs');
+      const candidate = path.join(app.getPath('userData'), 'resumes', attachmentFilename);
+      attachmentPath = fsMod.existsSync(candidate) ? candidate : null;
+    } catch { attachmentPath = null; }
+  }
   const result = await runResumeSync({
     resume: currentState.resume,
+    attachmentPath,
     companies: targets,
     getAdapter: (companyId) => registry.getAdapter(companyId),
     recruitType,
@@ -828,11 +839,20 @@ app.whenReady().then(async () => {
     const direction = campus ? '校招' : '社招';
     const id = addTask({ type: 'browser', title: `更新简历到腾讯（${direction}）`, detail: `正在打开腾讯${direction}简历页…` });
     try {
+      const attachmentFilename = resume?.basic?.resumeFile || '';
+      let attachmentPath = null;
+      if (attachmentFilename) {
+        try {
+          const candidate = path.join(app.getPath('userData'), 'resumes', attachmentFilename);
+          attachmentPath = require('node:fs').existsSync(candidate) ? candidate : null;
+        } catch { attachmentPath = null; }
+      }
       const result = await adapter.fillResume(resume, {
         workspace: loginManager,
         company,
         taskId: id,
         recruitType,
+        attachmentPath,
         onStep: (info) => updateTaskLive(id, { detail: info.message })
       });
       finishTask(id, taskStatusForAutomation(result.status), result.message);
