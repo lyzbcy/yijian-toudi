@@ -47,7 +47,8 @@ function planGenericResumeFields(plan, fields) {
 
 function buildExecuteFieldPlanScript(fieldPlan) {
   function execute(planned) {
-    // 与 form-inspection.cjs INSPECT_FORM_FIELDS 保持完全一致的筛选，index 定位才与 inspect 序号对齐
+    // 与 form-inspection.cjs INSPECT_FORM_FIELDS 保持逐字符一致的筛选（含 file input，不额外排除），
+    // index 定位才与 inspect 序号严格对齐——曾因排除 file input 整体错位 3 位写错字段。
     const inspectControls = () => [...document.querySelectorAll('input, textarea, select')]
       .filter((control) => !control.disabled && control.type !== 'hidden' && control.type !== 'button' && control.type !== 'submit')
       .filter((control) => !control.closest('form[action*="login"], [class*="login"], [class*="captcha"], [class*="auth"], [role="dialog"]'));
@@ -84,9 +85,14 @@ function buildExecuteFieldPlanScript(fieldPlan) {
           const prototype = control.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
           const setter = Object.getOwnPropertyDescriptor(prototype, 'value')?.set;
           if (!setter) throw new Error('value-setter-missing');
+          // element-ui 等组件的输入状态机依赖 focus/composition 事件：先聚焦再写，
+          // 否则合成 input 事件可能被组件丢弃，随后表单刷新把字段回滚成空
+          control.dispatchEvent(new Event('focus', { bubbles: true }));
           setter.call(control, '');
+          control.dispatchEvent(new Event('compositionstart', { bubbles: true }));
           control.dispatchEvent(new Event('input', { bubbles: true }));
           setter.call(control, value);
+          control.dispatchEvent(new Event('compositionend', { bubbles: true }));
         }
         control.dispatchEvent(new Event('input', { bubbles: true }));
         control.dispatchEvent(new Event('change', { bubbles: true }));
@@ -143,6 +149,47 @@ async function probeFormState(workspace) {
   }
 }
 
+// 带重试的字段写入：Vue/React 受控组件会在重渲染时回滚第一步「清空」，导致字段被写空。
+// 每轮写入后立即回读；mismatched/failed 的字段用最新页面索引再补写一轮（最多 2 轮）。
+async function executeFieldPlanWithRetry(workspace, plan, initialFields) {
+  const executions = [];
+  let pendingPlan = plan;
+  let fields = initialFields;
+  for (let pass = 0; pass < 3; pass += 1) {
+    if (!pendingPlan.length) break;
+    const planned = planGenericResumeFields(pendingPlan, fields);
+    if (!planned.writable.length) {
+      // 首轮写入可能触发表单段重挂载（如 el-select 收到文本后整段重建），字段暂时消失：
+      // 等待后重新读取页面再试，而不是直接放弃
+      if (pass === 0) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        fields = await workspace.run(INSPECT_FORM_FIELDS);
+        continue;
+      }
+      break;
+    }
+    const immediate = await workspace.run(buildExecuteFieldPlanScript(planned.writable));
+    if (!immediate || !immediate.length) break;
+    // 表单段重挂载需要足够稳定窗口；读取过早会把暂时消失的字段误判为写入失败
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const fieldsAfter = await workspace.run(INSPECT_FORM_FIELDS);
+    if (!fieldsAfter || !fieldsAfter.length) break;
+    const execution = mergeExecutionWithInspection(immediate, fieldsAfter);
+    for (const record of execution) executions.push(record);
+    const verification = summarizeGenericVerification(execution);
+    const retryKeys = new Set([...verification.mismatched, ...verification.failed]);
+    if (!retryKeys.size) break;
+    // 实测腾讯校招：批量写入会引发表单段延迟刷新，把部分字段清空；只补写失败字段仍会被再次清掉，
+    // 而「整批再写一遍」可以稳定收敛（第二遍写入后表单状态已稳定）。因此第二轮重写全量计划。
+    pendingPlan = pass === 0 ? plan : plan.filter((item) => retryKeys.has(item.key));
+    fields = fieldsAfter;
+  }
+  // 同 key 保留最后一轮结果
+  const byKey = new Map();
+  for (const record of executions) byKey.set(record.key, record);
+  return [...byKey.values()];
+}
+
 function createGenericResumeFill(companyId, siteName) {
   return async function fillResume(resume, { workspace, company, recruitType = 'social', syncTargetId, taskId, onStep, attachmentPath } = {}) {
     if (!workspace?.openWorkspace || !workspace?.run) throw new Error('浏览器工作区未就绪');
@@ -174,14 +221,10 @@ function createGenericResumeFill(companyId, siteName) {
     }
     const localPlan = createUniversalResumePlan(resume);
     const planned = planGenericResumeFields(localPlan, fields);
-    const immediateExecution = planned.writable.length
-      ? await workspace.run(buildExecuteFieldPlanScript(planned.writable))
+    // React/Vue 等受控表单可能在重渲染时回滚写入；带一轮补写重试，只有最终可见值一致才算 verified。
+    const execution = planned.writable.length
+      ? await executeFieldPlanWithRetry(workspace, localPlan, fields)
       : [];
-    // React/Vue 等受控表单可能在 input/change 事件后把 DOM 值回滚。等待一轮事件后
-    // 再读取页面，只有最终可见值一致才算 verified，避免写入瞬间循环自证。
-    if (immediateExecution.length) await new Promise((resolve) => setTimeout(resolve, 250));
-    const fieldsAfter = immediateExecution.length ? await workspace.run(INSPECT_FORM_FIELDS) : [];
-    const execution = mergeExecutionWithInspection(immediateExecution, fieldsAfter);
     // 简历附件：用户在软件里上传过 PDF/DOC 且页面有简历附件输入框时，直接把文件注入
     let attachment = null;
     if (attachmentPath && workspace?.setInputFiles) {
@@ -209,6 +252,7 @@ function createGenericResumeFill(companyId, siteName) {
 
 module.exports = {
   planGenericResumeFields,
+  executeFieldPlanWithRetry,
   buildExecuteFieldPlanScript,
   mergeExecutionWithInspection,
   summarizeGenericVerification,

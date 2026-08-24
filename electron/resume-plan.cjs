@@ -6,7 +6,7 @@ const GLOBAL_FIELD_RULES = [
   ['basic.name', ['姓名', 'name', '有效证件上的全名', '联系人姓名']],
   ['basic.phone', ['手机号', '手机号码', '手机', '电话', 'phone', 'mobile', '电话号码', '手机号码', 'telephone']],
   ['basic.email', ['邮箱', '电子邮箱', 'e-mail', 'email', 'mail']],
-  ['basic.city', ['当前城市', '现居城市', '现居地', '目前所在地', '城市', 'city', '省/市', '当前居住']],
+  ['basic.city', ['当前城市', '现居城市', '现居地', '目前所在地', '当前所处地', '所处地', '城市', 'city', '省/市', '当前居住']],
   ['basic.province', ['省份', '省', '现居省份', 'province']],
   ['basic.gender', ['性别', 'gender']],
   ['basic.birthday', ['出生日期', '生日', 'birthday']],
