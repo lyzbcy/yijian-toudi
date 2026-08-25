@@ -559,7 +559,7 @@ body.workspace-active .workspace-bar { display: flex !important; }
 .workspace-bar-icon { font-size: 18px; }
 .workspace-bar-text { flex: 1; min-width: 0; }
 .workspace-bar-text strong { display: block; font-size: 13px; }
-.workspace-bar-text span { display: block; color: #9ea0b8; font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: ui-monospace, monospace; }
+.workspace-bar-text span { display: block; color: #9ea0b8; font-size: 10px; white-space: normal; word-break: break-all; max-height: 28px; overflow: hidden; font-family: ui-monospace, monospace; cursor: pointer; }
 .workspace-bar .ghost-button { background: rgba(255,255,255,.12); color: #fff; border-color: transparent; }
 .workspace-bar .ghost-button:hover { background: rgba(255,255,255,.2); }
 /* company-button 改成 flex 容器（之前是 button，现在含状态徽章） */

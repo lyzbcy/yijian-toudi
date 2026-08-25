@@ -1037,6 +1037,20 @@ Authorization: Bearer ${state.settings.apiToken}
     $('#workspaceFinish').textContent = action;
     $('#workspaceFinish').disabled = resumeSyncTransitioning;
     $('#workspaceCancel').disabled = false;
+
+    // 网址可见可复制：点「复制网址」或直接点网址文本
+    const copyUrl = async () => {
+      const url = status.url || '';
+      if (!url) return;
+      try { await navigator.clipboard.writeText(url); toast('网址已复制：' + url); }
+      catch { toast(url); }
+    };
+    $('#workspaceCopyUrl')?.removeEventListener('click', window.__yjtCopyUrl || (() => {}));
+    window.__yjtCopyUrl = copyUrl;
+    $('#workspaceCopyUrl')?.addEventListener('click', copyUrl);
+    $('#workspaceBarHint')?.removeEventListener('click', window.__yjtCopyUrl2 || (() => {}));
+    window.__yjtCopyUrl2 = copyUrl;
+    $('#workspaceBarHint')?.addEventListener('click', copyUrl);
     // 双保险显示：hidden class 移除 + body.workspace-active 触发 CSS display:flex !important。
     // 用户最痛的就是「看不见取消按钮被困住」，这里冗余一点值得。
     bar.classList.remove('hidden');
