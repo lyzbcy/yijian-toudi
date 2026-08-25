@@ -106,3 +106,14 @@ test('竞态兜底：首帧残留输入框后跳转登录页，最终仍判定�
   });
   assert.equal(result.loginRequired, true);
 });
+
+test('Whitelabel/英文 404 错误页识别为 isNotFound（阿里真实案例）', () => {
+  const document = {
+    title: '',
+    body: { innerText: 'Whitelabel Error Page This application has no explicit mapping for /error ... (type=Not Found, status=404).' },
+    querySelectorAll: () => [],
+    querySelector: () => null
+  };
+  const result = vm.runInNewContext(LOGIN_AND_FORM_PROBE, { document, location: { pathname: '/campus/personal/resume', search: '' }, Promise, Date, setInterval, clearInterval });
+  return result.then((r) => assert.equal(r.isNotFound, true));
+});

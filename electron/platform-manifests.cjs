@@ -116,7 +116,8 @@ const PLATFORM_MANIFESTS = Object.freeze({
       },
       campus: {
         // 2026-08-18 实测校准：旧 personal-center 已 404（Whitelabel）；真实校招简历页是 /campus/personal/resume
-        resume: 'https://campus-talent.alibaba.com/campus/personal/resume',
+        // 2026-08-25 实测：/campus/personal/resume 登录后服务端 404（Whitelabel）。真实简历页在「个人中心」SPA 路由内，登录后从门户进入
+        resume: 'https://campus-talent.alibaba.com/campus/index',
         login: 'https://campus-talent.alibaba.com/campus/index',
         jobs: 'https://campus-talent.alibaba.com/campus/position-list'
       }

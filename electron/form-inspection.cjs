@@ -2,7 +2,7 @@ const LOGIN_AND_FORM_PROBE = `(() => new Promise((resolve) => {
   const inspect = () => {
     const bodyText = document.body?.innerText || '';
     const inputCount = document.querySelectorAll('input, textarea, select').length;
-    const isNotFound = /404|页面不存在|没有找到/.test(document.title + bodyText.slice(0, 500));
+    const isNotFound = /404|页面不存在|没有找到|Whitelabel Error Page|Not Found/i.test(document.title + bodyText.slice(0, 500));
     // 百度等站未登录时直接返回 JSON（如 {"status":"need-login"}），页面既无表单也无登录控件
     const jsonNeedLogin = /"status"\s*:\s*"need-login"|need login!/i.test(bodyText.slice(0, 300));
     const loginControl = document.querySelector('a[href*="login"], button[class*="login"], button[class*="signin"], .tis-login, [data-testid*="login"], [class*="login-button"], [class*="signin-button"]');
