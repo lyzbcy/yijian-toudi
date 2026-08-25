@@ -54,17 +54,19 @@ async function fillAlibabaResume(resume, { workspace, company, recruitType = 'ca
   if (probe.isNotFound || probe.loginRequired) {
     return { ok: false, status: 'login-required', message: '请先在当前阿里巴巴页面完成登录，然后重新更新' };
   }
-  // 附件刷新确认弹窗：一律取消（用户已有信息不覆盖；附件本身已单独注入）
-  try {
-    const dismissed = await workspace.run(DISMISS_REFRESH_DIALOG);
-    if (dismissed === 'dismissed') step('dialog', '已关闭「用附件刷新简历」提示（保留你现有的详细信息）');
-  } catch {}
+  // 附件刷新确认弹窗：由附件上传触发，会在注入后延迟弹出；「取消」逻辑放在附件注入之后再跑
   // 附件：注入用户上传的简历文件（重新上传入口）
   let attachment = null;
   if (attachmentPath && workspace.setInputFiles) {
     step('attachment', '检测到简历附件入口，正在上传你的简历文件…');
     try { attachment = await workspace.setInputFiles(attachmentPath); }
     catch (error) { attachment = { uploaded: false, reason: String(error.message).slice(0, 80) }; }
+    // 弹窗由上传触发：注入后等它弹出再取消（保留用户已有信息，不解析覆盖）
+    await new Promise((r) => setTimeout(r, 2500));
+    try {
+      const dismissed = await workspace.run(DISMISS_REFRESH_DIALOG);
+      if (dismissed === 'dismissed') step('dialog', '已关闭「用附件刷新简历」提示（保留你现有的详细信息）');
+    } catch {}
   }
   const plan = createUniversalResumePlan(resume).filter((item) => item.value);
 
@@ -72,6 +74,7 @@ async function fillAlibabaResume(resume, { workspace, company, recruitType = 'ca
   const results = [];
   const usedFieldIndexes = new Set();
   for (let editIndex = 0; editIndex < 8; editIndex += 1) {
+    try { await workspace.run(DISMISS_REFRESH_DIALOG).catch(() => {}); } catch {}
     let opened;
     try { opened = await workspace.run(CLICK_EDIT_SCRIPT(editIndex)); } catch { opened = false; }
     if (!opened || opened.timeout) break;
