@@ -276,6 +276,16 @@ async function openWorkspace({
 
   try {
     await currentView.webContents.loadURL(url);
+    // SSO 重定向循环自愈：服务端会话失效但本地 Cookie 残留时，SSO 页会报「重定向循环」。
+    // 检测到即清空本分区 Cookie 并重载，让用户看到干净的登录页，而不是死循环错误页。
+    try {
+      const text = await currentView.webContents.executeJavaScript('(document.body ? document.body.innerText : "").slice(0, 500)');
+      if (/重定向循环|too many redirects/i.test(String(text))) {
+        const brokenSession = session.fromPartition(`persist:${company.id}`);
+        await brokenSession.clearStorageData({ storages: ['cookies'] }).catch(() => {});
+        await currentView.webContents.loadURL(url).catch(() => {});
+      }
+    } catch {}
     notifyChange();
     return getStatus();
   } catch (error) {
