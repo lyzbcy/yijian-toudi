@@ -224,6 +224,10 @@ async function fillAlibabaResume(resume, { workspace, company, recruitType = 'ca
         await new Promise((r) => setTimeout(r, 800));
         continue;
       }
+      // 槽位聚类失败：绝不退回通用填写（那是跨槽串写路径），提示人工处理
+      step('manual-required', '实习/项目经历区未能识别槽位结构，为避免串写已跳过，请手动核对');
+      await new Promise((r) => setTimeout(r, 800));
+      continue;
     }
     if (!opened || opened.timeout) break;
     await new Promise((r) => setTimeout(r, 1800));
