@@ -5,7 +5,7 @@ const path = require('node:path');
 
 const root = path.resolve(__dirname, '..');
 
-test('v0.3.0 在应用、介绍页和缓存版本中保持一致', () => {
+test('应用版本号在应用、介绍页和缓存版本中保持一致', () => {
   const pkg = require('../package.json');
   const appHtml = fs.readFileSync(path.join(root, 'src/index.html'), 'utf8');
   const siteHtml = fs.readFileSync(path.join(root, 'site/index.html'), 'utf8');
@@ -13,10 +13,10 @@ test('v0.3.0 在应用、介绍页和缓存版本中保持一致', () => {
     fs.readFileSync(path.join(root, 'site/version.json'), 'utf8')
   );
 
-  assert.equal(pkg.version, '0.3.0');
-  assert.match(appHtml, /一键投递 v0\.3\.0/);
-  assert.equal(siteVersion.v, 3);
-  assert.match(siteHtml, /var PAGE_V=3;/);
+  assert.match(pkg.version, /^\d+\.\d+\.\d+$/);
+  assert.match(appHtml, new RegExp(`一键投递 v${pkg.version.replace(/\./g, '\\.')}`));
+  assert.ok(Number.isInteger(siteVersion.v) && siteVersion.v >= 3);
+  assert.match(siteHtml, new RegExp(`var PAGE_V=${siteVersion.v};`));
   assert.ok(siteVersion.updated, 'version.json 应有 updated 日期');
 });
 

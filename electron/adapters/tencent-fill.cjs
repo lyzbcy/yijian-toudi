@@ -409,7 +409,7 @@ async function fillAfterProbe(workspace, plan, probe, resume, step, campus = fal
   // 同时读一遍远端当前字段，生成填写后的差异快照（design §4.2：逐字段命中报告）
   let patchPlan = null;
   try {
-    const finalFields = fieldsAfter.length ? fieldsAfter : await workspace.run(INSPECT_FORM_FIELDS);
+    const finalFields = await workspace.run(INSPECT_FORM_FIELDS).catch(() => []);
     patchPlan = planTencentResumePatch(resume, { fields: finalFields }, { recruitType: campus ? 'campus' : 'social' });
   } catch (e) {
     // 读字段失败不影响主流程，report 仍有 filled/manual

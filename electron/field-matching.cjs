@@ -41,6 +41,7 @@ function scoreField(item, field) {
   const strippedPlaceholder = placeholder ? stripPromptPrefix(placeholder) : '';
   const strippedLabelHead = label && placeholder && label.startsWith(placeholder) ? strippedPlaceholder : '';
   if (item.key === 'basic.city' && /期望|意向|工作城市|面试城市|参加面试/.test(allText)) return 0;
+  if (item.key === 'basic.name' && /紧急|曾用名/.test(allText)) return 0; // 「紧急联系人姓名/姓名曾用名」绝不能接收姓名（「联系人姓名」关键词的包含加分曾达 0.82 误写）
   if ((item.key === 'intention.cities' || item.key === 'intention.preferredLocations') && /现居|当前|籍贯|户籍/.test(allText)) return 0;
   let score = 0;
 
