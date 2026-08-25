@@ -48,6 +48,129 @@ const DISMISS_REFRESH_DIALOG = `(() => {
   return 'found-no-cancel';
 })()`;
 
+
+// ===== 阿里「实习/项目经历」区：槽位感知填写 =====
+// 页面把实习槽（含公司或组织名称）和项目槽（只有职位/描述）混排在同一区，
+// 通用引擎会跨槽串写。先在页面侧聚类出槽位并返回结构，再按「经历第N段→经历槽N、
+// 项目第N段→项目槽N」写入，每槽点自己的保存按钮。
+
+// 页面侧：聚类槽位。返回 [{ kind: 'experience'|'project', fields: [{index, kind: 'company'|'role'|'description'}] }]
+const COLLECT_SLOTS_SCRIPT = `(() => {
+  // 阿里字段带可靠 name：tfitem_N.name(公司或组织名称)/.responsibility(职位或职责)/.description(工作描述)
+  // 按 tfitem_N 聚槽：有 .name 的是经历槽，只有职责/描述的是项目槽
+  const all = [...document.querySelectorAll('input, textarea, select')]
+    .filter((c) => !c.disabled && c.type !== 'hidden' && c.type !== 'button' && c.type !== 'submit')
+    .filter((c) => !c.closest('form[action*="login"], [class*="login"], [class*="captcha"], [class*="auth"], [role="dialog"]'));
+  const groups = new Map();
+  for (const c of all) {
+    const m = (c.name || '').match(/^(tfitem_\\d+)\\.(name|responsibility|description)$/);
+    if (!m) continue;
+    const key = m[1];
+    if (!groups.has(key)) groups.set(key, []);
+    const kind = m[2] === 'name' ? 'company' : (m[2] === 'responsibility' ? 'role' : 'description');
+    groups.get(key).push({ kind, index: all.indexOf(c), name: c.name });
+  }
+  return [...groups.entries()].map(([slotName, fields]) => ({
+    kind: fields.some((f) => f.kind === 'company') ? 'experience' : 'project',
+    slotName,
+    fields
+  }));
+})()`;
+
+// 页面侧：点某个槽自己的保存按钮（从槽内字段向上找容器内的「保存」）
+const CLICK_SLOT_SAVE_SCRIPT = () => `(() => {
+  // 实习/项目区每段有独立保存：点所有可见的保存类按钮（自上而下），绝不匹配提交/投递类
+  const btns = [...document.querySelectorAll('button,[role=button]')]
+    .filter(b => {
+      const t = (b.innerText || '').trim();
+      return /^(保存|确 ?定|完 ?成)$/.test(t) && !/提交|投递|申请|选择职位/.test(t) && b.offsetParent !== null;
+    })
+    .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+  if (!btns.length) return 0;
+  for (const btn of btns) {
+    for (const t of ['pointerdown','mousedown','pointerup','mouseup','click']) btn.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true }));
+  }
+  return btns.length;
+})()`;
+
+// 主进程侧：把一个 plan 项写进指定控件（index 定位）并即时回读
+async function writeSlotField(workspace, item, fieldIndex, execBuffer) {
+  execBuffer.push({ key: item.key, value: item.value, fieldIndex, fieldType: 'input:text', locator: { kind: 'index', value: fieldIndex } });
+}
+
+async function fillAliExperienceSection(workspace, plan, step) {
+  const slots = await workspace.run(COLLECT_SLOTS_SCRIPT).catch(() => []);
+  if (!Array.isArray(slots) || !slots.length) return null;
+  const expSlots = slots.filter((s) => s.kind === 'experience');
+  const projSlots = slots.filter((s) => s.kind === 'project');
+  const groupItems = (prefix) => {
+    const map = new Map();
+    for (const item of plan) {
+      const m = item.key.match(new RegExp('^' + prefix + '\\.(\\d+)\\.'));
+      if (!m) continue;
+      const idx = Number(m[1]);
+      if (!map.has(idx)) map.set(idx, []);
+      map.get(idx).push(item);
+    }
+    return map;
+  };
+  const expMap = groupItems('experience');
+  const projMap = groupItems('projects');
+  const section = { wrote: 0, verified: 0, keys: [] };
+  const assignments = [];
+  // 经历第 N 段 → 经历槽 N；项目第 N 段 → 项目槽 N
+  for (const [seg, items] of expMap) {
+    const slot = expSlots[seg];
+    if (!slot) continue;
+    for (const item of items) {
+      const kindMap = { company: 'company', role: 'role', description: 'description' };
+      const fieldKind = item.key.split('.').pop();
+      const target = slot.fields.find((f) => f.kind === (kindMap[fieldKind] || ''));
+      if (target && item.value) assignments.push({ item, fieldIndex: target.index, slotName: slot.slotName, kind: fieldKind });
+    }
+  }
+  for (const [seg, items] of projMap) {
+    const slot = projSlots[seg];
+    if (!slot) continue;
+    for (const item of items) {
+      const fieldKind = item.key.split('.').pop();
+      const target = slot.fields.find((f) => f.kind === (fieldKind === 'role' ? 'role' : 'description'));
+      if (!target) continue;
+      // 项目槽只有一个描述框：项目背景+个人贡献合并写入
+      if (fieldKind === 'description' || fieldKind === 'contribution') {
+        const merged = [plan.find((x) => x.key === 'projects.' + seg + '.description'), plan.find((x) => x.key === 'projects.' + seg + '.contribution')]
+          .filter(Boolean).map((x) => x.value).join('\n');
+        if (merged) assignments.push({ item: { ...item, value: merged }, fieldIndex: target.index, slotName: slot.slotName, kind: 'description' });
+      } else if (fieldKind === 'role' && item.value) {
+        assignments.push({ item, fieldIndex: target.index, slotName: slot.slotName, kind: 'role' });
+      }
+    }
+  }
+  // 去重（描述合并可能产生两条同 index），逐槽写入并保存
+  const bySlot = new Map();
+  for (const a of assignments) {
+    if (!bySlot.has(a.slotName)) bySlot.set(a.slotName, []);
+    const arr = bySlot.get(a.slotName);
+    if (!arr.some((x) => x.fieldIndex === a.fieldIndex)) arr.push(a);
+  }
+  for (const [slotName, writes] of bySlot) {
+    const exec = writes.map((w) => ({ key: w.item.key, value: String(w.item.value), fieldIndex: w.fieldIndex, fieldType: 'textarea:textarea', locator: { kind: 'index', value: w.fieldIndex } }));
+    const immediate = await workspace.run(buildExecuteFieldPlanScript(exec)).catch(() => []);
+    await new Promise((r) => setTimeout(r, 800));
+    const fieldsAfter = await workspace.run(INSPECT_FORM_FIELDS).catch(() => []);
+    const execution = mergeExecutionWithInspection(immediate, fieldsAfter);
+    const verification = summarizeGenericVerification(execution);
+    const savedCount = await workspace.run(CLICK_SLOT_SAVE_SCRIPT()).catch(() => 0);
+    const saved = Number(savedCount) > 0;
+    section.wrote += exec.length;
+    section.verified += verification.verified.length;
+    section.keys.push(...verification.verified);
+    step('slot-filled', `槽 ${slotName}：写入 ${exec.length} 项、核验 ${verification.verified.length} 项${saved ? '，已点全部 ' + savedCount + ' 个保存按钮' : '，未找到保存按钮'}`);
+    await new Promise((r) => setTimeout(r, 1200));
+  }
+  return section;
+}
+
 async function fillAlibabaResume(resume, { workspace, company, recruitType = 'campus', syncTargetId, taskId, onStep, attachmentPath } = {}) {
   if (!workspace?.openWorkspace || !workspace?.run) throw new Error('浏览器工作区未就绪');
   const step = (name, message) => onStep?.({ step: name, message });
@@ -93,6 +216,15 @@ async function fillAlibabaResume(resume, { workspace, company, recruitType = 'ca
     try { await workspace.run(DISMISS_REFRESH_DIALOG).catch(() => {}); } catch {}
     let opened;
     try { opened = await workspace.run(CLICK_EDIT_SCRIPT(editIndex)); } catch { opened = false; }
+    if (opened && editIndex === 2) {
+      // 实习/项目经历区：槽位感知填写（经历/项目分段对位 + 每槽独立保存）
+      const slotResult = await fillAliExperienceSection(workspace, plan, step);
+      if (slotResult) {
+        results.push({ section: 3, ...slotResult });
+        await new Promise((r) => setTimeout(r, 800));
+        continue;
+      }
+    }
     if (!opened || opened.timeout) break;
     await new Promise((r) => setTimeout(r, 1800));
     const fields = await workspace.run(INSPECT_FORM_FIELDS).catch(() => []);
