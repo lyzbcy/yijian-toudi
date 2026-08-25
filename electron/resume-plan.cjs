@@ -31,6 +31,10 @@ const GLOBAL_FIELD_RULES = [
   ['intention.salary', ['期望薪资', '薪资', 'salary']],
   ['intention.salaryUnit', ['薪资单位', '薪水单位']],
   ['intention.availability', ['到岗时间', '可到岗', '最早可入职时间']],
+  ['intention.internDuration', ['实习时长', '可实习时长', '实习时间']],
+  ['intention.weeklyAttendance', ['每周可出勤天数', '出勤天数', '每周出勤']],
+  ['ai.tools', ['AI 工具', 'AI工具', '常用.*工具']],
+  ['ai.collaboration', ['与AI协作', 'AI协作完成', '协作完成的项目']],
   ['intention.employmentType', ['工作类型', '求职类型', 'employment']],
   ['intention.referralCode', ['内推码', '内推串码', '推荐码', '内推']],
   ['intention.channel', ['渠道来源', '招聘信息来源', '招聘渠道', '来源']],
@@ -55,7 +59,7 @@ const GLOBAL_FIELD_RULES = [
   ['skills.certificates', ['证书', '技能证书', 'certificate']],
   ['skills.certificateIds', ['证书编号', '证书号码']],
   ['skills.portfolio', ['作品集', 'portfolio']],
-  ['skills.portfolioUrl', ['作品集链接', '作品链接', '作品集url']],
+  ['skills.portfolioUrl', ['作品集链接', '作品链接', '作品集url', '相关项目或作品链接']],
   ['skills.interests', ['兴趣爱好', '特长', 'hobby']],
   // 补充信息
   ['extras.summary', ['个人简介', '自我介绍', '自我评价', '个人总结', 'summary']],
@@ -138,6 +142,18 @@ const REPEATABLE_GROUPS = [
       ['scale', ['项目规模', '团队人数']],
       ['link', ['项目链接', 'project link']],
       ['client', ['客户', '服务客户']]
+    ]
+  },
+  {
+    arrayPath: 'games',
+    label: '游戏经历',
+    pageAliases: ['游戏经历'],
+    fields: [
+      ['genre', ['游戏品类', '游戏类型']],
+      ['name', ['游戏名称', '游戏']],
+      ['duration', ['游戏时长']],
+      ['achievement', ['游戏成就']],
+      ['extra', ['游戏热爱', '补充更多']]
     ]
   }
 ];

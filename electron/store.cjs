@@ -1,7 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
-const { createSeed, createResumeProfile, emptyEducation, emptyExperience, emptyProject, emptyFamily, defaultIntention, defaultBasic, defaultSkills, defaultExtras, defaultCompliance } = require('./seed.cjs');
+const { createSeed, createResumeProfile, emptyEducation, emptyExperience, emptyProject, emptyFamily, defaultIntention, defaultBasic, defaultSkills, defaultExtras, defaultCompliance, emptyGame, defaultAi } = require('./seed.cjs');
 
 // 把旧版扁平 resume schema（顶层 intention/education/...，无 profiles）迁成多 profile。
 // 幂等：已有 profiles 的不动。备份恢复和 migrate 都调它，确保 syncResumeActiveView 之前 profiles 一定存在。
@@ -62,6 +62,16 @@ class JsonStore {
         this.state = createSeed();
         this.state.settings.apiToken = crypto.randomBytes(18).toString('base64url');
         this.flush();
+      }
+    }
+    // 迁移：老数据补齐游戏经历与 AI 应用技能字段（2026-08-25 包罗万象补全）
+    if (!Array.isArray(this.state.resume.games)) this.state.resume.games = [emptyGame()];
+    if (!this.state.resume.ai) this.state.resume.ai = defaultAi();
+    if (this.state.resume.internDuration === undefined) {} // intention 属于 profile，见 profile 迁移
+    for (const profile of this.state.resume.profiles || []) {
+      if (profile.intention && profile.intention.internDuration === undefined) {
+        profile.intention.internDuration = '';
+        profile.intention.weeklyAttendance = '';
       }
     }
     if (!this.state.settings.apiToken) {

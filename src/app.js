@@ -544,6 +544,13 @@
       { key: 'client', label: '客户', placeholder: '选填（toB 项目）', type: 'input' },
       { key: 'link', label: '项目链接', placeholder: 'https://', type: 'input', span: true }
     ],
+    games: [
+      { key: 'genre', label: '游戏品类', placeholder: '如：角色扮演类/休闲类/射击类', type: 'input' },
+      { key: 'name', label: '游戏名称', placeholder: '如：原神', type: 'input' },
+      { key: 'duration', label: '游戏时长', placeholder: '如：网游活跃3年以上', type: 'input' },
+      { key: 'achievement', label: '游戏成就', placeholder: '如：成就数 1064 / 满级 / 排名', type: 'textarea', rows: 2 },
+      { key: 'extra', label: '补充（体现游戏热爱）', placeholder: '如：60级 成就数1064 活跃天数85', type: 'textarea', rows: 2, span: true }
+    ],
     family: [
       { key: 'name', label: '姓名', placeholder: '家庭成员姓名', type: 'input' },
       { key: 'relation', label: '关系', placeholder: '如：父亲/母亲/配偶', type: 'input' },
@@ -553,7 +560,7 @@
     ]
   };
 
-  const GROUP_LABELS = { education: '教育经历', experience: '工作经历', projects: '项目经历', family: '家庭成员' };
+  const GROUP_LABELS = { education: '教育经历', experience: '工作经历', projects: '项目经历', family: '家庭成员', games: '游戏经历' };
 
   // 简历一键更新能力清单：展示每家公司简历能力（verified/manual/unsupported）
   async function renderResumeSyncStatus() {
@@ -763,12 +770,13 @@
   function fillResume() {
     const viewFingerprint = `${state.resume.activeProfileId || 'default'}@${state.resume.updatedAt || 'seed'}`;
     // 段数指纹：activeProfileId + 三个 group 的段数。只有这个变了才重建 DOM。
-    const segFingerprint = `${state.resume.activeProfileId || 'default'}|edu:${(state.resume.education||[]).length}|exp:${(state.resume.experience||[]).length}|proj:${(state.resume.projects||[]).length}|fam:${(state.resume.family||[]).length}`;
+    const segFingerprint = `${state.resume.activeProfileId || 'default'}|edu:${(state.resume.education||[]).length}|exp:${(state.resume.experience||[]).length}|proj:${(state.resume.projects||[]).length}|fam:${(state.resume.family||[]).length}|game:${(state.resume.games||[]).length}`;
     if (segFingerprint !== renderedFingerprint) {
       renderRepeatableSegments('education');
       renderRepeatableSegments('experience');
       renderRepeatableSegments('projects');
       renderRepeatableSegments('family');
+      renderRepeatableSegments('games');
       renderedFingerprint = segFingerprint;
     }
     // 值回填：指纹变化时（保存过、切了 profile、新建/删除 profile）
@@ -789,7 +797,7 @@
   function collectResume() {
     const resume = collectResumeWithoutTrimming();
     // 清理尾部全空段（保留至少一段），避免攒一堆空段；中间的空段保留，因为段序号有意义
-    for (const groupKey of ['education', 'experience', 'projects', 'family']) {
+    for (const groupKey of ['education', 'experience', 'projects', 'family', 'games']) {
       const template = REPEATABLE_TEMPLATES[groupKey];
       while (resume[groupKey].length > 1) {
         const last = resume[groupKey][resume[groupKey].length - 1];
@@ -805,7 +813,7 @@
   // 添加段时用它，避免「用户加了空段→collectResume 清掉→save→又只剩 1 段」。
   function collectResumeWithoutTrimming() {
     const resume = structuredClone(state.resume);
-    for (const groupKey of ['education', 'experience', 'projects', 'family']) {
+    for (const groupKey of ['education', 'experience', 'projects', 'family', 'games']) {
       const existing = resume[groupKey] || [];
       const indices = new Set();
       $$(`[data-repeat="${groupKey}"] [name]`).forEach((field) => {

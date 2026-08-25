@@ -178,6 +178,7 @@
             <a href="#resume-basic">01 基本信息</a>
             <a href="#resume-intention">02 求职意向</a>
             <a href="#resume-education">03 教育经历</a>
+            <a href="#resume-games">06 游戏经历</a>
             <a href="#resume-experience">04 工作经历</a>
             <a href="#resume-project">05 项目经历</a>
             <a href="#resume-skills">06 技能与证书</a>
@@ -227,6 +228,8 @@
               <div class="section-heading"><span>02</span><div><h3>求职意向</h3><p>按求职方向独立保存，不同 profile 各自一套</p></div></div>
               <div class="form-grid">
                 <label class="span-2">目标岗位<input name="intention.roles" placeholder="多个岗位用逗号分隔"></label>
+                <label>实习时长<input name="intention.internDuration" placeholder="如：3-6个月（腾讯校招）"></label>
+                <label>每周可出勤天数<input name="intention.weeklyAttendance" placeholder="如：5天（腾讯校招）"></label>
                 <label>意向城市<input name="intention.cities" placeholder="杭州、上海"></label>
                 <label>多城市排序<input name="intention.preferredLocations" placeholder="第一、二志愿城市（校招多志愿）"></label>
                 <label>期望薪资<input name="intention.salary" placeholder="如 200-300"></label>
@@ -270,8 +273,20 @@
               <div class="repeatable-list" data-repeat="projects"></div>
               <button type="button" class="ghost-button add-segment" data-add-segment="projects">＋ 添加一段项目经历</button>
             </section>
+            <section class="form-section content-card" id="resume-games">
+              <div class="section-heading"><span>06</span><div><h3>游戏经历</h3><p>腾讯 IEG 等游戏岗校招必填；按段填写，页面没有的段会自动跳过</p></div></div>
+              <div class="repeatable-list" data-repeat="games"></div>
+              <button type="button" class="ghost-button add-segment" data-add-segment="games">＋ 添加一段游戏经历</button>
+            </section>
+            <section class="form-section content-card" id="resume-ai">
+              <div class="section-heading"><span>07</span><div><h3>AI 应用技能</h3><p>腾讯校招等平台考察 AI 协作能力的独立字段</p></div></div>
+              <div class="form-grid">
+                <label class="span-2">常用的 AI 工具&模型<textarea name="ai.tools" rows="2" placeholder="如：Claude Code、Codex、GLM、Cursor、ZCode；模型：GPT-5、GLM-5.3…"></textarea></label>
+                <label class="span-2">与 AI 协作完成的项目或任务<textarea name="ai.collaboration" rows="4" placeholder="描述 1-3 个你与 AI 协作完成的真实项目：怎么分工、你如何把控质量、结果如何"></textarea></label>
+              </div>
+            </section>
             <section class="form-section content-card" id="resume-skills">
-              <div class="section-heading"><span>06</span><div><h3>技能与证书</h3><p>用于关键词匹配和平台字段映射</p></div></div>
+              <div class="section-heading"><span>08</span><div><h3>技能与证书</h3><p>用于关键词匹配和平台字段映射</p></div></div>
               <div class="form-grid">
                 <label class="span-2">专业技能<textarea name="skills.keywords" rows="3" placeholder="React、Python、产品规划、用户研究…"></textarea></label>
                 <label class="span-2">熟练度（技术岗分级）<input name="skills.proficiency" placeholder="如：React 精通、Python 熟练、Go 了解"></label>
@@ -287,7 +302,7 @@
               </div>
             </section>
             <section class="form-section content-card" id="resume-extras">
-              <div class="section-heading"><span>07</span><div><h3>补充信息</h3><p>覆盖不同招聘网站的长尾字段</p></div></div>
+              <div class="section-heading"><span>09</span><div><h3>补充信息</h3><p>覆盖不同招聘网站的长尾字段</p></div></div>
               <div class="form-grid">
                 <label class="span-2">个人简介<textarea name="extras.summary" rows="4" placeholder="用 3-5 句话概括你的优势"></textarea></label>
                 <label>奖项<input name="extras.awards" placeholder="奖项或荣誉"></label>

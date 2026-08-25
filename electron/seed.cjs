@@ -75,6 +75,18 @@ function emptyProject() {
     link: '', client: '' // 链接/客户(toB)
   };
 }
+function emptyGame() {
+  return {
+    genre: '', name: '', duration: '', achievement: '', extra: ''
+  };
+}
+
+function defaultAi() {
+  return {
+    tools: '', collaboration: ''
+  };
+}
+
 function emptyFamily() {
   return { name: '', relation: '', company: '', position: '', phone: '' }; // 华为校招必填
 }
@@ -83,6 +95,7 @@ function defaultIntention() {
   return {
     roles: '', cities: '', salary: '', salaryUnit: '月薪', // 期望职位/城市/薪资/薪资单位(月薪/年薪/14薪/期权)
     availability: '', employmentType: '全职', // 到岗时间/工作类型(全职/实习/兼职/远程)
+    internDuration: '', weeklyAttendance: '', // 实习时长(如 3-6个月)/每周可出勤天数(如 5天)（腾讯校招）,
     referralCode: '', channel: '', // 内推码(11家全有)/渠道来源
     willingness: { travel: '', relocate: '', overtime: '', nightShift: '' }, // 三态：'' 未回答，'true' 是，'false' 否
     preferredLocations: '', // 多期望城市排序(配合多志愿)
@@ -146,6 +159,8 @@ const resume = {
   skills: defaultSkills(),
   extras: defaultExtras(),
   family: [emptyFamily()], // 家庭成员（全局，华为校招必填）
+  games: [emptyGame()], // 游戏经历（全局，腾讯 IEG 等游戏岗校招必填）
+  ai: defaultAi(), // AI 应用技能（全局，腾讯校招等：常用 AI 工具&模型 / 与 AI 协作完成的项目）
   compliance: defaultCompliance(), // 合规声明（全局，每家公司都有）
   // 兼容读取：activeProfile 是当前 profile 的快照视图，由 store 每次保存时刷新，便于旧代码读 resume.intention/education/...
   // 写入永远走 profiles + activeProfileId，不直接写这里。
@@ -188,4 +203,4 @@ function createSeed() {
   };
 }
 
-module.exports = { createSeed, createResumeProfile, emptyEducation, emptyExperience, emptyProject, emptyFamily, defaultIntention, defaultBasic, defaultSkills, defaultExtras, defaultCompliance };
+module.exports = { createSeed, createResumeProfile, emptyEducation, emptyExperience, emptyProject, emptyFamily, emptyGame, defaultAi, defaultIntention, defaultBasic, defaultSkills, defaultExtras, defaultCompliance };
