@@ -41,6 +41,8 @@ const genericFillJd = createGenericResumeFill('jd', '京东');
 const genericFillMeituan = createGenericResumeFill('meituan', '美团');
 const genericFillBaidu = createGenericResumeFill('baidu', '百度');
 const genericFillAlibaba = createGenericResumeFill('alibaba', '阿里巴巴');
+// 阿里校招是「查看态+分区编辑按钮」结构，用专属适配器（2026-08-25 真站实测）
+const { fillAlibabaResume } = require('./alibaba-fill.cjs');
 const manualApplyAlibaba = createManualPrepareApplication('阿里巴巴');
 
 // 腾讯简历填写/投递按需 require（避免主进程启动就加载 playwright 相关）
@@ -119,7 +121,11 @@ const REGISTRY = [
     name: '阿里巴巴',
     idPrefix: 'alibaba-',
     listJobs: (opts) => listAlibabaJobs(opts),
-    inspectResume: null, planResumePatch: null, fillResume: genericFillAlibaba,
+    inspectResume: null, planResumePatch: null,
+    // 校招是「查看态+分区编辑」结构走专属适配器；社招页面结构不同仍走通用引擎
+    fillResume: (resume, opts = {}) => (['campus', 'summer-intern', 'daily-intern'].includes(opts.recruitType)
+      ? fillAlibabaResume(resume, opts)
+      : genericFillAlibaba(resume, opts)),
     prepareApplication: manualApplyAlibaba,
     inspectApplicationStatus: null,
     capabilities: { jobs: 'manual', login: 'manual', resume: 'degraded', apply: 'manual', status: 'unsupported' }
