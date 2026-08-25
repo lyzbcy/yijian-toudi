@@ -59,8 +59,11 @@ function scoreField(item, field) {
     if (keyword.length >= 2 && strippedPlaceholder.includes(keyword)) score = Math.max(score, 0.76);
     // 中文长关键词（≥4字）被包含：特异性强。placeholder 直指者 0.82，仅祖先 label 命中者 0.78
     //（差距大于歧义阈值，避免同区块兄弟字段因祖先文本污染被判 ambiguous）
-    if (keyword.length >= 4 && placeholder.includes(keyword)) score = Math.max(score, 0.82);
-    else if (keyword.length >= 4 && label.includes(keyword)) score = Math.max(score, 0.78);
+    // 仅限中文：英文词（如 name/email）会撞上 label 噪声里的字段 id（tfitem_5.name），不能参与包含加分
+    const isLongCjk = keyword.length >= 4 && /[\u4e00-\u9fa5]/.test(keyword);
+    if (isLongCjk && placeholder.includes(keyword)) score = Math.max(score, 0.82);
+    else if (isLongCjk && label.startsWith(keyword)) score = Math.max(score, 0.84);
+    else if (isLongCjk && label.includes(keyword)) score = Math.max(score, 0.78);
     // 单选项：控件值与期望一致且 label 含关键词（如「男 … 性别*」），强信号
     if (String(field.type || '').includes('radio')
       && normalizeText(field.controlValue) === normalizeComparableValue(item.value).toLowerCase()

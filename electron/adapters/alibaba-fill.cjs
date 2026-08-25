@@ -21,12 +21,20 @@ const CLICK_EDIT_SCRIPT = (index) => `(() => {
   return true;
 })()`;
 
-// 页面侧：点当前编辑层的「保存/确定/完成」（只在编辑层内找，绝不碰全局按钮）
+// 页面侧：点当前展开区的「保存/确定/完成」。
+// 阿里是内联展开编辑：每个大栏目底部有独立保存按钮（非弹窗层）。取页面上可见的
+// 保存类按钮中最靠下的一个（= 当前展开区底部），绝不匹配「提交/投递/申请/去选择职位」。
 const CLICK_SAVE_SCRIPT = `(() => {
-  const layer = document.querySelector('[class*=dialog],[class*=modal],[class*=drawer],[role=dialog]');
-  if (!layer) return false;
-  const btn = [...layer.querySelectorAll('button')].find(b => /^(保存|确 ?定|完 ?成)$/.test((b.innerText || '').trim()));
-  if (!btn) return false;
+  const cands = [...document.querySelectorAll('button,[role=button]')]
+    .filter(b => {
+      const t = (b.innerText || '').trim();
+      if (!/^(保存|确 ?定|完 ?成)$/.test(t)) return false;
+      if (/提交|投递|申请|选择职位/.test(t)) return false;
+      return b.offsetParent !== null; // 可见
+    })
+    .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+  if (!cands.length) return false;
+  const btn = cands[cands.length - 1];
   for (const t of ['pointerdown','mousedown','pointerup','mouseup','click']) btn.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true }));
   return btn.innerText.trim();
 })()`;
@@ -46,10 +54,18 @@ async function fillAlibabaResume(resume, { workspace, company, recruitType = 'ca
   const track = ['campus', 'summer-intern', 'daily-intern'].includes(recruitType) ? 'campus' : 'social';
   const url = resolvePlatformUrl('alibaba', track, 'resume');
   step('loading', '正在打开阿里巴巴简历页…');
-  await workspace.openWorkspace({
+  const openArgs = {
     company, url, mode: 'resume-review', title: '核对阿里巴巴简历',
     context: { action: 'fill-resume', companyId: 'alibaba', syncTargetId: syncTargetId || 'alibaba', taskId: taskId || null, recruitType: track }
-  });
+  };
+  try {
+    await workspace.openWorkspace(openArgs);
+  } catch (error) {
+    // SSO 令牌回跳（sendBucSSOToken.do）期间 loadURL 可能瞬时 ERR_ABORTED，等待后重开一次
+    if (!/ERR_ABORTED/.test(String(error.message))) throw error;
+    await new Promise((r) => setTimeout(r, 2500));
+    await workspace.openWorkspace(openArgs);
+  }
   const probe = await probeFormState(workspace);
   if (probe.isNotFound || probe.loginRequired) {
     return { ok: false, status: 'login-required', message: '请先在当前阿里巴巴页面完成登录，然后重新更新' };
@@ -80,9 +96,8 @@ async function fillAlibabaResume(resume, { workspace, company, recruitType = 'ca
     if (!opened || opened.timeout) break;
     await new Promise((r) => setTimeout(r, 1800));
     const fields = await workspace.run(INSPECT_FORM_FIELDS).catch(() => []);
-    if (!Array.isArray(fields) || !fields.length) break;
-    // 只写本次编辑层新增的字段（排除之前分区已写过的索引），且排除承诺/协议勾选
-    const available = fields.filter((f) => !usedFieldIndexes.has(f.index));
+    // 空字段（如附件区）不终止流程：跳过写入但仍尝试保存并继续下一个分区
+    const available = Array.isArray(fields) ? fields.filter((f) => !usedFieldIndexes.has(f.index)) : [];
     const planned = planGenericResumeFields(plan, available);
     let verified = [];
     if (planned.writable.length) {
@@ -96,8 +111,8 @@ async function fillAlibabaResume(resume, { workspace, company, recruitType = 'ca
       results.push({ section: editIndex + 1, wrote: planned.writable.length, verified: verified.length, keys: verified });
     }
     const saved = await workspace.run(CLICK_SAVE_SCRIPT).catch(() => false);
-    step('section-filled', `第 ${editIndex + 1} 区：写入 ${planned.writable.length} 项、核验 ${verified.length} 项${saved ? `，已保存（${saved}）` : ''}`);
-    await new Promise((r) => setTimeout(r, 1200));
+    step('section-filled', `第 ${editIndex + 1} 区：写入 ${planned.writable.length} 项、核验 ${verified.length} 项${saved ? `，已点保存（${saved}）` : '（未找到保存按钮，请手动检查该区）'}`);
+    await new Promise((r) => setTimeout(r, 1500));
   }
   const verifiedTotal = results.reduce((sum, r) => sum + r.verified, 0);
   const wroteTotal = results.reduce((sum, r) => sum + r.wrote, 0);

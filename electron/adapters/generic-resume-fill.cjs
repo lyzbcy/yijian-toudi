@@ -27,7 +27,18 @@ function planGenericResumeFields(plan, fields) {
       });
       if (scoped.length) available = scoped;
     }
-    const match = matchField(item, available);
+    let match = matchField(item, available);
+    if (match.status === 'ambiguous') {
+      // 同构多槽位：阿里等站的多段经历每段都有完全相同的「公司或组织名称」等字段。
+      // 候选标签/类型/占位符完全一致时视为槽位数组而非真歧义，按顺序取第一个未占用的槽位。
+      const cands = match.candidates || [];
+      // 判定“同构槽位”：类型与占位符一致即可（label 常嵌入唯一字段名如 tfitem_5.name，不能逐字比较）
+      const sameSlotShape = (a, b) => a.field.type === b.field.type
+        && (a.field.placeholder || '') === (b.field.placeholder || '');
+      if (cands.length >= 1 && cands[0].confidence >= 0.78 && cands.slice(1).every((x) => sameSlotShape(x, cands[0]))) {
+        match = { status: 'matched', field: cands[0].field, confidence: cands[0].confidence, candidates: cands };
+      }
+    }
     if (match.status !== 'matched') {
       manual.push({ ...item, reason: match.status, confidence: match.confidence });
       continue;

@@ -20,9 +20,18 @@ test('通用填表只执行高置信唯一匹配，歧义字段进入 manual', (
     { index: 2, label: '邮箱', placeholder: '邮箱', name: 'email2', type: 'input:text' }
   ];
   const result = planGenericResumeFields(plan, fields);
-  assert.deepEqual(result.writable.map((item) => item.key), ['basic.name']);
-  assert.deepEqual(result.manual.map((item) => item.key), ['basic.email']);
-  assert.equal(result.manual[0].reason, 'ambiguous');
+  // 两个「邮箱」是同构槽位（多段经历的相同字段），高置信时取第一个而非转人工
+  assert.deepEqual(result.writable.map((item) => item.key), ['basic.name', 'basic.email']);
+  assert.deepEqual(result.manual.map((item) => item.key), []);
+  // 真歧义（同分但占位符不同的两个字段）仍然转人工
+  const ambiguous = planGenericResumeFields(
+    [{ key: 'basic.email', value: 'a@b.c', keywords: ['邮箱'] }],
+    [
+      { index: 0, label: '邮箱 常用', placeholder: '常用邮箱', type: 'input:text' },
+      { index: 1, label: '邮箱 备用', placeholder: '备用邮箱', type: 'input:text' }
+    ]
+  );
+  assert.equal(ambiguous.manual[0]?.reason, 'ambiguous');
 });
 
 test('执行脚本禁止 submit/apply/click 且文本写入前会清空旧值', () => {

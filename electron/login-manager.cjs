@@ -292,6 +292,10 @@ async function openWorkspace({
     // Electron 在某些服务端/JS 重定向中会让初始 loadURL 以 ERR_ABORTED 结束，
     // 即使 WebContents 已经正常落到白名单内的登录页。此时保留工作区给用户登录；
     // 其他错误或越域落点仍立即关闭，不扩大导航权限。
+    // SSO 令牌回跳链（如 sendBucSSOToken.do）中途 loadURL 会 ERR_ABORTED，落点需要一点时间才稳定
+    if (/ERR_ABORTED/.test(String(error.message))) {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+    }
     const landedUrl = getCurrentUrl();
     if (isRecoverableNavigationAbort(error, company.id, landedUrl)) {
       notifyChange();
