@@ -1,6 +1,6 @@
 {
   "name": "yijian-toudi",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "把岗位、简历和招聘消息放在一个地方管理的本地桌面应用",
   "main": "electron/main.cjs",
   "type": "commonjs",
