@@ -253,6 +253,22 @@ function createGenericResumeFill(companyId, siteName) {
       return { ok: false, status: 'login-required', message: `请先在当前${siteName}页面完成登录，然后重新更新` };
     }
     const fields = await workspace.run(INSPECT_FORM_FIELDS);
+    // 页面结构指纹：与上次成功填写对比，字段数/标签签名大幅漂移时告警（防官网改版后静默乱填）
+    try {
+      const fsMod = require('node:fs');
+      const pathMod = require('node:path');
+      const osMod = require('node:os');
+      const fpFile = pathMod.join(osMod.homedir(), 'Library/Application Support/yijian-toudi/page-fingerprints.json');
+      const signature = { count: fields.length, head: (fields || []).slice(0, 8).map((f) => (f.label || f.placeholder || '').slice(0, 20)) };
+      let store = {};
+      try { store = JSON.parse(fsMod.readFileSync(fpFile, 'utf8')); } catch {}
+      const prev = store[companyId];
+      if (prev && (Math.abs(prev.count - signature.count) > prev.count * 0.4)) {
+        step('page-changed', `⚠ ${siteName}页面结构疑似改版（字段 ${prev.count}→${signature.count}），请核对写入结果`);
+      }
+      store[companyId] = signature;
+      fsMod.writeFileSync(fpFile, JSON.stringify(store, null, 1));
+    } catch {}
     if (!(fields || []).length) {
       return { ok: false, status: 'manual-required', message: `${siteName}页面没有可识别的简历字段（可能在登录页），请完成登录后重新更新` };
     }
