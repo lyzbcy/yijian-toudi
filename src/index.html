@@ -16,6 +16,14 @@
     <button class="primary-button" data-workspace-action="finish" id="workspaceFinish">完成</button>
   </div>
 
+  <!-- 不打扰的求好评卡片：完成 3 次一键更新后出现一次，关闭不再打扰 -->
+  <div class="star-card hidden" id="starCard">
+    <img src="./assets/stickers/log/happy.png" alt="">
+    <div class="star-card-text"><strong>用得还顺手吗？</strong><span>一键投递是开源软件，去 GitHub 给个 star 就是对作者最大的鼓励 ⭐</span></div>
+    <button class="primary-button" id="starCardGo">去点 star</button>
+    <button class="ghost-button" id="starCardClose">不了</button>
+  </div>
+
   <!-- 填写进度日志栏：一键更新时停靠在右侧，精选表情实时播报每一步 -->
   <div class="fill-log hidden" id="fillLogBar">
     <div class="fill-log-head">

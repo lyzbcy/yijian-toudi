@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-page-v="5">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -101,9 +101,45 @@
   </main>
   <footer>由 <a href="https://lyzbcy.github.io/" target="_blank" rel="noopener">捞鱼</a> 制作 · 求职数据属于你自己</footer>
   <script>
-    var PAGE_V=4;
+    var PAGE_V=5;
     fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(d){if(PAGE_V!==d.v){var el=document.getElementById('g-load');el.style.display='block';var last=0;try{last=parseInt(sessionStorage.getItem('yjt_refreshed_at')||'0')}catch(e){}if(Date.now()-last<3000)return;try{sessionStorage.setItem('yjt_refreshed_at',String(Date.now()))}catch(e){}setTimeout(function(){location.reload(true)},800)}}).catch(function(){});
     document.getElementById('copy').addEventListener('click',function(){navigator.clipboard.writeText(document.getElementById('prompt').textContent).then(function(){document.getElementById('copy').textContent='已复制 ✓'})});
+  </script>
+  <!-- 更新日志小组件 + 一键刷新（版本驱动，见 version.json） -->
+  <div id="changelogFab" style="position:fixed;right:16px;bottom:16px;z-index:99;display:flex;gap:8px">
+    <button id="forceRefreshBtn" style="border:0;border-radius:10px;background:#26273c;color:#fff;padding:8px 14px;font-size:13px;cursor:pointer">🔄 一键刷新</button>
+    <button id="changelogBtn" style="border:0;border-radius:10px;background:#fff;color:#26273c;padding:8px 14px;font-size:13px;cursor:pointer;box-shadow:0 4px 14px rgba(22,23,38,.14)">📝 更新日志</button>
+  </div>
+  <dialog id="changelogDialog" style="border:0;border-radius:14px;max-width:420px;padding:20px">
+    <h3 style="margin:0 0 10px">更新日志</h3>
+    <div id="changelogList" style="font-size:13px;line-height:1.7;color:#3c3d52"></div>
+    <button onclick="document.getElementById('changelogDialog').close()" style="margin-top:14px;border:0;border-radius:8px;background:#1664ff;color:#fff;padding:8px 16px;cursor:pointer">知道了</button>
+  </dialog>
+  <script>
+  (function () {
+    var LOGS = {"0.3.1": "七平台一键更新简历、附件自动上传、进度侧边栏、PDF 制作、游戏/AI 新字段", "0.3.0": "多 profile、Agent API、一键更新骨架", "0.2.0": "腾讯闭环、安全备份、脱敏"};
+    var list = document.getElementById('changelogList');
+    list.innerHTML = Object.keys(LOGS).sort().reverse().map(function (v) {
+      return '<p style="margin:0 0 8px"><b>v' + v + '</b> — ' + LOGS[v] + '</p>';
+    }).join('');
+    document.getElementById('changelogBtn').onclick = function () { document.getElementById('changelogDialog').showModal(); };
+    document.getElementById('forceRefreshBtn').onclick = function () {
+      try { localStorage.setItem('yjt-forced-refresh', Date.now()); } catch (e) {}
+      location.reload(true);
+    };
+    // 打开时核对本地渲染版本与远端 version.json：不一致自动强刷一次（带 sessionStorage 防循环）
+    fetch('./version.json?v=' + Date.now()).then(function (r) { return r.json(); }).then(function (remote) {
+      var local = document.documentElement.getAttribute('data-page-v') || '';
+      if (remote.v && String(remote.v) !== String(local)) {
+        if (!sessionStorage.getItem('yjt-refreshed')) {
+          sessionStorage.setItem('yjt-refreshed', '1');
+          location.reload(true);
+        }
+      } else {
+        sessionStorage.removeItem('yjt-refreshed');
+      }
+    }).catch(function () {});
+  })();
   </script>
 </body>
 </html>

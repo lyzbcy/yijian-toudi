@@ -164,6 +164,16 @@ async function executeResumeSync({ startCompanyId, resumeSyncGeneration, pauseOn
     return { ...result, ignored: true, session: resumeSyncSession?.snapshot() || null };
   }
   sessionForRun.acceptStage(result);
+  // 不打扰的求好评：累计完成 3 次成功同步后，标记提醒一次（用户关闭后不再出现）
+  try {
+    if (result.status === 'verified' || (result.summary && result.summary.verifiedPlatforms >= 1)) {
+      store.update((state) => {
+        state.meta.fillCompletedCount = (state.meta.fillCompletedCount || 0) + 1;
+        if (state.meta.fillCompletedCount >= 3 && !state.meta.starPromptDone) state.meta.starPromptDue = true;
+        return state;
+      });
+    }
+  } catch {}
   return { ...result, session: sessionForRun.snapshot() };
 }
 
