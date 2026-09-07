@@ -27,6 +27,7 @@ function request(method, url, { body, cookie } = {}) {
   return new Promise((resolve, reject) => {
     const payload = body ? JSON.stringify(body) : null;
     const req = https.request(url, {
+      timeout: 20000,
       method,
       headers: {
         'User-Agent': USER_AGENT,
@@ -42,6 +43,7 @@ function request(method, url, { body, cookie } = {}) {
       let data = '';
       response.setEncoding('utf8');
       response.on('data', (chunk) => { data += chunk; });
+      req.on('timeout', () => { req.destroy(new Error('字节接口超时(20s)')); });
       response.on('end', () => {
         // 收集 Set-Cookie（可能是数组）
         const setCookies = response.headers['set-cookie'] || [];
