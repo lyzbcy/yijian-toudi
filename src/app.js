@@ -131,6 +131,7 @@
   }
 
   function renderState() {
+    maybeShowStarCard();
     if (!state) return;
     const companies = companyMap();
     const favorites = state.jobs.filter((job) => job.favorite).length;
@@ -766,7 +767,6 @@
 
   // fillResume 防止频繁广播（如 refreshJobs 抓岗位时）反复重建段结构、清空用户输入。
   // 用 renderedFingerprint 记录「上次完整渲染的 profile+段数指纹」，只有指纹真变了才重建。
-  maybeShowStarCard();
   let renderedFingerprint = '';
   function fillResume() {
     const viewFingerprint = `${state.resume.activeProfileId || 'default'}@${state.resume.updatedAt || 'seed'}`;
@@ -1002,7 +1002,7 @@ Authorization: Bearer ${state.settings.apiToken}
   // 不打扰的求好评：meta.starPromptDue 出现一次，关闭/点击后不再打扰
   function maybeShowStarCard() {
     const card = $('#starCard');
-    if (!card) return;
+    if (!card || !state?.meta) return;
     const due = state.meta?.starPromptDue && !state.meta?.starPromptDone;
     card.classList.toggle('hidden', !due);
   }
