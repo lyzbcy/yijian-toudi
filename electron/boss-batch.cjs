@@ -26,12 +26,40 @@ function sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
 function rand(min, max) { return min + Math.random() * (max - min); }
 
 function extractJobLinks(snapshotJson) {
-  const s = JSON.stringify(snapshotJson);
-  const links = [];
-  const re = /"role":\s*"link",\s*"name":\s*"([^"]{3,60})",\s*"ref":\s*"(@e\d+)"/g;
-  let m;
-  while ((m = re.exec(s)) !== null) links.push({ title: m[1], ref: m[2] });
-  return links;
+  const data = snapshotJson?.data || {};
+  // 列表项内的岗位和公司必须成对读取；全页正则会把导航/其他公司的文字混进同一岗位。
+  if (Array.isArray(data.tree)) {
+    const jobs = [];
+    const visit = (node) => {
+      if (!node || typeof node !== 'object') return;
+      if (node.role === 'listitem') {
+        const directLinks = (node.children || []).filter((child) => child?.role === 'link' && child.ref);
+        if (directLinks.length >= 2 && isTargetJob(directLinks[0].name || '')) {
+          jobs.push({ title: directLinks[0].name, ref: directLinks[0].ref, company: directLinks[1].name || '' });
+          return;
+        }
+      }
+      for (const child of node.children || []) visit(child);
+    };
+    for (const node of data.tree) visit(node);
+    return jobs;
+  }
+  // 旧版桥快照只有 links；不再用全页 JSON 正则猜测公司。
+  return (Array.isArray(data.links) ? data.links : [])
+    .filter((link) => link?.role === 'link' && link.ref && isTargetJob(link.name || ''))
+    .map((link) => ({ title: link.name, ref: link.ref, company: link.company || '' }));
+}
+
+function searchUrlMatches(snapshotJson, query, cityCode, page) {
+  try {
+    const url = new URL(snapshotJson?.data?.url);
+    if (url.hostname !== 'www.zhipin.com' || url.pathname !== '/web/geek/jobs') return false;
+    // 老桥/部分测试桩不带 query；真实浏览器搜索结果必须核对 query，避免点旧页。
+    if (!url.searchParams.has('query')) return false;
+    return url.searchParams.get('query') === query &&
+      url.searchParams.get('city') === cityCode &&
+      Number(url.searchParams.get('page') || '1') === Number(page || 1);
+  } catch { return false; }
 }
 
 function isTargetJob(title) {
@@ -62,10 +90,11 @@ class BossBatchRunner {
     // noThrottle：单测用，跳过投递间隔频控（生产禁用）
     this.noThrottle = Boolean(noThrottle);
     this.applied = [];
+    this.previewed = [];
     this.fails = 0;
     this.stopped = false;
     this.stopReason = null;
-    this.seenTitles = new Set();
+    this.seenJobs = new Set();
   }
 
   stop(reason = 'manual') {
@@ -73,21 +102,24 @@ class BossBatchRunner {
     this.stopReason = reason;
   }
 
+  wait(ms) { return this.noThrottle ? Promise.resolve() : sleep(ms); }
+
   async run() {
     this.log(`boss-batch start target=${this.target} dryRun=${this.dryRun}`);
     let fails = 0;
     for (const { city, query, page } of this.plan) {
-      if (this.stopped || this.applied.length >= this.target || fails >= 5) break;
+      if (this.stopped || (this.dryRun ? this.previewed.length : this.applied.length) >= this.target || fails >= 5) break;
       const code = CITY_CODES[city];
       if (!code) continue;
+      const searchUrl = `https://www.zhipin.com/web/geek/jobs?query=${encodeURIComponent(query)}&city=${code}&page=${page || 1}`;
       try {
-        await this.bridge.navigate(`https://www.zhipin.com/web/geek/job?query=${encodeURIComponent(query)}&city=${code}&page=${page || 1}`);
+        await this.bridge.navigate(searchUrl);
       } catch (err) {
         fails += 1;
         this.log(`nav fail [${city}/${query}]: ${err.message}`);
         continue;
       }
-      await sleep(rand(3000, 6000));
+      await this.wait(rand(3000, 6000));
       let snap;
       try {
         snap = await this.bridge.snapshot();
@@ -96,51 +128,78 @@ class BossBatchRunner {
         this.log(`snapshot fail: ${err.message}`);
         continue;
       }
-      const snapUrl = (snap && snap.data && snap.data.url) || '';
-      const snapLinks = extractJobLinks(snap);
-      const snapHits = snapLinks.filter((l) => isTargetJob(l.title)).length;
-      this.log(`snapshot ${snapUrl.slice(0, 80)} links=${snapLinks.length} hits=${snapHits}`);
-      // 未登录/SEO 城市页检测：无岗位链接且页面呈 SEO 形态 —— 立即停止并提醒重新登录
       const snapRaw = JSON.stringify(snap);
-      const seoPage = /「[^」]{2,8}招聘」/.test(snapRaw) || /热门城市|附近城市/.test(snapRaw);
-      if (snapLinks.length === 0 && seoPage) {
-        this.stop('login-required');
-        await this.notify('【一键投递·需要你】Boss 登录态失效（搜索页跳到未登录城市页），批量已自动停止。请在浏览器重新扫码登录后再启动。');
-        this.log('stopped: login-required (SEO page detected)');
+      if (rawHas(snap, '安全验证')) {
+        this.stop('security-check');
+        await this.notify('【一键投递·异常】Boss 弹出安全验证，批量已自动停止，请人工处理。');
         break;
       }
-      if (!snapUrl.includes('zhipin.com')) {
-        // 桥的 session tab 停在其他页面（如官网投递残留 tab），导航未生效：重试一次
-        this.log(`snapshot on non-boss page (${snapUrl.slice(0, 60)}), re-navigating`);
+      const loginPage = /BOSS直聘注册登录|微信扫码 安全登录|验证码登录\/注册|登录\/注册/.test(snapRaw);
+      if (loginPage) {
+        this.stop('login-required');
+        await this.notify('【一键投递·需要你】Boss 登录态失效，批量已自动停止。请在浏览器重新登录后再启动。');
+        this.log('stopped: login-required');
+        break;
+      }
+      if (!searchUrlMatches(snap, query, code, page)) {
+        this.log(`search mismatch (${String(snap?.data?.url || '').slice(0, 100)}), opening fresh search tab`);
         try {
-          await this.bridge.navigate(`https://www.zhipin.com/web/geek/job?query=${encodeURIComponent(query)}&city=${code}&page=${page || 1}`);
-          await sleep(rand(3000, 6000));
+          await this.bridge.navigate(searchUrl, { newTab: true });
+          await this.wait(rand(3000, 6000));
           snap = await this.bridge.snapshot();
         } catch (err) {
           fails += 1;
           this.log(`re-navigate fail: ${err.message}`);
           continue;
         }
+        if (rawHas(snap, '安全验证')) { this.stop('security-check'); break; }
+        if (/BOSS直聘注册登录|微信扫码 安全登录|验证码登录\/注册|登录\/注册/.test(JSON.stringify(snap))) {
+          this.stop('login-required');
+          break;
+        }
+        if (!searchUrlMatches(snap, query, code, page)) {
+          this.stop('search-mismatch');
+          this.log(`stopped: search-mismatch expected=${searchUrl} actual=${String(snap?.data?.url || '').slice(0, 120)}`);
+          break;
+        }
       }
-      if (rawHas(snap, '安全验证')) {
-        this.stop('security-check');
-        await this.notify('【一键投递·异常】Boss 弹出安全验证，批量已自动停止，请人工处理。');
-        break;
+      for (let loading = 0; loading < 2 && extractJobLinks(snap).length === 0; loading += 1) {
+        await this.wait(1500);
+        try { snap = await this.bridge.snapshot(); }
+        catch (err) { fails += 1; this.log(`loading snapshot fail: ${err.message}`); break; }
+        if (rawHas(snap, '安全验证')) { this.stop('security-check'); break; }
+        if (/BOSS直聘注册登录|微信扫码 安全登录|验证码登录\/注册|登录\/注册/.test(JSON.stringify(snap))) {
+          this.stop('login-required');
+          break;
+        }
+        if (!searchUrlMatches(snap, query, code, page)) { this.stop('search-mismatch'); break; }
       }
+      if (this.stopped) break;
+      const snapUrl = (snap && snap.data && snap.data.url) || '';
+      const snapLinks = extractJobLinks(snap);
+      const snapHits = snapLinks.filter((l) => isTargetJob(l.title)).length;
+      this.log(`snapshot ${snapUrl.slice(0, 80)} links=${snapLinks.length} hits=${snapHits}`);
       for (const link of extractJobLinks(snap)) {
-        if (this.stopped || this.applied.length >= this.target || fails >= 5) break;
+        if (this.stopped || (this.dryRun ? this.previewed.length : this.applied.length) >= this.target || fails >= 5) break;
         if (!isTargetJob(link.title)) continue;
-        const dedupeKey = link.title.slice(0, 18);
-        if (this.seenTitles.has(dedupeKey)) continue;
-        this.seenTitles.add(dedupeKey);
+        const dedupeKey = `${link.company || '?'}:${link.title}`;
+        if (this.seenJobs.has(dedupeKey)) continue;
+        this.seenJobs.add(dedupeKey);
         try {
           const detail = await this.applyOne(link, city);
           if (detail === 'skip') continue;
+          if (detail?.preview) {
+            this.previewed.push({ city, title: link.title, company: detail.company });
+            continue;
+          }
           if (detail) {
             const entry = { time: new Date().toLocaleTimeString('zh-CN', { hour12: false }), city, title: link.title, company: detail.company || '' };
             this.applied.push(entry);
             this.log(`OK [${city}] ${link.title} @ ${detail.company || '?'}`);
-            if (this.onApplied) { try { this.onApplied(entry); } catch (e) { this.log(`persist applied fail: ${e.message}`); } }
+            if (this.onApplied) {
+              try { await this.onApplied(entry); }
+              catch (e) { this.log(`persist applied fail: ${e.message}`); this.stop('persist-failed'); }
+            }
           } else {
             fails += 1;
             this.log(`MISS [${city}] ${link.title}`);
@@ -150,47 +209,57 @@ class BossBatchRunner {
           this.log(`apply error: ${err.message}`);
           if (String(err.message).includes('security')) break;
         }
-        if (!this.noThrottle) await sleep(rand(25000, 45000));
+        if (!this.dryRun && !this.stopped && this.applied.length < this.target) await this.wait(rand(25000, 45000));
       }
     }
-    this.log(`boss-batch done applied=${this.applied.length} fails=${fails} stop=${this.stopReason || 'completed'}`);
     this.fails = fails;
-    return { applied: this.applied, fails, stopReason: this.stopReason || 'completed' };
+    this.stopReason = this.stopReason || 'completed';
+    this.stopped = true;
+    this.log(`boss-batch done applied=${this.applied.length} previewed=${this.previewed.length} fails=${fails} stop=${this.stopReason}`);
+    return { applied: this.applied, previewed: this.previewed, fails, stopReason: this.stopReason };
   }
 
   // 返回 true=投出 / false=未投出 / 'skip'=主动跳过
   async applyOne(link, city) {
+    if (link.company && (this.ban.includes(link.company) || this.applied.some((a) => a.company === link.company))) return 'skip';
     const clicked = await this.bridge.click(link.ref, { timeoutMs: 20000 });
     if (!clicked || !clicked.data || !clicked.data.success) return false;
-    await sleep(rand(2500, 5000));
+    await this.wait(rand(2500, 5000));
     const snap = await this.bridge.snapshot();
     if (rawHas(snap, '安全验证')) {
       this.stop('security-check');
       throw new Error('security-check');
     }
-    // 已投公司去重（详情页前 6000 字符粗查，公司名提取不可靠时保守跳过）
-    const head = JSON.stringify(snap).slice(0, 6000);
-    if (this.ban.some((name) => head.includes(name))) return 'skip';
-    if (this.applied.some((a) => a.company && head.includes(a.company))) return 'skip';
-    const companyMatch = /"role":\s*"link",\s*"name":\s*"([^"]{2,30})",\s*"ref":\s*"@e\d+"[^}]*?zhipin\.com\/gongsi/.exec(head);
-    const company = companyMatch ? companyMatch[1] : '';
+    if (rawHas(snap, '登录/注册')) { this.stop('login-required'); return 'skip'; }
+    const company = link.company || '';
+    if (!company) return 'skip';
+    if (rawHas(snap, '已向BOSS发送消息')) return 'skip';
     const btn = findRef(snap, '立即沟通');
     if (!btn) return 'skip';
     if (this.dryRun) {
       this.log(`dryRun [${city}] ${link.title} @ ${company || '?'}（未发送）`);
-      return 'skip';
+      return { preview: true, company };
     }
-    await this.bridge.click(btn, { timeoutMs: 20000 });
-    await sleep(rand(2500, 4500));
-    const after = await this.bridge.snapshot();
-    const sent = rawHas(after, '已向BOSS发送消息');
-    if (sent) {
-      const stay = findRef(after, '留在此页');
-      if (stay) { try { await this.bridge.click(stay, { timeoutMs: 15000 }); } catch {} }
-      return { company };
+    const sentClick = await this.bridge.click(btn, { timeoutMs: 20000 });
+    if (!sentClick?.data?.success) { this.stop('send-unverified'); return false; }
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      await this.wait(rand(2500, 4500));
+      let after;
+      try { after = await this.bridge.snapshot(); }
+      catch (error) {
+        this.stop('send-unverified');
+        throw error;
+      }
+      if (rawHas(after, '已向BOSS发送消息')) {
+        const stay = findRef(after, '留在此页');
+        if (stay) { try { await this.bridge.click(stay, { timeoutMs: 15000 }); } catch {} }
+        return { company };
+      }
     }
+    // 点击已发生但结果不明时绝不继续下一个岗位，防止重复或漏记。
+    this.stop('send-unverified');
     return false;
   }
 }
 
-module.exports = { BossBatchRunner, defaultPlan, isTargetJob, CITY_CODES, INTERN_QUERIES, CAMPUS_QUERIES };
+module.exports = { BossBatchRunner, defaultPlan, isTargetJob, extractJobLinks, searchUrlMatches, CITY_CODES, INTERN_QUERIES, CAMPUS_QUERIES };

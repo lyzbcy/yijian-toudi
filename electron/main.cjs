@@ -359,6 +359,7 @@ function bossBatchStatus() {
   return {
     running: Boolean(bossBatchRunner && !bossBatchRunner.stopped),
     applied: bossBatchRunner ? bossBatchRunner.applied : [],
+    previewed: bossBatchRunner ? bossBatchRunner.previewed : [],
     fails: bossBatchRunner ? bossBatchRunner.fails : 0,
     stopReason: bossBatchRunner ? bossBatchRunner.stopReason : null
   };
@@ -424,7 +425,7 @@ async function startBossBatch(request = {}) {
     }, 15000);
     try {
       const result = await bossBatchRunner.run();
-      wecomNotify.notify(`【一键投递·批量结束】账号=${accountLabel} 投出 ${result.applied.length} 笔，失败 ${result.fails}，停止原因 ${result.stopReason}。\n免责声明：投递操作经账号持有人授权发起；账号在平台的合规状态由账号持有人自行负责。`);
+      wecomNotify.notify(`【一键投递·批量结束】账号=${accountLabel} 投出 ${result.applied.length} 笔，演练预览 ${result.previewed.length} 笔，失败 ${result.fails}，停止原因 ${result.stopReason}。`);
     } catch (err) {
       wecomNotify.notify(`【一键投递·批量异常】账号=${accountLabel} ${err.message}，已停止。`);
     } finally {
@@ -442,7 +443,7 @@ function persistBossApplied(accountId, entry) {
   try {
     store.update((state) => {
       const acc = (state.accounts || []).find((a) => a.id === accountId);
-      if (!acc) return state;
+      if (!acc) throw new Error(`account not found: ${accountId}`);
       acc.boss = acc.boss || { applied: [], banCompanies: [] };
       acc.boss.applied = acc.boss.applied || [];
       acc.boss.applied.unshift({ ...entry, date: new Date().toISOString().slice(0, 10) });
@@ -455,6 +456,7 @@ function persistBossApplied(accountId, entry) {
     });
   } catch (err) {
     logger.error('[boss-batch]', 'persist applied failed:', err.message);
+    throw err;
   }
 }
 
@@ -523,10 +525,10 @@ async function verifyAccountBinding(accountId) {
     await new Promise((r) => setTimeout(r, 5000));
     const snap = await kimiBridge.snapshot();
     const raw = JSON.stringify(snap);
-    const seoPage = /「[^」]{2,8}招聘」/.test(raw) || /热门城市|附近城市/.test(raw);
-    if (seoPage) return { error: 'login-required', message: 'Boss 未登录或登录态失效，请先扫码' };
+    const loginPage = /BOSS直聘注册登录|微信扫码 安全登录|验证码登录\/注册|登录\/注册/.test(raw);
+    if (loginPage) return { error: 'login-required', message: 'Boss 未登录或登录态失效，请先扫码' };
     const m = /1\d{2}[\s*]*\*{2,}[\s*]*\d{2,4}/.exec(raw.replace(/\\u002a/g, '*')) || [];
-    const detected = m ? m[0].replace(/\s/g, '') : '';
+    const detected = m[0] ? m[0].replace(/\s/g, '') : '';
     if (!detected) {
       // 探测不到手机号时不阻塞：页面结构可能变化，返回页面片段供人工判断
       return { verified: false, detected: '', message: '未能在页面上读到脱敏手机号，请人工确认当前连接身份' };

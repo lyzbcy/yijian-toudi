@@ -18,7 +18,7 @@ Node.js 20+、Electron、原生 JavaScript、pnpm；macOS 与 Windows 分别构�
 先读 `doc/README.md` 和相关模块文档，保留现有未提交改动。改动同步代码、文档、测试与版本号。版本以 `package.json#version` 为唯一源；Skill 的 `version.json#version` 必须一致。先运行 `pnpm test:background`、`pnpm test:site`、`pnpm pack:skill`；真实网站能力另看 `pnpm test:live-jobs`。发布流程见根 README。
 
 ## 当前状态
-v0.5.0 Windows x64 测试预发布已发布；最近稳定 Release 为 v0.3.1。Windows 安装实测记录见 `doc/progress/2026-09-28-release-readiness.md`；macOS 仍需单独构建验收。
+工作树为 v0.5.1 Windows x64 测试预发布；最终打包版已完成 Windows 安装与 Boss 默认批量目标 1 的 dryRun/正式发送/送达/落盘闭环，实测记录见 `doc/progress/2026-09-28-release-readiness.md`。最近稳定 Release 为 v0.3.1；macOS 仍需单独构建验收。
 
 ## 红线
 Agent API 只监听 127.0.0.1；不要把 Token 放进仓库、包或公开 Prompt。Boss 批量启动与安全验证停止逻辑在 `electron/main.cjs`、`electron/boss-batch.cjs`，改动后必须测账号隔离、限额、dryRun 与停止。未观察到成功证据不得记为已投递。更新器与发布资产变更必须在文档记录测试结论。

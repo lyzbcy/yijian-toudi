@@ -146,12 +146,13 @@ async function updateBossBatchStatus() {
     const running = status.running;
     $('#bossBatchStartButton').hidden = running;
     $('#bossBatchStopButton').hidden = !running;
+    const count = status.applied?.length || 0;
+    const previewCount = status.previewed?.length || 0;
     if (running) {
-      $('#bossBatchStatusLine').textContent = `运行中：已投 ${status.applied.length} 笔`;
+      $('#bossBatchStatusLine').textContent = `运行中：已投 ${count} 笔，演练预览 ${previewCount} 笔`;
     } else {
-      const count = status.applied.length;
-      $('#bossBatchStatusLine').textContent = count
-        ? `上次批量投出 ${count} 笔（${status.stopReason || '完成'}）。`
+      $('#bossBatchStatusLine').textContent = status.stopReason
+        ? `上次批量投出 ${count} 笔，演练预览 ${previewCount} 笔（${status.stopReason}）。`
         : '未运行。';
     }
   } catch {}

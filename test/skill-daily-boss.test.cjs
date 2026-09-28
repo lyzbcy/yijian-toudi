@@ -6,6 +6,7 @@ const path = require('node:path');
 const { run, dayInShanghai } = require('../skill/yijian-toudi/scripts/daily-boss.cjs');
 const { JsonStore } = require('../electron/store.cjs');
 const { AgentServer } = require('../electron/agent-server.cjs');
+const skillVersion = require('../skill/yijian-toudi/version.json').version;
 
 test('Shanghai date is stable across the UTC day boundary', () => {
   assert.equal(dayInShanghai(new Date('2026-09-27T16:00:00Z')), '2026-09-28');
@@ -16,7 +17,7 @@ function fixture() {
   const request = async (url, options) => {
     const route = new URL(url).pathname;
     calls.push({ route, method: options.method, body: options.body && JSON.parse(options.body) });
-    const data = route === '/v1/status' ? { version: '0.5.0' }
+    const data = route === '/v1/status' ? { version: skillVersion }
       : route === '/v1/boss/accounts' ? { accounts: [{ id: 'default' }, { id: 'client' }] }
       : route === '/v1/boss/batch/status' ? { running: false }
       : { started: true, accountId: options.body && JSON.parse(options.body).accountId, target: options.body && JSON.parse(options.body).target };

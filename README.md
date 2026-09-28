@@ -2,7 +2,9 @@
 
 一个 macOS 优先、面向未来跨平台的本地求职工作台。它把招聘岗位、统一简历、招聘邮件和自动化任务放在同一个桌面应用里，并提供仅监听本机的 Agent API。
 
-> 当前版本：[v0.5.0 Windows x64 测试预发布](https://github.com/lyzbcy/yijian-toudi/releases/tag/v0.5.0)；最近稳定 Release：`v0.3.1`。腾讯、百度、字节跳动、小米、京东、美团的岗位抓取已有真实实现；QQ 邮箱同步、本地简历保存、安全备份、Agent API、更新检查和可见浏览器工作区可运行。Windows 安装与核心 API 已实测；macOS 0.5.0 安装及真实账号投递仍以各自验收记录为准。
+> 当前版本为 [v0.5.1 Windows x64 测试预发布](https://github.com/lyzbcy/yijian-toudi/releases/tag/v0.5.1)；最近稳定 Release：`v0.3.1`。腾讯、百度、字节跳动、小米、京东、美团的岗位抓取已有真实实现；QQ 邮箱同步、本地简历保存、安全备份、Agent API、更新检查和可见浏览器工作区可运行。Windows 安装、核心 API 与 Boss 默认批量目标 1 已实测；macOS 安装仍需单独验收。
+
+2026-09-28 Windows 真实账号实测：最终打包版默认批量先以 `target=1` dryRun 预览 1 笔、发送 0 笔，再正式投出 1 笔；Boss 沟通列表显示“送达”，账号记录由 1 增至 2，批量以 `completed` 结束。详见 [实测记录](doc/progress/2026-09-28-release-readiness.md)。每天 100 份的计划未启用，也未作满量测试。
 
 ## 快速开始
 

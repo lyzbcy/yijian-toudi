@@ -17,8 +17,8 @@ description: 操作一键投递应用的本地 Agent API，查询岗位与投递
 
 1. GET `/v1/status`，核对版本；GET `/v1/boss/accounts` 核对账号；GET `/v1/boss/batch/status` 避免重复任务。
 2. 查询岗位、脱敏简历、邮件与任务分别用 `/v1/jobs`、`/v1/resume`、`/v1/messages`、`/v1/tasks`。本地命令走 `/v1/commands`，写命令带唯一 `Idempotency-Key`。
-3. Boss 批量任务可用 `POST /v1/boss/batch/start`，请求中明确 `accountId`、`target`、`dryRun`。先 dryRun 核对目标、登录态与筛选结果，再按用户给定日程启用正式发送。客户账号单次上限 50，自用默认账号单次上限 120。
-4. GET `/v1/boss/batch/status` 监控；遇 `security-check`、`login-required` 或异常立即停止后续日程并通知用户处理。结束后按实际 `applied` 回报数量，不能把目标数当结果。
+3. Boss 批量任务可用 `POST /v1/boss/batch/start`，请求中明确 `accountId`、`target`、`dryRun`。先 dryRun 核对目标、登录态与 `previewed`（只预览，不发送也不计入 `applied`），再按用户给定日程启用正式发送。客户账号单次上限 50，自用默认账号单次上限 120。
+4. GET `/v1/boss/batch/status` 监控；遇 `security-check`、`login-required`、`search-mismatch`、`send-unverified`、`persist-failed` 或异常立即停止后续日程并通知用户处理。结束后按实际 `applied` 回报数量，不能把目标数或 `previewed` 当结果。
 
 ## 定时入口
 
