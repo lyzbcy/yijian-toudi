@@ -1,6 +1,6 @@
 # 2026-09-28 发布就绪度实测
 
-> 现状：0.5.0 Windows x64 测试预发布候选 ｜ 负责人：维护者 ｜ 最后更新：2026-09-28
+> 现状：0.5.0 Windows x64 测试预发布已发布 ｜ 负责人：维护者 ｜ 最后更新：2026-09-28
 
 ## 已验证
 
@@ -21,4 +21,4 @@
 3. 客户独立浏览器需要预先提取 Kimi 扩展；当前安装包没有内建「准备扩展」按钮，客户账号链路仍是实验特性。默认自用账号路径不依赖这个步骤。
 4. 介绍页仍标 v0.3.1，与最近公开稳定 Release 对应；0.5.0 Windows 测试预发布不替换 macOS 最新稳定版入口。
 
-**判定：Windows x64 安装与核心 API 满足测试预发布门槛，可发 0.5.0 pre-release。** 不将其标为跨平台稳定版；Release 附 Windows 安装包、校验文件与同版本 Skill。真实账号 Boss dryRun/正式投递、macOS 安装和云端隧道仍需各自实测。
+**判定：Windows x64 安装与核心 API 满足测试预发布门槛，[v0.5.0 pre-release](https://github.com/lyzbcy/yijian-toudi/releases/tag/v0.5.0) 已发布。** Release 附 Windows 安装包、校验文件与同版本 Skill；GitHub 的 Skill 附包与 Pages 工作流均成功。它不是跨平台稳定版；真实账号 Boss dryRun/正式投递、macOS 安装和云端隧道仍需各自实测。
