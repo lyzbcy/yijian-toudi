@@ -1,6 +1,8 @@
 const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
-const { app, BrowserWindow } = require('electron');
+const electronReq = require('electron');
+if (!electronReq || !electronReq.app) { /* 纯 node 环境（node --test 全库扫描）跳过：本脚本必须在 electron 里跑 */ process.exit(0); }
+const { app, BrowserWindow } = electronReq;
 app.whenReady().then(async () => {
   const { applyTencentJob } = require(path.join(ROOT, 'electron/adapters/tencent-apply.cjs'));
   const win = new BrowserWindow({ show: true, width: 1200, height: 800 });

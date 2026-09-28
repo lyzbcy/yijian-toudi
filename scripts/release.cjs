@@ -12,19 +12,19 @@ const { execSync } = require('node:child_process');
 const root = path.resolve(__dirname, '..');
 const newVersion = process.argv[2];
 
-if (!newVersion || !/^\d+\.\d+\.\d+/.test(newVersion)) {
+if (!newVersion || !/^\d+\.\d+\.\d+$/.test(newVersion)) {
   console.error('用法: node scripts/release.cjs <版本号>，如 node scripts/release.cjs 0.3.0');
   process.exit(1);
 }
 
 const files = {
   'package.json': (content) => content.replace(/"version":\s*"[^"]+"/, `"version": "${newVersion}"`),
+  'skill/yijian-toudi/version.json': (content) => content.replace(/"version":\s*"[^"]+"/, `"version": "${newVersion}"`),
   'src/index.html': (content) => content
     .replace(/一键投递 v[\d.]+/g, `一键投递 v${newVersion}`)
     .replace(/<span id="appVersion">[\d.]+<\/span>/g, `<span id="appVersion">${newVersion}</span>`),
   'site/index.html': (content) => content
     .replace(/当前 v[\d.]+ /g, `当前 v${newVersion} `)
-    .replace(/一键投递-[\d.]+-macOS-arm64\.zip/g, `一键投递-${newVersion}-macOS-arm64.zip`)
 };
 
 console.log(`\n📦 准备发布 v${newVersion}\n`);
@@ -56,8 +56,9 @@ console.log(`  ✓ site/version.json (v=${versionJson.v}) 和 PAGE_V 已同步`)
 
 console.log(`\n📝 接下来手动执行（脚本不自动跑，避免误操作）：\n`);
 console.log(`  1. pnpm dist:mac          # 打包 dmg + zip`);
-console.log(`  2. 手算并写 release/一键投递-${newVersion}-SHA256.txt`);
-console.log(`  3. git add -A && git commit -m "release: v${newVersion}"`);
-console.log(`  4. 到 GitHub 创建 Release v${newVersion}，上传 zip + dmg + SHA256 + 安装说明`);
-console.log(`  5. git push origin main   # 触发 GitHub Pages 更新介绍页`);
+console.log(`  2. pnpm pack:skill       # 打包同版本 Skill + SHA256`);
+console.log(`  3. 计算并写 release/一键投递-${newVersion}-SHA256.txt`);
+console.log(`  4. 核对工作树后提交、推送、打 v${newVersion} tag`);
+console.log(`  5. 创建 GitHub Release v${newVersion}；发布工作流会附加 Skill 包`);
+console.log(`  6. 上传 dmg + zip + SHA256 + 安装说明`);
 console.log(`\n✅ 版本号已统一为 ${newVersion}，打包前请先 npm test 确认全过。\n`);

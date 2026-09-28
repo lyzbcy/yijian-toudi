@@ -27,10 +27,44 @@ const {
 const { createRedactedSnapshot } = require('./redact.cjs');
 const { manualApplicationOutcome } = require('./workspace-outcome.cjs');
 const { resolveResumeFilePath } = require('./resume-files.cjs');
+const { mergeJobSnapshot, singleFlight } = require('./job-refresh.cjs');
+const wecomNotify = require('./wecom-notify.cjs');
+const { KimiBridge } = require('./kimi-bridge.cjs');
+const { BossBatchRunner } = require('./boss-batch.cjs');
+const { AccountBrowserManager } = require('./account-browser.cjs');
+const { summarizeRelease } = require('./update-release.cjs');
+
+let kimiBridge = null;
+let bossBatchRunner = null;
+let accountBrowsers = null;
+
+async function startKimiBridge() {
+  if (kimiBridge) return;
+  kimiBridge = new KimiBridge({ log: (msg) => logger.info('[kimi-bridge]', msg) });
+  kimiBridge.on('connected', () => broadcast({ type: 'kimi-bridge', connected: true }));
+  kimiBridge.on('disconnected', () => broadcast({ type: 'kimi-bridge', connected: false }));
+  try {
+    await kimiBridge.start();
+  } catch (err) {
+    // 端口被占（如外部调试桥）不阻断启动；UI 显示未连接，可在设置里重试
+    logger.warn('[kimi-bridge] start failed:', err.message);
+    kimiBridge = null;
+  }
+}
+
+function stopKimiBridge() {
+  if (kimiBridge) { kimiBridge.stop(); kimiBridge = null; }
+  broadcast();
+}
+
 
 let window;
 let store;
 let agentServer;
+const backgroundTest = process.env.YIJIAN_BACKGROUND_TEST === '1';
+if (backgroundTest && !process.argv.some((arg) => arg.startsWith('--user-data-dir='))) {
+  throw new Error('后台测试必须指定隔离的 --user-data-dir');
+}
 let resumeSyncSession = null;
 let resumeSyncSessionGeneration = null;
 const resumeSyncGenerations = createResumeSyncGenerationRegistry({ limit: 64 });
@@ -179,6 +213,7 @@ async function executeResumeSync({ startCompanyId, resumeSyncGeneration, pauseOn
 
 function createWindow() {
   window = new BrowserWindow({
+    show: !backgroundTest,
     width: 1440,
     height: 920,
     minWidth: 1080,
@@ -190,7 +225,8 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
       sandbox: true,
-      nodeIntegration: false
+      nodeIntegration: false,
+      backgroundThrottling: !backgroundTest
     }
   });
   window.loadFile(path.join(__dirname, '..', 'src', 'index.html'));
@@ -198,7 +234,7 @@ function createWindow() {
     if (/^https?:\/\//.test(url)) shell.openExternal(url);
     return { action: 'deny' };
   });
-  if (process.argv.includes('--dev')) window.webContents.openDevTools({ mode: 'detach' });
+  if (!backgroundTest && process.argv.includes('--dev')) window.webContents.openDevTools({ mode: 'detach' });
   loginManager.setParent(window);
   loginManager.onChange((status) => {
     if (window && !window.isDestroyed()) window.webContents.send('workspace:changed', status);
@@ -318,12 +354,221 @@ async function handleCommand(command) {
   }
 }
 
+// ==== Boss 批量投递控制面（IPC 与 Agent API 共用；2026-09-22 抽出）====
+function bossBatchStatus() {
+  return {
+    running: Boolean(bossBatchRunner && !bossBatchRunner.stopped),
+    applied: bossBatchRunner ? bossBatchRunner.applied : [],
+    fails: bossBatchRunner ? bossBatchRunner.fails : 0,
+    stopReason: bossBatchRunner ? bossBatchRunner.stopReason : null
+  };
+}
+
+function stopBossBatch() {
+  bossBatchRunner?.stop('user-stop');
+  return { stopping: true };
+}
+
+function listBossAccounts() {
+  const state = store.get();
+  const accounts = Array.isArray(state.accounts) ? state.accounts : [];
+  return {
+    activeAccountId: state.activeAccountId || null,
+    accounts: accounts.map((a) => ({
+      id: a.id, name: a.name, phoneMasked: a.phoneMasked || '',
+      totalApplied: (a.boss && a.boss.applied ? a.boss.applied.length : 0),
+      createdAt: a.createdAt, lastActiveAt: a.lastActiveAt || null
+    }))
+  };
+}
+
+async function startBossBatch(request = {}) {
+  if (!kimiBridge) await startKimiBridge();
+  if (!kimiBridge) return { error: 'kimi-bridge-unavailable' };
+  if (bossBatchRunner && !bossBatchRunner.stopped) return { error: 'already-running' };
+  // 账号档案：历史投过的公司名（跨批去重，2026-09-22 修复此前恒空的 bug）
+  const state = store.get();
+  const accounts = Array.isArray(state.accounts) ? state.accounts : [];
+  const account = accounts.find((a) => a.id === (request.accountId || state.activeAccountId)) || null;
+  if (request.accountId && !account) return { error: 'account-not-found' };
+  const appliedBefore = account && account.boss && Array.isArray(account.boss.banCompanies)
+    ? account.boss.banCompanies.filter(Boolean)
+    : [];
+  // 新账号首日限额：客户账号（非默认自用账号）target 上限 50，防新登录即高频投递触发风控
+  const isNewClientAccount = Boolean(account) && account.id !== 'default';
+  const hardCap = isNewClientAccount ? 50 : 120;
+  const target = Math.min(Number(request.target) || 30, hardCap);
+  if (Number(request.target) > hardCap) {
+    return { error: 'target-exceeds-limit', message: `该账号单次上限 ${hardCap}（新客户账号首日限额）`, hardCap };
+  }
+  bossBatchRunner = new BossBatchRunner({
+    bridge: kimiBridge,
+    notify: (text) => wecomNotify.notify(text),
+    log: (msg) => logger.info('[boss-batch]', msg),
+    target,
+    dryRun: Boolean(request.dryRun),
+    banCompanies: appliedBefore,
+    onApplied: account ? (entry) => persistBossApplied(account.id, entry) : null
+  });
+  const reportEvery = 8;
+  const accountLabel = account ? `${account.name}(${account.phoneMasked || account.id})` : '默认';
+  (async () => {
+    await wecomNotify.notify(`【一键投递·Boss 批量】账号=${accountLabel} 开始${request.dryRun ? '（dryRun 演练，不实际发送）' : ''}：目标 ${target} 笔，规则=开发岗/排除测试，城市=武汉实习+沪苏锡杭校招。每 ${reportEvery} 笔汇报。`);
+    let lastCount = 0;
+    const progressTimer = setInterval(() => {
+      const applied = bossBatchRunner ? bossBatchRunner.applied : [];
+      if (applied.length - lastCount >= reportEvery) {
+        lastCount = applied.length;
+        wecomNotify.notify(`【一键投递·进度 ${applied.length}/${target}】\n` + applied.slice(-reportEvery).map((a) => `· ${a.time} ${a.city} ${a.company || ''}｜${a.title}`).join('\n'));
+      }
+    }, 15000);
+    try {
+      const result = await bossBatchRunner.run();
+      wecomNotify.notify(`【一键投递·批量结束】账号=${accountLabel} 投出 ${result.applied.length} 笔，失败 ${result.fails}，停止原因 ${result.stopReason}。\n免责声明：投递操作经账号持有人授权发起；账号在平台的合规状态由账号持有人自行负责。`);
+    } catch (err) {
+      wecomNotify.notify(`【一键投递·批量异常】账号=${accountLabel} ${err.message}，已停止。`);
+    } finally {
+      clearInterval(progressTimer);
+      if (account) touchAccount(account.id);
+      broadcast();
+    }
+  })();
+  broadcast();
+  return { started: true, target, dryRun: Boolean(request.dryRun), accountId: account ? account.id : null };
+}
+
+// 投递成功即落盘到账号档案（boss-batch 引擎回调）
+function persistBossApplied(accountId, entry) {
+  try {
+    store.update((state) => {
+      const acc = (state.accounts || []).find((a) => a.id === accountId);
+      if (!acc) return state;
+      acc.boss = acc.boss || { applied: [], banCompanies: [] };
+      acc.boss.applied = acc.boss.applied || [];
+      acc.boss.applied.unshift({ ...entry, date: new Date().toISOString().slice(0, 10) });
+      acc.boss.applied = acc.boss.applied.slice(0, 2000);
+      if (entry.company && !acc.boss.banCompanies.includes(entry.company)) {
+        acc.boss.banCompanies.push(entry.company);
+        acc.boss.banCompanies = acc.boss.banCompanies.slice(-500);
+      }
+      return state;
+    });
+  } catch (err) {
+    logger.error('[boss-batch]', 'persist applied failed:', err.message);
+  }
+}
+
+function touchAccount(accountId) {
+  try {
+    store.update((state) => {
+      const acc = (state.accounts || []).find((a) => a.id === accountId);
+      if (acc) acc.lastActiveAt = new Date().toISOString();
+      return state;
+    });
+  } catch {}
+}
+
+// ==== 账号管理面（Boss 代投商业化，2026-09-22）====
+function ensureAccountBrowsers() {
+  if (!accountBrowsers) {
+    accountBrowsers = new AccountBrowserManager({
+      getUserDataPath: () => require('node:path').join(app.getPath('userData')),
+      log: (msg) => logger.info('[account-browser]', msg)
+    });
+  }
+  return accountBrowsers;
+}
+
+function createBossAccount({ name, phoneMasked, clientName } = {}) {
+  if (!name || !String(name).trim()) return { error: 'name-required' };
+  const id = 'acc-' + Date.now().toString(36);
+  const account = {
+    id,
+    name: String(name).trim(),
+    phoneMasked: phoneMasked ? String(phoneMasked).trim() : '',
+    dataDir: id,
+    // 授权留痕：扫码登录=授权行为本身；记录客户名与确认时间备查
+    consent: { confirmedAt: new Date().toISOString(), clientName: clientName || String(name).trim() },
+    boss: { applied: [], banCompanies: [], preferences: null },
+    createdAt: new Date().toISOString(),
+    lastActiveAt: null
+  };
+  store.update((state) => {
+    state.accounts = state.accounts || [];
+    state.accounts.push(account);
+    return state;
+  });
+  logger.info('[account]', `created account ${id} (${account.name})`);
+  return { created: true, account };
+}
+
+function selectBossAccount(accountId) {
+  const state = store.get();
+  const exists = (state.accounts || []).some((a) => a.id === accountId);
+  if (!exists) return { error: 'account-not-found' };
+  store.update((s) => { s.activeAccountId = accountId; return s; });
+  return { selected: true, accountId };
+}
+
+// 手机号探测闭环：连接就绪后，导航到 Boss 用户页抓脱敏手机号与账号档案比对。
+// 匹配 → 桥绑定该账号；不匹配 → 企微报警（防连接与账号错配串号）。
+async function verifyAccountBinding(accountId) {
+  if (!kimiBridge) await startKimiBridge();
+  if (!kimiBridge || !kimiBridge.isUp()) return { error: 'extension-not-connected' };
+  const state = store.get();
+  const account = (state.accounts || []).find((a) => a.id === accountId);
+  if (!account) return { error: 'account-not-found' };
+  try {
+    await kimiBridge.navigate('https://www.zhipin.com/web/user');
+    await new Promise((r) => setTimeout(r, 5000));
+    const snap = await kimiBridge.snapshot();
+    const raw = JSON.stringify(snap);
+    const seoPage = /「[^」]{2,8}招聘」/.test(raw) || /热门城市|附近城市/.test(raw);
+    if (seoPage) return { error: 'login-required', message: 'Boss 未登录或登录态失效，请先扫码' };
+    const m = /1\d{2}[\s*]*\*{2,}[\s*]*\d{2,4}/.exec(raw.replace(/\\u002a/g, '*')) || [];
+    const detected = m ? m[0].replace(/\s/g, '') : '';
+    if (!detected) {
+      // 探测不到手机号时不阻塞：页面结构可能变化，返回页面片段供人工判断
+      return { verified: false, detected: '', message: '未能在页面上读到脱敏手机号，请人工确认当前连接身份' };
+    }
+    if (account.phoneMasked && detected.replace(/\*/g, '') !== account.phoneMasked.replace(/\*/g, '')) {
+      await wecomNotify.notify(`【一键投递·账号错配警报】当前浏览器连接的手机号 ${detected} 与账号档案 ${account.phoneMasked} 不符，已拒绝绑定。请检查是否开了错误的浏览器实例。`);
+      return { verified: false, detected, mismatch: true, message: `连接手机号 ${detected} 与账号档案不符` };
+    }
+    kimiBridge.bindAccount(accountId);
+    if (!account.phoneMasked) {
+      store.update((s) => {
+        const acc = (s.accounts || []).find((a) => a.id === accountId);
+        if (acc) acc.phoneMasked = detected;
+        return s;
+      });
+    }
+    return { verified: true, detected, accountId };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
 async function startAgentServer() {
   const settings = store.get().settings;
   if (!settings.apiEnabled) return;
-  agentServer = new AgentServer({ store, onCommand: handleCommand });
+  agentServer = new AgentServer({ store, onCommand: handleCommand, bossControl: {
+    start: (request) => startBossBatch(request || {}),
+    stop: () => stopBossBatch(),
+    status: () => bossBatchStatus(),
+    accounts: () => listBossAccounts(),
+    createAccount: (request) => createBossAccount(request || {}),
+    selectAccount: (request) => selectBossAccount((request || {}).accountId),
+    launchAccount: (request) => {
+      const acc = (store.get().accounts || []).find((a) => a.id === (request || {}).accountId);
+      if (!acc) return { error: 'account-not-found' };
+      return ensureAccountBrowsers().launch(acc, request.startUrl ? { startUrl: request.startUrl } : {});
+    },
+    closeAccount: (request) => ensureAccountBrowsers().close((request || {}).accountId),
+    verifyAccount: async (request) => verifyAccountBinding((request || {}).accountId)
+  } });
   try {
-    const port = await agentServer.start(settings.apiPort);
+    const port = await agentServer.start(backgroundTest ? 0 : settings.apiPort);
     if (port !== settings.apiPort) {
       store.update((state) => { state.settings.apiPort = port; return state; });
     }
@@ -351,6 +596,7 @@ const JOB_ADAPTERS = registry.listJobAdapters().map((adapter) => ({
 
 // 启动时检查是否需要自动刷新岗位（settings.jobs.autoRefresh + 距上次>24h）
 function maybeAutoRefreshJobs() {
+  if (backgroundTest) return;
   try {
     const settings = store.get().settings;
     if (!settings.jobs?.autoRefresh) return;
@@ -363,7 +609,7 @@ function maybeAutoRefreshJobs() {
   }
 }
 
-async function refreshJobs() {
+const refreshJobs = singleFlight(async function refreshJobsOnce() {
   const settings = store.get().settings;
   const daysBack = settings.jobs?.daysBack || 30;
   const recruitType = settings.jobs?.recruitType || 'social';
@@ -387,6 +633,7 @@ async function refreshJobs() {
         const jobs = await adapter.fetch({
           daysBack,
           recruitType,
+          pageSize: 100,
           onProgress: (info) => {
             const running = baseDone + (info.collected ?? 0);
             if (info.error) {
@@ -405,10 +652,10 @@ async function refreshJobs() {
             }
           }
         });
-        results.push({ companyId: adapter.companyId, name: adapter.name, idPrefix: adapter.idPrefix, count: jobs.length, jobs, error: null });
         logger.info(`抓取${adapter.name}完成`, { count: jobs.length });
         // 每抓完一家就合并入库，让用户 progressively 看到数据
         mergeJobs(adapter.idPrefix, jobs);
+        results.push({ companyId: adapter.companyId, name: adapter.name, idPrefix: adapter.idPrefix, count: jobs.length, jobs, error: null });
         broadcast();
       } catch (error) {
         logger.error(`抓取${adapter.name}失败`, { error: error.message });
@@ -417,7 +664,8 @@ async function refreshJobs() {
     }
 
     const next = store.update((state) => {
-      state.settings.jobs = { ...state.settings.jobs, lastRefreshAt: new Date().toISOString() };
+      state.settings.jobs = { ...state.settings.jobs, lastRefreshAttemptAt: new Date().toISOString(),
+        ...(results.every((result) => !result.error) ? { lastRefreshAt: new Date().toISOString() } : {}) };
       return state;
     });
     broadcast();
@@ -433,23 +681,21 @@ async function refreshJobs() {
 
     logger.info('刷新岗位全部完成', { total: totalAdded, breakdown: results.map((r) => ({ company: r.name, count: r.count })) });
     finishTask(id, 'done', `已抓取 ${totalAdded} 个岗位（近 ${daysBack} 天）：${summary}。`);
-    return { mode: 'live', added: totalAdded, message: `已抓取 ${totalAdded} 个岗位` };
+    const failed = results.filter(result => result.error);
+    return { mode: 'live', added: totalAdded, status: failed.length ? 'partial' : 'done',
+      message: `已抓取 ${totalAdded} 个岗位${failed.length ? `；${failed.map(result => result.name).join('、')}刷新失败，已保留旧数据` : ''}` };
   } catch (error) {
     logger.error('刷新岗位异常', { error: error.message });
     finishTask(id, 'error', `抓取失败：${error.message}`);
     throw error;
   }
-}
+});
 
 // 按 idPrefix 合并岗位：清掉该公司的旧数据，写入新数据，保留已收藏状态
 function mergeJobs(idPrefix, newJobs) {
   const currentState = store.get();
-  const favorites = new Map(currentState.jobs.filter((job) => job.favorite).map((job) => [job.id, job]));
   // 用当前简历给新岗位算匹配度（T3.9 #23），已存在的岗位也重算（简历可能改过）
-  const allJobs = [
-    ...currentState.jobs.filter((job) => !job.id.startsWith(idPrefix)),
-    ...newJobs.map((job) => (favorites.has(job.id) ? { ...job, favorite: true } : job))
-  ];
+  const allJobs = mergeJobSnapshot(currentState.jobs, newJobs, idPrefix);
   applyJobMatches(allJobs, currentState.resume);
   store.update((state) => {
     state.jobs = allJobs;
@@ -738,6 +984,8 @@ app.setPath(
 app.whenReady().then(async () => {
   store = new JsonStore(app.getPath('userData'));
   store.init();
+  wecomNotify.configure(store.get().settings.wecomWebhook);
+  if (store.get().settings.kimiBridgeEnabled !== false) await startKimiBridge();
   await startAgentServer();
   createWindow();
   // 启动时若开启自动刷新且距上次超过 24 小时，后台抓一次岗位（T3.2 #8）
@@ -1007,22 +1255,7 @@ app.whenReady().then(async () => {
     const repo = (store.get().settings.githubRepo || '').trim() || 'lyzbcy/yijian-toudi';
     if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) return { configured: false, current: app.getVersion() };
     const release = await requestJson(`https://api.github.com/repos/${repo}/releases/latest`);
-    const latest = String(release.tag_name || '').replace(/^v/, '');
-    // 找 macOS arm64 zip 资产和 SHA256 文件，供一键更新使用
-    const assets = release.assets || [];
-    const zipAsset = assets.find((a) => /macOS.*arm64\.zip$/i.test(a.name) || /arm64.*\.zip$/i.test(a.name));
-    const shaAsset = assets.find((a) => /sha256/i.test(a.name));
-    return {
-      configured: true,
-      current: app.getVersion(),
-      latest,
-      updateAvailable: Boolean(latest && latest !== app.getVersion()),
-      url: release.html_url,
-      releaseNotes: release.body || '',
-      // 一键更新需要的资产信息（#3）
-      download: zipAsset ? { url: zipAsset.browser_download_url, name: zipAsset.name, size: zipAsset.size } : null,
-      sha256: shaAsset ? { url: shaAsset.browser_download_url, name: shaAsset.name } : null
-    };
+    return summarizeRelease(release, app.getVersion(), process.platform, process.arch);
   });
   // 一键更新（#3）：下载 zip 到下载目录、校验 SHA256、打开文件夹、弹教学窗。
   // 刻意不自动替换 .app / 重启——那需要 helper 进程和真实发布环境验收，风险高。
@@ -1104,9 +1337,59 @@ app.whenReady().then(async () => {
       agentServer = null;
       if (next.settings.apiEnabled) await startAgentServer();
     }
+    if (before.wecomWebhook !== next.settings.wecomWebhook) {
+      wecomNotify.configure(next.settings.wecomWebhook);
+    }
+    if (before.kimiBridgeEnabled !== next.settings.kimiBridgeEnabled) {
+      if (next.settings.kimiBridgeEnabled === false) stopKimiBridge();
+      else await startKimiBridge();
+    }
     broadcast();
     return next;
   });
+  // —— 企微通知 / Kimi 桥 / Boss 批量（2026-09-20 固化，协议与规则见 doc/specs/2026-09-19 设计 §9/§10）——
+  ipcMain.handle('wecom:test', async () => {
+    const result = await wecomNotify.notify(`【一键投递】企微通知测试 ✅\n时间：${new Date().toLocaleString('zh-CN')}\n配置成功后，投递事件会从这个通道推送。`);
+    return result;
+  });
+  ipcMain.handle('kimi:status', () => ({
+    running: Boolean(kimiBridge),
+    connected: Boolean(kimiBridge && kimiBridge.isUp()),
+    port: kimiBridge ? kimiBridge.port : null,
+    boundAccount: kimiBridge ? kimiBridge.getBoundAccount() : null
+  }));
+  ipcMain.handle('kimi:restart', async () => {
+    stopKimiBridge();
+    await startKimiBridge();
+    return { running: Boolean(kimiBridge), connected: Boolean(kimiBridge && kimiBridge.isUp()), port: kimiBridge ? kimiBridge.port : null };
+  });
+  // 临时诊断通道：直通 Kimi 桥发任意 tool（官网投递收尾用，后续会收敛为正式能力）
+  ipcMain.handle('debug:kimi', async (_event, request = {}) => {
+    if (!kimiBridge) return { error: 'kimi-bridge-unavailable' };
+    try {
+      const payload = await kimiBridge.sendTool(request.tool, request.args || {}, { timeoutMs: request.timeoutMs || 45000 });
+      return payload;
+    } catch (err) {
+      return { error: err.message };
+    }
+  });
+  ipcMain.handle('boss:batch:status', () => bossBatchStatus());
+  ipcMain.handle('boss:batch:stop', () => stopBossBatch());
+  ipcMain.handle('boss:batch:start', (_event, request = {}) => startBossBatch(request));
+  // —— 账号管理（代投商业化）——
+  ipcMain.handle('account:list', () => listBossAccounts());
+  ipcMain.handle('account:create', (_event, request = {}) => createBossAccount(request));
+  ipcMain.handle('account:select', (_event, request = {}) => selectBossAccount(request.accountId));
+  ipcMain.handle('account:launch', (_event, request = {}) => {
+    const acc = (store.get().accounts || []).find((a) => a.id === request.accountId);
+    if (!acc) return { error: 'account-not-found' };
+    if (request.startUrl) {
+      return ensureAccountBrowsers().launch(acc, { startUrl: request.startUrl });
+    }
+    return ensureAccountBrowsers().launch(acc);
+  });
+  ipcMain.handle('account:close', (_event, request = {}) => ensureAccountBrowsers().close(request.accountId));
+  ipcMain.handle('account:verify', (_event, request = {}) => verifyAccountBinding(request.accountId));
   // Agent Token 重置：旧 Token 立即失效，生成新 Token（T3.7 #15）
   ipcMain.handle('agent:reset-token', async () => {
     const next = store.update((state) => {

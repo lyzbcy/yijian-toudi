@@ -84,7 +84,7 @@ class JsonStore {
   }
 
   // 数据迁移：升级后旧 state 可能缺新字段或公司。用最新 seed 补全，不丢已有岗位。
-  migrate() {
+  migrate({ persist = true } = {}) {
     const seed = createSeed();
     const seedCompanies = new Map(seed.companies.map((c) => [c.id, c]));
     const existingIds = new Set((this.state.companies || []).map((c) => c.id));
@@ -247,7 +247,25 @@ class JsonStore {
       this.state.meta.schemaVersion = 4;
       changed = true;
     }
-    if (changed) this.flush();
+    // v5：Boss 代投多账号档案（2026-09-22）。老数据补一个"默认账号"（用户自用，用日常 Edge）。
+    if (this.state.meta.schemaVersion < 5) {
+      if (!Array.isArray(this.state.accounts)) {
+        this.state.accounts = [{
+          id: 'default',
+          name: '我自己',
+          phoneMasked: '',
+          dataDir: null,
+          consent: null,
+          boss: { applied: [], banCompanies: [], preferences: null },
+          createdAt: new Date().toISOString(),
+          lastActiveAt: null
+        }];
+      }
+      if (!this.state.activeAccountId) this.state.activeAccountId = 'default';
+      this.state.meta.schemaVersion = 5;
+      changed = true;
+    }
+    if (changed && persist) this.flush();
   }
 
   get() {
@@ -261,23 +279,30 @@ class JsonStore {
     result.meta.updatedAt = new Date().toISOString();
     // 保存前刷新简历兼容视图，保证 resume.intention/education/... 与 activeProfile 同步
     if (result.resume) syncResumeActiveView(result.resume);
+    this.flush(result);
     this.state = result;
-    this.flush();
     return this.get();
   }
 
   replace(nextState) {
     if (!nextState || typeof nextState !== 'object') throw new Error('恢复数据无效');
-    this.state = structuredClone(nextState);
-    this.migrate();
-    syncResumeActiveView(this.state.resume);
-    this.flush();
+    const previous = this.state;
+    // migrate 的中间 flush 延后到迁移和验证都完成后。
+    try {
+      this.state = structuredClone(nextState);
+      this.migrate({ persist: false });
+      syncResumeActiveView(this.state.resume);
+      this.flush();
+    } catch (error) {
+      this.state = previous;
+      throw error;
+    }
     return this.get();
   }
 
-  flush() {
+  flush(nextState = this.state) {
     const temp = `${this.file}.tmp`;
-    fs.writeFileSync(temp, `${JSON.stringify(this.state, null, 2)}\n`, 'utf8');
+    fs.writeFileSync(temp, `${JSON.stringify(nextState, null, 2)}\n`, 'utf8');
     fs.renameSync(temp, this.file);
   }
 }
@@ -321,12 +346,15 @@ function adapterStatusToCapabilities(status) {
 // 关键：activeProfileId 和非 active profile 一律以后端（currentResume）为权威，避免前端旧快照覆盖并发改动。
 // 返回新的 resume 对象（含 updatedAt/completion/profiles），调用方负责赋值给 state.resume。
 function applyResumeEdit(currentResume, incoming) {
-  // activeProfileId 以后端为权威（后端可能因切换/Agent 并发而变了）
+  if (incoming.activeProfileId && incoming.activeProfileId !== currentResume.activeProfileId) {
+    throw new Error('当前简历已切换，请重新加载后再保存，避免覆盖另一份简历');
+  }
+  // 已拒绝过期 profile 保存；当前身份保持后端为权威。
   const profileId = currentResume.activeProfileId || incoming.activeProfileId || 'default';
   const baseProfiles = Array.isArray(currentResume.profiles) && currentResume.profiles.length
     ? currentResume.profiles
     : [{ id: 'default', label: '默认简历', intention: {}, education: [], experience: [], projects: [] }];
-  // 非 active profile 一律用后端版本，只把 incoming 的顶层字段写进 active profile
+  // 非 active profile 一律用后端版本，只把 incoming 的顶层字段写进当前 profile
   const updatedProfiles = baseProfiles.map((profile) => {
     if (profile.id !== profileId) return profile;
     return {
@@ -337,14 +365,16 @@ function applyResumeEdit(currentResume, incoming) {
       projects: Array.isArray(incoming.projects) ? incoming.projects : (profile.projects || [])
     };
   });
-  return {
+  const result = {
     ...currentResume,
     ...incoming,
     activeProfileId: profileId,
     profiles: updatedProfiles,
     updatedAt: new Date().toISOString(),
-    completion: calculateResumeCompletion(incoming)
   };
+  syncResumeActiveView(result);
+  result.completion = calculateResumeCompletion(result);
+  return result;
 }
 
 // 切换 active profile。不修改 profile 内容，只改 activeProfileId 并刷新兼容视图。
@@ -362,7 +392,7 @@ function switchProfile(resume, profileId) {
 // label 缺省时按 profile 数量生成「简历 N」。返回新 profile 的 id。
 function addProfile(resume, label) {
   const profiles = Array.isArray(resume.profiles) ? resume.profiles : [];
-  const newId = `profile-${Date.now().toString(36)}`;
+  const newId = `profile-${crypto.randomUUID()}`;
   const finalLabel = (String(label || '').trim()) || `简历 ${profiles.length + 1}`;
   const newProfile = createResumeProfile({ id: newId, label: finalLabel });
   resume.profiles = [...profiles, newProfile];
@@ -397,32 +427,32 @@ function deleteProfile(resume, profileId) {
 // 按 patch 更新 active profile 的指定字段。patch 形如 { intention: {...}, education: [...], ... }
 // 或扁平 'basic.name'。merge=true 时深合并，false 时整体替换该字段。
 function patchResume(resume, patch, { merge = true } = {}) {
-  const profileId = resume.activeProfileId || 'default';
-  const profiles = Array.isArray(resume.profiles) ? resume.profiles : [];
-  let changed = false;
-  const newProfiles = profiles.map((profile) => {
-    if (profile.id !== profileId) return profile;
-    changed = true;
-    const updated = { ...profile };
-    for (const [key, value] of Object.entries(patch)) {
-      if (['intention', 'education', 'experience', 'projects'].includes(key)) {
-        updated[key] = merge && profile[key] && typeof profile[key] === 'object' && !Array.isArray(profile[key])
-          ? { ...profile[key], ...value }
-          : value;
-      } else if (['basic', 'skills', 'extras'].includes(key)) {
-        // 全局字段也同步写（basic/skills/extras 跨 profile 共享）
-        updated[key] = merge && profile[key] && typeof profile[key] === 'object' && !Array.isArray(profile[key])
-          ? { ...profile[key], ...value }
-          : value;
-      }
+  if (!patch || typeof patch !== 'object' || Array.isArray(patch)) throw new Error('简历更新必须是对象');
+  const newResume = structuredClone(resume);
+  migrateFlatResumeToProfiles(newResume);
+  if (!newResume.profiles.length) newResume.profiles = [createResumeProfile({ id: 'default', label: '默认简历' })];
+  syncResumeActiveView(newResume);
+  const profile = newResume.profiles.find(p => p.id === newResume.activeProfileId);
+  const profileKeys = ['intention', 'education', 'experience', 'projects'];
+  const globalKeys = ['basic', 'skills', 'extras', 'compliance', 'family', 'games', 'ai'];
+  const arrayKeys = ['education', 'experience', 'projects', 'family', 'games'];
+  for (const [key, value] of Object.entries(patch)) {
+    const [section, field, ...rest] = key.split('.');
+    if (![...profileKeys, ...globalKeys].includes(section) || rest.length || ['__proto__', 'constructor', 'prototype'].includes(field)) {
+      throw new Error(`不支持的简历字段：${key}`);
     }
-    return updated;
-  });
-  if (!changed && profiles.length === 0) {
-    // 兜底：没 profile 时建一个
-    return patchResume({ ...resume, profiles: [createResumeProfile({ id: 'default', label: '默认简历' })] }, patch, { merge });
+    const target = profileKeys.includes(section) ? profile : newResume;
+    if (field) {
+      if (arrayKeys.includes(section) || !field) throw new Error(`请整体提供经历数组：${section}`);
+      target[section] = { ...(target[section] || {}), [field]: structuredClone(value) };
+    } else if (arrayKeys.includes(section)) {
+      if (!Array.isArray(value) || value.some(item => !item || typeof item !== 'object' || Array.isArray(item))) throw new Error(`${section} 必须是经历对象数组`);
+      target[section] = structuredClone(value);
+    } else {
+      if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(`${section} 必须是对象`);
+      target[section] = merge ? { ...(target[section] || {}), ...structuredClone(value) } : structuredClone(value);
+    }
   }
-  const newResume = { ...resume, profiles: newProfiles };
   syncResumeActiveView(newResume);
   newResume.updatedAt = new Date().toISOString();
   newResume.completion = calculateResumeCompletion(newResume);

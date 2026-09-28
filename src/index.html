@@ -65,7 +65,7 @@
         <strong id="sidebarMotto">今天也在认真投递</strong>
         <span>数据只保存在你的电脑里</span>
       </div>
-      <div class="version">本地优先 · v<span id="appVersion">0.3.1</span></div>
+      <div class="version">本地优先 · v<span id="appVersion">0.5.0</span></div>
     </aside>
 
     <main class="main">
@@ -440,6 +440,17 @@
           <article class="content-card">
             <div class="card-toolbar"><div><h3>接入 Prompt</h3><p>Token 只展示在本机，请不要发到公开聊天。</p></div><button class="primary-button" id="copyPromptButton">复制 Prompt</button></div>
             <pre id="agentPrompt" class="prompt-box"></pre>
+            <details class="agent-deploy-guide">
+              <summary>Skill 版与云端定时部署</summary>
+              <p>每次 Release 附同版本 Skill 包与 SHA256。安装到 Agent 的 skills 目录后，先核对应用与 Skill 版本，运行 dryRun，再启用正式日程。</p>
+              <p>应用和已登录浏览器仍在本机运行；异机 Skill 通过 SSH 反向隧道连接本机 API。云端只访问 127.0.0.1，不把 API 暴露公网；Token 放私有环境配置，不写入计划任务或日志。</p>
+              <pre>ssh -N -o ExitOnForwardFailure=yes -R 127.0.0.1:153147:127.0.0.1:53147 USER@SERVER
+YJTD_BASE_URL=http://127.0.0.1:153147
+YJTD_ACCOUNT_ID=default  YJTD_TARGET=100  YJTD_DRY_RUN=1
+node scripts/daily-boss.cjs
+# 演练核对通过后，移除 YJTD_DRY_RUN；服务器 Asia/Shanghai 每日 10:00 触发。</pre>
+              <p>完整跨平台部署、私有 Token 配置和防重复触发说明见仓库 README 与 Skill 内 references/deploy.md。启动不等于投出 100 份，实际数量以应用投递记录为准。</p>
+            </details>
             <div class="agent-launch-row">
               <span class="soft-label">一键打开</span>
               <button class="ghost-button" data-launch-agent="claude">Claude</button>
@@ -490,6 +501,28 @@
             <label>端口<input id="apiPort" type="number" min="1024" max="65535"></label>
           </section>
           <section class="content-card settings-card">
+            <h3>Boss 批量投递（实验）</h3>
+            <p>通过本机 Kimi 浏览器扩展控制你已登录的 Boss 页面批量沟通：规则=开发岗（前端/后端/全栈/游戏/AI/算法），排除测试与销售运营类；武汉投实习、上海/苏州/无锡/杭州投 27 届校招。使用即代表已知悉各平台协议风险。</p>
+            <label class="switch-row"><span><strong>Kimi 桥接（ws://127.0.0.1:10086）</strong><small id="kimiBridgeStatus">状态未知</small></span><input id="kimiBridgeEnabled" type="checkbox"><i></i></label>
+            <label>企业微信通知 Webhook<small>投递进度会推送到企微群机器人（qyapi.weixin.qq.com）</small><input id="wecomWebhook" type="text" placeholder="https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=..."></label>
+            <label>投递账号<small>客户账号=独立浏览器扫码登录，投递记录按账号分开存；新客户账号单次上限 50 家</small>
+              <select id="bossAccountSelect"></select>
+            </label>
+            <div class="settings-actions">
+              <button class="ghost-button" id="bossAccountCreateButton">新建客户账号</button>
+              <button class="ghost-button" id="bossAccountLaunchButton">启动该账号浏览器（扫码）</button>
+              <button class="ghost-button" id="bossAccountVerifyButton">验证绑定</button>
+            </div>
+            <div class="settings-actions">
+              <button class="ghost-button" id="wecomTestButton">发送测试通知</button>
+              <button class="ghost-button" id="kimiRestartButton">重连 Kimi 扩展</button>
+              <button class="ghost-button" id="bossBatchDryRunButton">批量演练（不发送）</button>
+              <button class="primary-button" id="bossBatchStartButton">开始批量投递</button>
+              <button class="ghost-button" id="bossBatchStopButton" hidden>停止批量</button>
+            </div>
+            <p class="setting-hint" id="bossBatchStatusLine">未运行。</p>
+          </section>
+          <section class="content-card settings-card">
             <h3>本机数据备份</h3>
             <p>备份包含简历、岗位、招聘消息和购物车，不包含 Agent Token、邮箱授权码或网站登录态。</p>
             <div class="settings-actions">
@@ -509,7 +542,7 @@
           </section>
           <section class="content-card settings-card about-card">
             <img src="./assets/stickers/mascot.png" alt="">
-            <div><h3>一键投递 v0.3.1</h3><p>一个弱小但有梦想的开发者，想把重复投简历这件事做得轻松一点。</p><a href="https://lyzbcy.github.io/" data-external>关于捞鱼 ↗</a></div>
+            <div><h3>一键投递 v0.5.0</h3><p>一个弱小但有梦想的开发者，想把重复投简历这件事做得轻松一点。</p><a href="https://lyzbcy.github.io/" data-external>关于捞鱼 ↗</a></div>
           </section>
         </div>
       </section>

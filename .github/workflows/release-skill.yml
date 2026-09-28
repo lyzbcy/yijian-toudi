@@ -1,0 +1,24 @@
+name: Attach versioned Skill to Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  skill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.release.tag_name }}
+      - name: Check tag and package Skill
+        run: |
+          test "v$(node -p "require('./package.json').version")" = "${{ github.event.release.tag_name }}"
+          node scripts/package-skill.cjs
+      - name: Attach Skill archive and checksum
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" release/yijian-toudi-skill-*.tar.gz release/yijian-toudi-skill-*.sha256 --clobber

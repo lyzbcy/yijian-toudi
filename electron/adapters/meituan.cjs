@@ -8,6 +8,7 @@
 // 实测 2026-07-24：返回 data.list[]，含 name/jobUnionId/jobType 等。
 
 const https = require('node:https');
+const { guardRequest, guardResponse } = require('../http-lifecycle.cjs');
 
 const LIST_URL = 'https://zhaopin.meituan.com/api/official/job/getJobList';
 const REFERER = 'https://zhaopin.meituan.com/web/social';
@@ -30,6 +31,7 @@ function postJson(url, body) {
         Accept: 'application/json, text/plain, */*'
       }
     }, (response) => {
+      guardResponse(response, reject);
       let data = '';
       response.setEncoding('utf8');
       response.on('data', (chunk) => { data += chunk; });
@@ -39,6 +41,7 @@ function postJson(url, body) {
         resolve({ status: response.statusCode, json, raw: data });
       });
     });
+    guardRequest(req);
     req.on('error', reject);
     req.setTimeout(20_000, () => req.destroy(new Error('美团 API 请求超时')));
     req.write(payload);
@@ -56,7 +59,7 @@ function normalizeJob(item) {
     id: `meituan-${item.jobUnionId || item.id}`,
     companyId: 'meituan',
     title: item.name || '未命名岗位',
-    department: item.projectName || item.department || '美团',
+    department: item.projectName || (Array.isArray(item.department) ? item.department.map(d => d.name).filter(Boolean).join(' / ') : item.department) || '美团',
     city: item.cityList?.[0]?.name || '未标注城市',
     type: '全职',
     experience: workYearMap[item.workYear] || item.workYear || '不限',
@@ -78,7 +81,7 @@ async function listMeituanJobs({ daysBack = 30, pageSize = 20, recruitType = 'so
   const isCampus = ['campus', 'summer-intern', 'daily-intern'].includes(recruitType);
   if (isCampus) {
     if (onProgress) onProgress({ error: '美团校招需登录，待嵌入式登录适配', collected: 0 });
-    return [];
+    throw new Error('美团校招岗位尚未适配，请使用官网入口');
   }
   const cutoff = new Date();
   cutoff.setHours(0, 0, 0, 0);
@@ -90,15 +93,17 @@ async function listMeituanJobs({ daysBack = 30, pageSize = 20, recruitType = 'so
   let total = 0;
 
   while (collected.length < MAX_TOTAL) {
-    const res = await postJson(LIST_URL, { pageSize, pageNo, cityList: [], categoryList: [] });
+    const res = await postJson(LIST_URL, { page: { pageSize, pageNo }, jobShareType: '1', jobType: [{ code: '3', subCode: [] }], cityList: [], department: [], jfJgList: [], typeCode: [], specialCode: [], keywords: '' });
     if (res.status !== 200 || !res.json?.data) {
       if (onProgress) onProgress({ pageNo, error: `美团接口返回 ${res.status}`, collected: collected.length });
-      break;
+      throw new Error('岗位接口返回异常，保留上次岗位数据');
     }
 
-    const items = res.json.data.list || res.json.data.records || [];
-    total = res.json.data.total || res.json.data.count || total;
+    const items = res.json.data.list || res.json.data.records;
+    if (!Array.isArray(items)) throw new Error('美团岗位列表结构异常');
+    total = res.json.data.page?.totalCount || res.json.data.page?.total || res.json.data.total || res.json.data.count || total;
 
+    const previousCount = seen.size;
     let tooOldCount = 0;
     for (const item of items) {
       const job = normalizeJob(item);
@@ -109,6 +114,7 @@ async function listMeituanJobs({ daysBack = 30, pageSize = 20, recruitType = 'so
       collected.push(job);
     }
 
+    if (items.length && seen.size === previousCount) throw new Error('美团返回重复页，已停止刷新并保留旧数据');
     if (onProgress) onProgress({ pageNo, fetched: items.length, total, collected: collected.length, latestJob: collected.length ? collected[collected.length - 1].title : '' });
     if (items.length < pageSize || tooOldCount === items.length) break;
     pageNo += 1;

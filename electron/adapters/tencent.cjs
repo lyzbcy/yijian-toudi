@@ -15,6 +15,7 @@
 //   - 用缓存的旧 postId 调详情可能 500，详情调用必须用列表里拿到的最新 PostId。
 
 const https = require('node:https');
+const { guardRequest, guardResponse } = require('../http-lifecycle.cjs');
 
 const ENDPOINT = 'https://careers.tencent.com/tencentcareer/api/post/Query';
 const REFERER = 'https://careers.tencent.com/search.html';
@@ -36,6 +37,7 @@ function fetchJson(url) {
         'Accept-Language': 'zh-CN,zh;q=0.9'
       }
     }, (response) => {
+      guardResponse(response, reject);
       if (response.statusCode !== 200) {
         response.resume();
         return reject(new Error(`腾讯 API 返回 ${response.statusCode}`));
@@ -51,6 +53,7 @@ function fetchJson(url) {
         }
       });
     });
+    guardRequest(request);
     request.on('error', reject);
     request.setTimeout(20_000, () => {
       request.destroy(new Error('腾讯 API 请求超时'));
@@ -84,7 +87,7 @@ function normalizePost(post) {
     salary: '',
     jobType: '社招',
     tags: ['社招', post.CategoryName, post.ProductName].filter(Boolean),
-    postedAt: postedDate ? postedDate.toISOString().slice(0, 10) : '',
+    postedAt: postedDate ? `${postedDate.getFullYear()}-${String(postedDate.getMonth() + 1).padStart(2, '0')}-${String(postedDate.getDate()).padStart(2, '0')}` : '',
     source: '腾讯招聘官网',
     favorite: false,
     match: 0,
@@ -125,11 +128,11 @@ async function listTencentJobs({ daysBack = 30, pageSize = 50, recruitType = 'so
     } catch (error) {
       // 单页失败不致命：已抓到的保留，记录后中止本次抓取
       if (onProgress) onProgress({ page: pageIndex, error: error.message, collected: collected.length });
-      break;
+      throw error;
     }
 
-    if (payload.Code !== 200 || !payload.Data) {
-      break;
+    if (payload.Code !== 200 || !Array.isArray(payload.Data?.Posts)) {
+      throw new Error('腾讯岗位接口返回异常，保留上次岗位数据');
     }
 
     const posts = payload.Data.Posts || [];

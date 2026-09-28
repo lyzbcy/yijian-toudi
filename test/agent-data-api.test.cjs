@@ -36,8 +36,8 @@ test('patchResume 更新 basic（全局字段）', () => {
     profiles: [{ id: 'default', label: '默认', intention: {}, education: [], experience: [], projects: [], basic: { name: '旧名', phone: '123' } }]
   };
   const result = patchResume(resume, { basic: { name: '新名' } }, { merge: true });
-  assert.equal(result.profiles[0].basic.name, '新名');
-  assert.equal(result.profiles[0].basic.phone, '123'); // 合并保留
+  assert.equal(result.basic.name, '新名');
+  assert.equal(result.basic.phone, '123'); // 合并保留
 });
 
 test('batchAddToCart 批量加岗位，跳过已存在和不存在', () => {

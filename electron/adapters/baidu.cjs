@@ -15,6 +15,7 @@
 //   - 每页固定 10 条，全量需按关键词遍历。
 
 const https = require('node:https');
+const { guardRequest, guardResponse } = require('../http-lifecycle.cjs');
 
 // 社招用 social-list，校招用 list（两个 SSR 页面结构一致，校招页含 recruitType 字段区分 GRADUATE/INTERN/SOCIAL）
 const SOCIAL_BASE = 'https://talent.baidu.com/jobs/social-list';
@@ -35,6 +36,7 @@ function fetchText(url, referer) {
         'Accept-Language': 'zh-CN,zh;q=0.9'
       }
     }, (response) => {
+      guardResponse(response, reject);
       if (response.statusCode !== 200) {
         response.resume();
         return reject(new Error(`百度社招页返回 ${response.statusCode}`));
@@ -44,6 +46,7 @@ function fetchText(url, referer) {
       response.on('data', (chunk) => { body += chunk; });
       response.on('end', () => resolve(body));
     });
+    guardRequest(request);
     request.on('error', reject);
     request.setTimeout(20_000, () => request.destroy(new Error('百度社招页请求超时')));
     request.end();
@@ -141,11 +144,11 @@ async function listBaiduJobs({ daysBack = 30, recruitType = 'social', keywords =
       html = await fetchText(url, base);
     } catch (error) {
       if (onProgress) onProgress({ keyword, error: error.message, collected: collected.length });
-      await sleep(500);
-      continue;
+      throw error;
     }
     const data = extractInitialData(html);
-    const posts = data?.listData?.listDetailData || [];
+    const posts = data?.listData?.listDetailData;
+    if (!Array.isArray(posts)) throw new Error('百度岗位页面结构异常，保留上次岗位数据');
     let keep = 0;
     for (const post of posts) {
       const job = normalizeJob(post, isCampus ? 'campus' : 'social');

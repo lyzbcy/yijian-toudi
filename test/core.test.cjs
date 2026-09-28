@@ -149,7 +149,7 @@ test('旧版默认 false 合规答案迁移为未回答，避免把系统默认�
   assert.equal(migrated.resume.compliance.previouslyInterviewed, '');
   assert.equal(migrated.resume.compliance.criminalRecord, '');
   assert.equal(migrated.resume.intention.acceptAdjustment, '');
-  assert.equal(migrated.meta.schemaVersion, 4);
+  assert.equal(migrated.meta.schemaVersion, 5);
 });
 
 test('旧版教育默认 true 迁移为未回答，避免自动声明全日制或统招', () => {
@@ -162,7 +162,7 @@ test('旧版教育默认 true 迁移为未回答，避免自动声明全日制�
   const migrated = new JsonStore(directory).init();
   assert.equal(migrated.resume.education[0].isFullTime, '');
   assert.equal(migrated.resume.education[0].isUnified, '');
-  assert.equal(migrated.meta.schemaVersion, 4);
+  assert.equal(migrated.meta.schemaVersion, 5);
 });
 
 test('applyResumeEdit 把前端编辑的顶层经历写回 active profile（不丢用户输入）', () => {
@@ -368,12 +368,8 @@ test('P1-2 回归：applyResumeEdit 的 activeProfileId 以后端为权威', () 
     education: [], experience: [], projects: [],
     profiles: current.profiles
   };
-  const result = applyResumeEdit(current, incoming);
-  // active 应保持后端的 B，不被前端改成 A
-  assert.equal(result.activeProfileId, 'B', 'activeProfileId 应以后端为权威');
-  // 但前端的编辑值写进了哪个 profile？由于后端 active 是 B，会写进 B（这可能非用户预期，
-  // 但比「悄悄改回 A」更安全——至少数据没丢，用户能在 B 里看到）。这是并发场景的权衡。
-  assert.equal(result.profiles.find((p) => p.id === 'B').intention.roles, 'A-edited');
+  assert.throws(() => applyResumeEdit(current, incoming), /当前简历已切换/);
+  assert.equal(current.profiles.find((p) => p.id === 'B').intention.roles, 'B');
 });
 
 test('P1-4 回归：syncResumeActiveView 修正脏的 activeProfileId', () => {

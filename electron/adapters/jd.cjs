@@ -8,6 +8,7 @@
 // jobType: 3=社招（首页推荐位用其他 type，列表页固定 3）。
 
 const https = require('node:https');
+const { guardRequest, guardResponse } = require('../http-lifecycle.cjs');
 
 const LIST_URL = 'https://zhaopin.jd.com/web/job/job_list';
 const COUNT_URL = 'https://zhaopin.jd.com/web/job/job_count';
@@ -19,18 +20,19 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function postJson(url, body) {
   return new Promise((resolve, reject) => {
-    const payload = JSON.stringify(body);
+    const payload = new URLSearchParams(body).toString();
     const req = https.request(url, {
       method: 'POST',
       headers: {
         'User-Agent': USER_AGENT,
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
         Referer: REFERER,
         Origin: 'https://zhaopin.jd.com',
         'Content-Length': Buffer.byteLength(payload),
         Accept: 'application/json, text/plain, */*'
       }
     }, (response) => {
+      guardResponse(response, reject);
       let data = '';
       response.setEncoding('utf8');
       response.on('data', (chunk) => { data += chunk; });
@@ -40,6 +42,7 @@ function postJson(url, body) {
         resolve({ status: response.statusCode, json, raw: data });
       });
     });
+    guardRequest(req);
     req.on('error', reject);
     req.setTimeout(20_000, () => req.destroy(new Error('京东 API 请求超时')));
     req.write(payload);
@@ -53,7 +56,7 @@ function normalizeJob(item) {
   return {
     id: `jd-${item.positionId}`,
     companyId: 'jd',
-    title: item.positionName || item.positionNameOpen || '未命名岗位',
+    title: item.positionNameOpen || item.positionName || '未命名岗位',
     department: item.positionDeptName || '京东',
     city: item.workCity || item.workPlace || item.city || '未标注城市',
     type: '全职',
@@ -76,7 +79,7 @@ async function listJdJobs({ daysBack = 30, pageSize = 20, recruitType = 'social'
   const isCampus = ['campus', 'summer-intern', 'daily-intern'].includes(recruitType);
   if (isCampus) {
     if (onProgress) onProgress({ error: '京东校招在独立站 campus.jd.com，待抓包适配', collected: 0 });
-    return [];
+    throw new Error('京东校招岗位尚未适配，请使用官网入口');
   }
   const cutoff = new Date();
   cutoff.setHours(0, 0, 0, 0);
@@ -88,26 +91,27 @@ async function listJdJobs({ daysBack = 30, pageSize = 20, recruitType = 'social'
   let total = 0;
 
   while (collected.length < MAX_TOTAL) {
-    const res = await postJson(LIST_URL, { pageNo, pageSize, jobType: 3 });
+    const res = await postJson(LIST_URL, { pageIndex: pageNo, pageSize });
     if (res.status !== 200 || !res.json) {
       if (onProgress) onProgress({ pageNo, error: `京东接口返回 ${res.status}`, collected: collected.length });
-      break;
+      throw new Error('岗位接口返回异常，保留上次岗位数据');
     }
 
     // 京东返回结构：数组直接在 res.json 里（item 列表），或包在某字段下。先探测。
-    const items = Array.isArray(res.json) ? res.json : (res.json.data || res.json.list || res.json.result || []);
+    const items = Array.isArray(res.json) ? res.json : (res.json.data || res.json.list || res.json.result);
     if (!Array.isArray(items)) {
       // 尝试拿总数
       const countRes = await postJson(COUNT_URL, { jobType: 3 });
       total = countRes.json?.count || countRes.json?.total || 0;
       if (onProgress) onProgress({ pageNo, error: '返回结构非数组，需适配', collected: collected.length, raw: res.raw.slice(0, 200) });
-      break;
+      throw new Error('岗位接口返回异常，保留上次岗位数据');
     }
     if (!total && items.length > 0) {
       const countRes = await postJson(COUNT_URL, { jobType: 3 }).catch(() => null);
       total = countRes?.json?.count || countRes?.json?.total || 0;
     }
 
+    const previousCount = seen.size;
     let tooOldCount = 0;
     for (const item of items) {
       const job = normalizeJob(item);
@@ -118,6 +122,7 @@ async function listJdJobs({ daysBack = 30, pageSize = 20, recruitType = 'social'
       collected.push(job);
     }
 
+    if (items.length && seen.size === previousCount) throw new Error('京东返回重复页，已停止刷新并保留旧数据');
     if (onProgress) onProgress({ pageNo, fetched: items.length, total, collected: collected.length, latestJob: collected.length ? collected[collected.length - 1].title : '' });
     if (items.length < pageSize || tooOldCount === items.length) break;
     pageNo += 1;

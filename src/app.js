@@ -130,6 +130,49 @@
     return Object.fromEntries(state.companies.map((company) => [company.id, company]));
   }
 
+async function updateKimiBridgeStatus() {
+  try {
+    const status = await window.oneClick.kimiStatus();
+    let text = status.running
+      ? (status.connected ? '已连接（扩展在线）' : '服务已启动，等待扩展连接')
+      : '未启动';
+    if (status.connected && status.boundAccount) text += ` · 绑定账号 ${status.boundAccount}`;
+    $('#kimiBridgeStatus').textContent = text;
+  } catch { $('#kimiBridgeStatus').textContent = '状态未知'; }
+}
+async function updateBossBatchStatus() {
+  try {
+    const status = await window.oneClick.bossBatchStatus();
+    const running = status.running;
+    $('#bossBatchStartButton').hidden = running;
+    $('#bossBatchStopButton').hidden = !running;
+    if (running) {
+      $('#bossBatchStatusLine').textContent = `运行中：已投 ${status.applied.length} 笔`;
+    } else {
+      const count = status.applied.length;
+      $('#bossBatchStatusLine').textContent = count
+        ? `上次批量投出 ${count} 笔（${status.stopReason || '完成'}）。`
+        : '未运行。';
+    }
+  } catch {}
+}
+// 账号下拉（代投商业化）：渲染 accounts + activeAccountId；选中即切换
+async function updateBossAccounts() {
+  try {
+    const data = await window.oneClick.accountList();
+    const sel = $('#bossAccountSelect');
+    if (!sel) return;
+    sel.innerHTML = '';
+    for (const acc of data.accounts || []) {
+      const opt = document.createElement('option');
+      opt.value = acc.id;
+      const extra = acc.phoneMasked ? `（${acc.phoneMasked}，已投 ${acc.totalApplied}）` : (acc.id === 'default' ? '（自用）' : '');
+      opt.textContent = `${acc.name}${extra}`;
+      opt.selected = acc.id === data.activeAccountId;
+      sel.appendChild(opt);
+    }
+  } catch {}
+}
   function renderState() {
     maybeShowStarCard();
     if (!state) return;
@@ -162,6 +205,11 @@
     $('#recruitType').value = state.settings.jobs?.recruitType ?? 'social';
     $('#autoRefreshJobs').checked = state.settings.jobs?.autoRefresh !== false;
     $('#wechatQuickLogin').checked = Boolean(state.settings.wechatQuickLogin);
+    $('#kimiBridgeEnabled').checked = state.settings.kimiBridgeEnabled !== false;
+    $('#wecomWebhook').value = state.settings.wecomWebhook || '';
+    updateKimiBridgeStatus();
+    updateBossBatchStatus();
+    updateBossAccounts();
     const lastRefresh = state.settings.jobs?.lastRefreshAt;
     $('#jobsLastRefresh').textContent = lastRefresh ? `上次抓取：${new Date(lastRefresh).toLocaleString('zh-CN')}` : '还没有抓取过岗位。';
 
@@ -721,10 +769,10 @@
       const isActive = profile.id === activeId;
       const canDelete = profiles.length > 1 && profile.id !== 'default';
       const delBtn = canDelete ? `<button type="button" class="profile-del" data-del-profile="${escapeHtml(profile.id)}" title="删除这份简历">×</button>` : '';
-      return `<button type="button" class="profile-tab ${isActive ? 'active' : ''}" data-profile="${escapeHtml(profile.id)}">
+      return `<div role="button" tabindex="0" class="profile-tab ${isActive ? 'active' : ''}" data-profile="${escapeHtml(profile.id)}">
         <span class="profile-tab-label" data-rename-profile="${escapeHtml(profile.id)}">${escapeHtml(profile.label || profile.id)}</span>
         ${delBtn}
-      </button>`;
+      </div>`;
     }).join('') + `<button type="button" class="profile-tab profile-add" data-add-profile title="新建一份简历">＋</button>`;
   }
 
@@ -848,6 +896,7 @@ Authorization: Bearer ${state.settings.apiToken}
 - /v1/resume    脱敏简历（含多 profile；身份与家庭等敏感信息不会提供给 Agent）
 - /v1/messages  招聘邮件
 - /v1/tasks     任务记录
+- /v1/boss/accounts 与 /v1/boss/batch/status  账号与批量投递状态
 
 可提交命令（POST /v1/commands，Header: Idempotency-Key: <本次动作唯一键>）：
 
@@ -869,6 +918,7 @@ Authorization: Bearer ${state.settings.apiToken}
 
 【外部操作】
 - 招聘官网填表、投递和邮箱同步不能由 Agent 直接启动；请提示我回到“一键投递”应用，由我本人点击并核对。
+- Boss 批量投递是单独的授权入口：先核对账号与 dryRun；明确要求后才调用 /v1/boss/batch/start，必须带 accountId、target、dryRun。每日定时任务请使用同版本 yijian-toudi Skill 的部署说明。
 
 规则：
 1. 先读状态再做事；想干嘛都可以，本地数据随便改；
@@ -1277,50 +1327,57 @@ Authorization: Bearer ${state.settings.apiToken}
       renderState();
     }, '简历已安全保存在本机'));
     // 新建简历 profile
+    $('#resumeProfilesBar').addEventListener('keydown', (event) => {
+      if (event.target.matches('[data-profile]') && ['Enter', ' '].includes(event.key)) {
+        event.preventDefault();
+        event.target.click();
+      }
+    });
     $('#resumeProfilesBar').addEventListener('click', async (event) => {
-      const addBtn = event.target.closest('[data-add-profile]');
-      if (addBtn) {
-        const label = prompt('给这份简历起个名字（比如：产品方向、运营方向、实习）', '');
-        if (label === null) return; // 用户取消
-        const result = await window.oneClick.addProfile(label);
-        state = result.state;
-        renderState();
-        toast(`已创建「${label || '简历 ' + state.resume.profiles.length}」`);
-        return;
-      }
-      const delBtn = event.target.closest('[data-del-profile]');
-      if (delBtn) {
-        event.stopPropagation();
-        const profileId = delBtn.dataset.delProfile;
-        const profile = state.resume.profiles.find((p) => p.id === profileId);
-        if (!confirm(`确定删除「${profile?.label || profileId}」吗？这份的意向和经历会从本机移除（联系方式等共享信息不受影响）。`)) return;
-        state = await window.oneClick.deleteProfile(profileId);
-        renderState();
-        toast('已删除这份简历');
-        return;
-      }
-      // 单击 tab → 切换（label 也在 tab 内，点击 label 同样切换）
-      const tab = event.target.closest('[data-profile]');
-      if (tab) {
-        const profileId = tab.dataset.profile;
-        if (profileId === state.resume.activeProfileId) return;
-        // 切换前保存当前编辑（避免丢输入），再切。两次写操作期间会有广播，
-        // 用 localWriteInFlight 标记屏蔽中间广播；切换后主动 getState 拿权威最新状态，
-        // 避免 switchProfile 返回值被积压的旧广播（saveResume 时的，active=旧 profile）覆盖。
-        localWriteInFlight = true;
-        try {
+      if (localWriteInFlight) return;
+      localWriteInFlight = true;
+      try {
+        const addBtn = event.target.closest('[data-add-profile]');
+        if (addBtn) {
+          const label = prompt('给这份简历起个名字（比如：产品方向、运营方向、实习）', '');
+          if (label === null) return; // 用户取消
+          await window.oneClick.saveResume(collectResume());
+          const result = await window.oneClick.addProfile(label);
+          state = result.state;
+          renderState();
+          toast(`已创建「${label || '简历 ' + state.resume.profiles.length}」`);
+          return;
+        }
+        const delBtn = event.target.closest('[data-del-profile]');
+        if (delBtn) {
+          event.stopPropagation();
+          const profileId = delBtn.dataset.delProfile;
+          const profile = state.resume.profiles.find((p) => p.id === profileId);
+          if (!confirm(`确定删除「${profile?.label || profileId}」吗？这份的意向和经历会从本机移除（联系方式等共享信息不受影响）。`)) return;
+          await window.oneClick.saveResume(collectResume());
+          state = await window.oneClick.deleteProfile(profileId);
+          renderState();
+          toast('已删除这份简历');
+          return;
+        }
+        // 单击 tab → 切换（label 也在 tab 内，点击 label 同样切换）
+        const tab = event.target.closest('[data-profile]');
+        if (tab) {
+          const profileId = tab.dataset.profile;
+          if (profileId === state.resume.activeProfileId) return;
+          // 在本地写入锁内保存后再切换，完成后读取权威状态。
           await window.oneClick.saveResume(collectResume());
           await window.oneClick.switchProfile(profileId);
           state = await window.oneClick.getState();
-        } catch (e) {
-          toast(e.message || '切换失败', 'error');
-        } finally {
-          localWriteInFlight = false;
+          renderState();
+          const p = state.resume.profiles.find((x) => x.id === profileId);
+          toast(`已切换到「${p?.label || profileId}」`);
+          return;
         }
-        renderState();
-        const p = state.resume.profiles.find((x) => x.id === profileId);
-        toast(`已切换到「${p?.label || profileId}」`);
-        return;
+      } catch (error) {
+        toast(error.message || '简历操作失败', 'error');
+      } finally {
+        localWriteInFlight = false;
       }
     });
     // 双击 label → 重命名（避免和单击切换冲突）
@@ -1444,7 +1501,10 @@ Authorization: Bearer ${state.settings.apiToken}
       // 发现新版本：展示版本+说明，提供「一键下载更新」
       const notes = (result.releaseNotes || '').slice(0, 300);
       const canDownload = Boolean(result.download);
-      const msg = `发现新版本 ${result.latest}（当前 ${result.current}）。\n\n${notes ? '更新说明：\n' + notes + '\n\n' : ''}${canDownload ? '点「确定」一键下载到「下载」文件夹，下载完会自动打开文件夹，你把新应用拖到「应用程序」替换旧版即可。' : '本次没有找到自动下载链接，将打开 GitHub Release 页面手动下载。'}`;
+      const installHint = result.download?.name?.toLowerCase().endsWith('.exe')
+        ? '下载后双击安装包，按提示升级即可。'
+        : '下载后将新应用拖到「应用程序」替换旧版即可。';
+      const msg = `发现新版本 ${result.latest}（当前 ${result.current}）。\n\n${notes ? '更新说明：\n' + notes + '\n\n' : ''}${canDownload ? `点「确定」下载到「下载」文件夹。${installHint}` : '本次没有找到自动下载链接，将打开 GitHub Release 页面手动下载。'}`;
       if (!confirm(msg)) return { canceled: true };
       if (!canDownload) {
         await window.oneClick.openExternal(result.url);
@@ -1461,9 +1521,9 @@ Authorization: Bearer ${state.settings.apiToken}
       if (dl.shaChecked && !dl.shaOk) {
         toast('⚠️ 校验未通过：下载文件的 SHA256 与发布的不一致，请勿安装，重新下载或到 GitHub 核对', 'error');
       } else if (dl.shaChecked && dl.shaOk) {
-        toast(`✅ 已下载并校验通过，已在「下载」文件夹打开，拖到「应用程序」替换即可`);
+        toast(`✅ 已下载并校验通过，已打开「下载」文件夹。${installHint}`);
       } else {
-        toast(`已下载到「下载」文件夹，拖到「应用程序」替换旧版即可（本次未提供校验值）`);
+        toast(`已下载到「下载」文件夹。${installHint}（本次未提供校验值）`);
       }
       return dl;
     }));
@@ -1475,11 +1535,79 @@ Authorization: Bearer ${state.settings.apiToken}
         jobsDaysBack: Math.min(365, Math.max(1, Number($('#jobsDaysBack').value) || 30)),
         recruitType: $('#recruitType').value,
         autoRefreshJobs: $('#autoRefreshJobs').checked,
-        wechatQuickLogin: $('#wechatQuickLogin').checked
+        wechatQuickLogin: $('#wechatQuickLogin').checked,
+        kimiBridgeEnabled: $('#kimiBridgeEnabled').checked,
+        wecomWebhook: $('#wecomWebhook').value.trim()
       });
       renderState();
     }, '设置已保存'));
-    $('#promoButton').addEventListener('click', () => $('#promoDialog').showModal());
+    // —— Boss 批量 / Kimi 桥 / 企微通知（2026-09-20）——
+$('#wecomTestButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
+  await window.oneClick.updateSettings({ wecomWebhook: $('#wecomWebhook').value.trim() });
+  const result = await window.oneClick.testWecomNotify();
+  if (result && result.sent) toast('测试消息已发送到企业微信');
+  else toast(`发送失败：${(result && result.reason) || '未知原因'}`);
+}));
+$('#kimiRestartButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
+  const status = await window.oneClick.kimiRestart();
+  toast(status.running ? 'Kimi 桥已重启' : '启动失败：端口可能被占用');
+  updateKimiBridgeStatus();
+}));
+$('#bossBatchDryRunButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
+  const result = await window.oneClick.bossBatchStart({ dryRun: true, target: 10 });
+  if (result.error) { toast(`无法开始：${result.error}`); return; }
+  toast('演练已开始（不会实际发送沟通）');
+  updateBossBatchStatus();
+}));
+$('#bossBatchStartButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
+  const sel = $('#bossAccountSelect');
+  const accountId = sel && sel.value !== 'default' ? sel.value : undefined;
+  const result = await window.oneClick.bossBatchStart({ dryRun: false, target: 30, accountId });
+  if (result.error) { toast(`无法开始：${result.error}${result.message ? '：' + result.message : ''}`); return; }
+  toast('批量投递已开始，进度见企业微信通知');
+  updateBossBatchStatus();
+}));
+$('#bossBatchStopButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
+  await window.oneClick.bossBatchStop();
+  toast('已发出停止信号，正在收尾');
+  updateBossBatchStatus();
+}));
+// —— 账号管理（代投商业化）——
+$('#bossAccountSelect')?.addEventListener('change', async (event) => {
+  const result = await window.oneClick.accountSelect(event.target.value);
+  if (result.error) { toast(`切换失败：${result.error}`); }
+  updateKimiBridgeStatus();
+});
+$('#bossAccountCreateButton')?.addEventListener('click', (event) => run(event.currentTarget, async () => {
+  const name = prompt('客户名（用于档案与报表标识）：');
+  if (!name) return;
+  const phoneTail = prompt('客户 Boss 手机号后 4 位（用于扫码后核对身份，可留空跳过）：') || '';
+  const result = await window.oneClick.accountCreate({ name, phoneMasked: phoneTail ? `***${phoneTail}` : '' });
+  if (result.error) { toast(`创建失败：${result.error}`); return; }
+  toast(`客户账号已创建：${result.account.name}`);
+  await updateBossAccounts();
+  const sel = $('#bossAccountSelect');
+  if (sel) { sel.value = result.account.id; await window.oneClick.accountSelect(result.account.id); }
+}));
+$('#bossAccountLaunchButton')?.addEventListener('click', (event) => run(event.currentTarget, async () => {
+  const sel = $('#bossAccountSelect');
+  if (!sel || sel.value === 'default') { toast('自用账号无需独立浏览器，直接用日常 Edge 扫码登录'); return; }
+  const result = await window.oneClick.accountLaunch(sel.value);
+  if (result.error) { toast(`启动失败：${result.error}${result.message ? '：' + result.message : ''}`); return; }
+  toast('客户浏览器已打开，请客户在窗口内扫码登录 Boss，登录后点"验证绑定"');
+}));
+$('#bossAccountVerifyButton')?.addEventListener('click', (event) => run(event.currentTarget, async () => {
+  const sel = $('#bossAccountSelect');
+  if (!sel) return;
+  const result = await window.oneClick.accountVerify(sel.value);
+  if (result.error) { toast(`验证失败：${result.error}${result.message ? '：' + result.message : ''}`); return; }
+  if (result.verified) { toast(`身份核对通过（${result.detected}），账号已绑定`); }
+  else { toast(`未能自动核对：${result.message || '请人工确认'}`); }
+  updateKimiBridgeStatus();
+  updateBossAccounts();
+}));
+
+$('#promoButton').addEventListener('click', () => $('#promoDialog').showModal());
     $('#workspaceFinish').addEventListener('click', async () => {
       if (resumeSyncTransitioning) return;
       const generation = resumeSyncGeneration;
@@ -1565,6 +1693,6 @@ Authorization: Bearer ${state.settings.apiToken}
   }
 
   init().catch((error) => {
-    document.body.innerHTML = `<main style="padding:40px;font-family:sans-serif"><h1>应用启动失败</h1><p>${escapeHtml(error.message)}</p></main>`;
+    document.body.innerHTML = `<main style="padding:40px;font-family:sans-serif"><h1>应用启动失败</h1><pre>${escapeHtml(error.stack || error.message)}</pre></main>`;
   });
 })();

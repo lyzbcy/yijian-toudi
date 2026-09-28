@@ -209,6 +209,7 @@ async function openWorkspace({
       return {
         action: 'allow',
         overrideBrowserWindowOptions: {
+          show: process.env.YIJIAN_BACKGROUND_TEST !== '1',
           width: 480,
           height: 640,
           title: `${company.name || company.id} 登录`,

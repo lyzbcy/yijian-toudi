@@ -1,6 +1,6 @@
 {
   "name": "yijian-toudi",
-  "version": "0.3.1",
+  "version": "0.5.0",
   "description": "把岗位、简历和招聘消息放在一个地方管理的本地桌面应用",
   "main": "electron/main.cjs",
   "type": "commonjs",
@@ -11,6 +11,8 @@
     "start": "electron .",
     "dev": "electron . --dev",
     "test": "node --test test/*.test.cjs",
+    "test:background": "node scripts/test-background.cjs",
+    "test:live-jobs": "node test/live-jobs-full.cjs",
     "test:ui": "node test/ui-smoke.cjs",
     "test:ui:resume": "node test/ui-resume-segments.cjs",
     "test:ui:profiles": "node test/ui-resume-profiles.cjs",
@@ -22,13 +24,17 @@
     "check": "node scripts/check-project.cjs",
     "pack:mac": "electron-builder --mac dir",
     "dist:mac": "electron-builder --mac dmg zip",
+    "pack:win": "electron-builder --win dir --config.electronDist=node_modules/electron/dist",
+    "dist:win": "electron-builder --win nsis --config.electronDist=node_modules/electron/dist",
     "release": "node scripts/release.cjs",
+    "pack:skill": "node scripts/package-skill.cjs",
     "preview:site": "node scripts/site-preview.cjs"
   },
   "dependencies": {
     "imapflow": "1.5.0",
     "mailparser": "3.9.14",
-    "playwright-core": "1.61.1"
+    "playwright-core": "1.61.1",
+    "ws": "^8.21.3"
   },
   "devDependencies": {
     "electron": "43.2.0",
@@ -74,8 +80,9 @@
       ]
     },
     "win": {
+      "icon": "build/icon.ico",
       "target": "nsis",
-      "artifactName": "一键投递-${version}-Setup.${ext}"
+      "artifactName": "yijian-toudi-setup-${version}.${ext}"
     }
   },
   "engines": {

@@ -6,8 +6,18 @@ const root = path.resolve(__dirname, '..', 'site');
 const assetsSource = path.resolve(__dirname, '..', 'src', 'assets');
 const port = Number(process.env.SITE_PREVIEW_PORT || 4173);
 
-// 介绍页只维护 src/assets 这一份源，预览前同步到 site/assets
-fs.cpSync(assetsSource, path.join(root, 'assets'), { recursive: true });
+// 介绍页只维护 src/assets 这一份源，预览前同步到 site/assets。
+// Node 24 在部分 Windows 目录上递归 cpSync 会触发进程崩溃，逐文件复制更稳定。
+function syncAssets(source, target) {
+  fs.mkdirSync(target, { recursive: true });
+  for (const entry of fs.readdirSync(source, { withFileTypes: true })) {
+    const from = path.join(source, entry.name);
+    const to = path.join(target, entry.name);
+    if (entry.isDirectory()) syncAssets(from, to);
+    else if (entry.isFile()) fs.copyFileSync(from, to);
+  }
+}
+syncAssets(assetsSource, path.join(root, 'assets'));
 const mime = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',

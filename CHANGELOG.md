@@ -1,5 +1,82 @@
 # 更新记录
 
+## v0.5.0 开发补充 · 2026-09-28
+
+- 新增可随应用同版本发布的 `yijian-toudi` Skill、零依赖每日触发器、SHA256 打包和 Release 自动附包工作流。
+- 「连接 AI Agent」页与 README 增加通用云端部署说明；服务仍留在桌面，经仅回环可见的 SSH 隧道连接。
+- 修正介绍页旧版 ZIP 的失效直链，改为指向最近公开 Release 页面；静态页缓存版本递增至 7。
+- 2026-09-28 本机后台回归全过，六厂匿名岗位读取全过；macOS 安装、真实账号投递与云端隧道尚待对应环境实测，Windows 仅作为测试预发布。
+- Windows x64 补齐本地图标与可复现的 `pack:win`/`dist:win` 入口；NSIS 安装包实测静默安装到隔离目录、启动已安装 exe、验证 UI 与 Agent API、静默卸载均通过。
+- 修复新版 0.5.0 错把旧稳定版 0.3.1 识别为更新；更新检查按语义版本比较并选当前平台资产，Windows 下载提示改为运行 NSIS 安装包。
+
+## v0.5.0 · 2026-09-23
+
+### 新增：Boss 代投商业化（skill 固化 + 多账号）
+
+- **多账号档案（schema v5）**：`state.accounts[]` + `activeAccountId`，老数据自动迁移并补"我自己"默认账号；客户账号含授权留痕（consent：扫码登录=授权，记录客户名与确认时间）。
+- **账号浏览器管理**（`electron/account-browser.cjs`）：每客户账号独立 Edge 实例（`--user-data-dir` 隔离登录态）+ `--load-extension` 强制加载 Kimi 扩展（`scripts/extract-kimi-extension.cjs` 从日常 Edge 提取一次，本机实测 Kimi v2.0.9 提取+加载+连桥全通）。
+- **身份绑定闭环**（防串号）：客户扫码后 `account:verify` 导航 Boss 用户页抓脱敏手机号与档案比对，匹配才绑定；不匹配企微报警。桥新增 `boundAccountId` 登记。
+- **投递记录落盘**：批量引擎新增 `onApplied` 回调，每笔投出即写入账号档案（applied + banCompanies），进程重启不丢；**修复跨批去重恒空 bug**（main.cjs 原 `appliedBefore=[]` 从未读历史）。
+- **新客户账号首日限额 50**（自用 120）：start handler 强制拦截，防新登录即高频投递触发风控；批量结束通知附免责声明。
+- **Agent API 代投控制面**：`/v1/boss/batch/start|stop|status`、`/v1/boss/accounts[/create|/select|/launch|/close|/verify]`（apiToken 鉴权）。
+- **skill `boss-daitou`**（`~/.agents/skills/boss-daitou/`）：代投标准流程（建档→扫码→验证→启动→监控→报表）+ references/playbook.md（24 工具表/三板斧/rc-upload 管线/各站坑位）+ scripts.md。AI 只在启动与异常时介入，一次代投 token 成本从数百次模型调用降到十几次。
+- **Playwright 备胎**（`electron/playwright-bridge-adapter.cjs`）：与 Kimi 桥同契约（navigate/snapshot/click）的 CDP 适配器，Kimi 扩展断供时换构造参数即切，本轮只备不切。
+- **设置页 UI**：Boss 批量卡片新增账号下拉（切换/新建客户/启动扫码浏览器/验证绑定）；批量启动带账号上下文；Kimi 桥状态显示绑定账号。
+- 实战脚本参数化：`bd-apply-full.py` 个人信息改读 app 简历+命令行（身份证号仅 `--idnum`/环境变量 `YJTD_IDNUM`，不落盘）、支持 `--dry-run`/`--detail-id`；`cdp-app*.cjs` 端口参数化。
+
+### 修复
+
+- 版本号四处不一致（package 0.4.2 vs 应用 HTML 0.3.1）：统一同步至 0.5.0，版本测试恢复通过。
+- `scripts/test-apply.cjs` 在纯 node 测试扫描下崩溃：加 electron 存在性守卫。
+- `core.test` 的 schemaVersion 断言随 v5 迁移更新（4→5）。
+
+### 已知限制（本轮不做）
+
+- 多账号并发投递（串行单活跃连接，Kimi 扩展协议无法带账号标识）。
+- Kimi→Playwright 实际切换（adapter 已备）。
+- 收款计费（企微人工对账）。
+- 5 个预存环境类测试失败与本次无关：live-jobs-full（腾讯抓取重复 ID，外网数据）、real-site-sync-run / real-site-url-discovery（electron 超时）、site-smoke（浏览器探测）。
+
+## v0.4.2 · 2026-09-21
+
+### 新增
+
+- Boss 批量引擎扩池（100 家/日目标）：杭州加入校招城市；实习查询 8→12（新增小程序/客户端/Node.js/移动端）；校招查询 7→10（新增人工智能/软件工程师/算法）；每个查询抓取 2 页；TECH 词表补 `人工智能|Node|算法`，EXCL 补 `标注|数据标注|标注员|审核员`（AI 查询引来标注岗的事前拦截）。
+- `scripts/boss-batch-monitor.cjs`：批量进度监控（CDP 轮询状态，每分钟记录，结束打印全清单并落盘 `%TEMP%/boss-batch-state.json`）。
+- Kimi 桥 `navigate` 支持 `newTab: true` 开新标签页（实测 tabId 切换，会话跟随新页）——官网投递表单与 Boss 批量可同时保有各自标签页，互不覆盖。
+
+## v0.4.1 · 2026-09-20
+
+### 新增
+
+- `scripts/cdp-app-file.cjs`：CDP 表达式从文件读取，突破 Windows 命令行 32KB 长度限制（大体积 base64 推送的必备通道）。
+- 官网投递后台标签页三板斧（设计文档 §11）：Kimi 桥 `cdp` 工具受信任点击（chrome.debugger 直发、不动真实鼠标）+ `Emulation.setFocusEmulationEnabled` 焦点仿真（字节投递按钮对 hasFocus()=false 的后台页静默吞事件）+ 点击前重读 rect 校准坐标。京东/字节两站实测打穿。
+- 简历附件上传链路：PDF base64 分块（130KB/块）注入 + rc-upload 实例 `uploadFiles([File])` 直调，绕过扩展 MV3 文件权限；京东"上传并解析"与字节"解析并覆盖"均验证可自动填表。
+
+### 实测记录
+
+- 京东：前端开发工程师（2027 届正式）简历解析完成度 100%，表单 90% 已填，剩余证件号/生日/照片/城市待用户补齐。
+- 字节：前端开发工程师-APM（2027 届正式，沪/杭）申请表 99%（城市上海+杭州、教育、实习、3 个项目、荣誉全填），仅剩身份证号与提交。
+
+## v0.4.0 · 2026-09-20
+
+### 新增
+
+- 企业微信通知：设置页可配置群机器人 Webhook，投递事件经本机直发企微（仅信任 qyapi.weixin.qq.com 官方域，内置频控 18 条/分钟兜底）。
+- Kimi 桥控制层（实验）：内置 WebSocket 服务端（ws://127.0.0.1:10086），用户浏览器中的 Kimi 扩展自动连接，协议 hello/hello_ack + tool_call/tool_result（2026-09-19 逆向实测确立，见 doc/specs 设计 §9.2）。含 MV3 休眠断连自动重试与 ping 保活。
+- Boss 批量投递引擎（实验）：规则=开发岗（前端/后端/全栈/游戏/AI/算法）且在校可投（实习/校招/应届），排除测试、销售运营、美术等非开发岗；城市-轨道配对默认「武汉=实习，上海/苏州/无锡=27 届校招」；dryRun 演练模式不实际发送；遇 Boss 安全验证自动停止；随机 25-45s 间隔频控。筛选规则含 2026-09-19 三轮实测的回归用例（陪玩/UI设计/动作/项目申报等事故岗全部排除）。
+- 设置页新增「Boss 批量投递（实验）」卡片：Kimi 桥开关与连接状态、企微 Webhook 配置与测试按钮、批量开始/停止/演练。
+
+### 修复
+
+- 批量引擎在桥 session 标签停留非 Boss 页面时自动重新导航（官网投递与批量混用场景）。
+
+### 已知限制
+
+- 批量投递使用第三方浏览器扩展控制已登录页面，属于平台协议灰色地带，用户自担风险；dryRun 可先演练。
+- 官网投递（腾讯/字节/京东/美团等）仍走既有「打开详情页+人工提交」流程；批量引擎仅覆盖 Boss。
+- dryRun 演练不计入「已投」统计（后续版本改进为独立计数）。
+
 ## v0.2.0 · 2026-07-25
 
 ### 新增

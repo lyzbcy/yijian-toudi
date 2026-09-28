@@ -4,7 +4,12 @@
 
 ## 当前状态
 
-- 版本：`0.3.0 内测版`
+- v0.4.0（2026-09-20）：企微通知 + Kimi 桥控制层 + Boss 批量投递引擎（实验）已并入，设置页可配置；详见 [specs/2026-09-19-Boss一键投递与网申自动填写-design.md](specs/2026-09-19-Boss一键投递与网申自动填写-design.md) §9-§10 与 CHANGELOG
+
+- 后台稳定性修复与验收：[progress/2026-09-09-后台稳定性打磨.md](progress/2026-09-09-后台稳定性打磨.md)
+- 0.5.0 发布就绪度实测：[progress/2026-09-28-release-readiness.md](progress/2026-09-28-release-readiness.md)
+
+- 工作树版本：`0.5.0 Windows x64 测试预发布候选`；最近稳定 Release：`v0.3.1`
 - 目标平台：macOS（Electron，架构保留 Windows 打包能力）
 - 可真实使用：本地简历保存、收藏与筛选、QQ 邮箱 IMAP 同步、本机 Agent API、更新检查、真实浏览器入口，以及腾讯、百度、字节跳动、小米、京东、美团岗位抓取；阿里职位与 BOSS 受事实源/平台协议限制仅提供官方手动入口
 - 已有安全闭环骨架：腾讯、字节、阿里简历在带退出栏的内嵌工作区进行高置信填写/核对；“全部都要”会拆成社招、校招两个方向逐站处理；保存、验证码和任何申请/投递按钮都由用户本人操作
@@ -25,6 +30,7 @@
 | 查简历字段缺口 | [specs/简历字段缺口-2026-07-26.md](specs/简历字段缺口-2026-07-26.md) |
 | 维护 QQ 邮箱同步 | [integrations/qq-mail.md](integrations/qq-mail.md) |
 | 规划下一阶段 | [development/roadmap.md](development/roadmap.md) |
+| 发布 Skill 与云端定时触发 | [../skill/yijian-toudi/references/deploy.md](../skill/yijian-toudi/references/deploy.md) |
 | 查看复用经验与坑 | [community/lessons.md](community/lessons.md) |
 
 ## 维护纪律

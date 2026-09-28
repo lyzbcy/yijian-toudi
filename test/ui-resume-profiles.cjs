@@ -4,8 +4,6 @@ const path = require('node:path');
 const os = require('node:os');
 const { _electron: electron } = require('playwright-core');
 
-// 切换 profile 在快速操作下有概率出现异步广播竞争（localWriteInFlight 是单标志位）。
-// 测试失败时重试最多 2 次，避免 flaky 阻塞 CI。
 async function runOnce() {
   const root = path.resolve(__dirname, '..');
   const output = path.join(root, 'test-output');
@@ -89,25 +87,10 @@ async function runOnce() {
 }
 
 (async () => {
-  let lastErrors = [];
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    try {
-      const errors = await runOnce();
-      if (errors.length === 0) {
-        console.log(JSON.stringify({ ok: true, attempt }));
-        process.exit(0);
-      }
-      lastErrors = errors;
-      console.error(`第 ${attempt} 次尝试失败：`);
-      errors.forEach((e) => console.error('  - ' + e));
-    } catch (e) {
-      lastErrors = [e.message];
-      console.error(`第 ${attempt} 次异常：${e.message.split('\n')[0]}`);
-    }
-  }
-  console.error('❌ 多份简历 UI 测试 3 次均失败');
-  process.exit(1);
+  const errors = await runOnce();
+  if (errors.length) throw new Error(errors.join('\n'));
+  console.log(JSON.stringify({ ok: true }));
 })().catch((error) => {
   console.error(error);
-  process.exit(1);
+  process.exitCode = 1;
 });

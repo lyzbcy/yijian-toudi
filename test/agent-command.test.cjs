@@ -145,7 +145,7 @@ test('Agent 数据写入：update_resume 改简历字段并持久化', async () 
     assert.equal(data.result.ok, true);
     // 持久化校验：重新读 store
     const s = server.store.get();
-    assert.equal(s.resume.profiles[0].basic.name, '测试用户');
+    assert.equal(s.resume.basic.name, '测试用户');
   } finally {
     await server.instance.stop();
   }

@@ -167,11 +167,24 @@ const resume = {
   profiles: [createResumeProfile({ id: 'default', label: '默认简历' })]
 };
 
+function createDefaultAccount() {
+  return {
+    id: 'default',
+    name: '我自己',
+    phoneMasked: '',
+    dataDir: null,
+    consent: null,
+    boss: { applied: [], banCompanies: [], preferences: null },
+    createdAt: new Date().toISOString(),
+    lastActiveAt: null
+  };
+}
+
 function createSeed() {
   const now = new Date().toISOString();
   return {
     meta: {
-      schemaVersion: 4,
+      schemaVersion: 5,
       createdAt: now,
       updatedAt: now,
       onboardingSeen: false,
@@ -181,6 +194,8 @@ function createSeed() {
     jobs,
     messages,
     resume,
+    accounts: [createDefaultAccount()],
+    activeAccountId: 'default',
     cart: [],
     applied: [],
     audit: [],
@@ -196,6 +211,8 @@ function createSeed() {
       email: { address: '', connected: false, lastSyncAt: null },
       autoCheckUpdates: true,
       dataMode: 'live',
+      kimiBridgeEnabled: true,
+      wecomWebhook: '',
       jobs: { daysBack: 30, lastRefreshAt: null, recruitType: 'campus', autoRefresh: true },
       // 旧设置保留仅为数据兼容；自动快捷登录已停用，所有授权由用户在内嵌页操作。
       wechatQuickLogin: false
@@ -203,4 +220,4 @@ function createSeed() {
   };
 }
 
-module.exports = { createSeed, createResumeProfile, emptyEducation, emptyExperience, emptyProject, emptyFamily, emptyGame, defaultAi, defaultIntention, defaultBasic, defaultSkills, defaultExtras, defaultCompliance };
+module.exports = { createSeed, createDefaultAccount, createResumeProfile, emptyEducation, emptyExperience, emptyProject, emptyFamily, emptyGame, defaultAi, defaultIntention, defaultBasic, defaultSkills, defaultExtras, defaultCompliance };

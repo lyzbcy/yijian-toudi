@@ -80,3 +80,8 @@
 
 ### 可爱表情
 要多用用“/Users/zeen/Documents/共享/星星布丁/微信表情包/所有表情/精选”表情
+
+
+## 代投服务（v0.5.0，2026-09-23）
+
+应用支持 Boss 代投商业化流程：客户扫码登录独立浏览器实例（账号隔离）→ 脱敏手机号核对绑定 → 按客户要求批量投递（新客户单次上限 50）→ 投递记录按账号落盘 → 企微推送进度与免责声明。AI Agent 经本地 API（/v1/boss/*）驱动全流程，操作手册沉淀在用户级 skill boss-daitou。Kimi 扩展接口断供时备有 Playwright 同契约适配器（electron/playwright-bridge-adapter.cjs）。

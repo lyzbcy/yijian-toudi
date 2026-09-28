@@ -8,25 +8,34 @@ const {
 const { redactResume } = require('./redact.cjs');
 
 class AgentServer {
-  constructor({ store, onCommand }) {
+  constructor({ store, onCommand, bossControl }) {
     this.store = store;
     this.onCommand = onCommand;
+    // bossControl（可选）：{ start(request), stop(), status(), accounts() }——Boss 批量投递控制面
+    this.bossControl = bossControl || null;
     this.server = null;
     this.port = null;
   }
 
   async start(port) {
+    if (this.starting) return this.starting;
     if (this.server) return this.port;
-    this.server = http.createServer((request, response) => this.handle(request, response));
-    await new Promise((resolve, reject) => {
-      this.server.once('error', reject);
-      this.server.listen(port, '127.0.0.1', resolve);
-    });
-    this.port = this.server.address().port;
-    return this.port;
+    const server = http.createServer((request, response) => this.handle(request, response));
+    this.server = server;
+    this.starting = new Promise((resolve, reject) => {
+      const failed = (error) => { this.server = null; reject(error); };
+      server.once('error', failed);
+      server.listen(port, '127.0.0.1', () => {
+        server.off('error', failed);
+        this.port = server.address().port;
+        resolve(this.port);
+      });
+    }).finally(() => { this.starting = null; });
+    return this.starting;
   }
 
   async stop() {
+    if (this.starting) await this.starting.catch(() => {});
     if (!this.server) return;
     await new Promise((resolve) => this.server.close(resolve));
     this.server = null;
@@ -68,6 +77,46 @@ class AgentServer {
       }
       if (request.method === 'GET' && url.pathname === '/v1/tasks') {
         return this.send(response, 200, { tasks: state.tasks });
+      }
+      // ==== Boss 批量投递控制面（skill boss-daitou 的标准入口）====
+      if (url.pathname.startsWith('/v1/boss/')) {
+        if (!this.bossControl) {
+          return this.send(response, 501, { error: 'boss_control_disabled', message: '批量投递控制面未启用' });
+        }
+        if (request.method === 'GET' && url.pathname === '/v1/boss/batch/status') {
+          return this.send(response, 200, await this.bossControl.status());
+        }
+        if (request.method === 'POST' && url.pathname === '/v1/boss/batch/start') {
+          const body = await this.readJson(request);
+          return this.send(response, 200, await this.bossControl.start(body || {}));
+        }
+        if (request.method === 'POST' && url.pathname === '/v1/boss/batch/stop') {
+          return this.send(response, 200, await this.bossControl.stop());
+        }
+        if (request.method === 'GET' && url.pathname === '/v1/boss/accounts') {
+          return this.send(response, 200, await this.bossControl.accounts());
+        }
+        if (request.method === 'POST' && url.pathname === '/v1/boss/accounts/create') {
+          const body = await this.readJson(request);
+          return this.send(response, 200, await this.bossControl.createAccount(body || {}));
+        }
+        if (request.method === 'POST' && url.pathname === '/v1/boss/accounts/select') {
+          const body = await this.readJson(request);
+          return this.send(response, 200, await this.bossControl.selectAccount(body || {}));
+        }
+        if (request.method === 'POST' && url.pathname === '/v1/boss/accounts/launch') {
+          const body = await this.readJson(request);
+          return this.send(response, 200, await this.bossControl.launchAccount(body || {}));
+        }
+        if (request.method === 'POST' && url.pathname === '/v1/boss/accounts/close') {
+          const body = await this.readJson(request);
+          return this.send(response, 200, await this.bossControl.closeAccount(body || {}));
+        }
+        if (request.method === 'POST' && url.pathname === '/v1/boss/accounts/verify') {
+          const body = await this.readJson(request);
+          return this.send(response, 200, await this.bossControl.verifyAccount(body || {}));
+        }
+        return this.send(response, 404, { error: 'not_found', message: '未知的 /v1/boss/* 路径' });
       }
       if (request.method === 'POST' && url.pathname === '/v1/commands') {
         const body = await this.readJson(request);

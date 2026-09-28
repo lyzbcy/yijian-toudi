@@ -6,6 +6,7 @@
 // 实测（2026-07-24）：匿名 csrf 流程通，count≈2109，字段含 title/description/requirement/city_info.name 等。
 
 const https = require('node:https');
+const { guardRequest, guardResponse } = require('../http-lifecycle.cjs');
 
 const HOST = 'xiaomi.jobs.f.mioffice.cn';
 const TOKEN_URL = 'https://xiaomi.jobs.f.mioffice.cn/api/v1/csrf/token';
@@ -31,6 +32,7 @@ function request(method, url, { body, cookie } = {}) {
         ...(cookie ? { Cookie: cookie } : {})
       }
     }, (response) => {
+      guardResponse(response, reject);
       let data = '';
       response.setEncoding('utf8');
       response.on('data', (chunk) => { data += chunk; });
@@ -42,6 +44,7 @@ function request(method, url, { body, cookie } = {}) {
         resolve({ status: response.statusCode, json, cookies, raw: data });
       });
     });
+    guardRequest(req);
     req.on('error', reject);
     req.setTimeout(20_000, () => req.destroy(new Error('小米 API 请求超时')));
     if (payload) req.write(payload);
@@ -97,7 +100,7 @@ async function listXiaomiJobs({ daysBack = 30, pageSize = 20, recruitType = 'soc
   let offset = 0;
   let total = 0;
 
-  while (collected.length < MAX_TOTAL) {
+  while (collected.length < MAX_TOTAL && offset < 10000) {
     const res = await request('POST', SEARCH_URL, { body: { keyword: '', limit: pageSize, offset }, cookie });
 
     if (res.status === 405) {
@@ -105,20 +108,21 @@ async function listXiaomiJobs({ daysBack = 30, pageSize = 20, recruitType = 'soc
       if (retry.json?.data?.token) {
         cookie = retry.cookies;
         const res2 = await request('POST', SEARCH_URL, { body: { keyword: '', limit: pageSize, offset }, cookie });
-        if (res2.status !== 200 || !res2.json?.data) break;
-        Object.assign(res, { json: res2.json });
-      } else break;
+        if (res2.status !== 200 || !res2.json?.data) throw new Error('岗位接口请求失败，保留上次岗位数据');
+        Object.assign(res, res2);
+      } else throw new Error('岗位接口请求失败，保留上次岗位数据');
     }
 
     if (res.status !== 200 || !res.json?.data) {
       if (onProgress) onProgress({ offset, error: `小米接口返回 ${res.status}`, collected: collected.length });
-      break;
+      throw new Error('岗位接口请求失败，保留上次岗位数据');
     }
 
-    const posts = res.json.data.job_post_list || [];
+    const posts = res.json.data.job_post_list;
+    if (!Array.isArray(posts)) throw new Error('岗位列表结构异常');
     total = res.json.data.count || total;
 
-    let tooOldCount = 0;
+
     for (const post of posts) {
       const job = normalizeJob(post);
       // 按用户选择的 recruitType 过滤（同字节飞书 ATS）
@@ -129,12 +133,12 @@ async function listXiaomiJobs({ daysBack = 30, pageSize = 20, recruitType = 'soc
       if (seen.has(job.id)) continue;
       seen.add(job.id);
       const posted = new Date(job.postedAt);
-      if (job.postedAt && !Number.isNaN(posted.getTime()) && posted < cutoff) { tooOldCount += 1; continue; }
+      if (job.postedAt && !Number.isNaN(posted.getTime()) && posted < cutoff) { continue; }
       collected.push(job);
     }
 
     if (onProgress) onProgress({ offset, fetched: posts.length, total, collected: collected.length, latestJob: collected.length ? collected[collected.length - 1].title : '' });
-    if (posts.length < pageSize || tooOldCount === posts.length) break;
+    if (posts.length < pageSize || (total > 0 && offset + posts.length >= total)) break;
     offset += pageSize;
     await sleep(400);
   }

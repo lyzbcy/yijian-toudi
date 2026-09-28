@@ -13,6 +13,7 @@
 //   - city 参数实测无效，城市筛选需拿到结果后本地按 city_info.name 过滤。
 
 const https = require('node:https');
+const { guardRequest, guardResponse } = require('../http-lifecycle.cjs');
 
 const HOST = 'jobs.bytedance.com';
 const TOKEN_URL = 'https://jobs.bytedance.com/api/v1/csrf/token';
@@ -40,6 +41,7 @@ function request(method, url, { body, cookie } = {}) {
         ...(cookie ? { Cookie: cookie } : {})
       }
     }, (response) => {
+      guardResponse(response, reject);
       let data = '';
       response.setEncoding('utf8');
       response.on('data', (chunk) => { data += chunk; });
@@ -53,6 +55,7 @@ function request(method, url, { body, cookie } = {}) {
         resolve({ status: response.statusCode, json, cookies, raw: data });
       });
     });
+    guardRequest(req);
     req.on('error', reject);
     req.setTimeout(20_000, () => req.destroy(new Error('字节 API 请求超时')));
     if (payload) req.write(payload);
@@ -132,7 +135,7 @@ async function listBytedanceJobs({ daysBack = 30, pageSize = 20, recruitType = '
   let offset = 0;
   let total = 0;
 
-  while (collected.length < MAX_TOTAL) {
+  while (collected.length < MAX_TOTAL && offset < 10000) {
     const res = await request('POST', SEARCH_URL, {
       body: { keyword: '', limit: pageSize, offset },
       cookie
@@ -146,24 +149,25 @@ async function listBytedanceJobs({ daysBack = 30, pageSize = 20, recruitType = '
         const res2 = await request('POST', SEARCH_URL, { body: { keyword: '', limit: pageSize, offset }, cookie });
         if (res2.status !== 200 || !res2.json?.data) {
           if (onProgress) onProgress({ offset, error: `重试仍失败（${res2.status}）`, collected: collected.length });
-          break;
+          throw new Error('岗位接口请求失败，保留上次岗位数据');
         }
-        Object.assign(res, { json: res2.json });
+        Object.assign(res, res2);
       } else {
         if (onProgress) onProgress({ offset, error: 'token 失效且刷新失败', collected: collected.length });
-        break;
+        throw new Error('岗位接口请求失败，保留上次岗位数据');
       }
     }
 
     if (res.status !== 200 || !res.json?.data) {
       if (onProgress) onProgress({ offset, error: `字节接口返回 ${res.status}`, collected: collected.length });
-      break;
+      throw new Error('岗位接口请求失败，保留上次岗位数据');
     }
 
-    const posts = res.json.data.job_post_list || [];
+    const posts = res.json.data.job_post_list;
+    if (!Array.isArray(posts)) throw new Error('岗位列表结构异常');
     total = res.json.data.count || total;
 
-    let tooOldCount = 0;
+
     for (const post of posts) {
       const job = normalizeJob(post);
       // 按用户选择的 recruitType 过滤：字节用 recruit_type.parent.name 区分社招/校招
@@ -177,7 +181,6 @@ async function listBytedanceJobs({ daysBack = 30, pageSize = 20, recruitType = '
       seen.add(job.id);
       const posted = new Date(job.postedAt);
       if (job.postedAt && !Number.isNaN(posted.getTime()) && posted < cutoff) {
-        tooOldCount += 1;
         continue;
       }
       collected.push(job);
@@ -185,7 +188,7 @@ async function listBytedanceJobs({ daysBack = 30, pageSize = 20, recruitType = '
 
     if (onProgress) onProgress({ offset, fetched: posts.length, total, collected: collected.length, latestJob: collected.length ? collected[collected.length - 1].title : '' });
 
-    if (posts.length < pageSize || tooOldCount === posts.length) break;
+    if (posts.length < pageSize || (total > 0 && offset + posts.length >= total)) break;
     offset += pageSize;
     await sleep(400);
   }
