@@ -223,3 +223,5 @@ cbc3e2c的自动Mac复验37201486248最终两架构success；此前14b4ff7的同
 45源45f1087已推送。Linux37204738346独立归档实际Compose/systemd/Caddy本地CA HTTPS通过，systemd6组、HTTPS3组，实际停服24ms，无新通知，不等于生产公网。实际45包读取44真实partial录像状态的隔离副本：3694原岗位和刷新任务ID保留，最近尝试/尚无完整成功记录正确显示，岗位页持续显示原百度/字节失败详情；原profile字节/hash不变。截图已实际查看，报告partial-refresh-visible-time-v45.json。
 
 Mac45首轮37204738391的arm64原生包/资源签名/布局/方向输入通过，新刷新专项在启动应用前mkdtemp报ENOENT：干净CI的.local-data父目录未创建，本机已有忽略目录掩盖了测试前置条件缺口。原因由实际job日志和堆栈确定，mac-refresh-ui-v45-arm64-attempt1.json保留；添加mkdirSync recursive仅修测试输出初始化，产品运行文件和Windows安装包不变，同一Windows专项6组复验通过，Mac两架构重新验证待运行。
+
+98ee881的37205190489最终Mac两架构均success。取回arm64资产发现新刷新详细报告/截图在隐藏.local-data内，没有被默认upload-artifact收集；原生/布局/安装/更新报告存在，不把未取回文件冒充已回读。新增独立封存ZIP复验工作流，仅取同一成功原生包并核对hash/签名/117源码、重跑刷新6组，将报告/截图复制到明确test-output路径上传；不重构产品、不重跑已通过的整套原生安装更新。证据缺口记录mac-refresh-artifact-gap-v45.json，详细复验待执行。
