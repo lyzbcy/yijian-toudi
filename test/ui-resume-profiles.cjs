@@ -18,6 +18,7 @@ const { JsonStore } = require('../electron/store.cjs');
     env: { ...process.env, YIJIAN_BACKGROUND_TEST: process.env.YJT_VISIBLE_TEST === '1' ? '0' : '1', ELECTRON_DISABLE_SECURITY_WARNINGS: 'true' }
   });
   const errors = [], checks = [];
+  let page;
   const phase = async (page, name) => {
     const manifest = process.env.YJT_PROFILE_OBSERVER_MANIFEST;
     if (!manifest) return;
@@ -31,9 +32,17 @@ const { JsonStore } = require('../electron/store.cjs');
     assert.equal(result.phase, name); assert.equal(result.ok, true);
   };
   try {
-    const page = await application.firstWindow();
+    page = await application.firstWindow();
     page.setDefaultTimeout(15000);
     page.on('pageerror', e => errors.push(e.message));
+    await page.evaluate(() => {
+      window.profileInputEvents = [];
+      for (const type of ['click', 'dblclick']) document.addEventListener(type, event => {
+        if (!event.target.closest('#resumeProfilesBar')) return;
+        window.profileInputEvents.push({ type, detail: event.detail, target: event.target.tagName, rename: !!event.target.closest('[data-rename-profile]'), active: !!event.target.closest('.profile-tab.active'), open: !!document.querySelector('#textEntryDialog[open]') });
+        if (window.profileInputEvents.length > 30) window.profileInputEvents.shift();
+      }, true);
+    });
     await page.locator('#onboardingDialog[open]').waitFor();
     await page.locator('[data-recruit="social"]').click();
     await page.locator('#onboardingDialog[open]').waitFor({ state: 'hidden' });
@@ -160,5 +169,14 @@ const { JsonStore } = require('../electron/store.cjs');
     const report = { ok: true, version: require('../package.json').version, fixtureOnly: true, packaged: !!process.env.YJT_PACKAGED_EXECUTABLE, promptStubbed: false, checks, pageErrors: errors };
     fs.writeFileSync(path.join(output, 'resume-profiles.json'), JSON.stringify(report, null, 2));
     console.log(JSON.stringify(report));
+  } catch (error) {
+    const report = { ok: false, version: require('../package.json').version, fixtureOnly: true, packaged: !!process.env.YJT_PACKAGED_EXECUTABLE, promptStubbed: false, checks, pageErrors: errors, error: error.message };
+    if (page && !page.isClosed()) {
+      report.inputEvents = await page.evaluate(() => window.profileInputEvents || []).catch(() => []);
+      report.dialogState = await page.evaluate(() => ({ open: !!document.querySelector('#textEntryDialog[open]'), activeTabCount: document.querySelectorAll('.profile-tab.active').length, tabCount: document.querySelectorAll('.profile-tab[data-profile]').length })).catch(() => null);
+      await page.screenshot({ path: path.join(output, 'profiles-failure.png'), animations: 'disabled' }).catch(() => {});
+    }
+    fs.writeFileSync(path.join(output, 'resume-profiles.json'), JSON.stringify(report, null, 2));
+    throw error;
   } finally { await application.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

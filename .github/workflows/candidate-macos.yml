@@ -94,6 +94,7 @@ jobs:
             test-output/delivery-*.png
             test-output/resume-profiles.json
             test-output/profiles-text-entry.png
+            test-output/profiles-failure.png
             test-output/mac-install-upgrade.json
             test-output/mac-install-*.png
             test-output/mac-auto-update.json
