@@ -18,6 +18,11 @@
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   let state = null;
+  function applyState(next) {
+    if (!window.StateRevision.shouldAccept(state, next)) return false;
+    state = next;
+    return true;
+  }
   let agentPromptText = '';
   let activeFilter = 'all';
   let activeStage = '全部';
@@ -1083,13 +1088,13 @@ Authorization: Bearer ${state.settings.apiToken}
     card.classList.toggle('hidden', !due);
   }
   $('#starCardClose')?.addEventListener('click', async () => {
-    try{state=await window.oneClick.dismissPromotion();maybeShowStarCard();}catch{toast('提醒关闭尚未保存，请再试一次');}
+    try{applyState(await window.oneClick.dismissPromotion());maybeShowStarCard();}catch{toast('提醒关闭尚未保存，请再试一次');}
   });
   $('#starCardGo')?.addEventListener('click', async () => {
-    try { await window.oneClick.openExternal('https://github.com/lyzbcy/yijian-toudi');state=await window.oneClick.dismissPromotion();maybeShowStarCard(); } catch {toast('仓库入口打开失败，请重试');}
+    try { await window.oneClick.openExternal('https://github.com/lyzbcy/yijian-toudi');applyState(await window.oneClick.dismissPromotion());maybeShowStarCard(); } catch {toast('仓库入口打开失败，请重试');}
   });
   document.querySelectorAll('[data-feedback]').forEach(button=>button.addEventListener('click',async()=>{
-    try{const r=await window.oneClick.openFeedback(button.dataset.feedback);if(!r.opened)throw Error('open');if(button.id==='starCardReview'){state=await window.oneClick.dismissPromotion();maybeShowStarCard();}}catch{toast('反馈窗口打开失败，请重试');}
+    try{const r=await window.oneClick.openFeedback(button.dataset.feedback);if(!r.opened)throw Error('open');if(button.id==='starCardReview'){applyState(await window.oneClick.dismissPromotion());maybeShowStarCard();}}catch{toast('反馈窗口打开失败，请重试');}
   }));
 
   function renderWorkspaceStatus(status) {
@@ -1178,7 +1183,7 @@ Authorization: Bearer ${state.settings.apiToken}
     $$('.onboarding-choice').forEach((btn) => {
       btn.addEventListener('click', async () => {
         const recruit = btn.dataset.recruit;
-        state = await window.oneClick.updateSettings({ recruitType: recruit });
+        applyState(await window.oneClick.updateSettings({ recruitType: recruit }));
         dialog.close();
         toast(`已选择${({ social: '社招', campus: '校招', 'summer-intern': '暑期实习', 'daily-intern': '日常实习', all: '全部' })[recruit]}方向，点击"刷新全部岗位"开始抓取`);
       }, { once: true });
@@ -1191,15 +1196,25 @@ Authorization: Bearer ${state.settings.apiToken}
       $('#appVersion').textContent = runtimeVersion;
       $('#aboutAppVersion').textContent = runtimeVersion;
     }
-    state = await window.oneClick.getState();
+    applyState(await window.oneClick.getState());
     renderState();
     // onStateChanged 是异步广播，可能在本地操作（saveResume/switchProfile 等）返回后被旧事件覆盖。
-    // 本地发起写操作时记一个序号，操作完成前收到的广播一律忽略，完成后再放行。
+    // 本地操作忽略中间广播；完成后仍按持久修订序号拒绝迟到的旧快照。
     let localWriteInFlight = false;
+    let queuedStateBroadcast = null;
+    function finishLocalWrite() {
+      localWriteInFlight = false;
+      const next = queuedStateBroadcast;
+      queuedStateBroadcast = null;
+      if (next && applyState(next)) renderState();
+    }
     window.oneClick.onStateChanged((next) => {
       if (!next) return;
-      if (localWriteInFlight) return; // 本地写操作进行中，忽略中间广播
-      state = next;
+      if (localWriteInFlight) {
+        if (window.StateRevision.shouldAccept(queuedStateBroadcast, next)) queuedStateBroadcast = next;
+        return;
+      }
+      if (!applyState(next)) return;
       renderState();
     });
     window.oneClick.onWorkspaceChanged(renderWorkspaceStatus);
@@ -1236,7 +1251,7 @@ Authorization: Bearer ${state.settings.apiToken}
       const favorite = event.target.closest('[data-favorite]');
       if (favorite) {
         event.stopPropagation();
-        state = await window.oneClick.toggleFavorite(favorite.dataset.favorite);
+        applyState(await window.oneClick.toggleFavorite(favorite.dataset.favorite));
         renderState();
         return;
       }
@@ -1244,14 +1259,14 @@ Authorization: Bearer ${state.settings.apiToken}
       if (cartBtn) {
         event.stopPropagation();
         const inCart = state.cart?.some((c) => c.id === cartBtn.dataset.cart);
-        state = await window.oneClick.toggleCart(cartBtn.dataset.cart);
+        applyState(await window.oneClick.toggleCart(cartBtn.dataset.cart));
         renderState();
         toast(inCart ? '已移出购物车' : '已加入购物车');
         return;
       }
       const cartRemove = event.target.closest('[data-cart-remove]');
       if (cartRemove) {
-        state = await window.oneClick.toggleCart(cartRemove.dataset.cartRemove);
+        applyState(await window.oneClick.toggleCart(cartRemove.dataset.cartRemove));
         renderState();
         return;
       }
@@ -1269,7 +1284,7 @@ Authorization: Bearer ${state.settings.apiToken}
         const currentResume = collectResumeWithoutTrimming();
         currentResume[groupKey].splice(index, 1);
         if (currentResume[groupKey].length === 0) currentResume[groupKey].push({}); // 至少保留一段
-        state = await window.oneClick.saveResume(currentResume);
+        applyState(await window.oneClick.saveResume(currentResume));
         renderState();
         return;
       }
@@ -1332,7 +1347,7 @@ Authorization: Bearer ${state.settings.apiToken}
         const result = await window.oneClick.uploadResumeFile();
         if (!result.canceled) {
           toast(`已上传简历：${result.filename}`);
-          state = await window.oneClick.getState();
+          applyState(await window.oneClick.getState());
           renderResumeFile();
         }
       } catch (e) { toast(`上传失败：${e.message}`, 'warn'); }
@@ -1345,27 +1360,27 @@ Authorization: Bearer ${state.settings.apiToken}
       try {
         await window.oneClick.deleteResumeFile(filename);
         toast('已删除简历附件');
-        state = await window.oneClick.getState();
+        applyState(await window.oneClick.getState());
         renderResumeFile();
       } catch (e) { toast(`删除失败：${e.message}`, 'warn'); }
     });
     $('#cartApplyAll').addEventListener('click', (event) => run(event.currentTarget, async () => {
       const result = await window.oneClick.applyCart();
-      state = await window.oneClick.getState();
+      applyState(await window.oneClick.getState());
       renderState();
       return result;
     }, (result) => result.message || '投递流程已启动'));
     $('#refreshApplied').addEventListener('click', (event) => run(event.currentTarget, async () => {
       const result = await window.oneClick.refreshAppliedStatus();
       if (result.ok) {
-        state = result.state;
+        applyState(result.state);
         renderState();
       }
       return result;
     }, (result) => result.ok ? `已刷新 ${result.count} 条腾讯投递状态` : result.message));
     $('#exportAppliedButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportApplied(), (result) => `已导出 ${result.count} 条投递记录为 CSV`));
     $('#saveResumeButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
-      state = await window.oneClick.saveResume(collectResume());
+      applyState(await window.oneClick.saveResume(collectResume()));
       renderState();
     }, '简历已安全保存在本机'));
     // 新建简历 profile
@@ -1385,7 +1400,7 @@ Authorization: Bearer ${state.settings.apiToken}
           if (label === null) return; // 用户取消
           await window.oneClick.saveResume(collectResume());
           const result = await window.oneClick.addProfile(label);
-          state = result.state;
+          applyState(result.state);
           renderState();
           toast(`已创建「${label || '简历 ' + state.resume.profiles.length}」`);
           return;
@@ -1397,7 +1412,7 @@ Authorization: Bearer ${state.settings.apiToken}
           const profile = state.resume.profiles.find((p) => p.id === profileId);
           if (!confirm(`确定删除「${profile?.label || profileId}」吗？这份的意向和经历会从本机移除（联系方式等共享信息不受影响）。`)) return;
           await window.oneClick.saveResume(collectResume());
-          state = await window.oneClick.deleteProfile(profileId);
+          applyState(await window.oneClick.deleteProfile(profileId));
           renderState();
           toast('已删除这份简历');
           return;
@@ -1410,7 +1425,7 @@ Authorization: Bearer ${state.settings.apiToken}
           // 在本地写入锁内保存后再切换，完成后读取权威状态。
           await window.oneClick.saveResume(collectResume());
           await window.oneClick.switchProfile(profileId);
-          state = await window.oneClick.getState();
+          applyState(await window.oneClick.getState());
           renderState();
           const p = state.resume.profiles.find((x) => x.id === profileId);
           toast(`已切换到「${p?.label || profileId}」`);
@@ -1419,7 +1434,7 @@ Authorization: Bearer ${state.settings.apiToken}
       } catch (error) {
         toast(error.message || '简历操作失败', 'error');
       } finally {
-        localWriteInFlight = false;
+        finishLocalWrite();
       }
     });
     // 双击 label → 重命名（避免和单击切换冲突）
@@ -1434,13 +1449,13 @@ Authorization: Bearer ${state.settings.apiToken}
         const label = await window.TextEntry.request({ title: '重命名简历方向', label: '简历方向名称', value: profile?.label || '', required: true });
         if (label === null) return;
         await window.oneClick.saveResume(collectResume());
-        state = await window.oneClick.renameProfile(profileId, label);
+        applyState(await window.oneClick.renameProfile(profileId, label));
         renderState();
         toast('已重命名');
       } catch (error) {
         toast(error.message || '重命名失败', 'error');
       } finally {
-        localWriteInFlight = false;
+        finishLocalWrite();
       }
     });
     // 多段经历：添加段。直接基于 DOM 当前段数追加空段，不经过 collectResume 的尾部清理
@@ -1450,7 +1465,7 @@ Authorization: Bearer ${state.settings.apiToken}
       // 从 DOM 读取当前所有段的值（不清理），再追加一个空段
       const currentResume = collectResumeWithoutTrimming();
       currentResume[groupKey] = [...(currentResume[groupKey] || []), {}];
-      state = await window.oneClick.saveResume(currentResume);
+      applyState(await window.oneClick.saveResume(currentResume));
       renderState();
       // 滚动到新加的段
       const segments = $$(`[data-repeat="${groupKey}"] .repeatable-segment`);
@@ -1500,13 +1515,13 @@ Authorization: Bearer ${state.settings.apiToken}
       // 后端会弹「选文件」+「二次确认」两个对话框，确认文案已说明 Token/授权码/登录态不会被恢复
       const result = await window.oneClick.restoreBackup();
       if (!result.canceled) {
-        state = await window.oneClick.getState();
+        applyState(await window.oneClick.getState());
         renderState();
       }
       return result;
     }, (result) => result.canceled ? '已取消恢复' : '备份已恢复'));
     $('#syncEmailButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
-      state = await window.oneClick.syncEmail({ address: $('#emailAddress').value.trim(), authorizationCode: $('#emailCode').value.trim() });
+      applyState(await window.oneClick.syncEmail({ address: $('#emailAddress').value.trim(), authorizationCode: $('#emailCode').value.trim() }));
       $('#emailCode').value = '';
       renderState();
     }, 'QQ 邮箱同步完成'));
@@ -1524,7 +1539,7 @@ Authorization: Bearer ${state.settings.apiToken}
     }));
     $('#resetTokenButton').addEventListener('click', async () => {
       if (!confirm('重置后旧 Token 立即失效，正在用旧 Token 的 Agent 需要重新接入。确定吗？')) return;
-      state = await window.oneClick.resetAgentToken();
+      applyState(await window.oneClick.resetAgentToken());
       renderState();
       toast('已生成新 Agent Token，请重新复制 Prompt');
     });
@@ -1538,7 +1553,7 @@ Authorization: Bearer ${state.settings.apiToken}
       if(!dl.ok)throw Error(`更新失败：${dl.message}。请点检查更新重试，或打开发布页；国内连接较慢时可开启代理。`);
       if(dl.canInstall){
         localWriteInFlight=true;
-        try{state=await window.oneClick.saveResume(collectResume());}finally{localWriteInFlight=false;}
+        try{applyState(await window.oneClick.saveResume(collectResume()));}finally{finishLocalWrite();}
         const installed=await window.oneClick.installUpdate({version:dl.version,confirmed:true});
         if(!installed.ok)throw Error(`安装交接失败：${installed.message}。当前软件保留，请重试或打开发布页。`);
         return installed;
@@ -1547,7 +1562,7 @@ Authorization: Bearer ${state.settings.apiToken}
       return dl;
     }));
     $('#saveSettingsButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
-      state = await window.oneClick.updateSettings({
+      applyState(await window.oneClick.updateSettings({
         autoCheckUpdates: $('#autoUpdate').checked,
         apiEnabled: $('#apiEnabled').checked,
         apiPort: Number($('#apiPort').value),
@@ -1558,7 +1573,7 @@ Authorization: Bearer ${state.settings.apiToken}
         kimiBridgeEnabled: $('#kimiBridgeEnabled').checked,
         wecomWebhook: $('#wecomWebhook').value.trim(),
         feedbackEndpoint: $('#feedbackEndpoint').value.trim()
-      });
+      }));
       renderState();
     }, '设置已保存'));
     // —— Boss 批量 / Kimi 桥 / 企微通知（2026-09-20）——
@@ -1659,7 +1674,7 @@ $('#bossAccountVerifyButton')?.addEventListener('click', (event) => run(event.cu
         const result = await window.oneClick.finishWorkspace({ resumeSyncGeneration: generation });
         if (generation !== resumeSyncGeneration) return;
         if (result.applicationResult) {
-          state = await window.oneClick.getState();
+          applyState(await window.oneClick.getState());
           renderState();
           toast(result.applicationResult.message, result.applicationResult.toastType || 'error');
           return;
@@ -1702,7 +1717,7 @@ $('#bossAccountVerifyButton')?.addEventListener('click', (event) => run(event.cu
       }
       if (result.resumeSyncDecision === 'retry') resumeSyncContinueCompanyId = result.session?.continueCompanyId || result.companyId || resumeSyncPausedCompanyId;
       renderWorkspaceStatus(null);
-      state = await window.oneClick.getState();
+      applyState(await window.oneClick.getState());
       renderState();
       toast('已取消本次网页操作');
     });

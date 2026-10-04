@@ -5,7 +5,7 @@ description: 一键投递桌面应用的开发与发布入口。修改应用、A
 
 # 一键投递开发入口
 
-53腾讯校招隔离草稿27控件最终一致、37项人工；26文本DOM相等，其中24个已检查Vue模型相等，133无关控件保留。397单测/27套后台通过，Windows125源文件匹配、实际52→53升级8检查及旧中文附件七平台4/6离线队列通过。学校/学历/日期及官网保存待验；52Mac双架构已回读并追加原52草稿18资产，首次Intel上传失败保留。完整交付与整体低于1%未证明。
+54腾讯校招隔离SDK29控件一致、35项人工，14项日期缺具体日；学校模型相等不代表目录认证。迟到状态广播修复通过实际包7检查，401单测/29套后台、Windows127源文件、实际53→54升级8检查、旧中文附件离线队列及备份5检查通过。NotSigned，原生向导未验；53Mac仅ARM完整通过，Intel首次安装失败保留，54原生另验。完整交付与整体低于1%未证明。
 
 ## 项目一句话
 一键投递是 Electron 本地求职工作台，聚合岗位、简历、邮件与本机 Agent API；`skill/yijian-toudi/` 是独立发布的操作 Skill。
@@ -25,7 +25,7 @@ Node.js 20+、Electron、原生 JavaScript、pnpm；macOS 与 Windows 分别构�
 
 
 
-当前权威状态为 v0.5.53 接续开发候选，包含旧附件名兼容、独立作者页和用户要求的Windows视觉调整，未正式发布，goal仍active。百度/阿里隔离草稿、京东52学校已核对；字节/小米可见隔离窗口读到表单，53腾讯结构/语言隔离填写及Windows包已验；52Mac双架构已回读并备份，53原生/完整交付验收继续进行；45/46封存包和45视频保留原版。恢复来源、测试证据、交付门槛见 `doc/progress/2026-10-04-recovery-delivery.md` 和 `doc/development/mvp-acceptance.md`。下面v0.5.15等状态仅保留为历史线索。不要将恢复代码、单测通过或Windows包构建等同于完整交付或整体bug率低于1%。
+当前权威状态为 v0.5.54 接续开发候选，未正式发布，goal仍active。学校/学历/精确日期、状态广播修复及Windows包已验；学校目录认证、官网完整保存/申请、54原生与公众分发继续验收。45–53封存包和45视频保留原版。进度和全部门槛见 `doc/progress/2026-10-04-recovery-delivery.md`、`doc/development/mvp-acceptance.md`。以下旧版本为历史线索，不代表当前完整交付或整体bug率低于1%。
 
 当前工作树已推进到 v0.5.15 Windows 延迟扫码计时修复候选：最新失败与对照见 `doc/progress/2026-10-02-jd-delayed-auth.md`；京东同框架回跳修复见 `doc/progress/2026-10-02-jd-frame-fix.md`；本轮窗口竞态与批量按钮修复见 `doc/progress/2026-10-02-mvp-hardening.md`；京东真实扫码后的 `qq.jd.com` 回跳修复见 `doc/progress/2026-09-30-jd-login.md`；此前现场证据见 `doc/progress/2026-09-29-live-window-fixes.md`；登录回跳与附件解析确认见 `doc/integrations/login-upload.md`。继承 v0.5.4 的批量平台选择、准确更新时间记录、4/6 独立窗口；见 `doc/progress/2026-09-29-resume-batch.md`。继承 v0.5.3 的停止可中断、单活跃批次、发送前持久记录、重启异常复核。开发与验收优先看 `doc/progress/2026-09-29-mvp-p0.md`；下段是上一版实测基线，不代表新版本已发布。
 工作树为 v0.5.2 Windows 修复候选；v0.5.1 已发布。Windows 满量实测本轮 Boss 新增确认 31 笔后遇 403，未达 100；腾讯校招 11 字段回读但尚未验证官网保存。修复及实测记录见 `doc/progress/2026-09-28-release-readiness.md`。macOS 仍需单独构建验收。

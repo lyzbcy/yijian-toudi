@@ -1,0 +1,14 @@
+{
+  "version": "0.5.53",
+  "sourceCommit": "1be9f39120d1b694d4c0aae118904cddd1202bcd",
+  "ok": false,
+  "phase": "lookup-existing-draft-in-release-list",
+  "error": "Expected one matching draft release; immediate list response contained zero matches",
+  "draftKnownToExistByReleaseView": true,
+  "assetsUploadedByThisAttempt": 0,
+  "published": false,
+  "subsequentListResponseMatches": 1,
+  "sameDraftRetried": true,
+  "rootCauseProven": false,
+  "privateValuesIncluded": false
+}

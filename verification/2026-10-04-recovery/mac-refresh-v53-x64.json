@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "version": "0.5.53",
+  "platform": "darwin",
+  "packaged": true,
+  "providerFunctionsFixture": true,
+  "realRecruitment": false,
+  "externalMessages": 0,
+  "checks": [
+    "Real refresh loop persists partial provider outcome, preserves failed companies old jobs and shows partial notice plus attempt without claiming full success",
+    "Real cold reopen with automatic refresh enabled preserves partial notice/provider names/old jobs and starts no new refresh after the recent failed attempt",
+    "Next real full refresh replaces obsolete partial notice and uses one timestamp for full success and attempt",
+    "All-provider failure preserves actual prior data/full-success timestamp and shows persistent failure with both attempt and full-success time",
+    "Successful zero-result query finishes done, clears nonfavorite old snapshot, labels no jobs and does not invent a failed/unattempted query",
+    "Persistent notice remains visible at three supported widths with no horizontal overflow or renderer errors"
+  ],
+  "at": "2026-10-04T22:44:59.447Z",
+  "pageErrors": []
+}

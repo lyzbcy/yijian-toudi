@@ -70,6 +70,11 @@ jobs:
           APP=$(find release -maxdepth 2 -type d -name '*.app' -print -quit)
           test -n "$APP"
           YJT_PACKAGED_EXECUTABLE="$GITHUB_WORKSPACE/$APP/Contents/MacOS/一键投递" node test/ui-job-refresh-status.cjs
+      - name: Verify durable revision and delayed state broadcasts in actual package
+        run: |
+          APP=$(find release -maxdepth 2 -type d -name '*.app' -print -quit)
+          test -n "$APP"
+          YJT_PACKAGED_EXECUTABLE="$GITHUB_WORKSPACE/$APP/Contents/MacOS/一键投递" node test/ui-state-revision.cjs
       - name: Obtain actual v38 baseline source for Applications upgrade test
         uses: actions/checkout@v6
         with:
@@ -109,6 +114,7 @@ jobs:
             test-output/delivery-layout.json
             test-output/delivery-*.png
             test-output/resume-profiles.json
+            test-output/state-revision.json
             test-output/profiles-text-entry.png
             test-output/profiles-failure.png
             test-output/author-page/**

@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "version": "0.5.54",
+  "packaged": false,
+  "fixtureOnly": true,
+  "checks": [
+    "real save/add IPC creates active second profile",
+    "late earlier actual state cannot remove visible profiles",
+    "stale replay preserves active profile and unsaved text",
+    "UI save after stale replay targets the correct stored profile",
+    "equal revision replay keeps unsaved text",
+    "newer broadcast during canceled local operation is flushed",
+    "cold reopen preserves saved profile and durable revision"
+  ],
+  "controlledEarlierBroadcast": true,
+  "externalWrites": 0
+}

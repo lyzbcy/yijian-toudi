@@ -2,6 +2,7 @@ const {createTencentResumePlan}=require('../resume-plan.cjs');
 const {normalizeComparableValue}=require('../field-matching.cjs');
 const {buildTencentCampusInspectScript,buildTencentCampusAddScript,buildTencentCampusEnableScript,buildTencentCampusWriteScript,buildTencentCampusReadbackScript}=require('../tencent-campus-context.cjs');
 const {splitTencentLanguages,buildTencentLanguageScript,buildTencentLanguageReadbackScript}=require('../tencent-campus-language.cjs');
+const {planTencentCampusWidgets,buildTencentCampusWidgetScript,buildTencentCampusWidgetReadbackScript}=require('../tencent-campus-widgets.cjs');
 const pause=ms=>new Promise(r=>setTimeout(r,ms));
 const PROJECT_FACTS={client:'客户/服务客户',description:'项目背景',contribution:'个人贡献',techStack:'技术栈',outcome:'项目成果',link:'项目链接'};
 function planTencentCampusDraft(resume,inspection){
@@ -20,12 +21,16 @@ async function fillTencentCampusDraft(resume,{workspace,step=()=>{},attachmentPa
   let inspection=await workspace.run(buildTencentCampusInspectScript());
   const requested=[['教育经历',(resume.education||[]).length],['实习经历',(resume.experience||[]).filter(e=>['实习','internship'].includes(e.employmentType)).length],['项目经历',(resume.projects||[]).length]],sectionSetup=[];
   for(const [section,count]of requested){let error=null,added=0,enabled=false;if(count>20)error='group-limit-exceeded';if(count>0&&!error&&section!=='教育经历'){const r=await workspace.run(buildTencentCampusEnableScript(section));if(!r?.ok)error='experience-toggle-unavailable';else if(r.changed){enabled=true;await pause(150);inspection=await workspace.run(buildTencentCampusInspectScript());}}for(let attempt=0;!error&&attempt<count;attempt++){const s=inspection.sections?.find(s=>s.section===section);if(!s?.recognized){error='section-unrecognized';break;}if(s.groups>=count)break;if(!await workspace.run(buildTencentCampusAddScript(section,s.groups))){error='add-unavailable';break;}let next;for(let i=0;i<10;i++){await pause(100);next=await workspace.run(buildTencentCampusInspectScript());if(next.sections?.find(r=>r.section===section)?.groups>s.groups)break;}if(next?.sections?.find(r=>r.section===section)?.groups!==s.groups+1){error='group-not-added-exactly-once';break;}added++;inspection=next;}sectionSetup.push({section,requested:count,groups:inspection.sections?.find(s=>s.section===section)?.groups||0,added,enabled,error});}
-  const planned=planTencentCampusDraft(resume,inspection),execution=planned.writes.length?await workspace.run(buildTencentCampusWriteScript(planned.writes)):[];step('section-filled',`已暂存 ${execution.filter(e=>e.written).length} 个腾讯字段，正在核对最终保留状态`);await pause(500);
-  const language=planned.plan.find(i=>i.key==='skills.devLanguages'),widgets=[];
+  // Degree changes can reveal fields. Set owned widgets before planning text.
+  const widgets=[];for(const request of planTencentCampusWidgets(resume))widgets.push(await workspace.run(buildTencentCampusWidgetScript(request)));
+  inspection=await workspace.run(buildTencentCampusInspectScript());
+  const planned=planTencentCampusDraft(resume,inspection);for(const w of widgets.filter(w=>w.written))planned.mappings.push({controlKey:w.key,sourceKeys:[w.key],representation:w.representation});
+  const execution=planned.writes.length?await workspace.run(buildTencentCampusWriteScript(planned.writes)):[];step('section-filled',`已暂存 ${execution.filter(e=>e.written).length} 个腾讯字段，正在核对最终保留状态`);await pause(500);
+  const language=planned.plan.find(i=>i.key==='skills.devLanguages');
   if(language){const result=await workspace.run(buildTencentLanguageScript(splitTencentLanguages(language.value)));if(result.written)planned.mappings.push({controlKey:result.key,sourceKeys:[result.key],representation:'exact-multiselect'});widgets.push(result);}
   // Select changes can rerender earlier text inputs; read every field last.
   await pause(200);const final=execution.length?await workspace.run(buildTencentCampusReadbackScript(execution)):[];
-  for(let i=0;i<widgets.length;i++)if(widgets[i].written){widgets[i]=await workspace.run(buildTencentLanguageReadbackScript(widgets[i]));final.push(widgets[i]);}
+  for(let i=0;i<widgets.length;i++){if(widgets[i].written){widgets[i]=await workspace.run(widgets[i].key==='skills.devLanguages'?buildTencentLanguageReadbackScript(widgets[i]):buildTencentCampusWidgetReadbackScript(widgets[i]));final.push(widgets[i]);}else if(widgets[i].attempted)final.push(widgets[i]);}
   const verified=final.filter(e=>e.written&&e.retained&&normalizeComparableValue(e.expected)===normalizeComparableValue(e.observed)),keys=new Set(verified.map(e=>e.key)),represented=new Set(planned.mappings.filter(m=>keys.has(m.controlKey)).flatMap(m=>m.sourceKeys)),manual=planned.plan.filter(i=>!represented.has(i.key)).map(i=>i.key),mismatched=final.filter(e=>e.written&&!keys.has(e.key)).map(e=>e.key),failed=final.filter(e=>!e.written).map(e=>e.key);
   const message=`已暂存并最终回读核验 ${verified.length} 个控件，${manual.length} 项源信息需人工核对；校招“提交简历”会真实投递职位，软件只填不提交`;
   step('review-required',message);return {ok:verified.length>0,status:'review-required',message,applyRisk:'submit-means-apply',report:{filled:verified.map(e=>e.key),manual,verification:{verified:verified.map(e=>e.key),mismatched,failed},mappings:planned.mappings,sectionSetup,widgets,attachment,saved:false,compliance:'untouched'}};
