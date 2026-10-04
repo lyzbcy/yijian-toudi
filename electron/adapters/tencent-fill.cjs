@@ -361,6 +361,7 @@ async function fillAfterProbe(workspace, plan, probe, resume, step, campus = fal
     return { ok: false, status: 'login-required', message: '腾讯页面已进入登录或验证码流程，请完成后重新更新简历' };
   }
 
+  if(campus)return require('./tencent-campus-fill.cjs').fillTencentCampusDraft(resume,{workspace,step,attachmentPath});
   step('inspecting', `正在读取腾讯页面字段并进行高置信匹配…`);
   const fieldsBefore = await workspace.run(INSPECT_FORM_FIELDS);
   if (!fieldsBefore.length) {

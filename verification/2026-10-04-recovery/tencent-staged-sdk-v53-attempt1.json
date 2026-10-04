@@ -1,0 +1,329 @@
+{
+  "version": "0.5.53",
+  "isolatedProfile": true,
+  "shownInactive": true,
+  "personalAppUnmodified": true,
+  "allExternalRequestsBlockedDuringFill": true,
+  "officialWrites": 0,
+  "privateValuesOmitted": true,
+  "ok": true,
+  "status": "review-required",
+  "verified": [
+    "basic.name",
+    "basic.phone",
+    "basic.email",
+    "ai.tools",
+    "ai.collaboration",
+    "skills.portfolioUrl",
+    "extras.summary",
+    "education.0.major",
+    "experience.0.company",
+    "experience.0.role",
+    "experience.0.description",
+    "projects.0.name",
+    "projects.0.role",
+    "projects.0.description",
+    "projects.1.name",
+    "projects.1.role",
+    "projects.1.description",
+    "projects.2.name",
+    "projects.2.role",
+    "projects.2.description",
+    "projects.3.name",
+    "projects.3.role",
+    "projects.3.description",
+    "projects.4.name",
+    "projects.4.role",
+    "projects.4.description"
+  ],
+  "manual": [
+    "basic.website",
+    "basic.github",
+    "basic.nationality",
+    "intention.roles",
+    "intention.cities",
+    "intention.salaryUnit",
+    "intention.employmentType",
+    "intention.preferredLocations",
+    "intention.expectCountry",
+    "skills.keywords",
+    "skills.proficiency",
+    "skills.languages",
+    "skills.devLanguages",
+    "skills.englishLevel",
+    "skills.englishScore",
+    "skills.certificates",
+    "skills.interests",
+    "extras.awards",
+    "extras.campus",
+    "education.0.school",
+    "education.0.degree",
+    "education.0.degreeName",
+    "education.0.start",
+    "education.0.end",
+    "education.0.courses",
+    "experience.0.start",
+    "experience.0.end",
+    "experience.0.employmentType",
+    "projects.0.start",
+    "projects.0.end",
+    "projects.1.start",
+    "projects.1.end",
+    "projects.2.start",
+    "projects.2.end",
+    "projects.3.start",
+    "projects.3.end",
+    "projects.4.start",
+    "projects.4.end"
+  ],
+  "mismatched": [
+    "skills.devLanguages"
+  ],
+  "failed": [],
+  "mappings": [
+    {
+      "controlKey": "basic.name",
+      "sourceKeys": [
+        "basic.name"
+      ],
+      "representation": "direct"
+    },
+    {
+      "controlKey": "basic.phone",
+      "sourceKeys": [
+        "basic.phone"
+      ],
+      "representation": "direct"
+    },
+    {
+      "controlKey": "basic.email",
+      "sourceKeys": [
+        "basic.email"
+      ],
+      "representation": "direct"
+    },
+    {
+      "controlKey": "ai.tools",
+      "sourceKeys": [
+        "ai.tools"
+      ],
+      "representation": "direct"
+    },
+    {
+      "controlKey": "ai.collaboration",
+      "sourceKeys": [
+        "ai.collaboration"
+      ],
+      "representation": "direct"
+    },
+    {
+      "controlKey": "skills.portfolioUrl",
+      "sourceKeys": [
+        "skills.portfolioUrl"
+      ],
+      "representation": "direct"
+    },
+    {
+      "controlKey": "extras.summary",
+      "sourceKeys": [
+        "extras.summary"
+      ],
+      "representation": "direct"
+    },
+    {
+      "controlKey": "education.0.major",
+      "sourceKeys": [
+        "education.0.major"
+      ],
+      "representation": "direct"
+    },
+    {
+      "controlKey": "experience.0.company",
+      "sourceKeys": [
+        "experience.0.company"
+      ],
+      "representation": "direct"
+    },
+    {
+      "controlKey": "experience.0.role",
+      "sourceKeys": [
+        "experience.0.role"
+      ],
+      "representation": "direct"
+    },
+    {
+      "controlKey": "experience.0.description",
+      "sourceKeys": [
+        "experience.0.department",
+        "experience.0.description",
+        "experience.0.achievements"
+      ],
+      "representation": "labeled-intern-description"
+    },
+    {
+      "controlKey": "projects.0.name",
+      "sourceKeys": [
+        "projects.0.name"
+      ],
+      "representation": "direct"
+    },
+    {
+      "controlKey": "projects.0.role",
+      "sourceKeys": [
+        "projects.0.role"
+      ],
+      "representation": "direct"
+    },
+    {
+      "controlKey": "projects.0.description",
+      "sourceKeys": [
+        "projects.0.client",
+        "projects.0.description",
+        "projects.0.contribution",
+        "projects.0.techStack",
+        "projects.0.outcome"
+      ],
+      "representation": "labeled-project-description"
+    },
+    {
+      "controlKey": "projects.1.name",
+      "sourceKeys": [
+        "projects.1.name"
+      ],
+      "representation": "direct"
+    },
+    {
+      "controlKey": "projects.1.role",
+      "sourceKeys": [
+        "projects.1.role"
+      ],
+      "representation": "direct"
+    },
+    {
+      "controlKey": "projects.1.description",
+      "sourceKeys": [
+        "projects.1.client",
+        "projects.1.description",
+        "projects.1.contribution",
+        "projects.1.techStack",
+        "projects.1.outcome"
+      ],
+      "representation": "labeled-project-description"
+    },
+    {
+      "controlKey": "projects.2.name",
+      "sourceKeys": [
+        "projects.2.name"
+      ],
+      "representation": "direct"
+    },
+    {
+      "controlKey": "projects.2.role",
+      "sourceKeys": [
+        "projects.2.role"
+      ],
+      "representation": "direct"
+    },
+    {
+      "controlKey": "projects.2.description",
+      "sourceKeys": [
+        "projects.2.description",
+        "projects.2.contribution",
+        "projects.2.techStack",
+        "projects.2.outcome",
+        "projects.2.link"
+      ],
+      "representation": "labeled-project-description"
+    },
+    {
+      "controlKey": "projects.3.name",
+      "sourceKeys": [
+        "projects.3.name"
+      ],
+      "representation": "direct"
+    },
+    {
+      "controlKey": "projects.3.role",
+      "sourceKeys": [
+        "projects.3.role"
+      ],
+      "representation": "direct"
+    },
+    {
+      "controlKey": "projects.3.description",
+      "sourceKeys": [
+        "projects.3.client",
+        "projects.3.description",
+        "projects.3.contribution",
+        "projects.3.techStack",
+        "projects.3.outcome"
+      ],
+      "representation": "labeled-project-description"
+    },
+    {
+      "controlKey": "projects.4.name",
+      "sourceKeys": [
+        "projects.4.name"
+      ],
+      "representation": "direct"
+    },
+    {
+      "controlKey": "projects.4.role",
+      "sourceKeys": [
+        "projects.4.role"
+      ],
+      "representation": "direct"
+    },
+    {
+      "controlKey": "projects.4.description",
+      "sourceKeys": [
+        "projects.4.description",
+        "projects.4.contribution",
+        "projects.4.techStack",
+        "projects.4.outcome",
+        "projects.4.link"
+      ],
+      "representation": "labeled-project-description"
+    },
+    {
+      "controlKey": "skills.devLanguages",
+      "sourceKeys": [
+        "skills.devLanguages"
+      ],
+      "representation": "exact-multiselect"
+    }
+  ],
+  "sectionSetup": [
+    {
+      "section": "教育经历",
+      "requested": 1,
+      "groups": 1,
+      "added": 0,
+      "error": null
+    },
+    {
+      "section": "实习经历",
+      "requested": 1,
+      "groups": 1,
+      "added": 0,
+      "error": null
+    },
+    {
+      "section": "项目经历",
+      "requested": 5,
+      "groups": 5,
+      "added": 0,
+      "error": null
+    }
+  ],
+  "widgets": [
+    {
+      "key": "skills.devLanguages",
+      "written": true,
+      "retained": false,
+      "error": null
+    }
+  ],
+  "saveClicks": 0,
+  "submitClicks": 0
+}

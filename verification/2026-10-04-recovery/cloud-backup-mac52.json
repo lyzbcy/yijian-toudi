@@ -1,0 +1,41 @@
+{
+  "ok": true,
+  "version": "0.5.52",
+  "draft": true,
+  "published": false,
+  "url": "https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-52b2ff408ee35157055a",
+  "sourceCommit": "5f5a66383445b50e0f9455cb6eb225bb2f884847",
+  "addedMacBinaryAssets": 4,
+  "addedMacChecksumAssets": 4,
+  "originalTenAssetsPreserved": true,
+  "allAddedMacBytesAndHashesDownloadedBackVerified": true,
+  "results": [
+    {
+      "name": "yijian-toudi-0.5.52-arm64.dmg",
+      "bytes": 126465869,
+      "sha256": "60d1b2dd7903be65612e00bba18bd4d854f7a3b595c9a4b6f6221f5ab48a1a3b",
+      "architecture": "arm64"
+    },
+    {
+      "name": "yijian-toudi-0.5.52-arm64.zip",
+      "bytes": 125311027,
+      "sha256": "9250695c9e9867675cece1e92f46fe3addf4f2b520578a4e8fdefc71e953b4a2",
+      "architecture": "arm64"
+    },
+    {
+      "name": "yijian-toudi-0.5.52-x64.dmg",
+      "bytes": 131194704,
+      "sha256": "60f991ad91a7aa5c4c873b483676c8082e9cb65903ccd112ea50cc6183be5b86",
+      "architecture": "x64"
+    },
+    {
+      "name": "yijian-toudi-0.5.52-x64.zip",
+      "bytes": 130072683,
+      "sha256": "450ac2b1225b2b481ff5c4de5f34bf7f3cfddeddd44f98514a794ad0311a3595",
+      "architecture": "x64"
+    }
+  ],
+  "totalAssets": 18,
+  "allAddedMacApiDigestsVerified": true,
+  "originalTenAssetIdsBytesAndApiDigestsPreserved": true
+}

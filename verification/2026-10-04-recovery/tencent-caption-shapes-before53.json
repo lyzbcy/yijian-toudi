@@ -1,0 +1,5324 @@
+{
+  "version": "0.5.52",
+  "privateValuesOmitted": true,
+  "result": {
+    "sectionShapes": [
+      {
+        "index": 0,
+        "classes": "send_box sendBorder",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "send_title",
+            "inputs": 0
+          },
+          {
+            "tag": "DIV",
+            "class": "send_content",
+            "inputs": 1
+          },
+          {
+            "tag": "DIV",
+            "class": "unloadTip",
+            "inputs": 0
+          },
+          {
+            "tag": "DIV",
+            "class": "unloadTip",
+            "inputs": 0
+          }
+        ],
+        "groupCount": 0
+      },
+      {
+        "index": 1,
+        "classes": "send_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "send_title",
+            "inputs": 0
+          },
+          {
+            "tag": "DIV",
+            "class": "send_content",
+            "inputs": 2
+          },
+          {
+            "tag": "DIV",
+            "class": "unloadTip",
+            "inputs": 0
+          },
+          {
+            "tag": "DIV",
+            "class": "unloadTip",
+            "inputs": 0
+          }
+        ],
+        "groupCount": 0
+      },
+      {
+        "index": 2,
+        "classes": "send_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "send_title ",
+            "inputs": 0
+          },
+          {
+            "tag": "DIV",
+            "class": "send_content",
+            "inputs": 14
+          }
+        ],
+        "groupCount": 0
+      },
+      {
+        "index": 3,
+        "classes": "send_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "send_title",
+            "inputs": 0
+          },
+          {
+            "tag": "DIV",
+            "class": "send_content",
+            "inputs": 15
+          }
+        ],
+        "groupCount": 0
+      },
+      {
+        "index": 4,
+        "classes": "send_box educationBox",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "send_title",
+            "inputs": 0
+          },
+          {
+            "tag": "DIV",
+            "class": "send_content",
+            "inputs": 14
+          }
+        ],
+        "groupCount": 1
+      },
+      {
+        "index": 5,
+        "classes": "send_box",
+        "children": [
+          {
+            "tag": "LABEL",
+            "class": "el-checkbox no_experience",
+            "inputs": 1
+          },
+          {
+            "tag": "DIV",
+            "class": "send_title",
+            "inputs": 0
+          },
+          {
+            "tag": "DIV",
+            "class": "send_content",
+            "inputs": 6
+          }
+        ],
+        "groupCount": 1
+      },
+      {
+        "index": 6,
+        "classes": "send_box",
+        "children": [
+          {
+            "tag": "LABEL",
+            "class": "el-checkbox no_experience",
+            "inputs": 1
+          },
+          {
+            "tag": "DIV",
+            "class": "send_title",
+            "inputs": 0
+          },
+          {
+            "tag": "DIV",
+            "class": "send_content",
+            "inputs": 30
+          }
+        ],
+        "groupCount": 5
+      },
+      {
+        "index": 7,
+        "classes": "send_box",
+        "children": [
+          {
+            "tag": "LABEL",
+            "class": "el-checkbox no_experience",
+            "inputs": 1
+          },
+          {
+            "tag": "DIV",
+            "class": "send_title",
+            "inputs": 0
+          },
+          {
+            "tag": "DIV",
+            "class": "send_content",
+            "inputs": 71
+          }
+        ],
+        "groupCount": 14
+      },
+      {
+        "index": 8,
+        "classes": "send_box",
+        "children": [
+          {
+            "tag": "LABEL",
+            "class": "el-checkbox no_experience",
+            "inputs": 1
+          },
+          {
+            "tag": "DIV",
+            "class": "send_title",
+            "inputs": 0
+          },
+          {
+            "tag": "DIV",
+            "class": "send_content",
+            "inputs": 20
+          }
+        ],
+        "groupCount": 5
+      },
+      {
+        "index": 9,
+        "classes": "send_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "send_title",
+            "inputs": 0
+          },
+          {
+            "tag": "DIV",
+            "class": "send_content",
+            "inputs": 3
+          }
+        ],
+        "groupCount": 0
+      },
+      {
+        "index": 10,
+        "classes": "send_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "send_title",
+            "inputs": 0
+          },
+          {
+            "tag": "DIV",
+            "class": "send_content",
+            "inputs": 3
+          }
+        ],
+        "groupCount": 0
+      },
+      {
+        "index": 11,
+        "classes": "send_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "send_title",
+            "inputs": 0
+          },
+          {
+            "tag": "DIV",
+            "class": "send_content",
+            "inputs": 5
+          }
+        ],
+        "groupCount": 1
+      },
+      {
+        "index": 12,
+        "classes": "send_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "send_title",
+            "inputs": 0
+          },
+          {
+            "tag": "DIV",
+            "class": "send_content",
+            "inputs": 3
+          }
+        ],
+        "groupCount": 0
+      },
+      {
+        "index": 13,
+        "classes": "send_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "send_title",
+            "inputs": 0
+          },
+          {
+            "tag": "DIV",
+            "class": "send_content",
+            "inputs": 1
+          },
+          {
+            "tag": "DIV",
+            "class": "switch_box",
+            "inputs": 1
+          }
+        ],
+        "groupCount": 0
+      }
+    ],
+    "boxes": [
+      {
+        "index": 0,
+        "section": 2,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 5
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 58
+          }
+        ],
+        "inputs": [
+          {
+            "type": "file",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": true,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 1,
+        "section": 2,
+        "classes": "info_box person-name",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 4
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          },
+          {
+            "tag": "DIV",
+            "class": "text_box",
+            "inputs": 0,
+            "textLength": 40
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 2,
+        "section": 2,
+        "classes": "info_box sex-scroll",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 4
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 2,
+            "textLength": 3
+          }
+        ],
+        "inputs": [
+          {
+            "type": "radio",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          },
+          {
+            "type": "radio",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 3,
+        "section": 2,
+        "classes": "info_box nationality",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitleBold",
+            "inputs": 0,
+            "textLength": 48
+          },
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 7
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 929
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": true,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 4,
+        "section": 2,
+        "classes": "info_box identity",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 67
+          },
+          {
+            "tag": "DIV",
+            "class": "text_box",
+            "inputs": 0,
+            "textLength": 260
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": true,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 5,
+        "section": 2,
+        "classes": "info_box phone",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "phone-tip",
+            "inputs": 0,
+            "textLength": 28
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 2,
+            "textLength": 2128
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          },
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 6,
+        "section": 2,
+        "classes": "info_box email",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 4
+          },
+          {
+            "tag": "DIV",
+            "class": "email-tip",
+            "inputs": 0,
+            "textLength": 11
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 3
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 7,
+        "section": 2,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 5
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 168
+          },
+          {
+            "tag": "DIV",
+            "class": "text_box",
+            "inputs": 0,
+            "textLength": 25
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 8,
+        "section": 2,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 4
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 9,
+        "section": 2,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 4
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 10,
+        "section": 2,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 11,
+        "section": 2,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 8
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 12,
+        "section": 3,
+        "classes": "info_box jobCity",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 8
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 16
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 13,
+        "section": 3,
+        "classes": "info_box jobCityDistributable",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 20
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 2,
+            "textLength": 3
+          }
+        ],
+        "inputs": [
+          {
+            "type": "radio",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          },
+          {
+            "type": "radio",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 14,
+        "section": 3,
+        "classes": "info_box applicant-group",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must boleTip",
+            "inputs": 0,
+            "textLength": 10
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 75
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 15,
+        "section": 3,
+        "classes": "info_box applicant-department",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 8
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 10,
+            "textLength": 2704
+          },
+          {
+            "tag": "DIV",
+            "class": "text_box",
+            "inputs": 0,
+            "textLength": 109
+          }
+        ],
+        "inputs": [
+          {
+            "type": "radio",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": true,
+            "select": false,
+            "date": false
+          },
+          {
+            "type": "radio",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": true,
+            "select": false,
+            "date": false
+          },
+          {
+            "type": "radio",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": true,
+            "select": false,
+            "date": false
+          },
+          {
+            "type": "radio",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": true,
+            "select": false,
+            "date": false
+          },
+          {
+            "type": "radio",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": true,
+            "select": false,
+            "date": false
+          },
+          {
+            "type": "radio",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": true,
+            "select": false,
+            "date": false
+          },
+          {
+            "type": "radio",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": true,
+            "select": false,
+            "date": false
+          },
+          {
+            "type": "radio",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": true,
+            "select": false,
+            "date": false
+          },
+          {
+            "type": "radio",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": true,
+            "select": false,
+            "date": false
+          },
+          {
+            "type": "radio",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": true,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 16,
+        "section": 3,
+        "classes": "info_box interviewCity",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 8
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 4
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 17,
+        "section": 4,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 4
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 16
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 18,
+        "section": 4,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 13
+          },
+          {
+            "tag": "DIV",
+            "class": "text_box",
+            "inputs": 0,
+            "textLength": 65
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 19,
+        "section": 4,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 7
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 168
+          },
+          {
+            "tag": "DIV",
+            "class": "text_box",
+            "inputs": 0,
+            "textLength": 195
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 20,
+        "section": 4,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 7
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 2,
+            "textLength": 5
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": true
+          },
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": true
+          }
+        ]
+      },
+      {
+        "index": 21,
+        "section": 4,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 4
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 22,
+        "section": 4,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 4
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 5
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 23,
+        "section": 4,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 4
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 13
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 24,
+        "section": 4,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 7
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 1
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 25,
+        "section": 4,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 8
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 1
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 26,
+        "section": 4,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "BUTTON",
+            "class": "el-button el-button--text",
+            "inputs": 0,
+            "textLength": 2
+          }
+        ],
+        "inputs": []
+      },
+      {
+        "index": 27,
+        "section": 4,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 28
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": true,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 28,
+        "section": 4,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 3
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": true,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 29,
+        "section": 4,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 4
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": true,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 30,
+        "section": 4,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 2
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 7
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": true,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 31,
+        "section": 4,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "BUTTON",
+            "class": "el-button el-button--text",
+            "inputs": 0,
+            "textLength": 4
+          }
+        ],
+        "inputs": []
+      },
+      {
+        "index": 32,
+        "section": 5,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 4
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 13
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 33,
+        "section": 5,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 4
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 34,
+        "section": 5,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 3,
+            "textLength": 8
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": true
+          },
+          {
+            "type": "text",
+            "disabled": true,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": true
+          },
+          {
+            "type": "checkbox",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 35,
+        "section": 5,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 2
+          },
+          {
+            "tag": "DIV",
+            "class": "el-textarea",
+            "inputs": 1,
+            "textLength": 8
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 36,
+        "section": 5,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "BUTTON",
+            "class": "el-button el-button--text",
+            "inputs": 0,
+            "textLength": 6
+          }
+        ],
+        "inputs": []
+      },
+      {
+        "index": 37,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 38,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 11
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 39,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 3,
+            "textLength": 8
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": true
+          },
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": true
+          },
+          {
+            "type": "checkbox",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 40,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 3
+          },
+          {
+            "tag": "DIV",
+            "class": "el-textarea",
+            "inputs": 1,
+            "textLength": 8
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 41,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 42,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 11
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 43,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 3,
+            "textLength": 8
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": true
+          },
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": true
+          },
+          {
+            "type": "checkbox",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 44,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 3
+          },
+          {
+            "tag": "DIV",
+            "class": "el-textarea",
+            "inputs": 1,
+            "textLength": 8
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 45,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 46,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 11
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 47,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 3,
+            "textLength": 8
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": true
+          },
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": true
+          },
+          {
+            "type": "checkbox",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 48,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 3
+          },
+          {
+            "tag": "DIV",
+            "class": "el-textarea",
+            "inputs": 1,
+            "textLength": 8
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 49,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 50,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 11
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 51,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 3,
+            "textLength": 8
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": true
+          },
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": true
+          },
+          {
+            "type": "checkbox",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 52,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 3
+          },
+          {
+            "tag": "DIV",
+            "class": "el-textarea",
+            "inputs": 1,
+            "textLength": 8
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 53,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 54,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 11
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 55,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 3,
+            "textLength": 8
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": true
+          },
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": true
+          },
+          {
+            "type": "checkbox",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 56,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 3
+          },
+          {
+            "tag": "DIV",
+            "class": "el-textarea",
+            "inputs": 1,
+            "textLength": 7
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 57,
+        "section": 6,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "BUTTON",
+            "class": "el-button el-button--text",
+            "inputs": 0,
+            "textLength": 6
+          }
+        ],
+        "inputs": []
+      },
+      {
+        "index": 58,
+        "section": 7,
+        "classes": "info_box game_s",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 15
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 87
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 59,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 45
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 60,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 61,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 77
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 62,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 5
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 63,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 7
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 64,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 45
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 65,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 66,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 77
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 67,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 5
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 68,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 7
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 69,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 45
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 70,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 71,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 77
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 72,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 5
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 73,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 7
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 74,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 45
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 75,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 76,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 77
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 77,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 6
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 78,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 6
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 79,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 45
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 80,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 81,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 77
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 82,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 5
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 83,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 6
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 84,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 45
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 85,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 86,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 77
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 87,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 6
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 88,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 7
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 89,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 45
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 90,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 91,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 77
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 92,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 5
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 93,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 7
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 94,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 45
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 95,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 96,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 77
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 97,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 6
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 98,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 7
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 99,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 45
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 100,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 101,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 77
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 102,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 6
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 103,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 7
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 104,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 45
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 105,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 106,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 77
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 107,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 6
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 108,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 7
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 109,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 45
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 110,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 111,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 77
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 112,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 6
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 113,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 7
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 114,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 45
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 115,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 116,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 77
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 117,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 5
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 118,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 6
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 119,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 45
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 120,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 121,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 77
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 122,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 5
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 123,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 7
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 124,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 45
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 125,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 126,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 77
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 127,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 5
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 128,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 7
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 129,
+        "section": 7,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "BUTTON",
+            "class": "el-button el-button--text",
+            "inputs": 0,
+            "textLength": 6
+          }
+        ],
+        "inputs": []
+      },
+      {
+        "index": 130,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 9
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 131,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 296
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 132,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": true
+          }
+        ]
+      },
+      {
+        "index": 133,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 4
+          },
+          {
+            "tag": "DIV",
+            "class": "el-textarea",
+            "inputs": 1,
+            "textLength": 6
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 134,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 9
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 135,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 136,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": true
+          }
+        ]
+      },
+      {
+        "index": 137,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 4
+          },
+          {
+            "tag": "DIV",
+            "class": "el-textarea",
+            "inputs": 1,
+            "textLength": 5
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 138,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 9
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 139,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 140,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": true
+          }
+        ]
+      },
+      {
+        "index": 141,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 4
+          },
+          {
+            "tag": "DIV",
+            "class": "el-textarea",
+            "inputs": 1,
+            "textLength": 6
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 142,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 9
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 143,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 144,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": true
+          }
+        ]
+      },
+      {
+        "index": 145,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 4
+          },
+          {
+            "tag": "DIV",
+            "class": "el-textarea",
+            "inputs": 1,
+            "textLength": 5
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 146,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 9
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 147,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 148,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": true
+          }
+        ]
+      },
+      {
+        "index": 149,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 4
+          },
+          {
+            "tag": "DIV",
+            "class": "el-textarea",
+            "inputs": 1,
+            "textLength": 5
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 150,
+        "section": 8,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "BUTTON",
+            "class": "el-button el-button--text",
+            "inputs": 0,
+            "textLength": 6
+          }
+        ],
+        "inputs": []
+      },
+      {
+        "index": 151,
+        "section": 9,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 17
+          },
+          {
+            "tag": "DIV",
+            "class": "el-textarea",
+            "inputs": 1,
+            "textLength": 6
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 152,
+        "section": 9,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 23
+          },
+          {
+            "tag": "DIV",
+            "class": "el-textarea",
+            "inputs": 1,
+            "textLength": 8
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 153,
+        "section": 9,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 9
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box urlBox",
+            "inputs": 1,
+            "textLength": 2
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 154,
+        "section": 10,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 8
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 102
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 155,
+        "section": 10,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 5
+          },
+          {
+            "tag": "DIV",
+            "class": "el-select",
+            "inputs": 2,
+            "textLength": 78
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": true,
+            "date": false
+          },
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": true,
+            "hidden": false,
+            "select": true,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 156,
+        "section": 11,
+        "classes": "info_box accessory_link_0",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 157,
+        "section": 11,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle must",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 158,
+        "section": 11,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 7
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 159,
+        "section": 11,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "BUTTON",
+            "class": "el-button el-button--text",
+            "inputs": 0,
+            "textLength": 54
+          }
+        ],
+        "inputs": []
+      },
+      {
+        "index": 160,
+        "section": 11,
+        "classes": "info_box accessory_upload",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "resume_upload",
+            "inputs": 1,
+            "textLength": 58
+          }
+        ],
+        "inputs": [
+          {
+            "type": "file",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": true,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 161,
+        "section": 11,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box urlBox",
+            "inputs": 1,
+            "textLength": 2
+          },
+          {
+            "tag": "DIV",
+            "class": "text_box",
+            "inputs": 0,
+            "textLength": 124
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 162,
+        "section": 12,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 8
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          },
+          {
+            "tag": "DIV",
+            "class": "text_box",
+            "inputs": 0,
+            "textLength": 14
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 163,
+        "section": 12,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 6
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 164,
+        "section": 12,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 5
+          },
+          {
+            "tag": "DIV",
+            "class": "input_box",
+            "inputs": 1,
+            "textLength": 0
+          }
+        ],
+        "inputs": [
+          {
+            "type": "text",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      },
+      {
+        "index": 165,
+        "section": 13,
+        "classes": "info_box",
+        "children": [
+          {
+            "tag": "DIV",
+            "class": "subtitle",
+            "inputs": 0,
+            "textLength": 5
+          },
+          {
+            "tag": "DIV",
+            "class": "el-textarea",
+            "inputs": 1,
+            "textLength": 7
+          }
+        ],
+        "inputs": [
+          {
+            "type": "textarea",
+            "disabled": false,
+            "readOnly": false,
+            "hidden": false,
+            "select": false,
+            "date": false
+          }
+        ]
+      }
+    ],
+    "scripts": [
+      {
+        "origin": "https://beacon.cdn.qq.com",
+        "path": "/sdk/4.5.9/beacon_web.min.js"
+      },
+      {
+        "origin": "https://cdn.multilingualres.hr.tencent.com",
+        "path": "/campusjoin/V2Common_zh-cn.js"
+      },
+      {
+        "origin": "https://cdn.multilingualres.hr.tencent.com",
+        "path": "/campusjoin/V2Header_zh-cn.js"
+      },
+      {
+        "origin": "https://cdn.multilingualres.hr.tencent.com",
+        "path": "/campusjoin/V2Footer_zh-cn.js"
+      },
+      {
+        "origin": "https://cdn.multilingualres.hr.tencent.com",
+        "path": "/campusjoin/V2Send_zh-cn.js"
+      },
+      {
+        "origin": "https://cdn.multilingualres.hr.tencent.com",
+        "path": "/joinqq/static2/js/vendor/jquery.min.js"
+      },
+      {
+        "origin": "https://cdn.multilingualres.hr.tencent.com",
+        "path": "/joinqq/static2/js/model/model.js"
+      },
+      {
+        "origin": "https://cdn.multilingualres.hr.tencent.com",
+        "path": "/joinqq/static2/js/vendor/report.js"
+      },
+      {
+        "origin": "https://cdn.multilingualres.hr.tencent.com",
+        "path": "/joinqq/static2/smart-inquiry/smart-inquiry.umd.js"
+      },
+      {
+        "origin": "https://captcha.gtimg.com",
+        "path": "/TCaptcha.js"
+      },
+      {
+        "origin": "https://cdn.multilingualres.hr.tencent.com",
+        "path": "/joinqq/static2/js/manifest.build.js"
+      },
+      {
+        "origin": "https://cdn.multilingualres.hr.tencent.com",
+        "path": "/joinqq/static2/js/vendor.build.js"
+      },
+      {
+        "origin": "https://cdn.multilingualres.hr.tencent.com",
+        "path": "/joinqq/static2/js/p_zh-cn_resumeedit.build.js"
+      }
+    ]
+  }
+}

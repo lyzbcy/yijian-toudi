@@ -1,0 +1,16 @@
+{
+  "version": "0.5.52",
+  "run": 37237967954,
+  "attempt": 1,
+  "sourceCommit": "5f5a66383445b50e0f9455cb6eb225bb2f884847",
+  "architecture": "x64",
+  "jobConclusion": "failure",
+  "buildRuntimeInstallUpdateStepsPassed": true,
+  "failedStep": "Save native evidence and candidate artifacts",
+  "error": "ArtifactService/CreateArtifact request timeout after all 5 attempts",
+  "nativeArtifactsDownloadedBackVerified": false,
+  "failedJobOnlyRerunRequested": true,
+  "retryAttempt": 2,
+  "failureRetainedInQualityLedger": true,
+  "privateValuesIncluded": false
+}

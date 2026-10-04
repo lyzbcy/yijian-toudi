@@ -1,0 +1,398 @@
+{
+  "version": "0.5.53",
+  "scope": "Read-only metadata for future Tencent school/degree/date implementation; no widget actions",
+  "isolatedProfile": true,
+  "externalRequestsBlocked": true,
+  "privateValuesOmitted": true,
+  "officialWrites": 0,
+  "rows": [
+    {
+      "label": "学历",
+      "classes": [
+        {
+          "className": "el-select",
+          "component": "ElSelect",
+          "propKeys": [
+            "name",
+            "id",
+            "value",
+            "autocomplete",
+            "autoComplete",
+            "automaticDropdown",
+            "size",
+            "disabled",
+            "clearable",
+            "filterable",
+            "allowCreate",
+            "loading",
+            "popperClass",
+            "remote",
+            "loadingText",
+            "noMatchText",
+            "noDataText",
+            "remoteMethod",
+            "filterMethod",
+            "multiple",
+            "multipleLimit",
+            "placeholder",
+            "defaultFirstOption",
+            "reserveKeyword",
+            "valueKey",
+            "collapseTags",
+            "popperAppendToBody"
+          ],
+          "ownedMenuCount": 1
+        }
+      ],
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": true,
+          "placeholder": "请选择学历",
+          "classes": "el-input__inner"
+        }
+      ],
+      "optionLabels": [
+        "本科",
+        "硕士研究生",
+        "博士研究生",
+        "高中",
+        "大专"
+      ]
+    },
+    {
+      "label": "学校名称",
+      "classes": [],
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "placeholder": "请输入学校名称",
+          "classes": "inp el-input__inner"
+        }
+      ],
+      "optionLabels": []
+    },
+    {
+      "label": "目前就读地",
+      "classes": [
+        {
+          "className": "el-cascader",
+          "component": "ElCascader",
+          "propKeys": [
+            "placement",
+            "appendToBody",
+            "visibleArrow",
+            "arrowOffset",
+            "offset",
+            "boundariesPadding",
+            "popperOptions",
+            "transformOrigin",
+            "value",
+            "options",
+            "props",
+            "size",
+            "placeholder",
+            "disabled",
+            "clearable",
+            "filterable",
+            "filterMethod",
+            "separator",
+            "showAllLevels",
+            "collapseTags",
+            "debounce",
+            "beforeFilter",
+            "popperClass"
+          ],
+          "ownedMenuCount": 0
+        }
+      ],
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "placeholder": "请选择目前就读地",
+          "classes": "el-input__inner"
+        }
+      ],
+      "optionLabels": []
+    },
+    {
+      "label": "起止时间",
+      "classes": [
+        {
+          "className": "el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--date start-time",
+          "component": "ElDatePicker",
+          "propKeys": [
+            "appendToBody",
+            "offset",
+            "boundariesPadding",
+            "arrowOffset",
+            "transformOrigin",
+            "size",
+            "format",
+            "valueFormat",
+            "readonly",
+            "placeholder",
+            "startPlaceholder",
+            "endPlaceholder",
+            "prefixIcon",
+            "clearIcon",
+            "name",
+            "disabled",
+            "clearable",
+            "id",
+            "popperClass",
+            "editable",
+            "align",
+            "value",
+            "defaultValue",
+            "defaultTime",
+            "rangeSeparator",
+            "pickerOptions",
+            "unlinkPanels",
+            "validateEvent",
+            "type",
+            "timeArrowControl"
+          ],
+          "ownedMenuCount": 0
+        },
+        {
+          "className": "el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--date",
+          "component": "ElDatePicker",
+          "propKeys": [
+            "appendToBody",
+            "offset",
+            "boundariesPadding",
+            "arrowOffset",
+            "transformOrigin",
+            "size",
+            "format",
+            "valueFormat",
+            "readonly",
+            "placeholder",
+            "startPlaceholder",
+            "endPlaceholder",
+            "prefixIcon",
+            "clearIcon",
+            "name",
+            "disabled",
+            "clearable",
+            "id",
+            "popperClass",
+            "editable",
+            "align",
+            "value",
+            "defaultValue",
+            "defaultTime",
+            "rangeSeparator",
+            "pickerOptions",
+            "unlinkPanels",
+            "validateEvent",
+            "type",
+            "timeArrowControl"
+          ],
+          "ownedMenuCount": 0
+        }
+      ],
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "placeholder": "选择日期",
+          "classes": "el-input__inner"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "placeholder": "选择日期",
+          "classes": "el-input__inner"
+        }
+      ],
+      "optionLabels": []
+    },
+    {
+      "label": "院系",
+      "classes": [],
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "placeholder": "请输入院系",
+          "classes": "el-input__inner"
+        }
+      ],
+      "optionLabels": []
+    },
+    {
+      "label": "专业",
+      "classes": [],
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "placeholder": "请输入专业",
+          "classes": "inp el-input__inner"
+        }
+      ],
+      "optionLabels": []
+    },
+    {
+      "label": "成绩排名",
+      "classes": [
+        {
+          "className": "el-select",
+          "component": "ElSelect",
+          "propKeys": [
+            "name",
+            "id",
+            "value",
+            "autocomplete",
+            "autoComplete",
+            "automaticDropdown",
+            "size",
+            "disabled",
+            "clearable",
+            "filterable",
+            "allowCreate",
+            "loading",
+            "popperClass",
+            "remote",
+            "loadingText",
+            "noMatchText",
+            "noDataText",
+            "remoteMethod",
+            "filterMethod",
+            "multiple",
+            "multipleLimit",
+            "placeholder",
+            "defaultFirstOption",
+            "reserveKeyword",
+            "valueKey",
+            "collapseTags",
+            "popperAppendToBody"
+          ],
+          "ownedMenuCount": 1
+        }
+      ],
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": true,
+          "placeholder": "请选择成绩排名",
+          "classes": "el-input__inner"
+        }
+      ],
+      "optionLabels": [
+        "前5%",
+        "前10%",
+        "前20%",
+        "其他"
+      ]
+    },
+    {
+      "label": "GPA-GPA",
+      "classes": [],
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "placeholder": "请输入你的绩点",
+          "classes": "el-input__inner"
+        }
+      ],
+      "optionLabels": []
+    },
+    {
+      "label": "GPA-BASE",
+      "classes": [],
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "placeholder": "请输入你所在院校的满绩绩点",
+          "classes": "el-input__inner"
+        }
+      ],
+      "optionLabels": []
+    },
+    {
+      "label": "",
+      "classes": [],
+      "controls": [],
+      "optionLabels": []
+    },
+    {
+      "label": "导师",
+      "classes": [],
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "placeholder": "请输入导师",
+          "classes": "el-input__inner"
+        }
+      ],
+      "optionLabels": []
+    },
+    {
+      "label": "实验室",
+      "classes": [],
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "placeholder": "请输入实验室",
+          "classes": "el-input__inner"
+        }
+      ],
+      "optionLabels": []
+    },
+    {
+      "label": "研究方向",
+      "classes": [],
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "placeholder": "请输入研究方向",
+          "classes": "el-input__inner"
+        }
+      ],
+      "optionLabels": []
+    },
+    {
+      "label": "论文",
+      "classes": [],
+      "controls": [
+        {
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "readOnly": false,
+          "placeholder": "请输入已发表论文，如未发表则无需填写",
+          "classes": "el-textarea__inner"
+        }
+      ],
+      "optionLabels": []
+    },
+    {
+      "label": "",
+      "classes": [],
+      "controls": [],
+      "optionLabels": []
+    }
+  ]
+}
