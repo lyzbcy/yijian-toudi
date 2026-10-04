@@ -10,6 +10,7 @@ on:
       - 'electron/wecom-notify.cjs'
       - 'scripts/package-feedback.cjs'
       - 'test/feedback-systemd-runtime.cjs'
+      - 'test/feedback-caddy-runtime.cjs'
       - 'package.json'
       - '.github/workflows/candidate-feedback.yml'
   workflow_dispatch:
@@ -62,6 +63,8 @@ jobs:
           docker inspect "$(docker compose ps -q feedback)" > container.json
           node -e "const assert=require('node:assert/strict');const c=require('./container.json')[0];assert.equal(c.Config.User,'node');assert.equal(c.HostConfig.ReadonlyRootfs,true);assert.equal(c.HostConfig.NetworkMode,'host');"
           node -e "require('fs').writeFileSync('linux-candidate.json',JSON.stringify({ok:true,version:require('../../version.json').version,platform:process.platform,systemdTemplateValidated:true,caddyTemplateValidated:true,composeBootAndRestart:true,persistentUnknownReceipt:true,readonlyContainer:true,realPublicTLS:false,realWecom:false,systemdRuntime:false},null,2));"
+      - name: Verify actual local HTTPS proxy and forwarded-IP rate limit
+        run: node test/feedback-caddy-runtime.cjs .local-data/linux-deploy/yijian-toudi-feedback-server/support/deploy .local-data/caddy-runtime.json
       - name: Save deployment evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -73,6 +76,7 @@ jobs:
             .local-data/linux-deploy/yijian-toudi-feedback-server/support/deploy/health.json
             .local-data/linux-deploy/yijian-toudi-feedback-server/support/deploy/receipt.json
             .local-data/systemd-runtime.json
+            .local-data/caddy-runtime.json
       - name: Stop only test deployment
         if: always()
         run: |
