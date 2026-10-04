@@ -1,0 +1,65 @@
+{
+  "ok": true,
+  "version": "0.5.51",
+  "draft": true,
+  "published": false,
+  "url": "https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-d0da48866c6f08a25def",
+  "tag": "v0.5.51",
+  "sourceCommit": "1870faba25869fae701121c2857b788ccd873b08",
+  "assets": 10,
+  "allBytesHashesAndApiDigestsVerified": true,
+  "files": [
+    {
+      "name": "yijian-toudi-setup-0.5.51.exe",
+      "bytes": 104310610,
+      "sha256": "790e4cc436a231344dd300e6053b96ed25dcc9ccaeb9b19ed50714dd4267a4ce"
+    },
+    {
+      "name": "yijian-toudi-skill-0.5.51.tar.gz",
+      "bytes": 14059,
+      "sha256": "6614bb97f36edcba3877e7036d36819ddd111c1fcc535c21d65ff422f19a6813"
+    },
+    {
+      "name": "yijian-toudi-skill-0.5.51.sha256",
+      "bytes": 99,
+      "sha256": "11a95539cc0f19454c5b4b226a4f7c6756854f89aaa4e762127bf8f3746a65c6"
+    },
+    {
+      "name": "yijian-toudi-feedback-server-0.5.51.tar.gz",
+      "bytes": 12434,
+      "sha256": "1b7cfba5185bccdadee6ab0eea3eb7ab669bfc2c5156ee89d6599fe05f2fbff7"
+    },
+    {
+      "name": "yijian-toudi-feedback-server-0.5.51.sha256",
+      "bytes": 109,
+      "sha256": "cd0c9c47187f646ed1d30664045876a5df8ceed9152fdae313296c97a1f3ed16"
+    },
+    {
+      "name": "yijian-toudi-0.5.51-SHA256.txt",
+      "bytes": 304,
+      "sha256": "c83ed581c6d0bde804444d9ee559db769fef805429d237b3cc29e6dfb5e9d6a3"
+    },
+    {
+      "name": "yijian-toudi-0.5.51-candidate-guide.md",
+      "bytes": 820,
+      "sha256": "a279604518d4293bb88dacbd1deb13e0d216f68ca6f663ec94b3006b7e2653bd"
+    },
+    {
+      "name": "candidate-manifest-v0.5.51.json",
+      "bytes": 939,
+      "sha256": "f7f5956d7cb245f5e14af6562b0cdb3510d206ce9cc21a2b7828bd8bf9ba0e68"
+    },
+    {
+      "name": "source-fingerprints-v51.json",
+      "bytes": 20390,
+      "sha256": "5fcbb97c2512820f21d5dd7530594e89177f058c836df3508c6602bf36fe9353"
+    },
+    {
+      "name": "local-verification-v51.json",
+      "bytes": 4269,
+      "sha256": "b1396a0a16e37a4cd1f3793cdd165fc914117bdd56b067381a22cd9e3490f75a"
+    }
+  ],
+  "containsMac51": false,
+  "privateResumeCookiesCredentialsIncluded": false
+}

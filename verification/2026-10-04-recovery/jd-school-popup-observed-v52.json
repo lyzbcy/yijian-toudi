@@ -1,0 +1,76 @@
+{
+  "version": "0.5.51",
+  "diagnosticDraftOnly": true,
+  "groupSetup": {
+    "skipped": false,
+    "sections": [
+      {
+        "sectionId": "edu",
+        "count": 1,
+        "requested": 1,
+        "error": null
+      }
+    ]
+  },
+  "isolatedProfile": true,
+  "sealed": true,
+  "initial": {
+    "before": [
+      {
+        "tag": "DIV",
+        "role": "combobox",
+        "id": "",
+        "controls": "fbfc38bd-51b8-4866-8c1e-2a7fa403534b",
+        "owns": null,
+        "expanded": "false",
+        "classes": "ant-select-selection\n            ant-select-selection--single"
+      },
+      {
+        "tag": "INPUT",
+        "role": null,
+        "id": "",
+        "controls": null,
+        "owns": null,
+        "expanded": null,
+        "classes": "ant-select-search__field",
+        "readonly": false
+      }
+    ],
+    "clickedTag": "DIV"
+  },
+  "after": {
+    "selectClasses": "ant-select ant-select-open ant-select-focused ant-select-enabled ant-select-no-arrow",
+    "controls": [
+      {
+        "tag": "DIV",
+        "role": "combobox",
+        "id": "",
+        "controls": "fbfc38bd-51b8-4866-8c1e-2a7fa403534b",
+        "owns": null,
+        "expanded": "true",
+        "classes": "ant-select-selection\n            ant-select-selection--single"
+      },
+      {
+        "tag": "INPUT",
+        "role": null,
+        "id": "",
+        "controls": null,
+        "owns": null,
+        "expanded": null,
+        "classes": "ant-select-search__field",
+        "readonly": false
+      }
+    ],
+    "dropdowns": [
+      {
+        "classes": "ant-select-dropdown ant-select-dropdown--single ant-select-dropdown-placement-bottomLeft",
+        "id": "",
+        "visible": true,
+        "ariaHidden": null,
+        "childIds": [],
+        "optionCount": 0
+      }
+    ]
+  },
+  "officialWrites": 0
+}

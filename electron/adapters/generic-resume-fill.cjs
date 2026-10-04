@@ -3,7 +3,7 @@ const { matchField, normalizeComparableValue, isUnsafeField } = require('../fiel
 const { resolvePlatformUrl } = require('../platform-manifests.cjs');
 const { LOGIN_AND_FORM_PROBE, INSPECT_FORM_FIELDS } = require('../form-inspection.cjs');
 const {resolveJdFormControl,buildEnsureJdGroupsScript}=require('../jd-form-context.cjs');
-const {planJdWidgets,executeJdWidgets}=require('../jd-widget-fill.cjs');
+const {planJdWidgets,executeJdWidgets,buildJdWidgetReadbackScript}=require('../jd-widget-fill.cjs');
 const {buildJdRequiredFieldsScript}=require('../jd-required-fields.cjs');
 const {resolveBaiduFormControl,executeBaiduGroups}=require('../baidu-form-context.cjs');
 const {planBaiduMonths,executeBaiduMonths}=require('../baidu-month-fill.cjs');
@@ -346,7 +346,7 @@ function createGenericResumeFill(companyId, siteName) {
     const baiduSelections=companyId==='baidu'?planBaiduSelections(resume):[];
     const widgetRequests=companyId==='jd'&&new URL(url).origin==='https://campus.jd.com'?planJdWidgets(resume):[...baiduSelections,...baiduRequests];
     const widgetKeys=new Set(widgetRequests.map(item=>item.key));
-    const widgetExecution=widgetRequests.length?(companyId==='baidu'?[...await executeBaiduSelections(workspace,baiduSelections),...await executeBaiduMonths(workspace,baiduRequests)]:await executeJdWidgets(workspace,resume)):[];
+    let widgetExecution=widgetRequests.length?(companyId==='baidu'?[...await executeBaiduSelections(workspace,baiduSelections),...await executeBaiduMonths(workspace,baiduRequests)]:await executeJdWidgets(workspace,resume)):[];
     if(widgetRequests.length){
       fields=await workspace.run(INSPECT_FORM_FIELDS);
       for(const item of widgetExecution){
@@ -371,6 +371,7 @@ function createGenericResumeFill(companyId, siteName) {
           }
         })
       : [];
+    if(companyId==='jd'&&widgetExecution.length)widgetExecution=await workspace.run(buildJdWidgetReadbackScript(widgetExecution));
     const verification = summarizeGenericVerification([...execution,...widgetExecution]);
     const verifiedCount = verification.verified.length;
     const manualKeys=[...new Set([...planned.manual.map(item=>item.key),...verification.mismatched,...verification.failed])];

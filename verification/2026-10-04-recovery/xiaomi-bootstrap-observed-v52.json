@@ -1,0 +1,125 @@
+{
+  "version": "0.5.52",
+  "privateValuesOmitted": true,
+  "result": {
+    "path": "/campus/resume",
+    "root": null,
+    "bodyChildren": [
+      {
+        "tag": "STYLE",
+        "id": "theme",
+        "class": "",
+        "children": 0,
+        "textLength": 193337
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "",
+        "class": "",
+        "children": 0,
+        "textLength": 0
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "",
+        "class": "",
+        "children": 0,
+        "textLength": 0
+      },
+      {
+        "tag": "DIV",
+        "id": "bd",
+        "class": "",
+        "children": 1,
+        "textLength": 45
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "",
+        "class": "",
+        "children": 0,
+        "textLength": 51
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "",
+        "class": "",
+        "children": 0,
+        "textLength": 0
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "",
+        "class": "",
+        "children": 0,
+        "textLength": 0
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "",
+        "class": "",
+        "children": 0,
+        "textLength": 0
+      },
+      {
+        "tag": "DIV",
+        "id": "",
+        "class": "htmlGlobalLoading",
+        "children": 3,
+        "textLength": 10
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "",
+        "class": "",
+        "children": 0,
+        "textLength": 0
+      },
+      {
+        "tag": "DIV",
+        "id": "",
+        "class": "",
+        "children": 5,
+        "textLength": 0
+      }
+    ],
+    "routes": [
+      {
+        "origin": "https://xiaomi.jobs.f.mioffice.cn",
+        "path": "/campus/"
+      },
+      {
+        "origin": "https://hr.xiaomi.com",
+        "path": "/"
+      },
+      {
+        "origin": "https://hr.xiaomi.com",
+        "path": "/campus/recruitment"
+      }
+    ],
+    "globals": [
+      "__SENTRY__",
+      "__RELEASE__",
+      "__ENV__",
+      "__SENTRY_INIT__",
+      "__getPerformanceMemory__",
+      "__PERF_STORE__",
+      "__CPU_TIME_STORE",
+      "__IS_PDF_RENDER_DURATION__",
+      "__TAB_ID__",
+      "__core-js_shared__",
+      "__assetPrefix__",
+      "__SLARDAR_REGISTRY__",
+      "__ATSX_GRAY_INFO__",
+      "__TEA_TRACk__",
+      "__GET_SENTRY_UID__",
+      "__debugAiAssistantLogin",
+      "__parallelCacheMap__",
+      "__timeoutIdMap__",
+      "__pendingParallelCacheMap__",
+      "__vc_is_render__",
+      "__VERIFY_CENTER_RUNTIME__"
+    ],
+    "resourceFailures": []
+  }
+}

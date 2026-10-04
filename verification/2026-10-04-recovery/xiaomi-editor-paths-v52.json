@@ -1,0 +1,56 @@
+{
+  "version": "0.5.52",
+  "isolatedReadonly": true,
+  "officialWrites": 0,
+  "privateValuesOmitted": true,
+  "rows": [
+    {
+      "requestedPath": "/resume/edit",
+      "path": "/resume/edit",
+      "controls": 0,
+      "formRows": 0,
+      "bodyLength": 9,
+      "hasLoginPrompt": false,
+      "hasProtectionPrompt": false,
+      "links": []
+    },
+    {
+      "requestedPath": "/index/resume/edit",
+      "path": "/index/resume/edit",
+      "controls": 0,
+      "formRows": 0,
+      "bodyLength": 16,
+      "hasLoginPrompt": false,
+      "hasProtectionPrompt": false,
+      "links": [
+        {
+          "origin": "https://hr.xiaomi.com",
+          "path": "/"
+        }
+      ]
+    },
+    {
+      "requestedPath": "/campus/resume/edit",
+      "path": "/campus/resume/edit",
+      "controls": 0,
+      "formRows": 0,
+      "bodyLength": 24,
+      "hasLoginPrompt": false,
+      "hasProtectionPrompt": false,
+      "links": [
+        {
+          "origin": "https://xiaomi.jobs.f.mioffice.cn",
+          "path": "/campus/"
+        },
+        {
+          "origin": "https://hr.xiaomi.com",
+          "path": "/"
+        },
+        {
+          "origin": "https://hr.xiaomi.com",
+          "path": "/campus/recruitment"
+        }
+      ]
+    }
+  ]
+}

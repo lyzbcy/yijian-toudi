@@ -1,0 +1,32 @@
+{
+  "version": "0.5.52",
+  "privateValuesOmitted": true,
+  "network": [
+    "bytedance https://jobs.bytedance.com/people-suite/next-sdk/api/notice",
+    "bytedance https://jobs.bytedance.com/api/v1/website/agent/config",
+    "bytedance https://jobs.bytedance.com/api/v1/ip/location",
+    "bytedance https://jobs.bytedance.com/api/v1/user/mobile/login_status",
+    "bytedance https://jobs.bytedance.com/api/v1/common/setting",
+    "bytedance https://jobs.bytedance.com/api/v1/user/profile",
+    "bytedance https://jobs.bytedance.com/api/v1/config/job/filters/3",
+    "bytedance https://jobs.bytedance.com/api/v1/config/location/nationalities/",
+    "bytedance https://jobs.bytedance.com/api/v1/config/location/nodes/",
+    "bytedance https://jobs.bytedance.com/api/v1/config/location/nodes",
+    "bytedance https://jobs.bytedance.com/api/v1/config/location/nationalities",
+    "bytedance https://jobs.bytedance.com/api/v1/user/recommend/code",
+    "xiaomi https://xiaomi.jobs.f.mioffice.cn/people-suite/next-sdk/api/notice",
+    "xiaomi https://xiaomi.jobs.f.mioffice.cn/api/v1/ip/location",
+    "xiaomi https://xiaomi.jobs.f.mioffice.cn/api/v1/user/mobile/login_status",
+    "xiaomi https://xiaomi.jobs.f.mioffice.cn/api/v1/common/setting",
+    "xiaomi https://xiaomi.jobs.f.mioffice.cn/api/v1/user/profile",
+    "xiaomi https://xiaomi.jobs.f.mioffice.cn/api/v1/user/recommend/code"
+  ],
+  "flags": {
+    "anyLoginText": false,
+    "expired": false,
+    "error": false,
+    "noResume": false,
+    "loginButtons": 1,
+    "networkHint": false
+  }
+}

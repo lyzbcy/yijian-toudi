@@ -1,0 +1,47 @@
+{
+  "version": "0.5.51",
+  "isolatedProfile": true,
+  "allExternalRequestsSealed": true,
+  "officialWrites": 0,
+  "structure": [
+    {
+      "tree": [
+        {
+          "tag": "DIV",
+          "classes": "ant-select-dropdown ant-select-dropdown--single ant-select-dropdown-placement-bottomLeft",
+          "role": null,
+          "placeholder": null,
+          "id": ""
+        }
+      ],
+      "bodyTextLength": 0
+    }
+  ],
+  "search": [
+    {
+      "tree": [
+        {
+          "tag": "DIV",
+          "classes": "ant-select-dropdown ant-select-dropdown--single ant-select-dropdown-placement-bottomLeft",
+          "role": null,
+          "id": ""
+        }
+      ],
+      "exactTextNodes": []
+    }
+  ],
+  "escape": {
+    "expanded": "false",
+    "visibleDropdowns": 1
+  },
+  "blocked": [
+    {
+      "method": "GET",
+      "url": "https://campus.jd.com/api/common/recruit/dict/queryCollegeByName"
+    },
+    {
+      "method": "GET",
+      "url": "https://storage.360buyimg.com/public.wechat.resume/web/official/20260902001311/static/loading.669ec324.gif"
+    }
+  ]
+}

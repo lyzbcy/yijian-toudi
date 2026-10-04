@@ -42,7 +42,7 @@ function buildJdWidgetScript(requests) {
     const selected=select=>text(select?.querySelector('.ant-select-selection-selected-value'));
     for(const request of requests){
       const base={key:request.key,expected:request.value,locator:{kind:'jd-widget',sectionId:request.sectionId,groupNumber:request.groupNumber,label:request.label,ordinal:request.ordinal,widget:request.kind}};
-      let active=null;
+      let active=null,searchInput=null,searchBefore=null,schoolSelected=false;
       const fail=error=>({...base,written:false,observed:'',error});
       try{
         let row=resolveJdWidgetRow(request);if(!row){results.push(fail('row-missing-or-ambiguous'));continue;}
@@ -57,14 +57,24 @@ function buildJdWidgetScript(requests) {
           if(other.length){results.push(fail('another-popup-open'));continue;}
           active=combo;
           if(combo.getAttribute('aria-expanded')!=='true')combo.click();
-          const until=Date.now()+1800;let menu;
+          // School candidates are fetched by the official readonly search API.
+          // An empty dropdown has no aria-controls target until the query returns.
+          if(request.sectionId==='edu'&&request.label==='学校名称'){
+            const searches=[...select.querySelectorAll('input.ant-select-search__field')].filter(e=>!e.disabled&&!e.readOnly);
+            if(searches.length!==1){results.push(fail('school-search-missing-or-ambiguous'));continue;}
+            searchInput=searches[0];searchBefore=searchInput.value;searchInput.focus();
+            Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(searchInput,request.value);
+            searchInput.dispatchEvent(new Event('input',{bubbles:true}));
+            searchInput.dispatchEvent(new Event('change',{bubbles:true}));
+          }
+          const until=Date.now()+(searchInput?3500:1800);let menu;
           do{menu=document.getElementById(combo.getAttribute('aria-controls')||'');if(menu&&visible(menu)&&visible(menu.closest('.ant-select-dropdown')))break;await pause(50);}while(Date.now()<until);
           if(!menu||!visible(menu)||!visible(menu.closest('.ant-select-dropdown'))){results.push(fail('associated-popup-missing'));continue;}
           const options=[...menu.querySelectorAll('[role="option"]')].filter(e=>text(e)===request.value);
           if(options.length!==1){results.push(fail(options.length?'option-ambiguous':'option-missing'));continue;}
           const option=options[0];
           if(option.getAttribute('aria-disabled')==='true'||/disabled/.test(option.className)){results.push(fail('option-disabled'));continue;}
-          option.click();await pause(400);
+          option.click();schoolSelected=true;await pause(400);
           row=resolveJdWidgetRow(request);const observed=selected(row?.querySelector('.ant-select'));
           results.push({...base,written:true,observed,action:'selected',error:observed===request.value?null:'readback-mismatch'});
         }else if(request.kind==='cascader'){
@@ -101,7 +111,20 @@ function buildJdWidgetScript(requests) {
           results.push({...base,written:true,observed:after,action:'calendar-input',error:after===request.value?null:'readback-mismatch'});
         }else results.push(fail('unsupported-widget'));
       }catch(e){results.push(fail('widget-error:'+e.message));}
-      finally{if(active)active.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',code:'Escape',keyCode:27,which:27,bubbles:true}));}
+      finally{
+        if(searchInput?.isConnected&&searchBefore!==null&&!schoolSelected){
+          Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(searchInput,searchBefore);
+          searchInput.dispatchEvent(new Event('input',{bubbles:true}));
+          searchInput.dispatchEvent(new Event('change',{bubbles:true}));
+        }
+        if(active?.isConnected){
+          // Ant's search-select consumes Escape on its input, not the outer div.
+          const target=searchInput?.isConnected?searchInput:active.closest('.ant-select')?.querySelector('input.ant-select-search__field')||active;
+          target.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',code:'Escape',keyCode:27,which:27,bubbles:true}));
+          const until=Date.now()+1200;
+          while(active.getAttribute('aria-expanded')==='true'&&Date.now()<until)await pause(50);
+        }
+      }
     }
     return results;
   }
@@ -110,6 +133,37 @@ function buildJdWidgetScript(requests) {
 
 async function executeJdWidgets(workspace,resume){
   const requests=planJdWidgets(resume);
-  return requests.length?workspace.run(buildJdWidgetScript(requests)):[];
+  // Each website script has a 15s timeout. Search and calendar animations in a
+  // background window can be throttled; keep each field within its own bound.
+  const results=[];
+  for(const request of requests)results.push(...await workspace.run(buildJdWidgetScript([request])));
+  return results;
 }
-module.exports={planJdWidgets,resolveJdWidgetRow,buildJdWidgetScript,executeJdWidgets};
+function buildJdWidgetReadbackScript(results){
+  function read(items){
+    const visible=e=>Boolean(e?.getClientRects().length)&&getComputedStyle(e).display!=='none'&&getComputedStyle(e).visibility!=='hidden'&&!e.closest('[hidden]');
+    return items.map(item=>{
+      if(!item.written)return item;
+      const row=resolveJdWidgetRow(item.locator),kind=item.locator.widget;
+      let observed='',retained=false;
+      if(row&&visible(row)){
+        if(kind==='select'){
+          const selects=[...row.querySelectorAll('.ant-select')];
+          if(selects.length===1&&visible(selects[0])){observed=(selects[0].querySelector('.ant-select-selection-selected-value')?.textContent||'').trim();retained=true;}
+        }else if(kind==='radio'){
+          const checked=[...row.querySelectorAll('.ant-radio-wrapper')].filter(e=>e.querySelector('input[type=radio]')?.checked);
+          if(checked.length===1){observed=checked[0].textContent.trim();retained=true;}
+        }else if(kind==='date'){
+          const control=row.querySelectorAll('.ant-calendar-picker-input')[item.locator.ordinal];
+          if(control&&visible(control)){observed=control.value;retained=true;}
+        }else if(kind==='cascader'){
+          const controls=[...row.querySelectorAll('.ant-cascader-input')];
+          if(controls.length===1&&visible(controls[0])){const path=normalizeCascaderPath(controls[0].value);observed=path?path.join(' / '):controls[0].value;retained=true;}
+        }
+      }
+      return {...item,observedBeforeFinalReadback:item.observed,observed,retained,error:!retained?'final-control-unavailable':observed===item.expected?null:'final-readback-mismatch'};
+    });
+  }
+  return `(()=>{const resolveJdWidgetRow=${resolveJdWidgetRow.toString()};const normalizeCascaderPath=${normalizeCascaderPath.toString()};return (${read.toString()})(${JSON.stringify(results)});})()`;
+}
+module.exports={planJdWidgets,resolveJdWidgetRow,buildJdWidgetScript,executeJdWidgets,buildJdWidgetReadbackScript};

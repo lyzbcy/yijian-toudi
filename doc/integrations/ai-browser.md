@@ -55,3 +55,7 @@ snapshot 返回 `snapshotId` 和可见元素 `ref`（例如 e12），支持 open
 
 ## 自动回归
 `pnpm test:ai-browser`：原生 Electron 临时 profile + 内存 HTTPS 站点测跨域 iframe、中文填入、popup、脱敏导航、旧引用、提交确认与连接断开后 App 仍存活；另从真实 bat 入口测中文路径、重复启动、AI 标记、关闭和端口释放。该回归不是任何招聘账号登录成功证明。
+
+## 隔离真实SDK验收可见性（v0.5.52）
+
+字节/小米认证正常、正确简历路由在隐藏Window中仍可能停止初始化。52同WebContents只改showInactive，两站0控件变46/32且loading=false，未手动dispatch或改存储。隔离真实SDK应保留只读网络直到表单初始化完成，以showInactive避免抢用户焦点，结束恢复原可见性。不得把hidden实验0字段记登录失败、猜改路由；不得改官网保护。填写阶段继续封锁外部写入并记录保存/提交点击0。原个人百度及未保存草稿保持打开。

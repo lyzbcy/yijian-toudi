@@ -1,0 +1,51 @@
+{
+  "version": "0.5.52",
+  "isolatedProfile": true,
+  "onlyVisibilityChangedAfterHiddenSnapshot": true,
+  "readonlyLoading": true,
+  "officialWrites": 0,
+  "shownInactiveWithoutFocus": true,
+  "personalAppUnmodified": true,
+  "rows": [
+    {
+      "companyId": "bytedance",
+      "sameWebContents": true,
+      "noManualReadonlyEffectDispatch": true,
+      "noCookieOrStorageChanges": true,
+      "hidden": {
+        "path": "/campus/resume/edit",
+        "visibility": "hidden",
+        "controls": 0,
+        "loading": true,
+        "identityPresent": true
+      },
+      "shown": {
+        "path": "/campus/resume/edit",
+        "visibility": "visible",
+        "controls": 46,
+        "loading": false,
+        "identityPresent": true
+      }
+    },
+    {
+      "companyId": "xiaomi",
+      "sameWebContents": true,
+      "noManualReadonlyEffectDispatch": true,
+      "noCookieOrStorageChanges": true,
+      "hidden": {
+        "path": "/campus/resume/edit",
+        "visibility": "hidden",
+        "controls": 0,
+        "loading": true,
+        "identityPresent": true
+      },
+      "shown": {
+        "path": "/campus/resume/edit",
+        "visibility": "visible",
+        "controls": 32,
+        "loading": false,
+        "identityPresent": true
+      }
+    }
+  ]
+}

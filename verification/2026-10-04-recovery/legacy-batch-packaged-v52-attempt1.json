@@ -1,0 +1,10 @@
+{
+  "version": "0.5.52",
+  "ok": false,
+  "phase": "platform-checkbox-uncheck",
+  "error": "Target page, context or browser has been closed",
+  "concurrentInstallationIntegrationObserved": true,
+  "closureRootCauseProven": false,
+  "serialRetryReport": "legacy-batch-packaged-v52.json",
+  "failureIncludedInQualityLedger": true
+}

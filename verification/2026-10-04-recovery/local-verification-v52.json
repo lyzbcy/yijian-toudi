@@ -1,0 +1,210 @@
+{
+  "ok": true,
+  "version": "0.5.52",
+  "at": "2026-10-04T21:52:04.358Z",
+  "scope": "Local regression, real packaged Windows upgrade/offline queue, isolated authenticated drafts; incomplete fan delivery",
+  "sourceFingerprints": "source-fingerprints-v52.json",
+  "candidateManifest": "candidate-manifest-v0.5.52.json",
+  "ownFilesMatched": 122,
+  "authenticode": "NotSigned",
+  "units": {
+    "passed": 397,
+    "failed": 0,
+    "skipped": 0
+  },
+  "background": {
+    "at": "2026-10-04T21:27:05.528Z",
+    "ok": true,
+    "results": [
+      {
+        "name": "unit",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 5704
+      },
+      {
+        "name": "check",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 386
+      },
+      {
+        "name": "ui-smoke",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 11962
+      },
+      {
+        "name": "ui-resume-segments",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 62622
+      },
+      {
+        "name": "ui-resume-profiles",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 59719
+      },
+      {
+        "name": "ui-capabilities",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 6264
+      },
+      {
+        "name": "ui-workspace-exit",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 4010
+      },
+      {
+        "name": "ui-resume-batch",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 50008
+      },
+      {
+        "name": "ui-batch-actions",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 2011
+      },
+      {
+        "name": "ui-login-upload",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 17642
+      },
+      {
+        "name": "ui-live-window-fixes",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 22544
+      },
+      {
+        "name": "ui-jd-login",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 12347
+      },
+      {
+        "name": "ui-auth-frame",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 4035
+      },
+      {
+        "name": "ui-ai-browser",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 21393
+      },
+      {
+        "name": "ui-ai-preview",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 20132
+      },
+      {
+        "name": "ui-reliability",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 65438
+      },
+      {
+        "name": "ui-boss-recovery",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 5266
+      },
+      {
+        "name": "ui-delivery-layout",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 36823
+      },
+      {
+        "name": "ui-feedback",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 9671
+      },
+      {
+        "name": "ui-update-install-status",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 3721
+      },
+      {
+        "name": "ui-job-refresh-status",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 3570
+      },
+      {
+        "name": "ui-author-page",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 35604
+      },
+      {
+        "name": "ui-windows-shell",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 1598
+      },
+      {
+        "name": "ui-alibaba-staging",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 8637
+      },
+      {
+        "name": "ui-jd-widgets",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 4168
+      },
+      {
+        "name": "ui-jd-school-search",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 16675
+      }
+    ]
+  },
+  "site": {
+    "ok": true,
+    "brokenImages": 0,
+    "overflow": 0
+  },
+  "skillAndFeedbackArchives": {
+    "sameVersion": true
+  },
+  "jd": {
+    "report": "other-adapters-staged-v52.json",
+    "verifiedControls": 25,
+    "manualSourceFacts": 61,
+    "missingRequiredRows": 20,
+    "requiredRows": 46,
+    "schoolNegativeReport": "jd-school-negative-sdk-v52.json",
+    "officialValidationProven": false
+  },
+  "byteXiaomi": "byte-xiaomi-staged-v52.json",
+  "hiddenWindowInitialization": "visibility-cause-v52.json",
+  "packagedBatch": "legacy-batch-packaged-v52.json",
+  "initialBatchFailure": "legacy-batch-packaged-v52-attempt1.json",
+  "upgrade": {
+    "report": "windows-install-upgrade-v52.json",
+    "checks": 8,
+    "sourceHelperOverride": false,
+    "nativeWizardVerified": false
+  },
+  "mac51": "mac-readback-v51.json",
+  "mac52": "pending-native-run",
+  "goalStatus": "active",
+  "productDefectRateBelowOnePercentProven": false,
+  "officialSaveUploadApplications": 0,
+  "externalMessages": 0
+}

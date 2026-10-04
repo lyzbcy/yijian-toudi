@@ -1,0 +1,89 @@
+{
+  "version": "0.5.52",
+  "isolatedProfile": true,
+  "onlyTwoExactReadonlyGetsDuringProbe": true,
+  "officialWrites": 0,
+  "privateResponseBodiesOmitted": true,
+  "rows": [
+    {
+      "companyId": "bytedance",
+      "responses": [
+        {
+          "path": "/api/v1/user/profile",
+          "httpStatus": 200,
+          "businessCode": 0,
+          "topKeys": [
+            "code",
+            "data",
+            "message",
+            "error"
+          ],
+          "dataKeys": [
+            "id"
+          ],
+          "dataType": "object",
+          "emptyData": false,
+          "identityPresent": true,
+          "loggedInFlag": null
+        },
+        {
+          "path": "/api/v1/user/mobile/login_status",
+          "httpStatus": 200,
+          "businessCode": 0,
+          "topKeys": [
+            "code",
+            "data",
+            "message",
+            "error"
+          ],
+          "dataKeys": [
+            "login_status"
+          ],
+          "dataType": "object",
+          "emptyData": false,
+          "identityPresent": false,
+          "loggedInFlag": null
+        }
+      ]
+    },
+    {
+      "companyId": "xiaomi",
+      "responses": [
+        {
+          "path": "/api/v1/user/profile",
+          "httpStatus": 200,
+          "businessCode": 0,
+          "topKeys": [
+            "code",
+            "data",
+            "message",
+            "error"
+          ],
+          "dataKeys": [
+            "id"
+          ],
+          "dataType": "object",
+          "emptyData": false,
+          "identityPresent": true,
+          "loggedInFlag": null
+        },
+        {
+          "path": "/api/v1/user/mobile/login_status",
+          "httpStatus": 200,
+          "businessCode": 0,
+          "topKeys": [
+            "code",
+            "data",
+            "message",
+            "error"
+          ],
+          "dataKeys": [],
+          "dataType": "boolean",
+          "emptyData": true,
+          "identityPresent": false,
+          "loggedInFlag": null
+        }
+      ]
+    }
+  ]
+}
