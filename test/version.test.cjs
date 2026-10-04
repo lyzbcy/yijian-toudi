@@ -14,7 +14,7 @@ test('应用版本号在应用、介绍页和缓存版本中保持一致', () =>
   );
 
   assert.match(pkg.version, /^\d+\.\d+\.\d+$/);
-  assert.match(appHtml, new RegExp(`一键投递 v${pkg.version.replace(/\./g, '\\.')}`));
+  assert.match(appHtml, new RegExp(`一键投递 v(?:<span[^>]+>)?${pkg.version.replace(/\./g, '\\.')}`));
   assert.ok(Number.isInteger(siteVersion.v) && siteVersion.v >= 3);
   assert.match(siteHtml, new RegExp(`var PAGE_V=${siteVersion.v};`));
   assert.ok(siteVersion.updated, 'version.json 应有 updated 日期');

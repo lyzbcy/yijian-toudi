@@ -12,6 +12,14 @@ contextBridge.exposeInMainWorld('oneClick', {
   importResumeJson: () => ipcRenderer.invoke('resume:import-json'),
   fillResumeToTencent: () => ipcRenderer.invoke('resume:fill-tencent'),
   fillResumeToAll: (startCompanyId, resumeSyncGeneration) => ipcRenderer.invoke('resume:fill-all', { startCompanyId, resumeSyncGeneration }),
+  resumeBatchCatalog: () => ipcRenderer.invoke('resume:batch-catalog'),
+  resumeBatchStart: request => ipcRenderer.invoke('resume:batch-start', request),
+  resumeBatchAction: request => ipcRenderer.invoke('resume:batch-action', request),
+  onResumeBatchChanged: callback => {
+    const listener = (_event, status) => callback(status);
+    ipcRenderer.on('resume:batch-changed', listener);
+    return () => ipcRenderer.removeListener('resume:batch-changed', listener);
+  },
   getResumeSyncStatus: () => ipcRenderer.invoke('resume:sync-status'),
   onFillLog: (callback) => {
     const listener = (_event, entry) => callback(entry);
@@ -25,15 +33,29 @@ contextBridge.exposeInMainWorld('oneClick', {
   refreshJobs: () => ipcRenderer.invoke('jobs:refresh'),
   openCompany: (companyId) => ipcRenderer.invoke('company:open', companyId),
   syncEmail: (credentials) => ipcRenderer.invoke('email:sync', credentials),
-  checkUpdate: () => ipcRenderer.invoke('update:check'),
+  checkUpdate: (info) => ipcRenderer.invoke('update:check', info),
   downloadUpdate: (info) => ipcRenderer.invoke('update:download', info),
+  installUpdate: info => ipcRenderer.invoke('update:install', info),
+  updateInstallStatus: () => ipcRenderer.invoke('update:install-status'),
+  onUpdateProgress: callback => {
+    const handler=(_event,progress)=>callback(progress);
+    ipcRenderer.on('update:progress',handler);
+    return ()=>ipcRenderer.removeListener('update:progress',handler);
+  },
   updateSettings: (settings) => ipcRenderer.invoke('settings:update', settings),
+  openFeedback: kind=>ipcRenderer.invoke('feedback:open',kind),
+  feedbackMetadata: ()=>ipcRenderer.invoke('feedback:metadata'),
+  sendFeedback: input=>ipcRenderer.invoke('feedback:submit',input),
+  checkFeedbackReceipt: ()=>ipcRenderer.invoke('feedback:receipt'),
+  closeFeedback: ()=>ipcRenderer.invoke('feedback:close'),
+  dismissPromotion: ()=>ipcRenderer.invoke('promo:dismiss'),
   // 企微通知 / Kimi 桥 / Boss 批量（2026-09-20）
   testWecomNotify: () => ipcRenderer.invoke('wecom:test'),
   kimiStatus: () => ipcRenderer.invoke('kimi:status'),
   kimiRestart: () => ipcRenderer.invoke('kimi:restart'),
   bossBatchStart: (request) => ipcRenderer.invoke('boss:batch:start', request),
   bossBatchStop: () => ipcRenderer.invoke('boss:batch:stop'),
+  bossBatchResolve: (request) => ipcRenderer.invoke('boss:batch:resolve', request),
   bossBatchStatus: () => ipcRenderer.invoke('boss:batch:status'),
   debugKimi: (request) => ipcRenderer.invoke('debug:kimi', request),
   // 账号管理（Boss 代投商业化，2026-09-22）
@@ -52,8 +74,9 @@ contextBridge.exposeInMainWorld('oneClick', {
   showItem: (path) => ipcRenderer.invoke('item:show', path),
   getLogs: () => ipcRenderer.invoke('log:get'),
   getDataPath: () => ipcRenderer.invoke('app:data-path'),
-  openLogin: (companyId) => ipcRenderer.invoke('login:open', companyId),
-  closeLogin: () => ipcRenderer.invoke('login:close'),
+  openLogin: (companyId, recruitType = 'social') => ipcRenderer.invoke('login:open', companyId, recruitType),
+    closeLogin: () => ipcRenderer.invoke('login:close'),
+    restartLogin: () => ipcRenderer.invoke('login:restart'),
   loginStatus: () => ipcRenderer.invoke('login:status'),
   // 简历附件文件管理（用户上传自己设计的简历 PDF/DOC）
   uploadResumeFile: () => ipcRenderer.invoke('resume:upload-file'),

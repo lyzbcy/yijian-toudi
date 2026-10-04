@@ -93,6 +93,10 @@ class AgentServer {
         if (request.method === 'POST' && url.pathname === '/v1/boss/batch/stop') {
           return this.send(response, 200, await this.bossControl.stop());
         }
+        if (request.method === 'POST' && url.pathname === '/v1/boss/batch/resolve') {
+          const body = await this.readJson(request);
+          return this.send(response, 200, await this.bossControl.resolve(body || {}));
+        }
         if (request.method === 'GET' && url.pathname === '/v1/boss/accounts') {
           return this.send(response, 200, await this.bossControl.accounts());
         }

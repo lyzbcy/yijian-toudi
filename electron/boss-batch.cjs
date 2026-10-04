@@ -13,6 +13,8 @@ const CITY_CODES = {
 };
 const INTERN_QUERIES = ['游戏开发实习', 'AI开发实习', '前端开发实习', '后端开发实习', '软件开发实习', 'Unity开发实习', '大模型实习', '全栈开发实习', '小程序开发实习', '客户端开发实习', 'Node.js实习', '移动端开发实习'];
 const CAMPUS_QUERIES = ['前端开发校招', '后端开发校招', '软件开发校招', '游戏开发校招', 'Java校招', '大模型校招', 'AI算法校招', '人工智能校招', '软件工程师校招', '算法校招'];
+// 空结果查询也会消耗访问频率；不能只限制成功发送后的 25-45 秒。
+const SEARCH_MIN_INTERVAL_MS = 30000;
 
 // 2026-09-21 扩池：杭州加入校招城市（用户口径"苏州/上海/杭州/无锡次之"）；每个查询抓 2 页
 function defaultPlan() {
@@ -76,8 +78,16 @@ function rawHas(snapshotJson, text) {
   return JSON.stringify(snapshotJson).includes(text);
 }
 
+function blockedReason(snapshotJson) {
+  const url = String(snapshotJson?.data?.url || '');
+  if (/\/web\/passport\/zp\/403\.html(?:[?#]|$)/.test(url)
+    || rawHas(snapshotJson, '访问受限') || rawHas(snapshotJson, '您的 IP 存在异常行为')) return 'access-restricted';
+  if (rawHas(snapshotJson, '安全验证')) return 'security-check';
+  return null;
+}
+
 class BossBatchRunner {
-  constructor({ bridge, notify, log, plan, target, dryRun, banCompanies, onApplied, noThrottle }) {
+  constructor({ bridge, notify, log, plan, target, dryRun, banCompanies, onApplied, onBeforeSend, noThrottle }) {
     this.bridge = bridge;            // 桥适配器（kimi-bridge 或 playwright-bridge-adapter，三方法契约：navigate/snapshot/click）
     this.notify = notify || (async () => {}); // 企微通知
     this.log = log || (() => {});
@@ -87,6 +97,7 @@ class BossBatchRunner {
     this.ban = banCompanies || [];
     // onApplied(entry)：每笔投出后的落盘回调（账号档案持久化，2026-09-22）
     this.onApplied = typeof onApplied === 'function' ? onApplied : null;
+    this.onBeforeSend = typeof onBeforeSend === 'function' ? onBeforeSend : null;
     // noThrottle：单测用，跳过投递间隔频控（生产禁用）
     this.noThrottle = Boolean(noThrottle);
     this.applied = [];
@@ -95,16 +106,57 @@ class BossBatchRunner {
     this.stopped = false;
     this.stopReason = null;
     this.seenJobs = new Set();
+    this.lastSearchAt = 0;
+    this.finished = false;
+    this.wakeWait = null;
   }
 
   stop(reason = 'manual') {
+    if (this.stopped) return;
     this.stopped = true;
     this.stopReason = reason;
+    this.wakeWait?.();
   }
 
-  wait(ms) { return this.noThrottle ? Promise.resolve() : sleep(ms); }
+  wait(ms) {
+    if (this.noThrottle || this.stopped) return Promise.resolve();
+    return new Promise((resolve) => {
+      const finish = () => { clearTimeout(timer); this.wakeWait = null; resolve(); };
+      const timer = setTimeout(finish, ms);
+      this.wakeWait = finish;
+    });
+  }
+
+  async navigateSearch(url, options) {
+    if (this.stopped) return;
+    if (!this.noThrottle && this.lastSearchAt) {
+      const remaining = SEARCH_MIN_INTERVAL_MS - (Date.now() - this.lastSearchAt);
+      if (remaining > 0) await this.wait(remaining);
+    }
+    if (this.stopped) return;
+    this.lastSearchAt = Date.now();
+    return this.bridge.navigate(url, options);
+  }
+
+  async stopIfBlocked(snapshot) {
+    const reason = blockedReason(snapshot);
+    if (!reason) return false;
+    if (!this.stopped) {
+      this.stop(reason);
+      await Promise.resolve().then(() => this.notify(reason === 'access-restricted'
+        ? '【一键投递·异常】Boss 显示访问受限，批量已停止；请等待页面提示的恢复时间，不要连续刷新。'
+        : '【一键投递·异常】Boss 弹出安全验证，批量已停止，请本人完成验证。')).catch(() => this.log('notification-failed'));
+    }
+    return true;
+  }
 
   async run() {
+    try { return await this.runLoop(); }
+    catch (error) { this.stop('runner-error'); throw error; }
+    finally { this.finished = true; this.stopped = true; this.wakeWait?.(); }
+  }
+
+  async runLoop() {
     this.log(`boss-batch start target=${this.target} dryRun=${this.dryRun}`);
     let fails = 0;
     for (const { city, query, page } of this.plan) {
@@ -113,13 +165,14 @@ class BossBatchRunner {
       if (!code) continue;
       const searchUrl = `https://www.zhipin.com/web/geek/jobs?query=${encodeURIComponent(query)}&city=${code}&page=${page || 1}`;
       try {
-        await this.bridge.navigate(searchUrl);
+        await this.navigateSearch(searchUrl);
       } catch (err) {
         fails += 1;
         this.log(`nav fail [${city}/${query}]: ${err.message}`);
         continue;
       }
       await this.wait(rand(3000, 6000));
+      if (this.stopped) break;
       let snap;
       try {
         snap = await this.bridge.snapshot();
@@ -128,12 +181,9 @@ class BossBatchRunner {
         this.log(`snapshot fail: ${err.message}`);
         continue;
       }
+      if (this.stopped) break;
       const snapRaw = JSON.stringify(snap);
-      if (rawHas(snap, '安全验证')) {
-        this.stop('security-check');
-        await this.notify('【一键投递·异常】Boss 弹出安全验证，批量已自动停止，请人工处理。');
-        break;
-      }
+      if (await this.stopIfBlocked(snap)) break;
       const loginPage = /BOSS直聘注册登录|微信扫码 安全登录|验证码登录\/注册|登录\/注册/.test(snapRaw);
       if (loginPage) {
         this.stop('login-required');
@@ -144,15 +194,16 @@ class BossBatchRunner {
       if (!searchUrlMatches(snap, query, code, page)) {
         this.log(`search mismatch (${String(snap?.data?.url || '').slice(0, 100)}), opening fresh search tab`);
         try {
-          await this.bridge.navigate(searchUrl, { newTab: true });
+          await this.navigateSearch(searchUrl, { newTab: true });
           await this.wait(rand(3000, 6000));
+          if (this.stopped) break;
           snap = await this.bridge.snapshot();
         } catch (err) {
           fails += 1;
           this.log(`re-navigate fail: ${err.message}`);
           continue;
         }
-        if (rawHas(snap, '安全验证')) { this.stop('security-check'); break; }
+        if (await this.stopIfBlocked(snap)) break;
         if (/BOSS直聘注册登录|微信扫码 安全登录|验证码登录\/注册|登录\/注册/.test(JSON.stringify(snap))) {
           this.stop('login-required');
           break;
@@ -165,9 +216,10 @@ class BossBatchRunner {
       }
       for (let loading = 0; loading < 2 && extractJobLinks(snap).length === 0; loading += 1) {
         await this.wait(1500);
+        if (this.stopped) break;
         try { snap = await this.bridge.snapshot(); }
         catch (err) { fails += 1; this.log(`loading snapshot fail: ${err.message}`); break; }
-        if (rawHas(snap, '安全验证')) { this.stop('security-check'); break; }
+        if (await this.stopIfBlocked(snap)) break;
         if (/BOSS直聘注册登录|微信扫码 安全登录|验证码登录\/注册|登录\/注册/.test(JSON.stringify(snap))) {
           this.stop('login-required');
           break;
@@ -221,14 +273,16 @@ class BossBatchRunner {
 
   // 返回 true=投出 / false=未投出 / 'skip'=主动跳过
   async applyOne(link, city) {
+    if (this.stopped) return 'skip';
     if (link.company && (this.ban.includes(link.company) || this.applied.some((a) => a.company === link.company))) return 'skip';
     const clicked = await this.bridge.click(link.ref, { timeoutMs: 20000 });
     if (!clicked || !clicked.data || !clicked.data.success) return false;
     await this.wait(rand(2500, 5000));
+    if (this.stopped) return 'skip';
     const snap = await this.bridge.snapshot();
-    if (rawHas(snap, '安全验证')) {
-      this.stop('security-check');
-      throw new Error('security-check');
+    if (this.stopped) return 'skip';
+    if (await this.stopIfBlocked(snap)) {
+      throw new Error(this.stopReason);
     }
     if (rawHas(snap, '登录/注册')) { this.stop('login-required'); return 'skip'; }
     const company = link.company || '';
@@ -240,19 +294,28 @@ class BossBatchRunner {
       this.log(`dryRun [${city}] ${link.title} @ ${company || '?'}（未发送）`);
       return { preview: true, company };
     }
-    const sentClick = await this.bridge.click(btn, { timeoutMs: 20000 });
+    if (this.onBeforeSend) {
+      try { await this.onBeforeSend({ city, title: link.title, company }); }
+      catch (error) { this.stop('persist-failed'); throw error; }
+    }
+    if (this.stopped) return 'skip';
+    let sentClick;
+    try { sentClick = await this.bridge.click(btn, { timeoutMs: 20000 }); }
+    catch (error) { this.stop('send-unverified'); throw error; }
     if (!sentClick?.data?.success) { this.stop('send-unverified'); return false; }
     for (let attempt = 0; attempt < 3; attempt += 1) {
       await this.wait(rand(2500, 4500));
+      if (this.stopped) return false;
       let after;
       try { after = await this.bridge.snapshot(); }
       catch (error) {
         this.stop('send-unverified');
         throw error;
       }
+      if (await this.stopIfBlocked(after)) return false;
       if (rawHas(after, '已向BOSS发送消息')) {
         const stay = findRef(after, '留在此页');
-        if (stay) { try { await this.bridge.click(stay, { timeoutMs: 15000 }); } catch {} }
+        if (stay && !this.stopped) { try { await this.bridge.click(stay, { timeoutMs: 15000 }); } catch {} }
         return { company };
       }
     }
@@ -262,4 +325,4 @@ class BossBatchRunner {
   }
 }
 
-module.exports = { BossBatchRunner, defaultPlan, isTargetJob, extractJobLinks, searchUrlMatches, CITY_CODES, INTERN_QUERIES, CAMPUS_QUERIES };
+module.exports = { BossBatchRunner, defaultPlan, isTargetJob, extractJobLinks, searchUrlMatches, blockedReason, SEARCH_MIN_INTERVAL_MS, CITY_CODES, INTERN_QUERIES, CAMPUS_QUERIES };

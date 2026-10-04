@@ -8,7 +8,57 @@ const os = require('node:os');
 
 const { JsonStore } = require('../electron/store.cjs');
 const { createSeed } = require('../electron/seed.cjs');
-const { BossBatchRunner, extractJobLinks } = require('../electron/boss-batch.cjs');
+const { BossBatchRunner, extractJobLinks, blockedReason, SEARCH_MIN_INTERVAL_MS } = require('../electron/boss-batch.cjs');
+
+test('boss-batch: 403 与安全验证有独立停止原因，不能归为搜索不匹配', async () => {
+  assert.equal(blockedReason({ data: { url: 'https://www.zhipin.com/web/passport/zp/403.html?code=32' } }), 'access-restricted');
+  assert.equal(blockedReason({ data: { tree: [{ name: '安全验证' }] } }), 'security-check');
+  let navigations = 0;
+  let notifications = 0;
+  const runner = new BossBatchRunner({
+    bridge: {
+      navigate: async () => { navigations++; },
+      snapshot: async () => ({ data: { url: 'https://www.zhipin.com/web/passport/zp/403.html?code=32', tree: [{ name: '访问受限' }] } }),
+      click: async () => { throw new Error('受限页面不得点击'); }
+    },
+    plan: [{ city: '武汉', query: '前端开发实习', page: 1 }],
+    target: 1, dryRun: false, noThrottle: true,
+    notify: async () => { notifications++; }
+  });
+  const result = await runner.run();
+  assert.equal(result.stopReason, 'access-restricted');
+  assert.equal(result.applied.length, 0);
+  assert.equal(navigations, 1, '403 后不得开新搜索标签');
+  assert.equal(notifications, 1);
+});
+
+test('boss-batch: 连续空查询也受搜索间隔限制', async () => {
+  const waits = [];
+  const runner = new BossBatchRunner({ bridge: { navigate: async () => {} }, target: 1, dryRun: true });
+  runner.wait = async (ms) => { waits.push(ms); };
+  await runner.navigateSearch('https://www.zhipin.com/web/geek/jobs?query=a');
+  await runner.navigateSearch('https://www.zhipin.com/web/geek/jobs?query=b');
+  assert.ok(waits[0] >= SEARCH_MIN_INTERVAL_MS - 1000, `实际间隔 ${waits[0]}`);
+});
+
+test('boss-batch: 发送后遇安全验证停止且不记录未核实发送', async () => {
+  let phase = 0;
+  const runner = new BossBatchRunner({
+    bridge: {
+      click: async () => ({ data: { success: true } }),
+      snapshot: async () => {
+        phase++;
+        return phase === 1
+          ? { data: { tree: [{ name: '立即沟通', ref: '@e2' }] } }
+          : { data: { url: 'https://www.zhipin.com/web/passport/zp/verify.html', tree: [{ name: '安全验证' }] } };
+      }
+    }, target: 1, dryRun: false, noThrottle: true
+  });
+  const result = await runner.applyOne({ title: '前端开发实习生', ref: '@e1', company: '测试公司' }, '武汉');
+  assert.equal(result, false);
+  assert.equal(runner.stopReason, 'security-check');
+  assert.equal(runner.applied.length, 0);
+});
 const { AgentServer } = require('../electron/agent-server.cjs');
 const { findEdgeBinary, findKimiExtensionDir } = require('../electron/account-browser.cjs');
 

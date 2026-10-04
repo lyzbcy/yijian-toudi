@@ -2,6 +2,16 @@ const { createUniversalResumePlan } = require('../resume-plan.cjs');
 const { matchField, normalizeComparableValue } = require('../field-matching.cjs');
 const { resolvePlatformUrl } = require('../platform-manifests.cjs');
 const { LOGIN_AND_FORM_PROBE, INSPECT_FORM_FIELDS } = require('../form-inspection.cjs');
+const {resolveJdFormControl,buildEnsureJdGroupsScript}=require('../jd-form-context.cjs');
+const {planJdWidgets,executeJdWidgets}=require('../jd-widget-fill.cjs');
+const {buildJdRequiredFieldsScript}=require('../jd-required-fields.cjs');
+
+function radioComparableValue(value) {
+  const normalized = normalizeComparableValue(value);
+  if (normalized === '1') return '是';
+  if (normalized === '0') return '否';
+  return normalized;
+}
 
 function planGenericResumeFields(plan, fields) {
   const writable = [];
@@ -13,8 +23,9 @@ function planGenericResumeFields(plan, fields) {
     const expected = normalizeComparableValue(item.value);
     let available = (fields || []).filter((field) => {
       if (used.has(field.index)) return false;
+      if (field.readOnly) return false;
       if (!String(field.type || '').includes('radio')) return true;
-      const optionValue = normalizeComparableValue(field.controlValue || field.label?.split(/\s+/).at(-1));
+      const optionValue = radioComparableValue(field.controlValue || field.label?.split(/\s+/).at(-1));
       return !optionValue || optionValue === expected;
     });
     // 按经历区块限定候选：兄弟区块的祖先文本不再互相污染（项目名称 只在本区块内匹配）
@@ -25,9 +36,12 @@ function planGenericResumeFields(plan, fields) {
         const seg = field.section.match(/(\d+)$/);
         return matchesAlias && seg && Number(seg[1]) === item.sectionHint.number;
       });
-      if (scoped.length) available = scoped;
+      available = scoped;
     }
-    let match = matchField(item, available);
+    // resume-plan decorates segment 2+ keywords for display. Once the actual
+    // numbered section is scoped, that annotation is not part of the site label.
+    const matchItem=hasSections&&item.sectionHint?{...item,keywords:(item.keywords||[]).map(k=>k.replace(/\(第\d+段\)$/,''))}:item;
+    let match = matchField(matchItem, available);
     if (match.status === 'ambiguous') {
       // 同构多槽位：阿里等站的多段经历每段都有完全相同的「公司或组织名称」等字段。
       // 候选标签/类型/占位符完全一致时视为槽位数组而非真歧义，按顺序取第一个未占用的槽位。
@@ -62,7 +76,7 @@ function planGenericResumeFields(plan, fields) {
       fieldType: match.field.type,
       confidence: match.confidence,
       observedBefore: match.field.value
-      , locator: String(match.field.type || '').includes('radio') ? radioLocator : plainLocator
+      , locator: match.field.jdLocator ? {kind:'jd-context',...match.field.jdLocator} : String(match.field.type || '').includes('radio') ? radioLocator : plainLocator
     });
   }
   return { writable, manual };
@@ -77,7 +91,9 @@ function buildExecuteFieldPlanScript(fieldPlan) {
       .filter((control) => !control.closest('form[action*="login"], [class*="login"], [class*="captcha"], [class*="auth"], [role="dialog"]'));
     return planned.map((item) => {
       let control = null;
-      if (item.locator?.kind === 'index') {
+      if (item.locator?.kind === 'jd-context') {
+        control=resolveJdFormControl(item.locator);
+      } else if (item.locator?.kind === 'index') {
         const all = inspectControls();
         control = all[item.locator.value] || null;
       } else {
@@ -129,7 +145,7 @@ function buildExecuteFieldPlanScript(fieldPlan) {
       }
     });
   }
-  return `(${execute.toString()})(${JSON.stringify(fieldPlan)})`;
+  return `(()=>{const resolveJdFormControl=${resolveJdFormControl.toString()};return (${execute.toString()})(${JSON.stringify(fieldPlan)});})()`;
 }
 
 function mergeExecutionWithInspection(execution, fieldsAfter) {
@@ -137,14 +153,22 @@ function mergeExecutionWithInspection(execution, fieldsAfter) {
     ...item,
     observedImmediately: item.observed,
     observed: (() => {
-      if (item.locator?.kind === 'index') return (fieldsAfter || [])[item.locator.value]?.value || '';
+      if (item.locator?.kind === 'index') {
+        const field = (fieldsAfter || [])[item.locator.value];
+        return String(field?.type || '').includes('radio') && ['是', '否'].includes(normalizeComparableValue(item.expected))
+          ? (field?.value ? radioComparableValue(field.value) : '')
+          : (field?.value || '');
+      }
       const stable = (fieldsAfter || []).filter((field) => {
+        if (item.locator?.kind === 'jd-context') return field.jdLocator&&JSON.stringify({kind:'jd-context',...field.jdLocator})===JSON.stringify(item.locator);
         if (item.locator?.kind === 'id') return field.id === item.locator.value;
         if (item.locator?.kind === 'radio') return field.name === item.locator.value && field.controlValue === item.locator.controlValue;
         if (item.locator?.kind === 'name') return field.name === item.locator.value;
         return false;
       });
-      if (stable.length === 1) return stable[0].value;
+      if (stable.length === 1) return String(stable[0].type || '').includes('radio') && ['是', '否'].includes(normalizeComparableValue(item.expected))
+        ? (stable[0].value ? radioComparableValue(stable[0].value) : '')
+        : stable[0].value;
       return '';
     })()
   }));
@@ -252,13 +276,34 @@ function createGenericResumeFill(companyId, siteName) {
     if (preWriteProbe.isNotFound || preWriteProbe.loginRequired) {
       return { ok: false, status: 'login-required', message: `请先在当前${siteName}页面完成登录，然后重新更新` };
     }
-    const fields = await workspace.run(INSPECT_FORM_FIELDS);
+    // 简历附件：用户在软件里上传过 PDF/DOC 且页面有简历附件输入框时，直接把文件注入
+    let attachment = null;
+    if (attachmentPath && workspace?.setInputFiles) {
+      step('attachment', '检测到简历附件入口，正在上传你的简历文件…');
+      try {
+        attachment = await workspace.setInputFiles(attachmentPath);
+      } catch (error) {
+        attachment = { uploaded: false, reason: error.message.slice(0, 80) };
+      }
+    }
+    if (attachment?.refresh && attachment.refresh.phase !== 'ready') {
+      return { ok: false, status: 'review-required', message: '附件已选择；刷新确认或解析尚未完成，请在当前页面核对后继续', report: { attachment } };
+    }
+    if (attachment?.refresh?.confirmed) step('attachment-refreshed', '已确认使用附件刷新信息，解析已稳定，继续核对字段');
+    let sectionSetup=null;
+    if(companyId==='jd'&&['campus','summer-intern','daily-intern'].includes(recruitType)){
+      sectionSetup=await workspace.run(buildEnsureJdGroupsScript([
+        {sectionId:'edu',count:(resume.education||[]).length},
+        {sectionId:'experience',count:(resume.experience||[]).length},
+        {sectionId:'program',count:(resume.projects||[]).length}
+      ]));
+    }
+    let fields = await workspace.run(INSPECT_FORM_FIELDS);
     // 页面结构指纹：与上次成功填写对比，字段数/标签签名大幅漂移时告警（防官网改版后静默乱填）
     try {
       const fsMod = require('node:fs');
       const pathMod = require('node:path');
-      const osMod = require('node:os');
-      const fpFile = pathMod.join(osMod.homedir(), 'Library/Application Support/yijian-toudi/page-fingerprints.json');
+      const fpFile = pathMod.join(require('electron').app.getPath('userData'), 'page-fingerprints.json');
       const signature = { count: fields.length, head: (fields || []).slice(0, 8).map((f) => (f.label || f.placeholder || '').slice(0, 20)) };
       let store = {};
       try { store = JSON.parse(fsMod.readFileSync(fpFile, 'utf8')); } catch {}
@@ -273,10 +318,21 @@ function createGenericResumeFill(companyId, siteName) {
       return { ok: false, status: 'manual-required', message: `${siteName}页面没有可识别的简历字段（可能在登录页），请完成登录后重新更新` };
     }
     const localPlan = createUniversalResumePlan(resume);
-    const planned = planGenericResumeFields(localPlan, fields);
+    const widgetRequests=companyId==='jd'&&new URL(url).origin==='https://campus.jd.com'?planJdWidgets(resume):[];
+    const widgetKeys=new Set(widgetRequests.map(item=>item.key));
+    const widgetExecution=widgetRequests.length?await executeJdWidgets(workspace,resume):[];
+    if(widgetRequests.length){
+      fields=await workspace.run(INSPECT_FORM_FIELDS);
+      for(const item of widgetExecution){
+        const verified=item.written&&item.expected===item.observed;
+        step(verified?'field-verified':'field-manual',verified?`「${item.locator.label}」控件已回读核验 ✓`:`「${item.locator.label}」需核对：${item.error==='date-day-required'?'官网要求具体日期，简历仅提供月份':item.error==='option-missing'?'官网没有对应选项':item.error||'回读不一致'}`);
+      }
+    }
+    const textPlan=localPlan.filter(item=>!widgetKeys.has(item.key));
+    const planned = planGenericResumeFields(textPlan, fields);
     // React/Vue 等受控表单可能在重渲染时回滚写入；带一轮补写重试，只有最终可见值一致才算 verified。
     const execution = planned.writable.length
-      ? await executeFieldPlanWithRetry(workspace, localPlan, fields, {
+      ? await executeFieldPlanWithRetry(workspace, textPlan, fields, {
           onProgress: (info) => {
             const messages = {
               writing: `正在填写「${info.field}」…`,
@@ -289,26 +345,28 @@ function createGenericResumeFill(companyId, siteName) {
           }
         })
       : [];
-    // 简历附件：用户在软件里上传过 PDF/DOC 且页面有简历附件输入框时，直接把文件注入
-    let attachment = null;
-    if (attachmentPath && workspace?.setInputFiles) {
-      step('attachment', '检测到简历附件入口，正在上传你的简历文件…');
-      try {
-        attachment = await workspace.setInputFiles(attachmentPath);
-      } catch (error) {
-        attachment = { uploaded: false, reason: error.message.slice(0, 80) };
-      }
-    }
-    const verification = summarizeGenericVerification(execution);
+    const verification = summarizeGenericVerification([...execution,...widgetExecution]);
     const verifiedCount = verification.verified.length;
-    const needsReview = planned.manual.length + verification.mismatched.length + verification.failed.length;
-    const message = `已写入并回读核验 ${verifiedCount} 个字段，${needsReview} 个字段需人工核对；软件不会点击保存、提交或投递`;
+    const manualKeys=[...new Set([...planned.manual.map(item=>item.key),...verification.mismatched,...verification.failed])];
+    const needsReview = manualKeys.length;
+    let requiredFields=null;
+    if(companyId==='jd'&&new URL(url).origin==='https://campus.jd.com'){
+      try {requiredFields=await workspace.run(buildJdRequiredFieldsScript());}
+      catch {requiredFields={applicable:false,structurallyComplete:false,officialValidationProven:false,reason:'inspection-failed',requiredRows:[],missing:[],unknown:[]};}
+      if(!requiredFields||!['requiredRows','missing','unknown'].every(k=>Array.isArray(requiredFields[k])))requiredFields={applicable:false,structurallyComplete:false,officialValidationProven:false,reason:'inspection-result-invalid',requiredRows:[],missing:[],unknown:[]};
+      for(const row of requiredFields.missing||[])step('required-missing',`「${row.label}」（${row.sectionId} 第${row.groupNumber}段）必填项为空，请补充真实信息`);
+      for(const row of requiredFields.unknown||[])step('required-unknown',`「${row.label}」（${row.sectionId} 第${row.groupNumber}段）控件未核实，请人工检查`);
+    }
+    const requiredMessage=requiredFields?(requiredFields.applicable&&requiredFields.requiredRows.length
+      ? `；官网 ${requiredFields.missing.length} 行必填项仍为空，${requiredFields.unknown.length} 行控件未识别（仅结构检查，不代表官网已保存）`
+      : '；官网必填结构未核实，请人工检查全部必填项'):'';
+    const message = `已写入并回读核验 ${verifiedCount} 个字段，${needsReview} 个字段需人工核对${requiredMessage}；软件不会点击保存、提交或投递`;
     step('review-required', message);
     return {
       ok: verifiedCount > 0,
       status: 'review-required',
       message,
-      report: { ...verification, manual: planned.manual.map((item) => item.key), attachment },
+      report: { ...verification, manual: manualKeys, attachment, sectionSetup, widgets:widgetExecution,requiredFields },
       applyRisk: 'review-before-save'
     };
   };

@@ -1,0 +1,13 @@
+(() => {
+ const $=s=>document.querySelector(s);let metadata=null,sending=false;
+ const messages={'feedback-not-configured':'反馈服务尚未配置，请在主窗口设置反馈服务地址。','feedback-outbox-invalid':'本地反馈发送记录异常，文件已保留；请核对记录后继续。','feedback-busy':'正在发送，请稍候。','feedback-id-conflict':'反馈内容已变化，请关闭后重新填写。','feedback-message-required':'请填写备注或真实评价（1～1000字）。','delivery-failed':'服务确认本次未发送成功，请核对配置后重新打开反馈窗口。','delivery-unknown':'尚未取得发送回执。请点“核对回执”，不要重复发送。','feedback-receipt-missing':'没有找到本次回执，请核对服务状态。'};
+ function showResult(result){
+  if(result.ok){$('#feedbackStatus').textContent='已送达开发者群，回执已确认。';$('#feedbackSend').disabled=true;$('#feedbackCheck').hidden=true;if(result.logUrl){$('#feedbackLogLink').hidden=false;$('#feedbackLogLink').href=result.logUrl;}}
+  else{$('#feedbackStatus').textContent=messages[result.code]||'发送尚未确认，请核对服务状态。';const pending=result.code==='delivery-unknown';$('#feedbackCheck').hidden=!pending;$('#feedbackSend').disabled=pending||!metadata.configured;}
+ }
+ $('#feedbackForm').addEventListener('submit',async event=>{event.preventDefault();if(sending||!metadata)return;sending=true;$('#feedbackSend').disabled=true;$('#feedbackStatus').textContent='正在发送并等待服务回执…';try{showResult(await window.oneClick.sendFeedback({requestId:metadata.requestId,kind:metadata.kind,category:$('#feedbackCategory').value,message:$('#feedbackMessage').value,includeLogs:$('#feedbackIncludeLogs').checked}));}catch{showResult({code:'delivery-unknown'});}finally{sending=false;}});
+ $('#feedbackCheck').addEventListener('click',async()=>{if(sending)return;sending=true;$('#feedbackCheck').disabled=true;try{showResult(await window.oneClick.checkFeedbackReceipt());}catch{showResult({code:'delivery-unknown'});}finally{sending=false;$('#feedbackCheck').disabled=false;}});
+ $('#feedbackCancel').addEventListener('click',()=>window.oneClick.closeFeedback());
+ $('#feedbackLogLink').addEventListener('click',event=>{event.preventDefault();window.oneClick.openExternal(event.currentTarget.href);});
+ window.oneClick.feedbackMetadata().then(info=>{metadata=info;$('#feedbackVersion').textContent=info.version;$('#feedbackKind').value=info.kind;$('#categoryRow').hidden=info.kind==='review';$('#feedbackLogPreview').textContent=JSON.stringify(info.logs,null,2);$('#configurationHint').textContent=info.configured?'':'反馈服务尚未配置；可先填写备注，再到主窗口设置服务地址。';$('#feedbackSend').disabled=!info.configured;if(info.pending){$('#feedbackMessage').value=info.pending.message;$('#feedbackCategory').value=info.pending.category;$('#feedbackIncludeLogs').checked=info.pending.includeLogs;showResult({code:'delivery-unknown'});}}).catch(()=>{$('#feedbackStatus').textContent='读取反馈配置失败，请关闭后重试。';$('#feedbackSend').disabled=true;});
+})();

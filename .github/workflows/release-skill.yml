@@ -1,6 +1,12 @@
-name: Attach versioned Skill to Release
+name: Prepare draft Skill assets or audit published Release
 
 on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing draft release tag
+        required: true
+        type: string
   release:
     types: [published]
 
@@ -13,12 +19,28 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          ref: ${{ github.event.release.tag_name }}
-      - name: Check tag and package Skill
+          ref: ${{ github.event.release.tag_name || inputs.tag }}
+      - name: Check numeric tag against source
+        env:
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
         run: |
-          test "v$(node -p "require('./package.json').version")" = "${{ github.event.release.tag_name }}"
-          node scripts/package-skill.cjs
-      - name: Attach Skill archive and checksum
+          [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          test "v$(node -p "require('./package.json').version")" = "$TAG"
+      - name: Prepare Skill for an existing draft only
+        if: github.event_name == 'workflow_dispatch'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "${{ github.event.release.tag_name }}" release/yijian-toudi-skill-*.tar.gz release/yijian-toudi-skill-*.sha256 --clobber
+          TAG: ${{ inputs.tag }}
+        run: |
+          test "$(gh release view "$TAG" --json isDraft --jq .isDraft)" = "true"
+          node scripts/package-skill.cjs
+          gh release upload "$TAG" release/yijian-toudi-skill-*.tar.gz release/yijian-toudi-skill-*.sha256
+      - name: Download and verify remote archive/checksum before treating release as ready
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          VERSION="${TAG#v}"
+          mkdir -p .local-data/skill-release-audit
+          gh release download "$TAG" --pattern "yijian-toudi-skill-$VERSION.tar.gz" --pattern "yijian-toudi-skill-$VERSION.sha256" --dir .local-data/skill-release-audit
+          node scripts/package-skill.cjs --verify ".local-data/skill-release-audit/yijian-toudi-skill-$VERSION.tar.gz" ".local-data/skill-release-audit/yijian-toudi-skill-$VERSION.sha256" "$VERSION"

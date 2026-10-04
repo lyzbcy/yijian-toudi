@@ -1,0 +1,22 @@
+'use strict';
+const https=require('https'),http=require('http');
+function compare(a,b){const parse=v=>/^v?(\d{1,9})\.(\d{1,9})\.(\d{1,9})$/.exec(String(v||''))?.slice(1).map(Number),x=parse(a),y=parse(b);if(!x||!y)return null;for(let i=0;i<3;i++)if(x[i]!==y[i])return x[i]>y[i]?1:-1;return 0;}
+function sourceConfig(env){const repo=env.YJTD_SKILL_REPO||'lyzbcy/yijian-toudi';if(!/^[a-z\d_.-]+\/[a-z\d_.-]+$/i.test(repo)||repo.split('/').some(s=>!/[a-z\d]/i.test(s)))throw Error('update-repository-invalid');const channel=env.YJTD_SKILL_CHANNEL||'stable';if(!['stable','preview'].includes(channel))throw Error('update-channel-invalid');return{repo,channel,url:env.YJTD_SKILL_RELEASES_URL||`https://api.github.com/repos/${repo}/releases?per_page=100`};}
+function validUrl(value,{origin,allowLocal=false,redirect=false}={}){const u=new URL(value);if(u.username||u.password||u.hash||!(u.protocol==='https:'||(allowLocal&&u.protocol==='http:'&&['127.0.0.1','localhost','[::1]'].includes(u.hostname))))throw Error('update-url-invalid');if(origin&&u.origin!==origin&&!(['github.com','api.github.com'].includes(new URL(origin).hostname)&&['github.com',...(redirect?['release-assets.githubusercontent.com','objects.githubusercontent.com','github-releases.githubusercontent.com']:[])].includes(u.hostname)))throw Error('update-url-origin');return u;}
+function download(value,{maxBytes=8*1024*1024,allowLocal=false,origin,redirects=0,deadline=Date.now()+20000}={}){
+ return new Promise((resolve,reject)=>{let u;try{u=validUrl(value,{origin,allowLocal,redirect:redirects>0});}catch(e){reject(e);return;}const remaining=deadline-Date.now();if(remaining<=0){reject(Error('update-download-timeout'));return;}
+ const req=(u.protocol==='https:'?https:http).get(u,{rejectUnauthorized:true,headers:{'User-Agent':'yijian-toudi-skill-updater','Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'},timeout:Math.min(10000,remaining)},res=>{
+ if([301,302,303,307,308].includes(res.statusCode)){res.resume();if(redirects>=3){reject(Error('update-too-many-redirects'));return;}let next;try{next=new URL(res.headers.location,u).href;}catch{reject(Error('update-redirect-invalid'));return;}download(next,{maxBytes,allowLocal,origin:origin||u.origin,redirects:redirects+1,deadline}).then(resolve,reject);return;}
+ if(res.statusCode!==200){res.resume();reject(Error('update-http-'+res.statusCode));return;}const xs=[];let size=0;res.on('error',reject);res.on('aborted',()=>reject(Error('update-response-aborted')));res.on('data',b=>{size+=b.length;if(size>maxBytes){res.destroy(Error('update-download-too-large'));return;}xs.push(Buffer.from(b));});res.on('end',()=>resolve(Buffer.concat(xs)));
+ });const timer=setTimeout(()=>req.destroy(Error('update-download-timeout')),remaining);req.on('close',()=>clearTimeout(timer));req.on('error',reject);req.on('timeout',()=>req.destroy(Error('update-download-timeout')));
+ });
+}
+function releaseFor(input,config){
+ const releases=Array.isArray(input)?input:[input];if(releases.length>100)throw Error('update-release-list-too-large');const eligible=releases.filter(r=>r&&r.draft===false&&(r.prerelease===false||config.channel==='preview')&&compare(r.tag_name,'0.0.0')!==null).sort((a,b)=>compare(b.tag_name,a.tag_name));return eligible[0]||null;
+}
+function assetsFor(release,config,{allowLocal=false}={}){const version=String(release.tag_name).replace(/^v/,''),name=`yijian-toudi-skill-${version}.tar.gz`,xs=release.assets||[],one=n=>{const found=xs.filter(a=>a.name===n&&a.state==='uploaded');if(found.length!==1)throw Error('update-asset-missing-or-ambiguous');return found[0];},archive=one(name),checksum=one(name.replace(/\.tar\.gz$/,'.sha256')),origin=validUrl(config.url,{allowLocal}).origin;
+ for(const a of [archive,checksum]){const u=validUrl(a.browser_download_url,{origin,allowLocal});if(u.hostname==='github.com'&&!u.pathname.startsWith('/'+config.repo+'/releases/download/'+release.tag_name+'/'))throw Error('update-asset-repository');}
+ if(archive.size>8*1024*1024||checksum.size>4096)throw Error('update-asset-too-large');return{version,name,archive,checksum,origin};
+}
+function checksumFor(bytes,name){const lines=bytes.toString('utf8').trim().split(/\r?\n/);if(lines.length!==1)throw Error('update-checksum-invalid');const m=/^([a-f0-9]{64})[ \t]+\*?([^ \t]+)$/i.exec(lines[0]);if(!m||m[2]!==name)throw Error('update-checksum-invalid');return m[1].toLowerCase();}
+module.exports={compare,sourceConfig,validUrl,download,releaseFor,assetsFor,checksumFor};

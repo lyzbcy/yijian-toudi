@@ -11,6 +11,23 @@ let recentCount = 0;        // 滚动窗口内发送数（60s）
 const windowStartedAt = { value: Date.now() };
 const MIN_INTERVAL_MS = 3000;   // 单条最小间隔
 const MAX_PER_MINUTE = 18;      // 低于平台 20 上限，留余量
+const TEXT_MAX_BYTES = 2048;
+const MARKDOWN_MAX_BYTES = 4096;
+
+// Official limits are UTF-8 bytes, not JavaScript character counts. Keep the
+// complete message on the wire; never report success after silently slicing it.
+function buildWecomPayload(text) {
+  const content = String(text ?? '');
+  if (!content) throw new Error('wecom-message-empty');
+  for (const char of content) {
+    const code = char.charCodeAt(0);
+    if (char.length === 1 && code >= 0xd800 && code <= 0xdfff) throw new Error('wecom-message-invalid-unicode');
+  }
+  const bytes = Buffer.byteLength(content, 'utf8');
+  if (bytes > MARKDOWN_MAX_BYTES) throw new Error('wecom-message-too-long');
+  const msgtype = bytes <= TEXT_MAX_BYTES ? 'text' : 'markdown';
+  return { msgtype, [msgtype]: { content } };
+}
 
 function configure(url) {
   webhookUrl = typeof url === 'string' ? url.trim() : '';
@@ -33,12 +50,22 @@ function postJson(url, payload, timeoutMs = 8000) {
     const body = JSON.stringify(payload);
     const req = mod.request(target, {
       method: 'POST',
+      rejectUnauthorized: true,
       headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
       timeout: timeoutMs
     }, (res) => {
-      let data = '';
-      res.on('data', (chunk) => { data += chunk; });
+      const chunks = [];
+      let size = 0;
+      res.on('error', reject);
+      res.on('aborted', () => reject(new Error('webhook-response-aborted')));
+      res.on('data', (chunk) => {
+        const bytes = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+        size += bytes.length;
+        if (size > 32768) { res.destroy(new Error('webhook-response-too-large')); return; }
+        chunks.push(bytes);
+      });
       res.on('end', () => {
+        const data = Buffer.concat(chunks).toString('utf8');
         try {
           resolve({ status: res.statusCode, body: JSON.parse(data) });
         } catch {
@@ -55,6 +82,9 @@ function postJson(url, payload, timeoutMs = 8000) {
 // 发送文本消息。返回 { sent, reason? }：配置缺失/限频时不抛错，调用方可安全忽略。
 async function notify(text) {
   if (!isEnabled()) return { sent: false, reason: 'webhook-not-configured' };
+  let payload;
+  try { payload = buildWecomPayload(text); }
+  catch (error) { return { sent: false, reason: error.message }; }
   const now = Date.now();
   if (now - windowStartedAt.value > 60000) {
     windowStartedAt.value = now;
@@ -65,7 +95,7 @@ async function notify(text) {
   lastSendAt = now;
   recentCount += 1;
   try {
-    const res = await postJson(webhookUrl, { msgtype: 'text', text: { content: String(text || '').slice(0, 2000) } });
+    const res = await postJson(webhookUrl, payload);
     const ok = res.status === 200 && res.body && res.body.errcode === 0;
     return ok ? { sent: true } : { sent: false, reason: `errcode=${res.body && res.body.errcode}` };
   } catch (err) {
@@ -82,4 +112,4 @@ function formatBatchProgress(applied, total, tail) {
   return lines.join('\n');
 }
 
-module.exports = { configure, isEnabled, notify, formatBatchProgress, postJson };
+module.exports = { configure, isEnabled, notify, formatBatchProgress, postJson, buildWecomPayload, TEXT_MAX_BYTES, MARKDOWN_MAX_BYTES };

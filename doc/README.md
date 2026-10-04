@@ -4,13 +4,39 @@
 
 ## 当前状态
 
+- 当前为 **v0.5.35 接续开发候选，未正式发布**。运行代码从 v0.5.33 ASAR 校验恢复；原设备聊天/会话不可访问。当前事实与交付门槛以 [接续进度](progress/2026-10-04-recovery-delivery.md) 和 [当前验收矩阵](development/mvp-acceptance.md) 为准。以下 v0.5.15 等条目保留为历史来源，不能当作当前完成状态。
+
+- v0.5.15 京东延迟扫码：[计时修复与真实登录态对照](progress/2026-10-02-jd-delayed-auth.md)。
+
+- v0.5.14 京东真实loginRelay中转补齐，接续 [父子框架验收](progress/2026-10-02-jd-frame-fix.md)。
+
+- v0.5.13 京东父子框架回跳：[修复与现场验收](progress/2026-10-02-jd-frame-fix.md)。
+
+- v0.5.12 Windows 稳定性候选：[本轮修复与验收](progress/2026-10-02-mvp-hardening.md)。
+
+- v0.5.11 京东自动扫码回跳候选：精确 SSO 落地页与父工作区同步，见 [京东验收](progress/2026-09-30-jd-login.md)。
+
+- v0.5.10 同会话 AI 网页调试：随机本机 CDP、DOM/Shadow DOM、iframe/popup、JSON 请求文件与成对 bat 启停；见 [integrations/ai-browser.md](integrations/ai-browser.md)。
+
+- v0.5.10 京东真实扫码后 `qq.jd.com` 回跳和子页面 OAuth 学习修复：[京东登录验收](progress/2026-09-30-jd-login.md)。
+
+- v0.5.7 Windows 本地源码预览：[本地开发说明](../zeen-tools/本地开发说明.md)。
+
+- v0.5.6 现场回跳与附件确认修复：[progress/2026-09-29-live-window-fixes.md](progress/2026-09-29-live-window-fixes.md)。
+
+- v0.5.5 登录与上传修复：[integrations/login-upload.md](integrations/login-upload.md)；验收见 [progress/2026-09-29-login-upload.md](progress/2026-09-29-login-upload.md)。
+
+- v0.5.4 批量简历更新：[progress/2026-09-29-resume-batch.md](progress/2026-09-29-resume-batch.md)；选择/全选、历史时间、4/6 平铺窗口。实现设计见 [integrations/resume-batch.md](integrations/resume-batch.md)。
+
+- 2026-09-29 MVP P0 实施与剩余门槛：[progress/2026-09-29-mvp-p0.md](progress/2026-09-29-mvp-p0.md)。工作树 v0.5.3 开发候选，真实投递保持暂停。
+
 - v0.4.0（2026-09-20）：企微通知 + Kimi 桥控制层 + Boss 批量投递引擎（实验）已并入，设置页可配置；详见 [specs/2026-09-19-Boss一键投递与网申自动填写-design.md](specs/2026-09-19-Boss一键投递与网申自动填写-design.md) §9-§10 与 CHANGELOG
 
 - 后台稳定性修复与验收：[progress/2026-09-09-后台稳定性打磨.md](progress/2026-09-09-后台稳定性打磨.md)
 - 0.5.0 发布就绪度实测：[progress/2026-09-28-release-readiness.md](progress/2026-09-28-release-readiness.md)
 
-- 工作树版本：`0.5.1 Windows x64 测试预发布`（Windows 安装与 Boss 默认批量目标 1 实测）；最近稳定 Release：`v0.3.1`
-- 目标平台：macOS（Electron，架构保留 Windows 打包能力）
+- 工作树版本：`0.5.35 接续开发候选`；最近公开预发布 `v0.5.1`，最近稳定 Release：`v0.3.1`
+- 目标平台：Windows 与 macOS；当前机器执行 Windows 实测，macOS 门槛继续保留。
 - 可真实使用：本地简历保存、收藏与筛选、QQ 邮箱 IMAP 同步、本机 Agent API、更新检查、真实浏览器入口，以及腾讯、百度、字节跳动、小米、京东、美团岗位抓取；阿里职位与 BOSS 受事实源/平台协议限制仅提供官方手动入口
 - 已有安全闭环骨架：腾讯、字节、阿里简历在带退出栏的内嵌工作区进行高置信填写/核对；“全部都要”会拆成社招、校招两个方向逐站处理；保存、验证码和任何申请/投递按钮都由用户本人操作
 - 多平台简历同步设计：[plans/2026-08-12-多平台简历同步与职位聚合设计.md](plans/2026-08-12-多平台简历同步与职位聚合设计.md)

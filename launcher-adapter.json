@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "yijian-toudi",
+  "name": "一键投递",
+  "version": "0.5.35",
+  "platform": "win32",
+  "architecture": "x64",
+  "executable": "一键投递.exe",
+  "category": "桌面效率",
+  "summary": "本地求职工作台；Windows 交付候选，完整验收仍在进行。",
+  "siteUrl": "https://lyzbcy.github.io/yijian-toudi/",
+  "iconPath": "build/icon.ico",
+  "videoIds": [
+    "7665715266957656162"
+  ],
+  "package": {
+    "type": "installer",
+    "path": "release/yijian-toudi-setup-0.5.35.exe",
+    "url": null,
+    "sha256": "a43e9ed63fc1bc24319d5698aebcc7999541d4647b87fbb52a2b77a7e2b0d3af"
+  },
+  "installation": {
+    "displayName": "一键投递"
+  },
+  "releaseStatus": "candidate-unpublished",
+  "notes": "当前包已本机校验；公网URL须在真实上传并下载回读后填写。历史视频不计为当前完整演示。"
+}

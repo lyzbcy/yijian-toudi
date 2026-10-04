@@ -31,7 +31,8 @@ const PLATFORM_MANIFESTS = Object.freeze({
         jobs: 'https://jobs.bytedance.com/campus/position'
       }
     },
-    trustedAuthHosts: ['sso.bytedance.com', 'login.bytedance.com'],
+    trustedAuthHosts: ['sso.bytedance.com', 'login.bytedance.com', 'open.weixin.qq.com', 'job.bytedance.com'],
+    oauthCallbackRoots: ['bytedance.com'],
     safety: { autoSaveProfile: false, autoSubmitApplication: false }
   },
   xiaomi: {
@@ -62,11 +63,19 @@ const PLATFORM_MANIFESTS = Object.freeze({
       },
       campus: {
         resume: 'https://campus.jd.com/#/resume?type=present',
-        login: 'https://zhaopin.jd.com/web/login',
+        // 保留校招外层及其 passport iframe；单独打开 passport 会丢失站点登录上下文。
+        login: 'https://campus.jd.com/#/resume?type=present',
         jobs: 'https://campus.jd.com/'
       }
     },
-    trustedAuthHosts: ['passport.jd.com'],
+    trustedAuthHosts: ['passport.jd.com', 'open.weixin.qq.com'],
+    trustedAuthPaths: ['https://qq.jd.com/new/wx/login.action'],
+    // 2026-09-30 现场扫码：微信回跳 qq.jd.com/new/wx/callback.action。
+    // 只放行这个实际回调路径，不把 qq.jd.com 全站加入登录白名单。
+    // 2026-10-03 真实联合登录：relay -> connectedLogin -> newSuccessReturnPage。
+    // 只补现场观察到的精确路径；不放行 QQ 域的其他页面。
+    trustedAuthCallbackPaths: ['https://qq.jd.com/new/wx/callback.action', 'https://qq.jd.com/new/wx/loginRelay.action', 'https://qq.jd.com/new/wx/connectedLogin.action', 'https://qq.jd.com/new/newSuccessReturnPage.action', 'https://sso.jd.com/sso/sync/redirect', 'https://www.jd.com/'],
+    oauthCallbackRoots: ['jd.com'],
     safety: { autoSaveProfile: false, autoSubmitApplication: false }
   },
   meituan: {
@@ -84,7 +93,8 @@ const PLATFORM_MANIFESTS = Object.freeze({
         jobs: 'https://zhaopin.meituan.com/web/campus'
       }
     },
-    trustedAuthHosts: ['passport.meituan.com'],
+    trustedAuthHosts: ['passport.meituan.com', 'open.weixin.qq.com', 'zhaopin-login.meituan.com'],
+    oauthCallbackRoots: ['meituan.com'],
     safety: { autoSaveProfile: false, autoSubmitApplication: false }
   },
   baidu: {

@@ -25,6 +25,7 @@ function createRedactedSnapshot(state) {
   safe.resume = redactResume(safe.resume);
   if (safe.settings) {
     delete safe.settings.apiToken;
+    delete safe.settings.wecomWebhook;
     if (safe.settings.email) {
       delete safe.settings.email.encryptedCode;
       safe.settings.email.address = safe.settings.email.address ? '[已脱敏邮箱]' : '';

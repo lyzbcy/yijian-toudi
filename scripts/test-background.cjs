@@ -5,7 +5,7 @@ const root = path.resolve(__dirname, '..');
 const suites = [
   ['unit', ['--test', ...fs.readdirSync(path.join(root, 'test')).filter(f => f.endsWith('.test.cjs')).map(f => `test/${f}`)]],
   ['check', ['scripts/check-project.cjs']],
-  ...['ui-smoke', 'ui-resume-segments', 'ui-resume-profiles', 'ui-capabilities', 'ui-workspace-exit', 'ui-resume-sync-all', 'ui-resume-sync-cancel', 'ui-reliability']
+  ...['ui-smoke', 'ui-resume-segments', 'ui-resume-profiles', 'ui-capabilities', 'ui-workspace-exit', 'ui-resume-batch', 'ui-batch-actions', 'ui-login-upload', 'ui-live-window-fixes', 'ui-jd-login', 'ui-auth-frame', 'ui-ai-browser', 'ui-ai-preview', 'ui-reliability', 'ui-boss-recovery', 'ui-delivery-layout']
     .map(name => [name, [`test/${name}.cjs`]])
 ];
 const results = [];
