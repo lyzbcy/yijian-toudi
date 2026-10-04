@@ -54,3 +54,15 @@ Windows、Mac arm64/Intel、Skill与反馈服务7个候选包及SHA-256汇总在
 当前维护者备份：[v0.5.41草稿候选](https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-16da055dc535b1289ce2)，16项资产已全部取回核对；须有仓库权限。草稿不是公众稳定下载或正式自动更新。核对报告为 verification/2026-10-04-recovery/cloud-backup-v41.json。
 
 最新维护者备份：[v0.5.44草稿候选](https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-7b9c279e8070701ee46a)，16项资产全部取回逐字节/hash核对；须有仓库权限。此前41条目为历史备份。44完整视频仍未完成；草稿不是公众稳定下载或正式自动更新。核对报告为 verification/2026-10-04-recovery/cloud-backup-v44.json。
+
+## 44当前操作录像与客户端备份补验
+
+本机新增 `release/yijian-toudi-preview-0.5.44-realtime.mp4`，291.84秒、1280×960 H.264，无音轨。真实打包程序录制首次使用、样本简历/方向保存及冷重开、匿名官网刷新、筛选/本地购物车和遮罩Agent页；底栏标明候选/样本/未正式发布。原始两段WebM保留，等待不加速、不删减。
+
+此次实际读取3694岗位，仅腾讯/小米/京东/美团成功；百度总时限超时、字节接口失败，原结果保留。后续有界只读诊断取得百度首屏及字节token/首条搜索HTTP200，仅证明当次探测恢复，不证明原失败根因或完整读取通过。报告为 `demo-candidate-v44.json` 与 `anonymous-interface-diagnostic-v44.json`。MP4整段解码通过，只实际看过3/18/42/267/287秒五帧；这不是完整播放/隐私逐帧审阅或完整求职演示，不含申请/外部消息。
+
+`node scripts/convert-candidate-demo.cjs RECORDING_DIRECTORY FFMPEG_EXECUTABLE` 可把成功的本机录制转换为带候选底栏的正常速度MP4，拒绝覆盖已有录像。录像和真实账号/反馈/正式升级的待补片段须分别验收。
+
+Windows客户端真实按钮/IPC的5组备份闭环通过：导出不含Token/邮箱授权码、两阶段取消与损坏文件不改状态、恢复前自动备份保留原简历、导入不能覆盖本机凭证、冷重开保留恢复内容。文件选择及确认响应是明确样本，原生对话框点击未验。复现 `node test/ui-backup-roundtrip.cjs`；报告为 `backup-roundtrip-v44-windows.json`。
+
+录像独立备份：[44候选操作素材草稿](https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-895f5d82a52d493064fd)，MP4/精确SHA/报告/说明4资产已全部取回逐字节核对，须有仓库权限。原44安装/服务草稿仍16资产、原字节不变，旧39录像保留。回读报告为 `demo-cloud-backup-v44.json`。

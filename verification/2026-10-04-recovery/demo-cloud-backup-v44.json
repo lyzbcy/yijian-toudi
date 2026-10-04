@@ -1,0 +1,35 @@
+{
+  "at": "2026-10-04T12:28:34.463Z",
+  "version": "0.5.44",
+  "releaseDraft": true,
+  "releaseUrl": "https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-895f5d82a52d493064fd",
+  "targetCommitish": "a89b7bb0de18d0674b7fa81a9b459fccf43993b1",
+  "assets": [
+    {
+      "name": "yijian-toudi-preview-0.5.44-realtime.mp4",
+      "bytes": 10121450,
+      "sha256": "cdbec35e920bb3bdeaaa9ee0d118dfd0b3b39ddc7578dd113e02309b099cef71"
+    },
+    {
+      "name": "yijian-toudi-preview-0.5.44-realtime.sha256",
+      "bytes": 107,
+      "sha256": "fd298f839f64f52d40d20735251844dfacaacb88716fac7ef79190b0a0e6ece0"
+    },
+    {
+      "name": "demo-candidate-v44.json",
+      "bytes": 2846,
+      "sha256": "338a3ef1759070eab3552c719cfcce8e78c613a39618e535510a5f70f044e0de"
+    },
+    {
+      "name": "DEMO-v0.5.44.md",
+      "bytes": 800,
+      "sha256": "cfb424818585a2a21a6230ebe5ade4ba9a002aaaf6c8dca1dd4baadc46f1e1a1"
+    }
+  ],
+  "allFourAssetsByteHashVerified": true,
+  "original44AssetCountUnchanged": 16,
+  "currentVideoCompleteDemo": false,
+  "fullPlaybackInspected": false,
+  "productBugRateBelowOnePercentProven": false,
+  "fullGoalComplete": false
+}

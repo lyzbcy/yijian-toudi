@@ -1,0 +1,31 @@
+{
+  "at": "2026-10-04T12:24:12.138Z",
+  "mode": "bounded-anonymous-interface-diagnostic",
+  "realApplications": 0,
+  "externalMessages": 0,
+  "results": [
+    {
+      "company": "baidu",
+      "htmlBytes": 72981,
+      "hasInitialData": true,
+      "firstPagePosts": 10
+    },
+    {
+      "company": "bytedance",
+      "tokenHTTP": 200,
+      "hasToken": true,
+      "searchHTTP": 200,
+      "hasData": true,
+      "responseJSONKeys": [
+        "code",
+        "data",
+        "message",
+        "error"
+      ],
+      "jobListIsArray": true,
+      "responseBytes": 8781
+    }
+  ],
+  "originalFailureRootCauseProven": false,
+  "originalRecordedRefreshStillPartial": true
+}

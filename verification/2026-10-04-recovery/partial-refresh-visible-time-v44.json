@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-04T12:32:15.753Z",
+  "version": "0.5.44",
+  "packaged": true,
+  "snapshotSource": "Copy of actual partial live-refresh recording state; new profile, no new refresh or HTTP interception",
+  "jobs": 3694,
+  "lastRefreshAttemptAt": "2026-10-04T12:22:28.754Z",
+  "lastCompleteRefreshAt": null,
+  "visibleRefreshText": "还没有抓取过岗位。",
+  "contradictionReproduced": true,
+  "originalNetworkFailureRootCauseProven": false,
+  "fullGoalComplete": false
+}

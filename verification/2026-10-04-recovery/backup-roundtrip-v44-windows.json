@@ -1,0 +1,31 @@
+{
+  "ok": true,
+  "version": "0.5.44",
+  "platform": "win32",
+  "packaged": true,
+  "nativeDialogResponsesFixture": true,
+  "nativeDialogClicksVerified": false,
+  "realRecruitment": false,
+  "externalMessages": 0,
+  "checks": [
+    "Actual visible export button writes versioned JSON through packaged IPC and excludes Agent Token/email encrypted authorization/idempotency",
+    "Actual restore IPC canceled at file selection or confirmation preserves all state and creates no automatic backup",
+    "Malformed selected JSON is rejected by actual packaged IPC before replacing state or creating a restore backup",
+    "Actual visible restore button replaces resume, preserves local credentials despite imported values and writes one credential-free automatic pre-restore backup with original data",
+    "Real process cold reopen keeps restored resume and original private credential values with zero renderer errors"
+  ],
+  "at": "2026-10-04T12:20:16.435Z",
+  "asar": {
+    "version": "0.5.44",
+    "ownFilesMatched": 116,
+    "asarEntries": 1141,
+    "noPrivateDataFiles": true,
+    "noKnownKeyPatterns": true
+  },
+  "pageErrors": [],
+  "runtimeSourceCommit": "a89b7bb0de18d0674b7fa81a9b459fccf43993b1",
+  "testScript": "test/ui-backup-roundtrip.cjs",
+  "testScriptSha256": "99780eb249aa6a0e89d296287cfbd029c06696bc503be7a2baaf439154d0809c",
+  "screenshotViewed": true,
+  "screenshotScope": "Main resume page; school input below viewport, retention proven by real assertions"
+}
