@@ -1,0 +1,77 @@
+name: Verify Linux feedback deployment candidate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'support/**'
+      - 'electron/feedback.cjs'
+      - 'electron/diagnostics.cjs'
+      - 'electron/wecom-notify.cjs'
+      - 'scripts/package-feedback.cjs'
+      - 'package.json'
+      - '.github/workflows/candidate-feedback.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Package and unpack independent service
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          node scripts/package-feedback.cjs
+          node scripts/package-feedback.cjs --verify "release/yijian-toudi-feedback-server-$VERSION.tar.gz" "release/yijian-toudi-feedback-server-$VERSION.sha256" "$VERSION"
+          mkdir -p .local-data/linux-deploy
+          tar -xzf "release/yijian-toudi-feedback-server-$VERSION.tar.gz" -C .local-data/linux-deploy
+      - name: Validate actual systemd and Caddy templates
+        run: |
+          systemd-analyze verify support/deploy/yijian-feedback.service
+          docker run --rm -v "$PWD/support/deploy/Caddyfile.example:/etc/caddy/Caddyfile:ro" caddy:2 caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+      - name: Build and start isolated Linux Compose deployment
+        working-directory: .local-data/linux-deploy/yijian-toudi-feedback-server/support/deploy
+        run: |
+          cp feedback.env.example feedback.env
+          # Invalid public hostname; dummy key is never used for notification.
+          sed -i 's/REPLACE_ON_SERVER/00000000000000000000000000000000/' feedback.env
+          chmod 600 feedback.env
+          mkdir -p feedback-data/receipts
+          printf '%s' '{"requestId":"11111111-1111-4111-8111-111111111111","status":"unknown","createdAt":0}' > feedback-data/receipts/11111111-1111-4111-8111-111111111111.json
+          sudo chown -R 1000:1000 feedback-data
+          chmod 700 feedback-data
+          docker compose config --quiet
+          docker compose up -d --build
+          curl --fail --retry 20 --retry-delay 1 --retry-connrefused http://127.0.0.1:8096/healthz > health.json
+          node -e "const assert=require('node:assert/strict');const h=require('./health.json');assert.deepEqual(h,{ok:true,service:'yijian-toudi-feedback',version:require('../../version.json').version});"
+          docker compose restart
+          curl --fail --retry 20 --retry-delay 1 --retry-connrefused http://127.0.0.1:8096/v1/feedback/11111111-1111-4111-8111-111111111111 > receipt.json
+          node -e "const assert=require('node:assert/strict');const r=require('./receipt.json');assert.equal(r.status,'unknown');assert.equal(r.ok,false);assert.equal(r.logUrl,null);"
+          docker inspect "$(docker compose ps -q feedback)" > container.json
+          node -e "const assert=require('node:assert/strict');const c=require('./container.json')[0];assert.equal(c.Config.User,'node');assert.equal(c.HostConfig.ReadonlyRootfs,true);assert.equal(c.HostConfig.NetworkMode,'host');"
+          node -e "require('fs').writeFileSync('linux-candidate.json',JSON.stringify({ok:true,version:require('../../version.json').version,platform:process.platform,systemdTemplateValidated:true,caddyTemplateValidated:true,composeBootAndRestart:true,persistentUnknownReceipt:true,readonlyContainer:true,realPublicTLS:false,realWecom:false,systemdRuntime:false},null,2));"
+      - name: Save deployment evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-feedback-candidate-${{ github.run_id }}
+          if-no-files-found: warn
+          path: |
+            .local-data/linux-deploy/yijian-toudi-feedback-server/support/deploy/linux-candidate.json
+            .local-data/linux-deploy/yijian-toudi-feedback-server/support/deploy/health.json
+            .local-data/linux-deploy/yijian-toudi-feedback-server/support/deploy/receipt.json
+      - name: Stop only test deployment
+        if: always()
+        run: |
+          DEPLOY=.local-data/linux-deploy/yijian-toudi-feedback-server/support/deploy
+          if [ -f "$DEPLOY/feedback.env" ]; then
+            cd "$DEPLOY"
+            docker compose down
+          fi
