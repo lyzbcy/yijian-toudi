@@ -139,3 +139,5 @@ Linux37191556368实际Compose/systemd/Caddy本地CA HTTPS成功；systemd41ms停
 Windows41实际包114源文件匹配，NotSigned；输入6组/三宽度UI、默认NSIS6组、40→41实际IPC/helper/NSIS/可见重启与资料/凭据/附件/Cookie样本保留，两种桌面偏好各8组通过并清理恢复。此前19套Windows后台成功，Mac专用代码随后修订，最终全量356单测再通过；范围分列在background-v41-windows-initial和unit-v41。首次失败不改写为成功。41配套两个11文件归档保持原字节，7包校验和已核对。完整目标仍active，公众信任/原账号/公网反馈/正式更新和云Skill/完整视频/代表性质量门槛全部保留。
 
 根实际查看了两架构自动重启后再次冷重开的截图。Intel视口显示下一版fixture v0.5.42；arm64受720高视口限制，版本/教育字段在截图外，数据保留以真实断言为证。截图没有真实账号或私有Token，不能代替全字段视觉验收。最终41原生四个payload已下载比对字节/hash和精确sidecar行，与114文件源码审计一致；配套41归档不以CI时间戳不同的副本覆盖。
+
+41云端草稿已创建并全部取回：https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-16da055dc535b1289ce2，target 03596b467071d4bde0449f078f7dfc795a0c0b3e。16项附件逐字节/hash与封存本机文件一致（7 payload+7 checksum+manifest+候选说明）；两个配套归档再次独立验证11文件/version，Windows/Mac arm64/x64精确资产选择仅使用假定正式URL检查schema，实际草稿被更新器拒绝，不冒充正式升级。公网latest仍v0.3.1。完整目标未完成，原设备聊天/未同步状态未迁移。回读证据cloud-backup-v41.json。

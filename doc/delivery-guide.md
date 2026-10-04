@@ -50,3 +50,5 @@ Windows、Mac arm64/Intel、Skill与反馈服务7个候选包及SHA-256汇总在
 维护者草稿备份：[v0.5.39候选](https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-70ee233573d7e31fa8b1)，须有仓库访问权限；18项附件全部取回核对一致。该草稿不属于正式公众下载或自动更新。
 
 部署补验：39实际Linux CI的systemd生命周期6组及Caddy本地CA HTTPS反代3组通过，见 `doc/integrations/feedback-deployment.md` 与 `verification/2026-10-04-recovery/feedback-deployment-supplement-v39.json`。仍未配置生产默认地址或证明公网/企微；封存配套包和草稿18资产未改。
+
+当前维护者备份：[v0.5.41草稿候选](https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-16da055dc535b1289ce2)，16项资产已全部取回核对；须有仓库权限。草稿不是公众稳定下载或正式自动更新。核对报告为 verification/2026-10-04-recovery/cloud-backup-v41.json。
