@@ -1,0 +1,34 @@
+{
+  "ok": true,
+  "version": "0.5.37",
+  "ownFilesMatched": 110,
+  "asarEntries": 1135,
+  "noPrivateDataFiles": true,
+  "noKnownKeyPatterns": true,
+  "readiness": "candidate-unpublished",
+  "artifacts": [
+    {
+      "name": "yijian-toudi-setup-0.5.37.exe",
+      "bytes": 104227496,
+      "sha256": "53bbb0f52a5e27edfb13b10a34b7df5ca2ac76465652e54b7b3fc1f2a4d7ab72"
+    },
+    {
+      "name": "yijian-toudi-skill-0.5.37.tar.gz",
+      "bytes": 13908,
+      "sha256": "a4b6a75cebeb9eea1e6e8d0f9183d0b1462ddbea89d2b0ba4e6c02592818e886"
+    },
+    {
+      "name": "yijian-toudi-feedback-server-0.5.37.tar.gz",
+      "bytes": 12432,
+      "sha256": "31d353566c790ddb4c7de4998cbd54310d6aa46bad6cadfd417e703277229e66"
+    }
+  ],
+  "unmetGates": [
+    "real-account-workflows",
+    "public-feedback-service",
+    "official-download-update",
+    "macOS-install-runtime",
+    "current-complete-demo",
+    "representative-bug-rate"
+  ]
+}

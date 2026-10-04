@@ -1,0 +1,6 @@
+feedback.example.invalid {
+  reverse_proxy 127.0.0.1:8096 {
+    # Override user-supplied forwarding headers with the actual peer address.
+    header_up X-Forwarded-For {remote_host}
+  }
+}

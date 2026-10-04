@@ -1,4 +1,4 @@
-name: Prepare draft Skill assets or audit published Release
+name: Prepare draft auxiliary assets or audit published Release
 
 on:
   workflow_dispatch:
@@ -26,7 +26,7 @@ jobs:
         run: |
           [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
           test "v$(node -p "require('./package.json').version")" = "$TAG"
-      - name: Prepare Skill for an existing draft only
+      - name: Prepare Skill and feedback service for an existing draft only
         if: github.event_name == 'workflow_dispatch'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -34,7 +34,9 @@ jobs:
         run: |
           test "$(gh release view "$TAG" --json isDraft --jq .isDraft)" = "true"
           node scripts/package-skill.cjs
+          node scripts/package-feedback.cjs
           gh release upload "$TAG" release/yijian-toudi-skill-*.tar.gz release/yijian-toudi-skill-*.sha256
+          gh release upload "$TAG" release/yijian-toudi-feedback-server-*.tar.gz release/yijian-toudi-feedback-server-*.sha256
       - name: Download and verify remote archive/checksum before treating release as ready
         env:
           GH_TOKEN: ${{ github.token }}
@@ -44,3 +46,5 @@ jobs:
           mkdir -p .local-data/skill-release-audit
           gh release download "$TAG" --pattern "yijian-toudi-skill-$VERSION.tar.gz" --pattern "yijian-toudi-skill-$VERSION.sha256" --dir .local-data/skill-release-audit
           node scripts/package-skill.cjs --verify ".local-data/skill-release-audit/yijian-toudi-skill-$VERSION.tar.gz" ".local-data/skill-release-audit/yijian-toudi-skill-$VERSION.sha256" "$VERSION"
+          gh release download "$TAG" --pattern "yijian-toudi-feedback-server-$VERSION.tar.gz" --pattern "yijian-toudi-feedback-server-$VERSION.sha256" --dir .local-data/skill-release-audit
+          node scripts/package-feedback.cjs --verify ".local-data/skill-release-audit/yijian-toudi-feedback-server-$VERSION.tar.gz" ".local-data/skill-release-audit/yijian-toudi-feedback-server-$VERSION.sha256" "$VERSION"

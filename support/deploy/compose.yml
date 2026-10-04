@@ -1,0 +1,15 @@
+services:
+  feedback:
+    build:
+      context: ../..
+      dockerfile: support/deploy/Dockerfile
+    # Linux host network keeps Node on 127.0.0.1 and Caddy on the same host.
+    network_mode: host
+    env_file: ./feedback.env
+    volumes:
+      - ./feedback-data:/var/lib/yijian-feedback
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+    stop_grace_period: 20s

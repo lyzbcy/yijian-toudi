@@ -1,6 +1,6 @@
 {
   "name": "yijian-toudi",
-  "version": "0.5.35",
+  "version": "0.5.37",
   "description": "把岗位、简历和招聘消息放在一个地方管理的本地桌面应用",
   "main": "electron/main.cjs",
   "type": "commonjs",
@@ -31,6 +31,7 @@
     "dist:win": "electron-builder --win nsis --config.electronDist=node_modules/electron/dist",
     "release": "node scripts/release.cjs",
     "pack:skill": "node scripts/package-skill.cjs",
+    "pack:feedback": "node scripts/package-feedback.cjs",
     "preview:site": "node scripts/site-preview.cjs"
   },
   "dependencies": {

@@ -1,0 +1,15 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),{auditAppAsar,sha}=require('./audit-app-asar.cjs');
+assert.equal(process.platform,'darwin','macOS verification must run on an actual macOS host');
+const root=path.resolve(__dirname,'..'),version=require('../package.json').version;
+const application=path.join(root,'release',process.arch==='arm64'?'mac-arm64':'mac','一键投递.app');
+const executable=path.join(application,'Contents/MacOS/一键投递');assert.ok(fs.statSync(executable).isFile());
+const audit=auditAppAsar(path.join(application,'Contents/Resources/app.asar'),root,version);
+const names=fs.readdirSync(path.join(root,'release')).filter(name=>name===`一键投递-${version}-${process.arch}.zip`||name===`一键投递-${version}-${process.arch}.dmg`);
+assert.equal(names.length,2,'Current native-architecture ZIP and DMG are required');
+const artifacts=names.map(name=>{const bytes=fs.readFileSync(path.join(root,'release',name));return{name,bytes:bytes.length,sha256:sha(bytes)};});
+for(const file of artifacts)fs.writeFileSync(path.join(root,'release',file.name+'.sha256'),`${file.sha256}  ${file.name}\n`);
+const report={ok:true,...audit,host:process.platform,architecture:process.arch,artifacts,signature:'not-verified',endUserInstall:'not-verified',realAccounts:'not-verified'};
+fs.mkdirSync(path.join(root,'test-output'),{recursive:true});fs.writeFileSync(path.join(root,'test-output/mac-candidate.json'),JSON.stringify(report,null,2));
+if(process.env.GITHUB_ENV)fs.appendFileSync(process.env.GITHUB_ENV,`YJT_PACKAGED_EXECUTABLE=${executable}\nYJT_VISIBLE_TEST=1\n`);
+console.log(JSON.stringify(report));

@@ -1,0 +1,24 @@
+[Unit]
+Description=One-click application feedback relay
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+WorkingDirectory=/opt/yijian-toudi-feedback-server
+EnvironmentFile=/etc/yijian-feedback.env
+StateDirectory=yijian-feedback
+StateDirectoryMode=0700
+ExecStart=/usr/bin/node support/feedback-server.cjs
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=20
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/yijian-feedback
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,67 @@
+name: Verify macOS delivery candidate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'electron/**'
+      - 'src/**'
+      - 'support/**'
+      - 'skill/**'
+      - 'scripts/**'
+      - 'test/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/candidate-macos.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: candidate-macos-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  macos:
+    runs-on: macos-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Unit boundaries and static integrity
+        run: |
+          pnpm test
+          pnpm check
+      - name: Matching complete auxiliary packages
+        run: |
+          pnpm pack:skill
+          pnpm pack:feedback
+      - name: Build native macOS DMG and ZIP
+        run: pnpm dist:mac
+      - name: Audit actual macOS bundle and native artifacts
+        run: node scripts/verify-mac-candidate.cjs
+      - name: Launch actual packaged application and verify local user flows
+        run: node test/ui-delivery-layout.cjs
+      - name: Save native evidence and candidate artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-candidate-${{ github.run_id }}
+          if-no-files-found: error
+          path: |
+            test-output/mac-candidate.json
+            test-output/delivery-layout.json
+            test-output/delivery-*.png
+            release/*.dmg
+            release/*.zip
+            release/*.sha256
+            release/*skill*.tar.gz
+            release/*feedback-server*.tar.gz

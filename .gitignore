@@ -18,6 +18,8 @@ _final_verify.mjs
 .zcode/
 release-candidate-*/
 support/data/
+support/deploy/feedback.env
+support/deploy/feedback-data/
 verification/**/baseline-app/
 verification/**/rollback-copy/
 verification/**/install-smoke-*/

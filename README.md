@@ -2,11 +2,11 @@
 
 **AI 本地调试**：双击 `zeen-tools/一键AI调试预览.bat`，用 `node scripts/ai-browser.cjs list` 直接操作当前软件的网页/Shadow DOM/iframe/子窗口；关闭用 `zeen-tools/关闭AI调试预览.bat`。操作格式与可复用 AI 提示词见 [AI 网页调试](doc/integrations/ai-browser.md)。普通本地预览不启用 CDP。
 
-当前源码为 **v0.5.35 接续开发候选**：从共享文件与完整性校验通过的 v0.5.33 ASAR 恢复运行代码，并在独立工作树继续开发。原设备的聊天、登录会话和未同步修改尚未恢复。修复与当前验收见 [接续交付进度](doc/progress/2026-10-04-recovery-delivery.md)，全部交付要求见 [MVP 验收矩阵](doc/development/mvp-acceptance.md)。当前候选未正式发布，整体 bug 率低于 1% 尚无充分证据。
+当前源码为 **v0.5.37 接续开发候选**：从共享文件与完整性校验通过的 v0.5.33 ASAR 恢复运行代码，并在独立工作树继续开发。原设备的聊天、登录会话和未同步修改尚未恢复。修复与当前验收见 [接续交付进度](doc/progress/2026-10-04-recovery-delivery.md)，全部交付要求见 [MVP 验收矩阵](doc/development/mvp-acceptance.md)。当前候选未正式发布，整体 bug 率低于 1% 尚无充分证据。
 
 一个 macOS 优先、面向未来跨平台的本地求职工作台。它把招聘岗位、统一简历、招聘邮件和自动化任务放在同一个桌面应用里，并提供仅监听本机的 Agent API。
 
-> 源码当前为 v0.5.35 Windows 交付候选；最近公开版本为 [v0.5.1 Windows x64 测试预发布](https://github.com/lyzbcy/yijian-toudi/releases/tag/v0.5.1)，最近稳定 Release 为 `v0.3.1`。2026-10-04 匿名读取六家官网社招岗位均通过，共 4159 条；这不代表官网简历保存或投递已验收。macOS 安装仍需单独验收。
+> 源码当前为 v0.5.37 Windows 交付候选；最近公开版本为 [v0.5.1 Windows x64 测试预发布](https://github.com/lyzbcy/yijian-toudi/releases/tag/v0.5.1)，最近稳定 Release 为 `v0.3.1`。2026-10-04 匿名读取六家官网社招岗位均通过，共 4159 条；这不代表官网简历保存或投递已验收。macOS 安装仍需单独验收。
 
 2026-09-28 Windows 真实账号实测：v0.5.1 首批确认 25 笔，安全验证后续批确认 6 笔，本轮新增 31 笔；网站随后返回 403 并提示限时恢复，未达到 100 笔。v0.5.2 候选修复访问受限分类及空查询限速，待打包版复验。腾讯校招简历自动填写回读 11 项，但未验证官网保存。详见 [实测记录](doc/progress/2026-09-28-release-readiness.md)；每日 100 份计划未启用。
 
@@ -59,9 +59,9 @@ pnpm dist:win        # 生成 release/yijian-toudi-setup-<版本>.exe
 pnpm test:background
 ```
 
-使用独立临时数据目录和隐藏 Electron 窗口，不显示应用、不占用正式 Agent API 端口、不启动自动岗位刷新。运行单元测试、静态检查、16 组界面回归（包含三个窗口宽度、导航及凭证显示/复制）；报告写入 `test-output/background-tests.json`，每组保留日志。测试失败立即停止，不以重试掩盖问题。
+使用独立临时数据目录和隐藏 Electron 窗口，不显示应用、不占用正式 Agent API 端口、不启动自动岗位刷新。运行单元测试、静态检查、17 组界面回归（包含三个窗口宽度、导航及凭证显示/复制）；报告写入 `test-output/background-tests.json`，每组保留日志。测试失败立即停止，不以重试掩盖问题。
 
-`node test/windows-install-upgrade.cjs` 是显式安装集成验收：当前用户已有注册安装时停止；使用独立中文安装目录与样本用户数据，真实 NSIS 安装旧版、通过实际 IPC 更新入口下载校验候选、升级重启、保留数据并卸载，最后恢复原快捷方式与安装缓存。更新网络响应是受控样本，不算官方公网下载验收。需先保留 v0.5.34 安装包并构建当前候选，运行时关闭其他打包版测试实例。
+`node test/windows-install-upgrade.cjs` 是显式安装集成验收：当前用户已有注册安装时停止；使用独立中文安装目录与样本用户数据，真实 NSIS 安装旧版、通过实际 IPC 更新入口下载校验候选、升级重启、保留数据并卸载，最后恢复原快捷方式与安装缓存。更新网络响应是受控样本，不算官方公网下载验收。需先保留 v0.5.35 安装包，并设 YJT_BASELINE_VERSION=0.5.35并构建当前候选，运行时关闭其他打包版测试实例。
 
 `pnpm test:live-jobs` 仅匿名读取六家官网的社招岗位，验证真实分页、数据规范化和重复 ID；不登录、不保存简历、不投递。报告写入 `test-output/live-jobs-full.json`。这不等同于已覆盖所有岗位或账号写入验收。
 
@@ -69,7 +69,7 @@ pnpm test:background
 
 ## 同版本 Skill 与通用部署
 
-`pnpm pack:skill` 从 `skill/yijian-toudi/` 生成 `release/yijian-toudi-skill-<版本>.tar.gz` 和 SHA256；版本必须与 `package.json` 一致。发布 GitHub Release 时，`release-skill.yml` 会自动附加同版本 Skill 包。发布前先跑 `pnpm test:background`、`pnpm test:site`、`pnpm pack:skill`，并在 macOS 上验证 DMG/ZIP 安装与真实账号链路；不能把本机测试通过当成 macOS 安装验收。
+`pnpm pack:skill` 从 `skill/yijian-toudi/` 生成 `release/yijian-toudi-skill-<版本>.tar.gz` 和 SHA256；版本必须与 `package.json` 一致。`pnpm pack:feedback` 生成独立反馈服务与校验文件，部署见 [反馈说明](support/README.md)。`release-skill.yml` 只为已有草稿准备配套包；正式 published 事件只下载审计，不追加资产。macOS 候选工作流在真实 Mac runner 构建 DMG/ZIP、审计 ASAR 并启动可见应用；安装与信任提示另验。发布前先跑 `pnpm test:background`、`pnpm test:site`、`pnpm pack:skill`，并在 macOS 上验证 DMG/ZIP 安装与真实账号链路；不能把本机测试通过当成 macOS 安装验收。
 
 Skill 解压到使用者的 Agent skills 目录，例如 `$HOME/.codex/skills/`。桌面应用和已登录浏览器继续运行；云端 Skill 只做定时触发与监控，不保存登录态。异机时，从桌面建立仅云端回环可访问的 SSH 反向隧道：
 
