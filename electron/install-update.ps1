@@ -5,7 +5,7 @@ $guid='3c9e6782-3db2-56c2-b59b-7731dce81b79'
 $uninstallKey='HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\'+$guid
 $installKey='HKCU:\Software\'+$guid
 function HashFile([string]$file){$stream=[IO.File]::OpenRead($file);$hash=[Security.Cryptography.SHA256]::Create();try{return [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-','').ToLowerInvariant()}finally{$stream.Dispose();$hash.Dispose()}}
-function WriteJson([string]$file,$value){$temp=$file+'.tmp-'+$PID;[IO.File]::WriteAllText($temp,($value|ConvertTo-Json -Depth 8 -Compress),(New-Object Text.UTF8Encoding $false));if([IO.File]::Exists($file)){[IO.File]::Replace($temp,$file,$null)}else{[IO.File]::Move($temp,$file)}}
+function WriteJson([string]$file,$value){$temp=$file+'.tmp-'+$PID;[IO.File]::WriteAllText($temp,($value|ConvertTo-Json -Depth 8 -Compress),(New-Object Text.UTF8Encoding $false));if([IO.File]::Exists($file)){[IO.File]::Replace($temp,$file,[System.Management.Automation.Language.NullString]::Value)}else{[IO.File]::Move($temp,$file)}}
 function KnownRoot {
  $full=[IO.Path]::GetFullPath($p.root).TrimEnd('\');$exe=[IO.Path]::GetFullPath($p.oldExe)
  if($full.Length -lt 10 -or $full -ne [IO.Path]::GetDirectoryName($exe) -or [IO.Path]::GetFileName($exe) -ne '一键投递.exe'){throw 'invalid-install-root'}
