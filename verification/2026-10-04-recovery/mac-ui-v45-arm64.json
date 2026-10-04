@@ -1,0 +1,145 @@
+{
+  "ok": true,
+  "version": "0.5.45",
+  "fixtureOnly": true,
+  "packaged": true,
+  "visible": true,
+  "checks": [
+    {
+      "width": 1100,
+      "filters": [
+        {
+          "text": "全部",
+          "lines": 1,
+          "clipped": false
+        },
+        {
+          "text": "★ 收藏",
+          "lines": 1,
+          "clipped": false
+        },
+        {
+          "text": "北京",
+          "lines": 1,
+          "clipped": false
+        },
+        {
+          "text": "上海",
+          "lines": 1,
+          "clipped": false
+        },
+        {
+          "text": "深圳",
+          "lines": 1,
+          "clipped": false
+        },
+        {
+          "text": "杭州",
+          "lines": 1,
+          "clipped": false
+        }
+      ],
+      "geometry": {
+        "width": 1100,
+        "headingWidth": 609,
+        "summaryHeight": 383,
+        "statusWidth": 727,
+        "overflow": -15,
+        "closedDialogsVisible": []
+      }
+    },
+    {
+      "width": 1280,
+      "filters": [
+        {
+          "text": "全部",
+          "lines": 1,
+          "clipped": false
+        },
+        {
+          "text": "★ 收藏",
+          "lines": 1,
+          "clipped": false
+        },
+        {
+          "text": "北京",
+          "lines": 1,
+          "clipped": false
+        },
+        {
+          "text": "上海",
+          "lines": 1,
+          "clipped": false
+        },
+        {
+          "text": "深圳",
+          "lines": 1,
+          "clipped": false
+        },
+        {
+          "text": "杭州",
+          "lines": 1,
+          "clipped": false
+        }
+      ],
+      "geometry": {
+        "width": 1280,
+        "headingWidth": 753,
+        "summaryHeight": 383,
+        "statusWidth": 871,
+        "overflow": -15,
+        "closedDialogsVisible": []
+      }
+    },
+    {
+      "width": 1440,
+      "filters": [
+        {
+          "text": "全部",
+          "lines": 1,
+          "clipped": false
+        },
+        {
+          "text": "★ 收藏",
+          "lines": 1,
+          "clipped": false
+        },
+        {
+          "text": "北京",
+          "lines": 1,
+          "clipped": false
+        },
+        {
+          "text": "上海",
+          "lines": 1,
+          "clipped": false
+        },
+        {
+          "text": "深圳",
+          "lines": 1,
+          "clipped": false
+        },
+        {
+          "text": "杭州",
+          "lines": 1,
+          "clipped": false
+        }
+      ],
+      "geometry": {
+        "width": 1440,
+        "headingWidth": 913,
+        "summaryHeight": 294,
+        "statusWidth": 1031,
+        "overflow": -15,
+        "closedDialogsVisible": []
+      }
+    }
+  ],
+  "directorySections": 11,
+  "credentialMasked": true,
+  "credentialCopiedCorrectly": true,
+  "clipboardRestored": true,
+  "pageErrors": [],
+  "workflowRun": 37205190489,
+  "sourceCommit": "98ee8812a45ab93e196897af8c6a1ef7ff0fada8"
+}

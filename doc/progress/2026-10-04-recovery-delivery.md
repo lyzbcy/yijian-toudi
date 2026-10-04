@@ -225,3 +225,15 @@ cbc3e2c的自动Mac复验37201486248最终两架构success；此前14b4ff7的同
 Mac45首轮37204738391的arm64原生包/资源签名/布局/方向输入通过，新刷新专项在启动应用前mkdtemp报ENOENT：干净CI的.local-data父目录未创建，本机已有忽略目录掩盖了测试前置条件缺口。原因由实际job日志和堆栈确定，mac-refresh-ui-v45-arm64-attempt1.json保留；添加mkdirSync recursive仅修测试输出初始化，产品运行文件和Windows安装包不变，同一Windows专项6组复验通过，Mac两架构重新验证待运行。
 
 98ee881的37205190489最终Mac两架构均success。取回arm64资产发现新刷新详细报告/截图在隐藏.local-data内，没有被默认upload-artifact收集；原生/布局/安装/更新报告存在，不把未取回文件冒充已回读。新增独立封存ZIP复验工作流，仅取同一成功原生包并核对hash/签名/117源码、重跑刷新6组，将报告/截图复制到明确test-output路径上传；不重构产品、不重跑已通过的整套原生安装更新。证据缺口记录mac-refresh-artifact-gap-v45.json，详细复验待执行。
+
+45草稿已全部取回核对：https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-cadf3db47d0848370131，target 98ee8812a45ab93e196897af8c6a1ef7ff0fada8；16附件逐字节/hash一致，配套归档各11文件。假定正式URL仅检查精确架构选择，实际草稿被更新器拒绝；公众稳定版仍v0.3.1。原设备聊天未恢复，完整goal仍active。
+
+## 45跨平台封存与完整回读
+
+45原生37205190489在98ee881两架构success：117应用文件/完整ad-hoc资源签名/全部容器/可见输入布局、Applications CLI38→45手动升级各9组，45→46样本自动事务各10组。46、网络响应与故障注入均是样本，用户信任/公众更新未证明。37206288492取同一原生ZIP，核对hash/严格签名/117源码后单独重跑刷新各6组，平台函数为明确样本；详细报告与两架构截图实际取回，根实际查看部分刷新和自动更新后再次冷重开4图。arm64底栏版本/学校字段在视口外，保留以实际断言为证。没有重构候选包。
+
+7个45 payload与精确sidecar行核对；Skill/反馈各11文件和两架构内部逐文件一致（仅文本换行规范化），本机归档原字节不变。Windows最后363单测/21套初始362、实际44→45直接升级桌面关闭8组/开启且确认完成9组、默认NSIS6组、刷新6组/备份5组及真实3694旧快照显示通过。Linux独立systemd/Caddy本地CA HTTPS/Compose通过，无新通知。首次输入样本错误/隐藏截图超时/输出父目录缺失及隐藏报告漏传均保留。
+
+新增工作流触发的c3ea7d4完整Mac37206288478及历史39安装37206288482主动取消，已确认cancelled；不算源码失败或成功。最新交付证据以封存98ee881原生、45f1087 Windows/Linux及同ZIP刷新复验为准。运行源码118个Git文件与98ee881逐项核对（文本仅换行规范化；其他文件字节相同），实际Windows ASAR117应用文件匹配。
+
+45草稿 https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-cadf3db47d0848370131 的16附件全部取回逐字节/hash/digest核对；实际草稿仍被更新器拒绝，假定正式URL仅验证三平台架构选择。原44/39素材不改标45，完整goal与bug率目标未达成。

@@ -1,0 +1,43 @@
+{
+  "ok": true,
+  "version": "0.5.45",
+  "platform": "darwin",
+  "packaged": true,
+  "providerFunctionsFixture": true,
+  "realRecruitment": false,
+  "externalMessages": 0,
+  "checks": [
+    "Real refresh loop persists partial provider outcome, preserves failed companies old jobs and shows partial notice plus attempt without claiming full success",
+    "Real cold reopen with automatic refresh enabled preserves partial notice/provider names/old jobs and starts no new refresh after the recent failed attempt",
+    "Next real full refresh replaces obsolete partial notice and uses one timestamp for full success and attempt",
+    "All-provider failure preserves actual prior data/full-success timestamp and shows persistent failure with both attempt and full-success time",
+    "Successful zero-result query finishes done, clears nonfavorite old snapshot, labels no jobs and does not invent a failed/unattempted query",
+    "Persistent notice remains visible at three supported widths with no horizontal overflow or renderer errors"
+  ],
+  "at": "2026-10-04T13:38:45.179Z",
+  "pageErrors": [],
+  "architecture": "x64",
+  "workflowRun": 37206288492,
+  "testSourceCommit": "c3ea7d40cb2c9d6c1f1a1b6e8b22e2c789b0d61b",
+  "nativeWorkflowRun": 37205190489,
+  "sourceCommit": "98ee8812a45ab93e196897af8c6a1ef7ff0fada8",
+  "sealedAudit": {
+    "ok": true,
+    "version": "0.5.45",
+    "architecture": "x64",
+    "nativeRun": 37205190489,
+    "nativeSource": "98ee8812a45ab93e196897af8c6a1ef7ff0fada8",
+    "artifact": {
+      "name": "yijian-toudi-0.5.45-x64.zip",
+      "bytes": 130788299,
+      "sha256": "615eccfc2757bc0f91ab817e835af959f3dac0f15256ac7b3bf5672207f2c122"
+    },
+    "audit": {
+      "version": "0.5.45",
+      "ownFilesMatched": 117,
+      "asarEntries": 1142,
+      "noPrivateDataFiles": true,
+      "noKnownKeyPatterns": true
+    }
+  }
+}

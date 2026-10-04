@@ -1,0 +1,118 @@
+{
+  "version": "0.5.45",
+  "nextVersion": "0.5.46",
+  "architecture": "x64",
+  "ok": true,
+  "fixtureOnly": true,
+  "mode": "actual-native-IPC-helper-transaction-and-open",
+  "incomingVersionIsTestFixture": true,
+  "officialPublicUpdateProven": false,
+  "endUserGatekeeperVerified": false,
+  "realAccountsVerified": false,
+  "checks": [
+    "Actual native current ZIP installs into unique Applications path; distinct future fixture ZIP is built with full resource signature",
+    "Actual signed bundles and detached worker with explicit 16-second preflight delay reproduce v43 ready timeout; current default reaches ready, both abort without replacing or exiting current app",
+    "Historical v41 worker on actual native bundles leaves installed with no new process or recovery when successful launcher response is injected; test restores its preserved backup",
+    "Actual detached helper is ready before abort; current process and complete old bundle remain unchanged",
+    "Injected test-worker failure after real bundle replacement restores full original signed bundle; isolated user data stays intact",
+    "Actual replacement without a new process is detected by shortened test confirmation deadline and fully restores/reopens the original signed bundle",
+    "Actual live newer app with withheld confirmation remains running and serves the retained authenticated profile; helper defers rollback and preserves old bundle, then test stops/restores its isolated fixture",
+    "Actual installed main IPC selects future fixture, downloads genuine native ZIP and verifies exact SHA-256",
+    "Real IPC ready/commit/exit helper replaces bundle, open launches visible next app, and helper observes authenticated restart confirmation before completing",
+    "Subsequent visible cold reopen confirms new version and retained UI resume/API credential/attachment bytes/persistent sample Cookie"
+  ],
+  "pageErrors": [],
+  "helperDiagnostics": [
+    {
+      "template": "slow-native-preflight.sh",
+      "startedAt": "2026-10-04T13:27:49.056Z",
+      "spawnMs": 13602,
+      "attempt": "install-CfhGTW",
+      "returnMs": 36411,
+      "exitCode": 1,
+      "exitSignal": null,
+      "exitMs": 36884,
+      "workerOutput": ""
+    },
+    {
+      "template": "baseline-no-process.sh",
+      "startedAt": "2026-10-04T13:28:26.201Z",
+      "spawnMs": 10148,
+      "attempt": "install-pwPLMS",
+      "returnMs": 14563,
+      "exitCode": 0,
+      "exitSignal": null,
+      "exitMs": 20799,
+      "workerOutput": ""
+    },
+    {
+      "template": "production-worker",
+      "startedAt": "2026-10-04T13:28:49.741Z",
+      "spawnMs": 9500,
+      "attempt": "install-TnxfJK",
+      "returnMs": 17951,
+      "exitCode": 1,
+      "exitSignal": null,
+      "exitMs": 18355,
+      "workerOutput": ""
+    },
+    {
+      "template": "forced-failure.sh",
+      "startedAt": "2026-10-04T13:29:08.252Z",
+      "spawnMs": 13308,
+      "attempt": "install-XkMO0w",
+      "returnMs": 29632,
+      "exitCode": 1,
+      "exitSignal": null,
+      "exitMs": 45705,
+      "workerOutput": ""
+    },
+    {
+      "template": "new-no-process.sh",
+      "startedAt": "2026-10-04T13:29:56.073Z",
+      "spawnMs": 25105,
+      "attempt": "install-AB9ZR1",
+      "returnMs": 44358,
+      "exitCode": 1,
+      "exitSignal": null,
+      "exitMs": 73585,
+      "workerOutput": ""
+    },
+    {
+      "template": "live-unconfirmed.sh",
+      "startedAt": "2026-10-04T13:31:11.900Z",
+      "spawnMs": 25288,
+      "attempt": "install-Cnjv8m",
+      "returnMs": 42514,
+      "exitCode": 1,
+      "exitSignal": null,
+      "exitMs": 83445,
+      "workerOutput": ""
+    }
+  ],
+  "slowPreflight": {
+    "historicalLauncherVersion": "0.5.43",
+    "historicalSource": "23995dbc5c45876e4fbf692cceea7d6338f80a63",
+    "actualAppFrom": "0.5.45",
+    "actualAppTo": "0.5.46",
+    "injectedPreflightDelaySeconds": 16,
+    "historicalReadyTimeoutMs": 15000,
+    "currentReadyTimeoutMs": 60000,
+    "historicalTimedOutAndAborted": true,
+    "historicalCleanupTotalMs": 38012,
+    "slowCurrentPreparationMs": 36411,
+    "currentDefaultReachedReady": true,
+    "bothAbortLeaveCurrentRunning": true,
+    "originalIntelFailureRootCauseProven": false
+  },
+  "baselineGap": {
+    "helperVersion": "0.5.41",
+    "helperSource": "b206eb5f0aa0b56098b219f0f4b95879a893d356",
+    "actualAppFrom": "0.5.45",
+    "actualAppTo": "0.5.46",
+    "launcherResponseInjected": true,
+    "installedWithoutNewProcessOrRecovery": true
+  },
+  "workflowRun": 37205190489,
+  "sourceCommit": "98ee8812a45ab93e196897af8c6a1ef7ff0fada8"
+}
