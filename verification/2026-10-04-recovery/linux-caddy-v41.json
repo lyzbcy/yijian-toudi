@@ -1,0 +1,23 @@
+{
+  "version": "0.5.41",
+  "platform": "linux",
+  "ok": true,
+  "caddyRuntime": true,
+  "localTrustedTLS": true,
+  "realPublicTLS": false,
+  "realWecom": false,
+  "noNewNotificationSubmitted": true,
+  "checks": [
+    "Actual Caddy serves HTTPS health to the real archived relay; explicit local CA succeeds and default trust rejects the test CA",
+    "Real HTTPS proxy preserves diagnostic text, nosniff, noindex and no-store headers",
+    "Eleven HTTPS receipt reads with eleven forged forwarding IPs share one actual-peer limit: ten allowed, eleventh rejected"
+  ],
+  "defaultTrustError": "UNABLE_TO_GET_ISSUER_CERT_LOCALLY",
+  "forwardedClientHeadersOverridden": true,
+  "rateLimit": {
+    "allowed": 10,
+    "rejected": 1
+  },
+  "workflowRun": 37193200597,
+  "sourceCommit": "84728b68a5322675a6d79fb9c3763678f251f4b9"
+}

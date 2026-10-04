@@ -14,12 +14,22 @@ function installationRoot({executable,userData,platform,arch,packaged,home=os.ho
 }
 async function command(bin,args){return(await run(bin,args,{encoding:'utf8',timeout:60000,maxBuffer:8*1024*1024})).stdout.trim();}
 const plist=(root,key)=>command('/usr/bin/plutil',['-extract',key,'raw','-o','-',path.join(root,'Contents/Info.plist')]);
+function machoArchitectures(bytes){
+ if(bytes.length<8)throw Error('mac-executable-header-invalid');
+ const magic=bytes.readUInt32BE(0),fat=[0xcafebabe,0xcafebabf,0xbebafeca,0xbfbafeca].includes(magic),little=[0xbebafeca,0xbfbafeca].includes(magic);
+ const read=at=>little?bytes.readUInt32LE(at):bytes.readUInt32BE(at),types=[];
+ if(fat){const count=read(4),stride=[0xcafebabf,0xbfbafeca].includes(magic)?32:20;if(!count||count>32||8+count*stride>bytes.length)throw Error('mac-executable-header-invalid');for(let n=0;n<count;n++)types.push(read(8+n*stride));}
+ else if(bytes.readUInt32LE(0)===0xfeedfacf)types.push(bytes.readUInt32LE(4));
+ else if(magic===0xfeedfacf)types.push(bytes.readUInt32BE(4));
+ else throw Error('mac-executable-header-invalid');
+ return types.map(type=>type===0x0100000c?'arm64':type===0x01000007?'x64':'unsupported');
+}
 async function validateBundle(root,version,arch){
  const stat=await fs.lstat(root);if(!stat.isDirectory()||stat.isSymbolicLink()||await fs.realpath(root)!==path.resolve(root))throw Error('mac-installation-link-refused');
  if(await plist(root,'CFBundleIdentifier')!==bundleID||await plist(root,'CFBundleShortVersionString')!==version||await plist(root,'CFBundleExecutable')!=='一键投递')throw Error('mac-bundle-identity-mismatch');
  await command('/usr/bin/codesign',['--verify','--deep','--strict',root]);
- const architectures=(await command('/usr/bin/lipo',['-archs',path.join(root,'Contents/MacOS/一键投递')])).split(/\s+/);
- if(!architectures.includes(arch==='x64'?'x86_64':arch))throw Error('mac-bundle-architecture-mismatch');
+ const handle=await fs.open(path.join(root,'Contents/MacOS/一键投递'),'r');let architectures;try{const buffer=Buffer.alloc(4096),{bytesRead}=await handle.read(buffer,0,buffer.length,0);architectures=machoArchitectures(buffer.subarray(0,bytesRead));}finally{await handle.close();}
+ if(!architectures.includes(arch))throw Error('mac-bundle-architecture-mismatch');
  async function walk(dir){for(const entry of await fs.readdir(dir,{withFileTypes:true})){const file=path.join(dir,entry.name);if(entry.isSymbolicLink()){if(!inside(root,await fs.realpath(file)))throw Error('mac-bundle-external-link');}else if(entry.isDirectory())await walk(file);else if(!entry.isFile())throw Error('mac-bundle-special-file');}}
  await walk(root);return root;
 }
@@ -32,11 +42,6 @@ async function validateStagedUpdate(staged,{directory,current,arch}){
  if(!staged?.ok||!staged.staged||staged.installed||!staged.shaOk||!staged.shaChecked||compareVersions(staged.version,current)!==1||!validPath(staged.file)||!inside(directory,staged.file)||path.basename(staged.file)!==`yijian-toudi-${staged.version}-${arch}.zip`||!/^[a-f\d]{64}$/.test(staged.sha256)||!Number.isSafeInteger(staged.bytes)||staged.bytes<=0)throw Error('verified-mac-update-required');
  const stat=await fs.lstat(staged.file);if(!stat.isFile()||stat.isSymbolicLink()||stat.size!==staged.bytes||await shaFile(staged.file)!==staged.sha256)throw Error('staged-update-changed');return staged;
 }
-function validateZipEntries(text){
- const rows=text.trim().split('\n');
- if(!rows.length||rows.some(row=>/[\x00-\x1f\\]/.test(row)||!row.startsWith('一键投递.app/')||row.split('/').some(part=>part==='.'||part==='..')))throw Error('mac-archive-path-invalid');
- if(!rows.includes('一键投递.app/Contents/Info.plist')||!rows.includes('一键投递.app/Contents/MacOS/一键投递'))throw Error('mac-archive-incomplete');return rows;
-}
 async function launchUpdateHelper(payload,directory,{spawnFn=spawn,timeoutMs=15000,templatePath=path.join(__dirname,'install-update-mac.sh')}={}){
  const options={executable:payload.oldExe,userData:payload.userData,current:payload.oldVersion,platform:process.platform,arch:payload.arch,packaged:true};
  const record=await readInstallation(options);if(record.root!==payload.root||!Number.isInteger(payload.pid)||payload.pid<=0||compareVersions(payload.version,payload.oldVersion)!==1||!/^[a-f\d]{64}$/.test(payload.sha256)||!validPath(directory)||!inside(directory,payload.file)||await shaFile(payload.file)!==payload.sha256)throw Error('mac-helper-payload-invalid');
@@ -48,7 +53,6 @@ async function launchUpdateHelper(payload,directory,{spawnFn=spawn,timeoutMs=150
  try{
   await fs.mkdir(lock);ownsLock=true;await fs.writeFile(path.join(lock,'owner'),nonce,{flag:'wx'});
   await require('./macos-update-archive.cjs').validateArchive(payload.file);
-  validateZipEntries(await command('/usr/bin/zipinfo',['-1',payload.file]));
   const extract=path.join(attempt,'extracted');await fs.mkdir(extract);await command('/usr/bin/ditto',['-x','-k',payload.file,extract]);
   await validateBundle(path.join(extract,'一键投递.app'),payload.version,payload.arch);
   await command('/usr/bin/ditto',[path.join(extract,'一键投递.app'),stage]);await validateBundle(stage,payload.version,payload.arch);
@@ -80,4 +84,4 @@ async function confirmUpdateRestart(directory,{version,executable,visible,arch=p
  await validateBundle(result.root,version,arch);const next={...result,status:'restarted',runningVersion:version,restartConfirmedAt:new Date().toISOString()};
  await fs.writeFile(path.join(directory,'install-result.json'),JSON.stringify(next,null,2));return next;
 }
-module.exports={installationRoot,readInstallation,validateStagedUpdate,validateZipEntries,validateBundle,launchUpdateHelper,confirmUpdateRestart};
+module.exports={installationRoot,readInstallation,validateStagedUpdate,validateBundle,launchUpdateHelper,confirmUpdateRestart,machoArchitectures};

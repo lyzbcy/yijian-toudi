@@ -1,8 +1,13 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs/promises'),path=require('node:path'),os=require('node:os'),crypto=require('node:crypto');
-const {installationRoot,validateZipEntries,validateStagedUpdate}=require('../electron/macos-update.cjs');
+const {installationRoot,validateStagedUpdate,machoArchitectures}=require('../electron/macos-update.cjs');
 const {validateArchive}=require('../electron/macos-update-archive.cjs');
 const opts={executable:'/Applications/一键投递.app/Contents/MacOS/一键投递',userData:'/Users/sample/Library/Application Support/一键投递',home:'/Users/sample',platform:'darwin',arch:'arm64',packaged:true};
+test('Mac architecture validation reads native headers without requiring Xcode or lipo',()=>{
+ for(const [type,name]of [[0x0100000c,'arm64'],[0x01000007,'x64']]){const b=Buffer.alloc(32);b.writeUInt32LE(0xfeedfacf);b.writeUInt32LE(type,4);assert.deepEqual(machoArchitectures(b),[name]);}
+ const fat=Buffer.alloc(48);fat.writeUInt32BE(0xcafebabe);fat.writeUInt32BE(2,4);fat.writeUInt32BE(0x0100000c,8);fat.writeUInt32BE(0x01000007,28);assert.deepEqual(machoArchitectures(fat),['arm64','x64']);
+ assert.throws(()=>machoArchitectures(fat.subarray(0,20)),/mac-executable-header-invalid/);assert.throws(()=>machoArchitectures(Buffer.from('not-macho')),/mac-executable-header-invalid/);
+});
 test('Mac automatic installation is limited to real Applications locations outside user data',()=>{
  assert.equal(installationRoot(opts),'/Applications/一键投递.app');
  assert.equal(installationRoot({...opts,executable:'/Users/sample/Applications/一键投递.app/Contents/MacOS/一键投递'}),'/Users/sample/Applications/一键投递.app');
@@ -15,13 +20,9 @@ test('Mac archive validates symlink targets before extraction and refuses duplic
  try{await fs.writeFile(file,zip([...base,['一键投递.app/Contents/Frameworks/Current','../MacOS',0xa000]]));assert.equal((await validateArchive(file)).entries,3);
   for(const target of ['/tmp/outside','../../../outside','..\\outside']){await fs.writeFile(file,zip([...base,['一键投递.app/Contents/Frameworks/Current',target,0xa000]]));await assert.rejects(validateArchive(file),/mac-zip-external-link/);}
   await fs.writeFile(file,zip([...base,base[0]]));await assert.rejects(validateArchive(file),/mac-zip-entry-path-invalid/);
-  await fs.writeFile(file,zip([...base,['一键投递.app/../outside','bad']]));await assert.rejects(validateArchive(file),/mac-zip-entry-path-invalid/);
+  for(const name of ['../outside','一键投递.app/../outside','一键投递.app/Contents/./outside','Other.app/file','一键投递.app/Contents/evil\\file','/一键投递.app/Contents/file']){await fs.writeFile(file,zip([...base,[name,'bad']]));await assert.rejects(validateArchive(file),/mac-zip-entry-path-invalid/);}
+  await fs.writeFile(file,zip([base[0]]));await assert.rejects(validateArchive(file),/mac-zip-incomplete/);
  }finally{await fs.rm(directory,{recursive:true,force:true});}
-});
-test('Mac zip entries refuse traversal, extra roots, backslashes and missing executable',()=>{
- const good='一键投递.app/\n一键投递.app/Contents/Info.plist\n一键投递.app/Contents/MacOS/一键投递\n';assert.equal(validateZipEntries(good).length,3);
- for(const extra of ['../outside','一键投递.app/../outside','一键投递.app/Contents/./outside','Other.app/file','一键投递.app/Contents/evil\\file','/一键投递.app/Contents/file'])assert.throws(()=>validateZipEntries(good+extra),/mac-archive-path-invalid/);
- assert.throws(()=>validateZipEntries('一键投递.app/Contents/Info.plist'),/mac-archive-incomplete/);
 });
 test('Mac staging rehashes the exact newer architecture zip and rejects tampering or symlink',async()=>{
  const directory=await fs.mkdtemp(path.join(os.tmpdir(),'yjt-mac-stage-'));try{

@@ -1,0 +1,21 @@
+{
+  "version": "0.5.41",
+  "nextVersion": "0.5.42",
+  "architecture": "arm64",
+  "ok": false,
+  "fixtureOnly": true,
+  "mode": "actual-native-IPC-helper-transaction-and-open",
+  "incomingVersionIsTestFixture": true,
+  "officialPublicUpdateProven": false,
+  "endUserGatekeeperVerified": false,
+  "realAccountsVerified": false,
+  "checks": [
+    "Actual native current ZIP installs into unique Applications path; distinct future fixture ZIP is built with full resource signature"
+  ],
+  "pageErrors": [],
+  "error": "Error: mac-archive-path-invalid\n    at validateZipEntries (/Users/runner/work/yijian-toudi/yijian-toudi/electron/macos-update.cjs:37:149)\n    at Object.launchUpdateHelper (/Users/runner/work/yijian-toudi/yijian-toudi/electron/macos-update.cjs:51:3)\n    at async main (/Users/runner/work/yijian-toudi/yijian-toudi/test/macos-auto-update.cjs:35:16)",
+  "workflowRun": 37193200617,
+  "sourceCommit": "84728b68a5322675a6d79fb9c3763678f251f4b9",
+  "failureAnalysis": "Binary ZIP central-directory/link preflight had passed; redundant zipinfo textual-list path validation rejected genuine native archive. Exact zipinfo output not captured, so no specific locale cause claimed.",
+  "fix": "Use the already enforced byte-level central-directory/name/link validation and remove redundant text-list parser; keep strict bundle/architecture/signature checks."
+}
