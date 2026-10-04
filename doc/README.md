@@ -54,6 +54,7 @@
 | 查看支持哪些大厂 | [integrations/大厂清单.md](integrations/大厂清单.md) |
 | 速查招聘官网网址 | [招聘官网汇总.md](招聘官网汇总.md) |
 | 查简历字段缺口 | [specs/简历字段缺口-2026-07-26.md](specs/简历字段缺口-2026-07-26.md) |
+| 部署反馈服务与验证生产门槛 | [integrations/feedback-deployment.md](integrations/feedback-deployment.md) |
 | 维护 QQ 邮箱同步 | [integrations/qq-mail.md](integrations/qq-mail.md) |
 | 规划下一阶段 | [development/roadmap.md](development/roadmap.md) |
 | 发布 Skill 与云端定时触发 | [../skill/yijian-toudi/references/deploy.md](../skill/yijian-toudi/references/deploy.md) |

@@ -1,0 +1,17 @@
+{
+  "version": "0.5.39",
+  "platform": "linux",
+  "ok": false,
+  "caddyRuntime": false,
+  "localTrustedTLS": false,
+  "realPublicTLS": false,
+  "realWecom": false,
+  "noNewNotificationSubmitted": true,
+  "checks": [],
+  "error": "Invalid IP address: undefined",
+  "caddyLog": "",
+  "workflowRun": 37189749038,
+  "sourceCommit": "78125c9e987081bcede8c2316e90c81f195bc963",
+  "diagnosis": "Node24 client lookup callback ignored options.all and returned a scalar address; repaired test respects all-address array contract. Product relay and Caddy template unchanged.",
+  "repairCommit": "5b4035a9d79795253a3d03660d1db426fd858717"
+}

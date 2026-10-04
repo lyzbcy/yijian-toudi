@@ -48,3 +48,5 @@
 Windows、Mac arm64/Intel、Skill与反馈服务7个候选包及SHA-256汇总在 `delivery-manifest-v39.json`；草稿资产用于维护者跨设备备份，正式公众升级仍待验收。
 
 维护者草稿备份：[v0.5.39候选](https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-590242610188421cf24b)，须有仓库访问权限；18项附件全部取回核对一致。该草稿不属于正式公众下载或自动更新。
+
+部署补验：39实际Linux CI的systemd生命周期6组及Caddy本地CA HTTPS反代3组通过，见 `doc/integrations/feedback-deployment.md` 与 `verification/2026-10-04-recovery/feedback-deployment-supplement-v39.json`。仍未配置生产默认地址或证明公网/企微；封存配套包和草稿18资产未改。

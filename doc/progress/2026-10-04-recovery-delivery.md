@@ -93,3 +93,11 @@ Mac arm64真实运行37183937648成功：DMG挂载复制、ZIP解压与源码审
 7个软件/配套payload及精确SHA校验行已逐字节核对，双架构Mac采用最终e7bb45f运行37187658202的原生字节。汇总delivery-manifest-v39保留首次后台超时、观察协调超时、Intel测试隔离失败和38原生prompt产品失败；最新352单测与19套后台当时351单测分列。完整目标继续active。
 
 39云端草稿已创建并全部取回：https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-590242610188421cf24b，target e7bb45fa08e02fa1a2847d45728b1823b3a789ef。18项附件逐字节/hash与封存本机文件一致（7 payload+7 checksum+manifest+视频/checksum+候选说明）；两个配套归档再次独立验证11文件/version，Windows/Mac arm64/x64精确资产选择仅使用假定正式URL检查schema，实际草稿被更新器拒绝，不冒充正式升级。公网latest仍v0.3.1。完整目标未完成，原设备聊天/未同步状态未迁移。回读证据cloud-backup-v39.json。
+
+## 39真实systemd与HTTPS反代部署补验
+
+上一goal轮为有效进展：7包/视频18资产草稿全部回读核对、代码证据推送52f614e。本轮继续完整目标，补部署机制实际运行。37189553131首先通过真实归档服务main在systemd下的6组验收：DynamicUser非root、代码不可写、原模板隔离保护、过期日志清理及未知收据保留、systemctl重启、SIGKILL后Restart=on-failure恢复、44ms正常停止。没有新通知ID或真实Webhook。
+
+37189749038的Caddy首轮失败为测试客户端Node24 lookup忽略options.all，产生Invalid IP address: undefined，失败报告linux-caddy-v39-attempt1保留；本机Node24真实回环HTTP修复回调验证通过。最终37189853837（5b4035a）systemd再次6组通过，停止31ms；实际Caddy容器使用原反代/header模板及隔离本地CA运行HTTPS，显式信任CA访问健康成功、默认信任拒绝测试CA；真实诊断响应保留text/plain/nosniff/noindex/no-store；11次伪造X-Forwarded-For仍按真实来源共用10次限额，第11次429。Docker启动重启持久化也通过。
+
+封存39反馈归档11文件与当前源仍一致，SHA90d098f55f096cc79a7e95de0f9bde3fed44f8345ebf7ad70682249aa7581778，未改产品/配套归档或18项云资产。追加反馈部署证据feedback-deployment-supplement-v39；旧delivery-manifest/cloud-backup仍保留原封存时间的事实，不改写历史。实际本地TLS不等于生产公网证书、异机链接或企微送达；生产主机/域名/密钥及默认App服务地址、备份负载现场仍缺。当前goal继续active。
