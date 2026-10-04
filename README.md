@@ -6,7 +6,7 @@
 
 一个 macOS 优先、面向未来跨平台的本地求职工作台。它把招聘岗位、统一简历、招聘邮件和自动化任务放在同一个桌面应用里，并提供仅监听本机的 Agent API。
 
-> 源码当前为 v0.5.40 Windows 交付候选；最近公开版本为 [v0.5.1 Windows x64 测试预发布](https://github.com/lyzbcy/yijian-toudi/releases/tag/v0.5.1)，最近稳定 Release 为 `v0.3.1`。2026-10-04 匿名读取六家官网社招岗位均通过，共 4159 条；这不代表官网简历保存或投递已验收。macOS 安装仍需单独验收。
+> 源码当前为 v0.5.40 Windows 交付候选；最近公开版本为 [v0.5.1 Windows x64 测试预发布](https://github.com/lyzbcy/yijian-toudi/releases/tag/v0.5.1)，最近稳定 Release 为 `v0.3.1`。2026-10-04 匿名读取六家官网社招岗位均通过，共 4159 条；这不代表官网简历保存或投递已验收。Mac两架构完整ad-hoc资源签名和Applications CLI手动安装升级已验；用户信任、公证和自动安装更新仍待完成。
 
 2026-09-28 Windows 真实账号实测：v0.5.1 首批确认 25 笔，安全验证后续批确认 6 笔，本轮新增 31 笔；网站随后返回 403 并提示限时恢复，未达到 100 笔。v0.5.2 候选修复访问受限分类及空查询限速，待打包版复验。腾讯校招简历自动填写回读 11 项，但未验证官网保存。详见 [实测记录](doc/progress/2026-09-28-release-readiness.md)；每日 100 份计划未启用。
 
@@ -31,7 +31,7 @@ pnpm pack:mac
 pnpm dist:mac
 ```
 
-未签名内测包可与 `installer/一键安装.command` 一起分发。安装脚本会复制应用到 `/Applications`、移除 quarantine 属性并启动应用。
+当前Mac候选有完整ad-hoc资源签名，未完成Developer ID、公证或用户Gatekeeper验收。DMG/ZIP不包含旧 `installer/一键安装.command`；该脚本不应随当前候选分发。当前仅取得隔离Applications目录CLI手动安装/替换/数据保留证据，自动安装更新仍待实现。
 
 Windows x64 可在 Windows 开发机运行：
 

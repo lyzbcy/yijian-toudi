@@ -113,3 +113,11 @@ spctl assessments enabled下，隔离quarantine探针的arm64包实际被拒绝�
 Mac自动安装更新目前代码只允许Windows，仍未实现；资料手动替换结果不能抵消该功能缺口。下一候选升40，配置完整应用包临时签名并在构建/DMG/ZIP验证codesign --verify --deep --strict；临时签名仍不是Developer ID/公证，端用户信任和自动Mac更新门槛继续保留。39封存包不修改。
 
 当前源版本已升0.5.40，Skill同步；Mac identity="-"由实际electron-builder 26.15.3的MacTargetHelper支持，签完整bundle。构建验证将对全部容器严格核签，不能只看Mach-O link签名。40构建/完整测试正在执行；39的18项云资产及配套归档保持原字节。当前Mac自动更新尚缺，不将手动包替换宣传为已完成。
+
+## 40当前验收与独立封存
+
+40首次完整回归351/352通过，两个HTML39 fallback标签未同步已修正，失败background-v40-attempt1保留。Mac首轮37191279296因PR构建默认跳过ad-hoc签名而严格核签失败；启用CSC_FOR_PULL_REQUEST=true/CSC_IDENTITY_AUTO_DISCOVERY=false后，37191556375在4379745双架构通过完整签名/全部容器核验/ASAR111文件审计/可见UI/真实Applications首装和38→40手动升级9组。quarantine的spctl仍拒绝，DeveloperID/公证/用户信任和自动Mac更新未完成。
+
+40最终顺序19套后台、352单测通过；档案10轮30操作及冷重开通过143秒，较39约63秒变慢，旧超时根因仍未证明。Windows实际包三宽度和输入专项通过；默认NSIS6组、39→40真实IPC/helper/安装/可见重启及资料/凭据/附件/Cookie样本保留，两种桌面偏好各8组通过，清理和恢复成功。NotSigned、原生GUI向导仍待验。
+
+Linux37191556368实际Compose/systemd/Caddy本地CA HTTPS成功；systemd41ms停止，SIGKILL恢复/未知收据保留；HTTPS默认拒绝不信任CA，伪造XFF11次按真实来源10次允许第11次429。无新外部消息。未证明公网TLS/企微/异机日志链接。7个封存40包hash与精确checksum已核对，双配套11文件归档不覆盖；delivery-manifest-v40保留所有失败和未完门槛。39局部视频未重标40，完整目标仍active。

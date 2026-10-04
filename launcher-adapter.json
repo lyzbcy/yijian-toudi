@@ -17,11 +17,11 @@
     "type": "installer",
     "path": "release/yijian-toudi-setup-0.5.40.exe",
     "url": null,
-    "sha256": null
+    "sha256": "8cd31016b6eaf563eecb554446c6a67ab8bebf43e20dac086f864098953e5642"
   },
   "installation": {
     "displayName": "一键投递"
   },
-  "releaseStatus": "candidate-build-pending",
-  "notes": "40构建与校验尚待完成；39已封存候选和真实视频保留，不将其记作40完整交付。"
+  "releaseStatus": "candidate-unpublished",
+  "notes": "当前包已本机校验；公网URL须在真实上传并下载回读后填写。历史视频不计为当前完整演示。"
 }

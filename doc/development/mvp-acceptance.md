@@ -3,9 +3,11 @@
 负责人：项目维护 Agent
 最后更新：2026-10-04
 
-## 当前接续候选 v0.5.40（验证中）
+## 当前接续候选 v0.5.40（未正式发布）
 
-39真实Applications两架构各9组首装/冷重开/38→39手动替换/数据保留通过，但签名审查实际拒绝：arm64资源未封签、Intel未签名。40配置完整包临时签名和严格资源验证，当前构建/回归尚未完成。Developer ID/公证、用户信任及Mac自动安装更新继续为未完成门槛；所有原招聘账号/公开反馈分发/完整视频/缺陷率要求保留。
+完整19套后台与352单测通过；Windows默认NSIS首装6组、39→40真实IPC/helper/安装/可见重启及资料保留两种桌面偏好各8组通过。Mac arm64/Intel实际原生构建、完整ad-hoc资源签名四处严格核验、可见UI及输入专项通过；Applications CLI首装/38→40手动替换/冷重开/数据保留各9组通过，37191556375成功。quarantine下Gatekeeper实际拒绝，Developer ID/公证/用户信任及Mac自动更新仍缺。Linux37191556368真实systemd/Caddy本地CA/Compose运行通过，公网服务未验收。
+
+7个当前payload和SHA已核对，汇总delivery-manifest-v40.json；39视频仍是旧版局部样本，不能计为40完整视频。后台首轮HTML版本回退遗漏、Mac首轮PR跳过签名的失败分别保留background-v40-attempt1与mac-signature-v40-attempt1。19套/352单测通过不等于总体bug率。官网本人账号/授权申请、公网反馈/正式分发更新/云Skill、完整演示和质量证据全部保留，目标仍active。
 
 ## 封存 v0.5.39 实证
 

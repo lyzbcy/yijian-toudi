@@ -1,0 +1,36 @@
+{
+  "version": "0.5.40",
+  "platform": "linux",
+  "ok": true,
+  "method": "actual-archived-service-main-under-systemd",
+  "systemdRuntime": true,
+  "realPublicTLS": false,
+  "realWecom": false,
+  "noNewNotificationSubmitted": true,
+  "checks": [
+    "Actual archived service starts, reports exact version and runs as a non-root DynamicUser with original hardening",
+    "Real startup writes the protected data directory and removes expired log while preserving unknown receipt",
+    "Unknown receipt query/retry and ID conflict do not trigger a new notification",
+    "Actual systemctl restart creates a new process and preserves unknown receipt",
+    "Real SIGKILL is recovered by Restart=on-failure and persistent receipt survives",
+    "Actual systemctl stop exits successfully inside the configured stop budget"
+  ],
+  "gracefulStopMs": 41,
+  "propertiesBeforeStop": {
+    "Restart": "on-failure",
+    "MainPID": "2466",
+    "Result": "success",
+    "DynamicUser": "yes",
+    "PrivateTmp": "yes",
+    "ProtectHome": "yes",
+    "ProtectSystem": "strict",
+    "NoNewPrivileges": "yes",
+    "StateDirectory": "yjt-feedback-ci-16b338569c88",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "serviceUid": 61544,
+  "archivedCodeWasNotWritable": true,
+  "workflowRun": 37191556368,
+  "sourceCommit": "4379745f2c020818ed78e6068f03ccf72ddc9e18"
+}
