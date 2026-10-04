@@ -1,0 +1,94 @@
+{
+  "version": "0.5.44",
+  "ok": true,
+  "sourceCommit": "a89b7bb0de18d0674b7fa81a9b459fccf43993b1",
+  "workflowRun": 37198787611,
+  "oldReadyDeadlineMs": 15000,
+  "newReadyDeadlineMs": 60000,
+  "summaries": [
+    {
+      "architecture": "arm64",
+      "readyWaitMs": [
+        {
+          "template": "baseline-no-process.sh",
+          "milliseconds": 2416
+        },
+        {
+          "template": "production-worker",
+          "milliseconds": 2020
+        },
+        {
+          "template": "forced-failure.sh",
+          "milliseconds": 2258
+        },
+        {
+          "template": "new-no-process.sh",
+          "milliseconds": 2116
+        },
+        {
+          "template": "live-unconfirmed.sh",
+          "milliseconds": 1429
+        }
+      ],
+      "maxReadyWaitMs": 2416,
+      "explicitSlowPreflight": {
+        "historicalLauncherVersion": "0.5.43",
+        "historicalSource": "23995dbc5c45876e4fbf692cceea7d6338f80a63",
+        "actualAppFrom": "0.5.44",
+        "actualAppTo": "0.5.45",
+        "injectedPreflightDelaySeconds": 16,
+        "historicalReadyTimeoutMs": 15000,
+        "currentReadyTimeoutMs": 60000,
+        "historicalTimedOutAndAborted": true,
+        "historicalCleanupTotalMs": 22180,
+        "slowCurrentPreparationMs": 20684,
+        "currentDefaultReachedReady": true,
+        "bothAbortLeaveCurrentRunning": true,
+        "originalIntelFailureRootCauseProven": false
+      }
+    },
+    {
+      "architecture": "x64",
+      "readyWaitMs": [
+        {
+          "template": "baseline-no-process.sh",
+          "milliseconds": 6479
+        },
+        {
+          "template": "production-worker",
+          "milliseconds": 5827
+        },
+        {
+          "template": "forced-failure.sh",
+          "milliseconds": 21037
+        },
+        {
+          "template": "new-no-process.sh",
+          "milliseconds": 26993
+        },
+        {
+          "template": "live-unconfirmed.sh",
+          "milliseconds": 45010
+        }
+      ],
+      "maxReadyWaitMs": 45010,
+      "explicitSlowPreflight": {
+        "historicalLauncherVersion": "0.5.43",
+        "historicalSource": "23995dbc5c45876e4fbf692cceea7d6338f80a63",
+        "actualAppFrom": "0.5.44",
+        "actualAppTo": "0.5.45",
+        "injectedPreflightDelaySeconds": 16,
+        "historicalReadyTimeoutMs": 15000,
+        "currentReadyTimeoutMs": 60000,
+        "historicalTimedOutAndAborted": true,
+        "historicalCleanupTotalMs": 46378,
+        "slowCurrentPreparationMs": 45881,
+        "currentDefaultReachedReady": true,
+        "bothAbortLeaveCurrentRunning": true,
+        "originalIntelFailureRootCauseProven": false
+      }
+    }
+  ],
+  "scope": "Ready timing derived from actual spawn-to-return diagnostics; non-slow templates contain other explicitly described faults after readiness, no injected 16-second preflight delay",
+  "originalIntel43FailureRootCauseProven": false
+}
