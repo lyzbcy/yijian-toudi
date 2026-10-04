@@ -70,7 +70,7 @@
         <strong id="sidebarMotto">今天也在认真投递</strong>
         <span>数据只保存在你的电脑里</span>
       </div>
-      <div class="version">本地优先 · v<span id="appVersion">0.5.44</span></div>
+      <div class="version">本地优先 · v<span id="appVersion">0.5.45</span></div>
     </aside>
 
     <main class="main">
@@ -117,6 +117,10 @@
           </div>
         </div>
 
+        <section class="content-card job-refresh-notice" id="jobsRefreshResult" hidden aria-live="polite">
+          <strong id="jobsRefreshResultTitle"></strong>
+          <p id="jobsRefreshResultDetail"></p>
+        </section>
         <div class="onboarding-tasks content-card" id="onboardingTasks"></div>
 
         <div class="stats-row">
@@ -507,7 +511,7 @@ node scripts/daily-boss.cjs
             <p>选择你的求职方向，软件会优先抓取对应类型岗位；再设置抓取时间范围。</p>
             <label>求职方向<select id="recruitType"><option value="social">社招</option><option value="campus">校招</option><option value="summer-intern">暑期实习</option><option value="daily-intern">日常实习</option><option value="all">全部都要</option></select></label>
             <label>抓取范围（天）<input id="jobsDaysBack" type="number" min="1" max="365" placeholder="30"></label>
-            <label class="switch-row"><span><strong>每天自动刷新岗位</strong><small>打开应用时若距上次刷新超过 24 小时则自动抓取</small></span><input id="autoRefreshJobs" type="checkbox"><i></i></label>
+            <label class="switch-row"><span><strong>每天自动刷新岗位</strong><small>距上次尝试超过 24 小时才自动抓取；失败后可手动重试</small></span><input id="autoRefreshJobs" type="checkbox"><i></i></label>
             <p class="setting-hint" id="jobsLastRefresh">还没有抓取过岗位。</p>
           </section>
           <section class="content-card settings-card">
@@ -564,7 +568,7 @@ node scripts/daily-boss.cjs
           </section>
           <section class="content-card settings-card about-card">
             <img src="./assets/stickers/mascot.png" alt="">
-            <div><h3>一键投递 v<span id="aboutAppVersion">0.5.44</span></h3><p>一个弱小但有梦想的开发者，想把重复投简历这件事做得轻松一点。</p><a href="https://lyzbcy.github.io/" data-external>关于捞鱼 ↗</a></div>
+            <div><h3>一键投递 v<span id="aboutAppVersion">0.5.45</span></h3><p>一个弱小但有梦想的开发者，想把重复投简历这件事做得轻松一点。</p><a href="https://lyzbcy.github.io/" data-external>关于捞鱼 ↗</a></div>
           </section>
         </div>
       </section>
@@ -629,6 +633,7 @@ node scripts/daily-boss.cjs
   <script src="./resume-editor-values.js"></script>
   <script src="./text-entry.js"></script>
   <script src="./update-install-status.js"></script>
+  <script src="./job-refresh-status.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>

@@ -29,7 +29,7 @@ const {
 const { createRedactedSnapshot } = require('./redact.cjs');
 const { manualApplicationOutcome } = require('./workspace-outcome.cjs');
 const { resolveResumeFilePath } = require('./resume-files.cjs');
-const { mergeJobSnapshot, singleFlight } = require('./job-refresh.cjs');
+const { mergeJobSnapshot, singleFlight, refreshResult, shouldAutoRefresh } = require('./job-refresh.cjs');
 const wecomNotify = require('./wecom-notify.cjs');
 const { KimiBridge } = require('./kimi-bridge.cjs');
 const { BossBatchController } = require('./boss-control.cjs');
@@ -589,14 +589,12 @@ const JOB_ADAPTERS = registry.listJobAdapters().map((adapter) => ({
   fetch: (opts) => adapter.listJobs(opts)
 }));
 
-// 启动时检查是否需要自动刷新岗位（settings.jobs.autoRefresh + 距上次>24h）
+// Count partial/failed attempts too: reopening must not repeatedly retry sites.
 function maybeAutoRefreshJobs() {
   if (backgroundTest || localPreview) return;
   try {
     const settings = store.get().settings;
-    if (!settings.jobs?.autoRefresh) return;
-    const last = settings.jobs.lastRefreshAt ? new Date(settings.jobs.lastRefreshAt).getTime() : 0;
-    if (Date.now() - last < 24 * 3600 * 1000) return;
+    if (!shouldAutoRefresh(settings.jobs)) return;
     logger.info('自动刷新岗位（距上次超过 24 小时）');
     refreshJobs().catch((e) => logger.warn('自动刷新岗位失败', { error: e.message }));
   } catch (e) {
@@ -658,9 +656,11 @@ const refreshJobs = singleFlight(async function refreshJobsOnce() {
       }
     }
 
-    const next = store.update((state) => {
-      state.settings.jobs = { ...state.settings.jobs, lastRefreshAttemptAt: new Date().toISOString(),
-        ...(results.every((result) => !result.error) ? { lastRefreshAt: new Date().toISOString() } : {}) };
+    const outcome = refreshResult(results, { daysBack, recruitType });
+    store.update((state) => {
+      state.settings.jobs = { ...state.settings.jobs, lastRefreshAttemptAt: outcome.at,
+        lastRefreshResult: outcome,
+        ...(outcome.status === 'done' ? { lastRefreshAt: outcome.at } : {}) };
       return state;
     });
     broadcast();
@@ -668,10 +668,14 @@ const refreshJobs = singleFlight(async function refreshJobsOnce() {
     const totalAdded = results.reduce((sum, r) => sum + r.count, 0);
     const summary = results.map((r) => `${r.name || r.companyId} ${r.count} 个${r.error ? `（失败：${r.error}）` : ''}`).join('，');
 
-    if (totalAdded === 0) {
+    if (totalAdded === 0 && outcome.status !== 'done') {
       logger.warn('刷新岗位完成但无数据', { results: results.map((r) => ({ c: r.companyId, err: r.error })) });
       finishTask(id, 'error', '各家适配器均未能抓取到岗位，请稍后重试。');
-      return { mode: 'live', added: 0, message: '未能抓取到岗位，请稍后重试' };
+      return { mode: 'live', added: 0, status: outcome.status, message: '本次没有更新岗位，部分或全部公司刷新失败，已保留原有数据；请稍后重试' };
+    }
+    if (totalAdded === 0) {
+      finishTask(id, 'done', `已完成各家${recruitLabel}岗位查询（近 ${daysBack} 天），当前筛选条件下没有岗位。`);
+      return { mode: 'live', added: 0, status: 'done', message: '当前筛选条件下没有岗位，查询已完成' };
     }
 
     logger.info('刷新岗位全部完成', { total: totalAdded, breakdown: results.map((r) => ({ company: r.name, count: r.count })) });

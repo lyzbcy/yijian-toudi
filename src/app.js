@@ -198,7 +198,7 @@ async function updateBossAccounts() {
     $('#statCompanies').textContent = state.companies.length;
     $('#statFavorites').textContent = favorites;
     $('#statTasks').textContent = state.tasks.length;
-    $('#dataModeLabel').textContent = state.jobs.length > 0 ? '真实数据' : '未抓取';
+    $('#dataModeLabel').textContent = state.jobs.length > 0 ? '真实数据' : state.settings.jobs?.lastRefreshResult?.status === 'done' ? '暂无岗位' : '未抓取';
     $('#resumeCompletion').textContent = `${state.resume.completion || 0}%`;
     $('#resumeRing').style.setProperty('--percent', `${state.resume.completion || 0}%`);
     $('#emailStatus').textContent = state.settings.email.connected ? '已连接' : '未连接';
@@ -217,8 +217,7 @@ async function updateBossAccounts() {
     updateKimiBridgeStatus();
     updateBossBatchStatus();
     updateBossAccounts();
-    const lastRefresh = state.settings.jobs?.lastRefreshAt;
-    $('#jobsLastRefresh').textContent = lastRefresh ? `上次抓取：${new Date(lastRefresh).toLocaleString('zh-CN')}` : '还没有抓取过岗位。';
+    window.JobRefreshStatus.render(state, document);
 
     renderCompanies();
     renderTagFilters();
@@ -762,7 +761,7 @@ async function updateBossAccounts() {
     const box = $('#onboardingTasks');
     if (!box) return;
     const steps = [
-      { key: 'jobs', label: '抓取岗位', hint: '点上方「刷新全部岗位」横向对比大厂', done: state.jobs.length > 0 },
+      { key: 'jobs', label: '抓取岗位', hint: '点上方「刷新全部岗位」横向对比大厂', done: state.jobs.length > 0 || state.settings.jobs?.lastRefreshResult?.status === 'done' },
       { key: 'resume', label: '填写简历', hint: '在「我的简历」维护一份完整信息', done: (state.resume.completion || 0) >= 30 },
       { key: 'email', label: '连接邮箱', hint: '在「公司与邮箱」连 QQ 邮箱收面试通知', done: state.settings.email?.connected },
       { key: 'agent', label: '接入 Agent（可选）', hint: '让 AI Agent 帮你筛岗位、更新简历', done: state.settings.apiEnabled }

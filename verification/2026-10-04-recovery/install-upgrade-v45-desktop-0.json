@@ -1,0 +1,24 @@
+{
+  "version": "0.5.45",
+  "oldVersion": "0.5.44",
+  "desktop": false,
+  "mode": "real-nsis-controlled-release-response",
+  "checks": [
+    "Real NSIS installed baseline into chosen Chinese path with desktop option disabled",
+    "Installed baseline opened visible UI, completed onboarding and saved resume through real UI",
+    "Actual installed IPC updater selected candidate, downloaded real installer and checked SHA-256",
+    "Ready/commit helper performed real NSIS cross-version upgrade and new visible app confirmed restart",
+    "Restarted actual candidate served retained resume over authenticated API; token and attachment preserved",
+    "Candidate reopened with retained resume DOM and persistent cookie fixture",
+    "Real uninstaller removed registration and retained isolated user profile",
+    "Original shortcuts and updater cache restored byte-for-byte"
+  ],
+  "ok": true,
+  "restartCase": null,
+  "helperScriptSourceOverriddenForTest": false,
+  "nativeWizardVerified": false,
+  "baselineInstallerSHA256": "1a6391fa726f9ffe632026be51b765fd8a019c4e5f859ef7083cbd245abeda24",
+  "candidateInstallerSHA256": "7f6810997ef66168c4eb7772511d35c8bfdf5d052475aa600125c890efbb428f",
+  "releaseNetwork": "controlled-fixture",
+  "bundledSealed44HelperUsed": true
+}

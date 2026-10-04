@@ -1,0 +1,63 @@
+{
+  "version": "0.5.45",
+  "ok": true,
+  "sourceStatus": "verified-working-tree-before-commit",
+  "sourceBase": "79c79426c4fcad6fd7ff26c99bb6429f74880147",
+  "runtimeFingerprints": [
+    {
+      "file": "package.json",
+      "sha256": "9a711b9a7f2c160d2b4c9adba8938e82fc04c0ab969f1d0e41ab6580eb44055a"
+    },
+    {
+      "file": "electron/main.cjs",
+      "sha256": "436a54d66319de75d26dfd957ecd3d42d0c356884e2e137ee07bbad3019e6b3c"
+    },
+    {
+      "file": "electron/job-refresh.cjs",
+      "sha256": "83f0fc5984398c69cfe132bada48c0bdda1b3d72d35713f1df52a30f49cb6838"
+    },
+    {
+      "file": "src/app.js",
+      "sha256": "3479f9c6b0bd9f4fd8a878da1919d688b5b09edc79167a8b7cd0c784dd94c388"
+    },
+    {
+      "file": "src/index.html",
+      "sha256": "d5f24eb79d373c57e1775b96cab6ed1a50cbd79192c2f29173c7c05d40afb810"
+    },
+    {
+      "file": "src/styles.css",
+      "sha256": "65bfa880fa72f19eb61af3725c5a932f2fb0c5101af3eab5fc4ea6ca45d42fb0"
+    },
+    {
+      "file": "src/job-refresh-status.js",
+      "sha256": "b0683939f0d09c9ed7331f824e72acbae48063e020af03cd2795e730951bd65f"
+    }
+  ],
+  "asar": {
+    "ownFilesMatched": 117,
+    "entries": 1142,
+    "noPrivateDataFiles": true,
+    "noKnownKeyPatterns": true
+  },
+  "signature": "NotSigned",
+  "installer": {
+    "name": "yijian-toudi-setup-0.5.45.exe",
+    "bytes": 104236085,
+    "sha256": "7f6810997ef66168c4eb7772511d35c8bfdf5d052475aa600125c890efbb428f"
+  },
+  "helperSources": [
+    {
+      "file": "electron/install-update.ps1",
+      "sha256": "5373d913b8d311488e3c7d73521ac7157c2ea9e210ff2b5ab4e11b5f159c0e5f"
+    },
+    {
+      "file": "electron/windows-update.cjs",
+      "sha256": "d10ddee6d7ccfe29a97ec759373001d2df53f3792088c11e4d2eff812c2b4894"
+    },
+    {
+      "file": "electron/update-install-result.cjs",
+      "sha256": "fd4da526c94760498a2485a366529de487a0cb0236e0386b60a3c79f6f225640"
+    }
+  ],
+  "faultCasesRetainVersion": "0.5.43"
+}

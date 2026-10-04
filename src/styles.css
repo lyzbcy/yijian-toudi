@@ -84,6 +84,10 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .page.active { display: block; }
 @keyframes pageIn { from { opacity: 0; transform: translateY(5px); } }
 .content-card { background: var(--paper); border: 1px solid rgba(226, 227, 238, .9); border-radius: var(--radius); box-shadow: var(--shadow); }
+.job-refresh-notice { padding: 20px 24px; margin: 20px 0; overflow-wrap: anywhere; }
+.job-refresh-notice[hidden] { display: none; }
+.job-refresh-notice p { margin: 8px 0 0; color: var(--ink); line-height: 1.6; }
+.job-refresh-notice[data-status="partial"], .job-refresh-notice[data-status="failed"] { border-color: #e9c997; background: #fffaf0; }
 .hero-card {
   min-height: 280px; padding: 44px 48px; border-radius: 28px; overflow: hidden; position: relative;
   background: linear-gradient(125deg, #ece8ff 0%, #f4efff 45%, #e3f4ef 100%); display: grid; grid-template-columns: 1.3fr .7fr;

@@ -60,6 +60,11 @@ jobs:
         run: |
           node test/ui-delivery-layout.cjs
           node test/ui-resume-profiles.cjs
+      - name: Verify persisted partial refresh with actual packaged main and UI
+        run: |
+          APP=$(find release -maxdepth 2 -type d -name '*.app' -print -quit)
+          test -n "$APP"
+          YJT_PACKAGED_EXECUTABLE="$GITHUB_WORKSPACE/$APP/Contents/MacOS/一键投递" node test/ui-job-refresh-status.cjs
       - name: Obtain actual v38 baseline source for Applications upgrade test
         uses: actions/checkout@v6
         with:
@@ -104,6 +109,9 @@ jobs:
             test-output/mac-install-*.png
             test-output/mac-auto-update.json
             test-output/mac-auto-update-*.png
+            .local-data/job-refresh-ui-*/report.json
+            .local-data/job-refresh-ui-*/partial-reopened.png
+            .local-data/job-refresh-ui-*/failure.png
             release/*.dmg
             release/*.zip
             release/*.sha256
