@@ -165,3 +165,5 @@ Mac arm64/Intel完整ad-hoc资源签名、四处容器、116源文件、可见�
 20套Windows后台、357单测通过，包含实际Windows PowerShell原子覆盖；Mac单测跳过该Windows专项，未将其记为Mac通过。Linux43独立归档真实systemd/Caddy本地CA HTTPS/Compose通过，无新通知。7包+7 SHA+manifest+说明，共16草稿附件。
 
 原账号保存重开/授权申请回执、Boss限制复核、公网反馈/真实企微/异机链接/默认地址、正式下载更新/云Skill、原生用户信任/向导、完整当前视频和代表性质量证据仍缺。旧39局部视频不改标当前版本；原电脑聊天/未同步改动/登录态未恢复。证据见delivery-manifest-v43.json及草稿PR #1。
+
+42草稿已全部取回核对：https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-ffa507b29002ee6ac32e，target fd82e1f2702e251b61805e9430c9bdc1fbf9eaad；16附件逐字节/hash一致，配套归档各11文件。假定正式URL仅检查精确架构选择，实际草稿被更新器拒绝；公众稳定版仍v0.3.1。原设备聊天未恢复，完整goal仍active。

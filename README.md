@@ -4,6 +4,8 @@
 
 当前源码为 **v0.5.43 接续开发候选**：从共享文件与完整性校验通过的 v0.5.33 ASAR 恢复运行代码，并在独立工作树继续开发。原设备的聊天、登录会话和未同步修改尚未恢复。修复与当前验收见 [接续交付进度](doc/progress/2026-10-04-recovery-delivery.md)，全部交付要求见 [MVP 验收矩阵](doc/development/mvp-acceptance.md)。当前候选未正式发布，整体 bug 率低于 1% 尚无充分证据。
 
+43新增真实启动确认期限与无进程恢复、运行中保护，并修复Windows PowerShell原子结果覆盖的空路径错误。Windows20套/357单测、真实默认NSIS与41→43安装恢复/升级、Mac两架构9组原生更新样本及Linux独立部署通过；首次失败和未证明原因保留。[43维护者草稿备份](https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-ffa507b29002ee6ac32e)的16附件已全部下载逐字节/hash核对，需仓库访问权限。草稿不属于公众正式分发，历史39局部视频不计43完整演示。
+
 一个 macOS 优先、面向未来跨平台的本地求职工作台。它把招聘岗位、统一简历、招聘邮件和自动化任务放在同一个桌面应用里，并提供仅监听本机的 Agent API。
 
 > 源码当前为 v0.5.43 Windows 与 Mac 接续交付候选；最近公开版本为 [v0.5.1 Windows x64 测试预发布](https://github.com/lyzbcy/yijian-toudi/releases/tag/v0.5.1)，最近稳定 Release 为 `v0.3.1`。2026-10-04 匿名读取六家官网社招岗位均通过，共 4159 条；这不代表官网简历保存或投递已验收。Mac两架构完整ad-hoc资源签名、Applications CLI手动升级和原生fixture自动更新已验；用户信任、公证及正式公众升级仍待完成。
