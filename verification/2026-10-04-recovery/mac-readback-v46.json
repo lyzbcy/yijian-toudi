@@ -1,0 +1,83 @@
+{
+  "ok": true,
+  "version": "0.5.46",
+  "nativeRun": 37213932538,
+  "sourceCommit": "60f52cd4fa2ed704237829501c8e8c940c6c55c5",
+  "sourceExtractedFromExactCommit": true,
+  "comparisonTextNormalization": "CRLF to LF only in extracted Git text files (including SVG); binary files exact",
+  "macArtifactsReadBack": true,
+  "reports": [
+    {
+      "architecture": "arm64",
+      "artifacts": [
+        {
+          "name": "yijian-toudi-0.5.46-arm64.dmg",
+          "bytes": 126469423,
+          "sha256": "8531567bd54f4054fc9327e74cb25a28f7016b062201166cd1361e55b6805f7a"
+        },
+        {
+          "name": "yijian-toudi-0.5.46-arm64.zip",
+          "bytes": 125300046,
+          "sha256": "d746a6ef90a50d1437dd0414f71f146d49c01bff89fb60684e3c51659c694bd7"
+        }
+      ],
+      "audit": {
+        "version": "0.5.46",
+        "ownFilesMatched": 117,
+        "asarEntries": 1142,
+        "noPrivateDataFiles": true,
+        "noKnownKeyPatterns": true
+      },
+      "manualChecks": 9,
+      "automaticChecks": 10,
+      "adHocSignatureVerified": true,
+      "developerID": false,
+      "notarized": false,
+      "officialPublicUpdateProven": false
+    },
+    {
+      "architecture": "x64",
+      "artifacts": [
+        {
+          "name": "yijian-toudi-0.5.46-x64.dmg",
+          "bytes": 131190783,
+          "sha256": "b1aa2c394ed410f16d9b90b494ccb2291fbbd6165b8bf5a683e0046706d6b0f5"
+        },
+        {
+          "name": "yijian-toudi-0.5.46-x64.zip",
+          "bytes": 130061709,
+          "sha256": "bcbe5add810e7854b3d3b936518ba4baf2d85c07b864b4c9c45c5fd28682cacc"
+        }
+      ],
+      "audit": {
+        "version": "0.5.46",
+        "ownFilesMatched": 117,
+        "asarEntries": 1142,
+        "noPrivateDataFiles": true,
+        "noKnownKeyPatterns": true
+      },
+      "manualChecks": 9,
+      "automaticChecks": 10,
+      "adHocSignatureVerified": true,
+      "developerID": false,
+      "notarized": false,
+      "officialPublicUpdateProven": false
+    }
+  ],
+  "refreshDetailedArtifactMissing": true,
+  "localExtractionAttempt": {
+    "tool": "Windows tar",
+    "ok": false,
+    "reason": "Chinese archive member name did not match; selected exact ZIP entry through .NET instead"
+  },
+  "firstComparisonAttempts": {
+    "ok": false,
+    "reason": "byte audit of CRLF Git export differs from LF native checkout; first normalization omitted textual SVG, final comparison normalizes text line endings only"
+  },
+  "sealedRefreshReplayFailure": {
+    "run": 37213932532,
+    "reason": "hardcoded v45 artifact paired with v46 source",
+    "productRuntimeFailure": false
+  },
+  "historical39InstallationNotCurrentAcceptance": true
+}

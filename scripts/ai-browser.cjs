@@ -57,6 +57,9 @@ function isAppPage(page) {
   try { const u=new URL(page.url()); return u.protocol==='file:' && fileURLToPath(u).toLowerCase()===path.join(ROOT,'src','index.html').toLowerCase() && u.searchParams.get('localPreview')==='1'; }
   catch { return false; }
 }
+function requiresConsoleSafeChannel(target) {
+  try { return new URL(target.url).hostname==='talent.baidu.com'; } catch { return false; }
+}
 async function readFrameUrl(frame) {
   if(frame.url())return frame.url();
   // Electron may attach an OOPIF with an empty cached URL. Read its own realm,
@@ -66,12 +69,13 @@ async function readFrameUrl(frame) {
   catch{return '';}finally{clearTimeout(timer);}
 }
 async function frameTree(frame, indices=[]) {
-  const children=await Promise.all(frame.childFrames().map((f,i)=>frameTree(f,[...indices,i])));
+  const owners=await frame.locator('iframe,frame').elementHandles();const children=[];
+  for(let i=0;i<owners.length;i++){const child=await owners[i].contentFrame();children.push(child?await frameTree(child,[...indices,i]):[{framePath:[...indices,i],name:'',url:''}]);await owners[i].dispose();}
   return [{framePath:indices,name:frame.name(),url:sanitizeUrl(await readFrameUrl(frame))},...children.flat()];
 }
-function resolveFrame(page, indices) {
+async function resolveFrame(page, indices) {
   let frame=page.mainFrame();
-  for(const index of indices){frame=frame.childFrames()[index];if(!frame)throw Error('frame_not_found_refresh_list');}
+  for(let depth=0;depth<indices.length;depth++){const index=indices[depth],owner=await frame.locator('iframe,frame').nth(index).elementHandle({timeout:1000});frame=owner?await owner.contentFrame():null;await owner?.dispose();if(!frame)throw Error('frame_not_found_refresh_list:depth_'+depth);}
   return frame;
 }
 async function targets(browser) {
@@ -127,6 +131,17 @@ async function run(input) {
   const version=await fetchLocalJson(connection.port,'/json/version');
   const socket=new URL(version.webSocketDebuggerUrl);
   if(!['127.0.0.1','localhost'].includes(socket.hostname)||Number(socket.port)!==connection.port)throw Error('non_local_debug_socket');
+  // Inventory/app operations do not need a browser-wide Playwright attachment.
+  // That attachment enables console collection on unrelated recruiting pages.
+  if(r.action==='list'||r.action==='app'||(r.framePath.length>=2&&['snapshot','click','fill'].includes(r.action))||(r.action==='snapshot'&&!r.framePath.length&&(!connection.targetId||r.targetId===connection.targetId))){
+    const list=await fetchLocalJson(connection.port,'/json/list');
+    const selected=list.find(t=>t.id===r.targetId);
+    if(r.framePath.length>=2||r.action!=='snapshot'||selected&&isAppPage({url:()=>selected.url}))return require('./ai-main-channel.cjs').runSelected(r,connection,{fetchLocalJson,isAppPage,sanitizeUrl,sanitizeText,snapshot,act});
+  }
+  // A Playwright browser attachment enables Runtime on every page, including
+  // unrelated workspaces. Refuse that route while Baidu's guarded page is open.
+  const openTargets=await fetchLocalJson(connection.port,'/json/list');
+  if(openTargets.some(requiresConsoleSafeChannel))throw Error('baidu_workspace_requires_console_safe_channel_use_app_status_or_close_workspace_before_browser_debugging');
   const browser=await chromium.connectOverCDP(socket.href,{timeout:10000});
   const events=[];let actionSession;
   try {
@@ -135,7 +150,7 @@ async function run(input) {
     if(!r.port&&connection.targetId&&items.find(x=>x.kind==='app').targetId!==connection.targetId)throw Error('stale_connection_manifest_restart_preview');
     if(r.action==='list')return {ok:true,targets:publicTargets(items)};
     const match=items.filter(x=>x.targetId===r.targetId);if(match.length!==1)throw Error('target_not_found_refresh_list');
-    const page=match[0].page,frame=resolveFrame(page,r.framePath);
+    const page=match[0].page,frame=await resolveFrame(page,r.framePath);
     if(r.expectUrl&&sanitizeUrl(await readFrameUrl(frame))!==r.expectUrl)throw Error('frame_url_changed_refresh_list');
     page.on('framenavigated',f=>{if(events.length<30)events.push({kind:'navigation',url:sanitizeUrl(f.url()),main:f===page.mainFrame()});});
     actionSession=await page.context().newCDPSession(page);await actionSession.send('Page.enable');
@@ -171,4 +186,4 @@ if(require.main===module) {
     console.log(JSON.stringify(await run(request)));
   })().catch(error=>{console.error(JSON.stringify({ok:false,error:cleanError(error),...error.observation}));process.exitCode=1;});
 }
-module.exports={run,normalizeRequest,sanitizeUrl,resolveFrame,fetchLocalJson,isAppPage,requiresSubmission};
+module.exports={run,normalizeRequest,sanitizeUrl,resolveFrame,fetchLocalJson,isAppPage,requiresSubmission,requiresConsoleSafeChannel};

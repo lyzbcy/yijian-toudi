@@ -1,10 +1,6 @@
 name: Verify sealed native job refresh UI
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - '.github/workflows/candidate-refresh-replay.yml'
   workflow_dispatch:
     inputs:
       native_run:
@@ -37,7 +33,7 @@ jobs:
       - name: Obtain exact successful native candidate
         env:
           GH_TOKEN: ${{ github.token }}
-          NATIVE_RUN: ${{ inputs.native_run || '37205190489' }}
+          NATIVE_RUN: ${{ inputs.native_run }}
         run: |
           [[ "$NATIVE_RUN" =~ ^[0-9]+$ ]]
           mkdir -p test-output .local-data

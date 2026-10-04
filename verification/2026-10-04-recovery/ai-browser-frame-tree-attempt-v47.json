@@ -1,0 +1,32 @@
+{
+  "ok": true,
+  "targets": [
+    {
+      "targetId": "A226D2F08803D3CE0F33526EEA78F227",
+      "kind": "web",
+      "title": "campus.jd.com/#/resume?type=present",
+      "url": "https://campus.jd.com/#/resume",
+      "frames": [
+        {
+          "framePath": [],
+          "name": "",
+          "url": "https://campus.jd.com/"
+        }
+      ]
+    },
+    {
+      "targetId": "C773334FDA68600D70754387E052133D",
+      "kind": "app",
+      "version": "0.5.46",
+      "title": "一键投递 · LOCAL PREVIEW · AI DEBUG",
+      "url": "file:/E:/%E5%85%B1%E4%BA%AB/%E5%88%9B%E4%B8%9A/%E4%B8%80%E9%94%AE%E6%8A%95%E9%80%92-%E4%BA%A4%E4%BB%98%E5%BC%80%E5%8F%91-2026-10-04/src/index.html",
+      "frames": [
+        {
+          "framePath": [],
+          "name": "",
+          "url": "file:/E:/%E5%85%B1%E4%BA%AB/%E5%88%9B%E4%B8%9A/%E4%B8%80%E9%94%AE%E6%8A%95%E9%80%92-%E4%BA%A4%E4%BB%98%E5%BC%80%E5%8F%91-2026-10-04/src/index.html"
+        }
+      ]
+    }
+  ]
+}

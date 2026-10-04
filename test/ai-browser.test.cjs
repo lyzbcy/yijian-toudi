@@ -17,3 +17,10 @@ test('AI browser entry and local-only request validation', () => {
   assert.throws(()=>api.normalizeRequest({action:'click',targetId:'x',ref:'e1'}), /snapshot_id_required/);
   assert.throws(()=>api.normalizeRequest({action:'fill',targetId:'x',ref:'e1',snapshotId:'x'}), /fill_value_required/);
 });
+test('百度保护工作区禁止全浏览器控制台连接，包括读取其他目标',()=>{
+  const {requiresConsoleSafeChannel}=require(path.join(root,'scripts/ai-browser.cjs'));
+  assert.equal(requiresConsoleSafeChannel({url:'https://talent.baidu.com/jobs/resume/create'}),true);
+  assert.equal(requiresConsoleSafeChannel({url:'https://talent.baidu.com/jobs/center'}),true);
+  assert.equal(requiresConsoleSafeChannel({url:'https://talent.baidu.com.example.test/jobs/resume'}),false);
+  assert.equal(requiresConsoleSafeChannel({url:'file:///src/index.html'}),false);
+});

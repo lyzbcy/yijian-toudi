@@ -1,0 +1,212 @@
+{
+  "ok": true,
+  "version": "0.5.47",
+  "at": "2026-10-04T16:35:23.407Z",
+  "runtimeSourceFingerprints": "source-fingerprints-v47.json",
+  "candidateManifest": "candidate-manifest-v0.5.47.json",
+  "ownFilesMatched": 117,
+  "windowsInstaller": {
+    "name": "yijian-toudi-setup-0.5.47.exe",
+    "bytes": 104303724,
+    "sha256": "2ee57c4850277956a919eb33ae364c17dadca0d4bcadc947c558730745b08afa"
+  },
+  "authenticode": "NotSigned",
+  "units": {
+    "backgroundPassed": 365,
+    "finalPassed": 366,
+    "failed": 0,
+    "skipped": 0
+  },
+  "background": {
+    "at": "2026-10-04T16:17:44.361Z",
+    "ok": true,
+    "results": [
+      {
+        "name": "unit",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 5635
+      },
+      {
+        "name": "check",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 403
+      },
+      {
+        "name": "ui-smoke",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 12963
+      },
+      {
+        "name": "ui-resume-segments",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 63555
+      },
+      {
+        "name": "ui-resume-profiles",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 64858
+      },
+      {
+        "name": "ui-capabilities",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 7361
+      },
+      {
+        "name": "ui-workspace-exit",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 5054
+      },
+      {
+        "name": "ui-resume-batch",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 50007
+      },
+      {
+        "name": "ui-batch-actions",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 2024
+      },
+      {
+        "name": "ui-login-upload",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 17661
+      },
+      {
+        "name": "ui-live-window-fixes",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 22490
+      },
+      {
+        "name": "ui-jd-login",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 12344
+      },
+      {
+        "name": "ui-auth-frame",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 4037
+      },
+      {
+        "name": "ui-ai-browser",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 15764
+      },
+      {
+        "name": "ui-ai-preview",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 22333
+      },
+      {
+        "name": "ui-reliability",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 206827
+      },
+      {
+        "name": "ui-boss-recovery",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 5300
+      },
+      {
+        "name": "ui-delivery-layout",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 37713
+      },
+      {
+        "name": "ui-feedback",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 14507
+      },
+      {
+        "name": "ui-update-install-status",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 3799
+      },
+      {
+        "name": "ui-job-refresh-status",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 3686
+      },
+      {
+        "name": "ui-author-page",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 33657
+      },
+      {
+        "name": "ui-windows-shell",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 1719
+      }
+    ]
+  },
+  "postBackgroundChanges": {
+    "scope": "developer CDP tooling only; packaged runtime unchanged",
+    "rerunAffectedSuites": {
+      "aiBrowser": {
+        "tests": 27,
+        "pass": 27,
+        "fail": 0
+      },
+      "aiPreview": {
+        "tests": 11,
+        "pass": 11,
+        "fail": 0
+      }
+    },
+    "firstFinalAIToolAttempt": {
+      "tests": 21,
+      "pass": 19,
+      "fail": 2,
+      "retained": true
+    }
+  },
+  "packaged": {
+    "legacyBatch": "legacy-batch-packaged-v47.json",
+    "windowsShell": "windows-shell-packaged-v47.json",
+    "defaultNSIS": {
+      "checks": 6,
+      "report": "windows-default-install-v47.json"
+    },
+    "directUpgrade46to47": {
+      "checks": 8,
+      "baselineHelperOverride": false,
+      "report": "windows-install-upgrade-v47.json"
+    },
+    "registeredInstallationCleaned": true,
+    "nativeWizardVerified": false
+  },
+  "liveReadOnly": "baidu-selected-channel-v47.json",
+  "mac46Readback": "mac-readback-v46.json",
+  "mac47": "pending native CI",
+  "productionWrites": 0,
+  "productionUploads": 0,
+  "officialSaves": 0,
+  "applications": 0,
+  "externalMessages": 0,
+  "completeMVP": false,
+  "productBugRateBelowOnePercentProven": false,
+  "personalAppStillVersion": "0.5.46",
+  "personalWorkspaceRetained": true
+}

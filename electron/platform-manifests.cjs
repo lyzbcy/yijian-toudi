@@ -104,12 +104,14 @@ const PLATFORM_MANIFESTS = Object.freeze({
         // 2026-08-18 实测校准：/applicants/resume 是 API（返回 illegal-visit/need-login JSON）；
         // 真实个人中心是 /jobs/center（登录后可见资料与「编辑」弹窗入口）
         resume: 'https://talent.baidu.com/jobs/center',
-        login: 'https://talent.baidu.com/jobs/login',
+        // The former /jobs/login now lands on /jobs/404. Let the protected
+        // official resume route perform its own login redirect when needed.
+        login: 'https://talent.baidu.com/jobs/center',
         jobs: 'https://talent.baidu.com/jobs/social-list'
       },
       campus: {
         resume: 'https://talent.baidu.com/jobs/resume/create',
-        login: 'https://talent.baidu.com/jobs/login',
+        login: 'https://talent.baidu.com/jobs/resume/create',
         jobs: 'https://talent.baidu.com/jobs/campus-list'
       }
     },

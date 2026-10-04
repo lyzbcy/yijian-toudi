@@ -1,10 +1,16 @@
 # AI 网页级调试与使用
-现状：v0.5.10 Windows 源码预览；已测 DOM、跨域 iframe、子窗口与启动/关闭。
+现状：v0.5.47 候选；App与目标清单采用独立CDP连接，网页操作保留Playwright。
 负责人：项目维护者。
-最后更新：2026-09-30。
+最后更新：2026-10-05。
 
 ## 为什么这样接入
 Electron 内嵌工作区本身是 Chromium 页面。用 Playwright/CDP 操作同一 WebContents，比桌面坐标更直接；官网原来的 `persist:<公司>`、iframe、opener、postMessage 保持不变。Kimi WebBridge 继续用于 Edge/Chrome 的外部官网页面；外部浏览器成功不能代替内嵌软件登录验收。
+
+## 官网调试保护
+
+百度官网会在控制台调试监听启用后主动跳到about:blank，旧的/jobs/login也已落到404。百度入口使用官网受保护的简历路由完成认证，不修改官网检测脚本。`list`、App业务命令和主界面`snapshot`只使用选定目标的CDP消息，不对招聘页启用Runtime/Debugger。目标清单使用DOM.getDocument按iframe实际DOM顺序枚举，跨进程子页独立读取；目标发现顺序不再充当iframe索引。同域、两份跨域及其嵌套子页路径已专项核对。深度至少2的网页snapshot/click/fill走选定目标与独立执行上下文，原生Input消息和原有提交/密码/旧引用守卫保留。该嵌套通道不收集导航事件，动作后须重新list/status核对。
+
+顶层/单层网页`snapshot/click/fill`和`screenshot`仍会使用全浏览器Playwright连接，因此百度工作区打开时工具拒绝该路径；可继续使用`app.status`和主界面快照。需要其他官网的网页调试时，先确认当前页面没有未保存编辑，再显式关闭百度工作区。不要通过dev=0或改写检测脚本绕过官网保护。
 
 ## 启动与关闭
 双击 `zeen-tools/一键AI调试预览.bat`，或运行 `pnpm preview:ai`。先关闭普通预览；脚本不把普通运行误报成已接通 AI 调试。默认复用正式个人数据目录，临时测试可设置 `YJT_PREVIEW_PROFILE`。
@@ -17,7 +23,7 @@ Electron 内嵌工作区本身是 Chromium 页面。用 Playwright/CDP 操作同
 ```json
 {"action":"snapshot","targetId":"从list取得","framePath":[0]}
 ```
-`framePath:[]` 表示顶层；`[0]` 表示第一个子框架，`[0,0]` 表示其第一个子框架。读取跨域 iframe 的自己的 DOM，不把 iframe 单独打开来破坏登录父页面。
+子页索引按所在文档iframe/frame的DOM顺序，包含open Shadow DOM中的框架。`framePath:[]` 表示顶层；`[0]` 表示第一个子框架，`[0,0]` 表示其第一个子框架。读取跨域 iframe 的自己的 DOM，不把 iframe 单独打开来破坏登录父页面。
 
 snapshot 返回 `snapshotId` 和可见元素 `ref`（例如 e12），支持 open Shadow DOM，默认不读取 input 值。点击或填写沿用这次观察的 id/ref；刷新快照、导航或节点替换后旧引用报错，不自动重放。
 
