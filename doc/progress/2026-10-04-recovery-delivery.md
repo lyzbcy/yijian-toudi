@@ -121,3 +121,5 @@ Mac自动安装更新目前代码只允许Windows，仍未实现；资料手动�
 40最终顺序19套后台、352单测通过；档案10轮30操作及冷重开通过143秒，较39约63秒变慢，旧超时根因仍未证明。Windows实际包三宽度和输入专项通过；默认NSIS6组、39→40真实IPC/helper/安装/可见重启及资料/凭据/附件/Cookie样本保留，两种桌面偏好各8组通过，清理和恢复成功。NotSigned、原生GUI向导仍待验。
 
 Linux37191556368实际Compose/systemd/Caddy本地CA HTTPS成功；systemd41ms停止，SIGKILL恢复/未知收据保留；HTTPS默认拒绝不信任CA，伪造XFF11次按真实来源10次允许第11次429。无新外部消息。未证明公网TLS/企微/异机日志链接。7个封存40包hash与精确checksum已核对，双配套11文件归档不覆盖；delivery-manifest-v40保留所有失败和未完门槛。39局部视频未重标40，完整目标仍active。
+
+40云端草稿已创建并全部取回：https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-e379eb0f895439dbdcec，target 4379745f2c020818ed78e6068f03ccf72ddc9e18。16项附件逐字节/hash与封存本机文件一致（7 payload+7 checksum+manifest+候选说明）；两个配套归档再次独立验证11文件/version，Windows/Mac arm64/x64精确资产选择仅使用假定正式URL检查schema，实际草稿被更新器拒绝，不冒充正式升级。公网latest仍v0.3.1。完整目标未完成，原设备聊天/未同步状态未迁移。回读证据cloud-backup-v40.json。

@@ -1,0 +1,135 @@
+{
+  "at": "2026-10-04T09:36:09.190Z",
+  "version": "0.5.40",
+  "releaseDraft": true,
+  "releaseUrl": "https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-e379eb0f895439dbdcec",
+  "targetCommitish": "4379745f2c020818ed78e6068f03ccf72ddc9e18",
+  "assetCount": 16,
+  "verifiedAssets": [
+    {
+      "name": "yijian-toudi-setup-0.5.40.exe",
+      "bytes": 104228843,
+      "sha256": "8cd31016b6eaf563eecb554446c6a67ab8bebf43e20dac086f864098953e5642"
+    },
+    {
+      "name": "yijian-toudi-setup-0.5.40.sha256",
+      "bytes": 96,
+      "sha256": "c0d85cc04b7656e4dbc0513e906e0c89f113b1ebe2ac5c9db40b05849562ca8d"
+    },
+    {
+      "name": "yijian-toudi-skill-0.5.40.tar.gz",
+      "bytes": 13908,
+      "sha256": "9beeb894ce1711fdc0ec183e16a58654743587475044bac9127aaca285ecc0b3"
+    },
+    {
+      "name": "yijian-toudi-skill-0.5.40.sha256",
+      "bytes": 99,
+      "sha256": "5e1ce219d5331aeba158c39d68982978450968b67021f529186339e944165c0e"
+    },
+    {
+      "name": "yijian-toudi-feedback-server-0.5.40.tar.gz",
+      "bytes": 12433,
+      "sha256": "b8808bdc7374a7ecda58c6a7ef2f706940ad6e3065fc0b696ac5ca7cd498b803"
+    },
+    {
+      "name": "yijian-toudi-feedback-server-0.5.40.sha256",
+      "bytes": 109,
+      "sha256": "9a205ec2f0440dddd2ce345b67c1d7d04eac1a048bf038cdec1aba3a6a7e11c2"
+    },
+    {
+      "name": "yijian-toudi-0.5.40-arm64.dmg",
+      "bytes": 127941175,
+      "sha256": "ba7386ceb6661fc9d6d10572b5dd61809adb3965613a108c00fc5b3869fe9d58"
+    },
+    {
+      "name": "yijian-toudi-0.5.40-arm64.dmg.sha256",
+      "bytes": 96,
+      "sha256": "d4dc0051b8cb72191a37ce6f1fcb4f2ba8f2aaefcd68feba396ad0586a0abac5"
+    },
+    {
+      "name": "yijian-toudi-0.5.40-arm64.zip",
+      "bytes": 126016451,
+      "sha256": "ae44f654bc498c292303184f334b9417cd85eb4a4f4545a1644fccf7aaf4a17e"
+    },
+    {
+      "name": "yijian-toudi-0.5.40-arm64.zip.sha256",
+      "bytes": 96,
+      "sha256": "12b220374c92b7cf6d766745bf74e51770b226d60d984480493ff0cba8f4bdc4"
+    },
+    {
+      "name": "yijian-toudi-0.5.40-x64.dmg",
+      "bytes": 132656753,
+      "sha256": "073d4c0e4029cfbd228ae161cd550c54a8efd11144bde0de5f693f29fad639a5"
+    },
+    {
+      "name": "yijian-toudi-0.5.40-x64.dmg.sha256",
+      "bytes": 94,
+      "sha256": "a1b0062da27d7743af0ea96b133feb08854511d085a07e6b50d71ec0339ac9e7"
+    },
+    {
+      "name": "yijian-toudi-0.5.40-x64.zip",
+      "bytes": 130778117,
+      "sha256": "080ee6886f722585771e9e1e0e06921feb0418b48cc57fce14b8b2c20823229c"
+    },
+    {
+      "name": "yijian-toudi-0.5.40-x64.zip.sha256",
+      "bytes": 94,
+      "sha256": "4f9db7fe30979f45ca7ba9b17786c31d801b43650ae1dbc099a9d4d6a6b9ef57"
+    },
+    {
+      "name": "delivery-manifest-v40.json",
+      "bytes": 5764,
+      "sha256": "bd463fdc7b6c9d75e7a4b20a2c5c90ea23428f76618602f0f784c880572e6d60"
+    },
+    {
+      "name": "CANDIDATE-v0.5.40.md",
+      "bytes": 1627,
+      "sha256": "0b2557142c554ba65eeba1aee79bb948b74bcfff6cced441a113abe90bb23668"
+    }
+  ],
+  "auxiliaryArchives": {
+    "skill": {
+      "verified": true,
+      "version": "0.5.40",
+      "sha256": "9beeb894ce1711fdc0ec183e16a58654743587475044bac9127aaca285ecc0b3",
+      "files": 11
+    },
+    "feedback": {
+      "verified": true,
+      "version": "0.5.40",
+      "sha256": "b8808bdc7374a7ecda58c6a7ef2f706940ad6e3065fc0b696ac5ca7cd498b803",
+      "files": 11
+    }
+  },
+  "updaterAssetSchema": {
+    "actualDraftRejected": true,
+    "hypotheticalOfficialVersionURLsOnly": true,
+    "selections": [
+      {
+        "platform": "win32",
+        "architecture": "x64",
+        "download": "yijian-toudi-setup-0.5.40.exe",
+        "checksum": "yijian-toudi-setup-0.5.40.sha256"
+      },
+      {
+        "platform": "darwin",
+        "architecture": "arm64",
+        "download": "yijian-toudi-0.5.40-arm64.zip",
+        "checksum": "yijian-toudi-0.5.40-arm64.zip.sha256"
+      },
+      {
+        "platform": "darwin",
+        "architecture": "x64",
+        "download": "yijian-toudi-0.5.40-x64.zip",
+        "checksum": "yijian-toudi-0.5.40-x64.zip.sha256"
+      }
+    ]
+  },
+  "publicStable": {
+    "tag": "v0.3.1",
+    "url": "https://github.com/lyzbcy/yijian-toudi/releases/tag/v0.3.1"
+  },
+  "productionUpdateProven": false,
+  "originalDeviceChatRecovered": false,
+  "fullGoalComplete": false
+}
