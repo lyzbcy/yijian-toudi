@@ -1382,7 +1382,7 @@ Authorization: Bearer ${state.settings.apiToken}
       try {
         const addBtn = event.target.closest('[data-add-profile]');
         if (addBtn) {
-          const label = prompt('给这份简历起个名字（比如：产品方向、运营方向、实习）', '');
+          const label = await window.TextEntry.request({ title: '新建简历方向', label: '简历方向名称', hint: '例如：产品方向、运营方向、实习。留空会自动命名。' });
           if (label === null) return; // 用户取消
           await window.oneClick.saveResume(collectResume());
           const result = await window.oneClick.addProfile(label);
@@ -1426,15 +1426,23 @@ Authorization: Bearer ${state.settings.apiToken}
     // 双击 label → 重命名（避免和单击切换冲突）
     $('#resumeProfilesBar').addEventListener('dblclick', async (event) => {
       const renameTarget = event.target.closest('[data-rename-profile]');
-      if (!renameTarget) return;
+      if (!renameTarget || localWriteInFlight) return;
       event.preventDefault();
-      const profileId = renameTarget.dataset.renameProfile;
-      const profile = state.resume.profiles.find((p) => p.id === profileId);
-      const label = prompt('重命名这份简历', profile?.label || '');
-      if (label === null || !label.trim()) return;
-      state = await window.oneClick.renameProfile(profileId, label.trim());
-      renderState();
-      toast('已重命名');
+      localWriteInFlight = true;
+      try {
+        const profileId = renameTarget.dataset.renameProfile;
+        const profile = state.resume.profiles.find((p) => p.id === profileId);
+        const label = await window.TextEntry.request({ title: '重命名简历方向', label: '简历方向名称', value: profile?.label || '', required: true });
+        if (label === null) return;
+        await window.oneClick.saveResume(collectResume());
+        state = await window.oneClick.renameProfile(profileId, label);
+        renderState();
+        toast('已重命名');
+      } catch (error) {
+        toast(error.message || '重命名失败', 'error');
+      } finally {
+        localWriteInFlight = false;
+      }
     });
     // 多段经历：添加段。直接基于 DOM 当前段数追加空段，不经过 collectResume 的尾部清理
     // （否则用户没填内容的空段会被清掉，导致「加了又没了」）。
@@ -1601,9 +1609,10 @@ $('#bossAccountSelect')?.addEventListener('change', async (event) => {
   updateKimiBridgeStatus();
 });
 $('#bossAccountCreateButton')?.addEventListener('click', (event) => run(event.currentTarget, async () => {
-  const name = prompt('客户名（用于档案与报表标识）：');
-  if (!name) return;
-  const phoneTail = prompt('客户 Boss 手机号后 4 位（用于扫码后核对身份，可留空跳过）：') || '';
+  const name = await window.TextEntry.request({ title: '新建客户账号', label: '客户名', hint: '用于档案与报表标识。', required: true });
+  if (name === null) return;
+  const phoneTail = await window.TextEntry.request({ title: '核对客户身份', label: 'Boss 手机号后 4 位', hint: '仅填写后 4 位数字，用于扫码后核对身份；可留空跳过。', maxLength: 4, pattern: '[0-9]{4}' });
+  if (phoneTail === null) return;
   const result = await window.oneClick.accountCreate({ name, phoneMasked: phoneTail ? `***${phoneTail}` : '' });
   if (result.error) { toast(`创建失败：${result.error}`); return; }
   toast(`客户账号已创建：${result.account.name}`);

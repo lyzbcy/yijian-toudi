@@ -14,7 +14,9 @@ for (const [name, args] of suites) {
   console.log(`运行后台测试：${name}`);
   const start = Date.now();
   const result = spawnSync(process.execPath, args, {
-    cwd: root, windowsHide: true, timeout: 180000, encoding: 'utf8',
+    // Ten loops include real modal input and 30 persisted profile operations.
+    // Each UI action stays bounded at 15s; retain failures in the suite report.
+    cwd: root, windowsHide: true, timeout: name === 'ui-reliability' ? 300000 : 180000, encoding: 'utf8',
     env: { ...process.env, YIJIAN_BACKGROUND_TEST: '1' }
   });
   fs.writeFileSync(path.join(root, 'test-output', `background-${name}.log`), `${result.stdout || ''}${result.stderr || ''}${result.error?.message || ''}`);

@@ -440,6 +440,13 @@ input:focus, select:focus, textarea:focus { border-color: #9d93ec; background: #
 .job-dialog-grid span { color: var(--muted); font-size: 8px; }
 .job-dialog-grid b { margin-top: 5px; font-size: 10px; }
 .dialog-actions { display: flex; justify-content: flex-end; gap: 9px; }
+.text-entry-dialog { width: min(460px, 90vw); }
+.text-entry-dialog h2 { margin: 0 0 22px; font-size: 20px; }
+.text-entry-dialog label { display: block; font-size: 13px; margin-bottom: 9px; }
+.text-entry-dialog input { box-sizing: border-box; width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 10px; font: inherit; }
+.text-entry-dialog input:focus { outline: 2px solid var(--primary); outline-offset: 2px; }
+.text-entry-hint { color: var(--muted); font-size: 12px; line-height: 1.6; }
+.text-entry-dialog .dialog-actions { margin-top: 24px; }
 .promo-dialog { width: min(700px, 90vw); }
 
 /* 腾讯简历字段差异报告弹窗 */

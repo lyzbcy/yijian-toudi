@@ -1,0 +1,14 @@
+{
+  "version": "0.5.38",
+  "mode": "real-nsis-default-path-no-D-override",
+  "installerHash": "dfb34605ce62cdb9cd2ce5a857502d52f98d06205a46cfab4a46608108f5527e",
+  "expectedRoot": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\一键投递",
+  "fixtureOnly": true,
+  "guiClicks": false,
+  "checks": [
+    "Actual uninstaller removed default installation and retained isolated user data",
+    "Original desktop/start-menu shortcuts and installer cache restored byte-for-byte"
+  ],
+  "ok": false,
+  "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'C:\\\\Users\\\\Administrator\\\\AppData\\\\Local\\\\Programs\\\\yijian-toudi'\n- 'C:\\\\Users\\\\Administrator\\\\AppData\\\\Local\\\\Programs\\\\一键投递'\n"
+}

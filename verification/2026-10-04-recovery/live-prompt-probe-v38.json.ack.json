@@ -1,0 +1,1 @@
+{"phase":"new-profile","observed":true,"ok":false,"findings":[{"priority":"P1","title":"New direction action reaches unsupported native prompt","evidence":"Visible toast reports unsupported prompt; no new profile is saved."}],"actualPixelsViewed":true,"profilesCount":1,"usableProfileNameInputPresent":false,"method":"read_only_CDP_same_visible_packaged_Electron_instance"}
