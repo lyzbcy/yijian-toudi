@@ -1,0 +1,637 @@
+{
+  "version": "0.5.49",
+  "at": "2026-10-04T17:59:51.751Z",
+  "algorithm": "SHA-256 of raw working-tree bytes; Git text line endings can differ",
+  "files": [
+    {
+      "path": "build/icon.icns",
+      "bytes": 1300869,
+      "sha256": "43e383df8b17f0f60e69d845d771bacb7ab4068108d7caadcb82631a6da4c73c"
+    },
+    {
+      "path": "build/icon.ico",
+      "bytes": 116532,
+      "sha256": "29d2149eec1f678642661cb3258f2a4a2cd6a992c2cf3539ca961dcbf62da492"
+    },
+    {
+      "path": "electron/account-browser.cjs",
+      "bytes": 3892,
+      "sha256": "d35c772dc4534b12c99ca0fc5f51f365c8de280812a970e04e0cdced8e9bf4b6"
+    },
+    {
+      "path": "electron/adapters/_manual-apply.cjs",
+      "bytes": 2297,
+      "sha256": "95e6b3352a7ca8381050fc7dc22589df02b088c11b1d3129bab517245e82a41e"
+    },
+    {
+      "path": "electron/adapters/_manual-fill.cjs",
+      "bytes": 3619,
+      "sha256": "c04a98369af6670ba3a9ecd902997404dbf39a109bd7dc1477b9d622551b565d"
+    },
+    {
+      "path": "electron/adapters/alibaba-fill.cjs",
+      "bytes": 14953,
+      "sha256": "ee58e507283ba31af645e163b7c368cc48fa19f34e6f61e3fccf0f7875f42c5f"
+    },
+    {
+      "path": "electron/adapters/alibaba.cjs",
+      "bytes": 1045,
+      "sha256": "c814393ffe6dd8ab426138a931f94de756fb2095dfdda47b8bb3fbc50e279d32"
+    },
+    {
+      "path": "electron/adapters/baidu.cjs",
+      "bytes": 7344,
+      "sha256": "9fae75ea86c84f9a556968a9f22ea69a90735e3ba8addc2071d51ac93ee437cb"
+    },
+    {
+      "path": "electron/adapters/boss.cjs",
+      "bytes": 582,
+      "sha256": "6f21ae7ce782429b2fb694ef0249ce5edb8c951f4369e7ae36eeb5f28f3c0f6f"
+    },
+    {
+      "path": "electron/adapters/bytedance-campus.cjs",
+      "bytes": 5227,
+      "sha256": "8c48729f1964e935679699930e1c4dd30124e147177dad1ec9de1652c2f268ef"
+    },
+    {
+      "path": "electron/adapters/bytedance.cjs",
+      "bytes": 8590,
+      "sha256": "fa65b188b1351987e22616f4b4d6fb9f480d2ceb163cc41128f3bd1f8106bd4d"
+    },
+    {
+      "path": "electron/adapters/generic-resume-fill.cjs",
+      "bytes": 25873,
+      "sha256": "f3b92f24be6b8aae1ce2ce3999b2529929e127101ffd03e3f3b2b801153a17bf"
+    },
+    {
+      "path": "electron/adapters/jd.cjs",
+      "bytes": 6010,
+      "sha256": "7cf3f0b2bff270a3c152bc5750307d07e6b7e5d224784934b7c9b1e616a5af1b"
+    },
+    {
+      "path": "electron/adapters/meituan.cjs",
+      "bytes": 5787,
+      "sha256": "8a70abe9d070f01250956ab5a3c18a1234776048b2cfec23da428e56c3fa9acc"
+    },
+    {
+      "path": "electron/adapters/registry.cjs",
+      "bytes": 7702,
+      "sha256": "5012eb527e22ed80371e917c336f15ab385b88d88d46c5c97c19350bf7667dc2"
+    },
+    {
+      "path": "electron/adapters/tencent-apply.cjs",
+      "bytes": 4078,
+      "sha256": "37a5012533533b2610621f6fcdc4058434a957956dadcf84d18af3c111192d8a"
+    },
+    {
+      "path": "electron/adapters/tencent-campus.cjs",
+      "bytes": 5037,
+      "sha256": "ce88de6fa7ffdf5b12435aea23f4038a4724245ecdcd1a2ed6bad44600cd9204"
+    },
+    {
+      "path": "electron/adapters/tencent-fill.cjs",
+      "bytes": 20480,
+      "sha256": "b4059e4bc27dd7f0832eba69eccd1357ac48e1b846100491fe310f83908e62d4"
+    },
+    {
+      "path": "electron/adapters/tencent-status.cjs",
+      "bytes": 4972,
+      "sha256": "0db4b4b90cd0f7f421d1f78ec9594e8f900c905a4971aaa6be17c61aec13dec5"
+    },
+    {
+      "path": "electron/adapters/tencent.cjs",
+      "bytes": 7093,
+      "sha256": "36c7477b69855bceaab649819471a17107bd19b064eaf4e083b7dcc005a7a615"
+    },
+    {
+      "path": "electron/adapters/xiaomi-campus.cjs",
+      "bytes": 3126,
+      "sha256": "1fa1c5d79fbdd81c67fd9a2dfd00f6da94ff013203f26fc64b294526d293bb05"
+    },
+    {
+      "path": "electron/adapters/xiaomi.cjs",
+      "bytes": 6387,
+      "sha256": "c09a6288def2e456defa52413f257aa423cd8393a3bc3dbe8a4eb595b1be7e6a"
+    },
+    {
+      "path": "electron/agent-command.cjs",
+      "bytes": 1036,
+      "sha256": "263974d83b52f31b8477ef445033a06f9a144afe42079ce3841f0220f3fa55f2"
+    },
+    {
+      "path": "electron/agent-server.cjs",
+      "bytes": 12075,
+      "sha256": "6828267eb38f2e9031f5c6a52b655e483a9ac8c5b273ddb715cffde3d52956c8"
+    },
+    {
+      "path": "electron/backup.cjs",
+      "bytes": 2408,
+      "sha256": "956fcd97a3be99dcbc9a3d41c617c3487a03695865369e77f802fd573d74ec44"
+    },
+    {
+      "path": "electron/baidu-form-context.cjs",
+      "bytes": 3558,
+      "sha256": "ba359526a060c5f86087b4a56040ea537b840fac55265d86b3ecc27be3218892"
+    },
+    {
+      "path": "electron/baidu-month-fill.cjs",
+      "bytes": 4709,
+      "sha256": "fe833541f3522347867fd75e5123ebdef12ec7916f5a5f86a146eaaee15d0dec"
+    },
+    {
+      "path": "electron/baidu-required-fields.cjs",
+      "bytes": 3808,
+      "sha256": "bbb72f4a6b1cf5a778e0bbca0d8b15d374c774de5230ca06196aa4a39959f626"
+    },
+    {
+      "path": "electron/baidu-selection-fill.cjs",
+      "bytes": 9386,
+      "sha256": "b96c5fa12047eb241fb818f58f55b2c98d5ebb2583a1479ade3fbf2050c93a3d"
+    },
+    {
+      "path": "electron/boss-batch.cjs",
+      "bytes": 15834,
+      "sha256": "e0483b8a0fabf460604464ebd57f28ea3740945b2ea3a5f6652497f2985d4a05"
+    },
+    {
+      "path": "electron/boss-control.cjs",
+      "bytes": 8728,
+      "sha256": "39903cc6b0bfc9e8c7ce3bda3bfa070a92467403ff59847401606eb448a4f8a6"
+    },
+    {
+      "path": "electron/browser-runtime.cjs",
+      "bytes": 2580,
+      "sha256": "ecb316e3913b16a88e16ef77417db4a8e41bc3b54535a8b311c89f68ba0d5224"
+    },
+    {
+      "path": "electron/captcha.cjs",
+      "bytes": 1244,
+      "sha256": "5df35ed0f50f572e64b20f64de779c96c4057f46d6b458d93ccdab1dc00cff6c"
+    },
+    {
+      "path": "electron/city-map.cjs",
+      "bytes": 2932,
+      "sha256": "cd8f05460a2e38d5bab75c7e3ee4c39b4d6ffe78680dded73d206a8b620e1647"
+    },
+    {
+      "path": "electron/desktop-updater.cjs",
+      "bytes": 6429,
+      "sha256": "8186e20f5aa25b27fe495f6fe52bdefa8406bcdd1c4ad820d9c610e90f725a72"
+    },
+    {
+      "path": "electron/diagnostics.cjs",
+      "bytes": 2840,
+      "sha256": "16157eb1ff4b8131ea332ee751d5cf7eca4a4af0deab3b6b910d65c4d1135006"
+    },
+    {
+      "path": "electron/feedback.cjs",
+      "bytes": 5625,
+      "sha256": "80bd3e12c1fa5e187877d697e8157f5167fbe3d4c9b4c34c3e2f5bdcc6b19e5f"
+    },
+    {
+      "path": "electron/field-matching.cjs",
+      "bytes": 6336,
+      "sha256": "060a02d473a061f92c80632573afaa05e63b663d80040cfa9b6ca8464fbd3e77"
+    },
+    {
+      "path": "electron/form-inspection.cjs",
+      "bytes": 8213,
+      "sha256": "a3133cdaddb3ce39543d05d483e4d968463776271b64d44f4b25f37d706ba7ea"
+    },
+    {
+      "path": "electron/frame-navigation.cjs",
+      "bytes": 827,
+      "sha256": "f8cb5eba42dd4dcaf22782ddcc505c4f95d7147557e07ab96d503652ff88f9c5"
+    },
+    {
+      "path": "electron/http-lifecycle.cjs",
+      "bytes": 563,
+      "sha256": "760aa1f7a3fdb6619408c55aed679c635b44b4556554cf8d511cd008573440e3"
+    },
+    {
+      "path": "electron/install-update-mac.sh",
+      "bytes": 6234,
+      "sha256": "32cba5d6904ff84ffb2d058d630a2e99518dbb136c98067cd24091774fc9b5b1"
+    },
+    {
+      "path": "electron/install-update.ps1",
+      "bytes": 9258,
+      "sha256": "5373d913b8d311488e3c7d73521ac7157c2ea9e210ff2b5ab4e11b5f159c0e5f"
+    },
+    {
+      "path": "electron/jd-auth-return.cjs",
+      "bytes": 1580,
+      "sha256": "4b0c315d0d71b910be4e9df7d9203409d58a3e4b293fd31470d1a8631ec03832"
+    },
+    {
+      "path": "electron/jd-auth-status.cjs",
+      "bytes": 2443,
+      "sha256": "aa910718a03564139d84eefb8167740f8dfc01a5e0bf948380190f33070873c9"
+    },
+    {
+      "path": "electron/jd-cascader.cjs",
+      "bytes": 5673,
+      "sha256": "087ec3a6fd926f984821a75167fd75708010b15986ad4d030e2e10b4b30cdadd"
+    },
+    {
+      "path": "electron/jd-form-context.cjs",
+      "bytes": 3920,
+      "sha256": "303274dd18ae96417cb02f709a2c488d8ad63dbeb963089a9e5cd46c4638e94b"
+    },
+    {
+      "path": "electron/jd-required-fields.cjs",
+      "bytes": 4758,
+      "sha256": "a7b16f9ae50cd79e440b7465dbb91488636a01b209cc3062c22ce16374e705c7"
+    },
+    {
+      "path": "electron/jd-widget-fill.cjs",
+      "bytes": 9819,
+      "sha256": "8009af3692f1d743252396f954e7e8ad6d9c058661364164fe3217a6d84c3ba7"
+    },
+    {
+      "path": "electron/job-refresh.cjs",
+      "bytes": 1848,
+      "sha256": "83f0fc5984398c69cfe132bada48c0bdda1b3d72d35713f1df52a30f49cb6838"
+    },
+    {
+      "path": "electron/kimi-bridge.cjs",
+      "bytes": 6717,
+      "sha256": "dec662acc4f0592e5b85959a2d4653516436eac0031bbdf61666167ae16c17a8"
+    },
+    {
+      "path": "electron/logger.cjs",
+      "bytes": 1690,
+      "sha256": "480596ce6f6604a3d0111db8befc1ed6b439a3cad8a63d78d1da47f26bb84fce"
+    },
+    {
+      "path": "electron/login-manager.cjs",
+      "bytes": 27697,
+      "sha256": "0a0239ac2f5b8705399f27c82bc6b634f409047a8c2a82d03825acc94899b356"
+    },
+    {
+      "path": "electron/macos-update-archive.cjs",
+      "bytes": 2748,
+      "sha256": "961ca6caccf4b49e8debc6bd2c03163995763628a03734411d13b5f5b614e968"
+    },
+    {
+      "path": "electron/macos-update.cjs",
+      "bytes": 9705,
+      "sha256": "a80af0deeb654b3a0cd8b3a714de52e089692fc5d407efac9332bac86b366960"
+    },
+    {
+      "path": "electron/mail.cjs",
+      "bytes": 2235,
+      "sha256": "b35cfc67a582d68f5b342c7852cb54767d3b3c2a045fdf4f3f76d5fd86e88503"
+    },
+    {
+      "path": "electron/main.cjs",
+      "bytes": 80335,
+      "sha256": "6bfd1ba4f2bb71415fa4c3dfe077b586dbc0911fb8a430c6bb75d63ff63cf4ef"
+    },
+    {
+      "path": "electron/match.cjs",
+      "bytes": 2689,
+      "sha256": "9d0aef6f00d9f62ee1d037fa6e76edcff07b2c57fae657ffbad77a8c5c6bbd9b"
+    },
+    {
+      "path": "electron/navigation-policy.cjs",
+      "bytes": 3619,
+      "sha256": "d42d2f89f52ec8f452956a94f9e083bf3eff5d6d485c87c7fddf484504dfe285"
+    },
+    {
+      "path": "electron/platform-manifests.cjs",
+      "bytes": 8615,
+      "sha256": "16fe5a9adb85c6732551f62e7034c618b33166cfb77b923e25a827167a7f97c1"
+    },
+    {
+      "path": "electron/playwright-bridge-adapter.cjs",
+      "bytes": 2581,
+      "sha256": "8e644661b3631f9422c69c34051b1df6de6a063e186487b8e1c37fa9a6930d1b"
+    },
+    {
+      "path": "electron/preload.cjs",
+      "bytes": 6394,
+      "sha256": "19033b91f1d8ee0e6ffdf50c5a8b867106d422b0cd3247317f1a8ffa2bcaf853"
+    },
+    {
+      "path": "electron/promo-policy.cjs",
+      "bytes": 675,
+      "sha256": "c3ea05e983a04145c2c03692e335cca50567a008fcaf419898517b2af1c5bb81"
+    },
+    {
+      "path": "electron/recruiting.cjs",
+      "bytes": 908,
+      "sha256": "b314255ac81783f0f29b02ff4ef3882f9d1c6fc67e1e2bb04213ac41dbd2dc42"
+    },
+    {
+      "path": "electron/redact.cjs",
+      "bytes": 1710,
+      "sha256": "fc2fe25f7726fd67972bb69404d2fbba4cedaf6b2911da04f70122a06e4f1007"
+    },
+    {
+      "path": "electron/resume-batch-window.cjs",
+      "bytes": 3099,
+      "sha256": "62ac36f32e243bc2fe599c37945a058de4cd5da1e54b3bc67fb730e3f9c250bd"
+    },
+    {
+      "path": "electron/resume-batch.cjs",
+      "bytes": 9485,
+      "sha256": "cb8b3b634da6b63546db18763b75e9b361049549cf67165eceb23530f6757573"
+    },
+    {
+      "path": "electron/resume-files.cjs",
+      "bytes": 790,
+      "sha256": "c233b74cdbda95d4cbca8c5f35494a527b4e9e320e73240b9aea11a2a0a74a9c"
+    },
+    {
+      "path": "electron/resume-json.cjs",
+      "bytes": 2779,
+      "sha256": "71c88ebeddf18a5b6295c6031a9c0fcdeba3c513c4f3d439288b803672e9238e"
+    },
+    {
+      "path": "electron/resume-plan.cjs",
+      "bytes": 15277,
+      "sha256": "0e524b3ad194f0cef74254f20e244eb61853be1ebfcc01084208bdbe6ed88fec"
+    },
+    {
+      "path": "electron/resume-sync.cjs",
+      "bytes": 9166,
+      "sha256": "84cbf9afecdda3e0432e2f96354e3828d417d2e9c1b0295739e134560e6b8a01"
+    },
+    {
+      "path": "electron/resume-to-jsonresume.cjs",
+      "bytes": 4974,
+      "sha256": "e6b6811b0b61530f9c6f3f13989697a357923ea52b7a7b2650b413e736d7db9f"
+    },
+    {
+      "path": "electron/resume-upload.cjs",
+      "bytes": 7999,
+      "sha256": "c5a2fce89765e3c9ed4308baf35460e9797d0da7757b563b65f45617e66ab561"
+    },
+    {
+      "path": "electron/review-state.cjs",
+      "bytes": 4231,
+      "sha256": "1b92a1a54557e3e433c26c1e61af9e9096ceec687e88b8c11d746f1acb737edb"
+    },
+    {
+      "path": "electron/seed.cjs",
+      "bytes": 17011,
+      "sha256": "f00b6ff66e4bb63a60873a66d158aa54fbf170beef79d7aaadc5983d2051f00c"
+    },
+    {
+      "path": "electron/site-login-ui.cjs",
+      "bytes": 1317,
+      "sha256": "157a4eb5fbd57ae9fb673364fb0ff13287cbd6f9232bad36c47f909f03a29ba5"
+    },
+    {
+      "path": "electron/store.cjs",
+      "bytes": 24785,
+      "sha256": "959120c702c64da437f5e0f5c3f366e6de2d437561a18a21366e0563552eb317"
+    },
+    {
+      "path": "electron/update-install-result.cjs",
+      "bytes": 451,
+      "sha256": "fd4da526c94760498a2485a366529de487a0cb0236e0386b60a3c79f6f225640"
+    },
+    {
+      "path": "electron/update-release.cjs",
+      "bytes": 3318,
+      "sha256": "7f325b87bf825e94234f845a3fb5cf392e6bd6cba72f84a795fa3e4efd566c51"
+    },
+    {
+      "path": "electron/wecom-notify.cjs",
+      "bytes": 4585,
+      "sha256": "d191325d7258ef0ff306c5d8b97b3e63e3b1bcf28f9dec7bb735eb3bc3f68ff4"
+    },
+    {
+      "path": "electron/windows-update.cjs",
+      "bytes": 7788,
+      "sha256": "d10ddee6d7ccfe29a97ec759373001d2df53f3792088c11e4d2eff812c2b4894"
+    },
+    {
+      "path": "electron/workspace-layout.cjs",
+      "bytes": 735,
+      "sha256": "77a33052e3d13b86af7114fbe41c6b5dc5a72da496afc7fb07983a107023a9b9"
+    },
+    {
+      "path": "electron/workspace-outcome.cjs",
+      "bytes": 565,
+      "sha256": "59d8b006a63ca212d9e75cc7a43b52940a251c9353a4d7d7dcbbf9e052d4ce32"
+    },
+    {
+      "path": "package.json",
+      "bytes": 3345,
+      "sha256": "b6e52bc611dde6145d6948a1503769864b30dc6de0a34ce22b0d822324da13f9"
+    },
+    {
+      "path": "scripts/ai-browser.cjs",
+      "bytes": 14672,
+      "sha256": "15692b315197bf77b7e04e2c02565f97ee5a0dd487e549367b48195e1663585b"
+    },
+    {
+      "path": "scripts/ai-main-channel.cjs",
+      "bytes": 9415,
+      "sha256": "832c91d2aa7d735d38741ef599440b3e34c4b037ade30529f913f65a44e91b4d"
+    },
+    {
+      "path": "src/app.js",
+      "bytes": 101119,
+      "sha256": "bbc8c28014ba2349993fe9639f64b8c9fce988903866febd4944e6df122eb52a"
+    },
+    {
+      "path": "src/assets/logos/aispeech.png",
+      "bytes": 4286,
+      "sha256": "d8346244d7954277d5a1610e5766b7c3c4591a596b2419c0a59308c16f8259af"
+    },
+    {
+      "path": "src/assets/logos/baidu.svg",
+      "bytes": 1391,
+      "sha256": "e2eeaca4c5273ecff775ee4b357091678a7587b2d606190f8e5b7dce4d93a781"
+    },
+    {
+      "path": "src/assets/logos/bytedance.svg",
+      "bytes": 331,
+      "sha256": "03a322949b34209cb0446382bbaf1c458eeffd75a6930f6bf37ca910578a6429"
+    },
+    {
+      "path": "src/assets/logos/crmicro.png",
+      "bytes": 2045,
+      "sha256": "daef7ca0369b8bc0caf1ff6461ceaad3d5f209bf084a7b903d20ae0be8d494ef"
+    },
+    {
+      "path": "src/assets/logos/huawei.svg",
+      "bytes": 1323,
+      "sha256": "eb43e0a9450cef22ce70d624a60622a0aa542142102e402a293578b388b876f5"
+    },
+    {
+      "path": "src/assets/logos/jcet.svg",
+      "bytes": 2011,
+      "sha256": "8d3c7578b24ca556a0381fe5c86e943eee815f702b01d5153f18c53d9b0e6770"
+    },
+    {
+      "path": "src/assets/logos/jd.png",
+      "bytes": 25214,
+      "sha256": "99adfd5e001df9645a32518bafaedfff7746575bf239e1fe9a236ea9f94ed0d4"
+    },
+    {
+      "path": "src/assets/logos/meituan.svg",
+      "bytes": 1200,
+      "sha256": "851a1b8c8c050a609766cc7b64d3fd233b5838cecf638cecf30113f9e846817a"
+    },
+    {
+      "path": "src/assets/logos/mihoyo.svg",
+      "bytes": 2163,
+      "sha256": "6a47045d60cf66487d953bc6552e24bef3812afc90423ea8edddcac0acb4beb5"
+    },
+    {
+      "path": "src/assets/logos/momenta.png",
+      "bytes": 27575,
+      "sha256": "053698284186d8850e009c6b8efda6a5eca03f03f0da13e7ee725c290443ae67"
+    },
+    {
+      "path": "src/assets/logos/netease.png",
+      "bytes": 6671,
+      "sha256": "d18e6296a534078009774d635cbf390933c93c8758e2a3a990cb9b1a3d9c7199"
+    },
+    {
+      "path": "src/assets/logos/qcc.png",
+      "bytes": 4086,
+      "sha256": "e1b570c49f446262a2218f2188ee69f0565fcedd6dd380a6851a975659be93d4"
+    },
+    {
+      "path": "src/assets/logos/tencent.png",
+      "bytes": 3446,
+      "sha256": "81aecc63dd1e46f38af8ddf5d7562799d561a1b5a0e2cb4aecc6ba0fdf129782"
+    },
+    {
+      "path": "src/assets/logos/xiaomi.svg",
+      "bytes": 903,
+      "sha256": "8866d12a70d85ab43acd3b9c80f1b37792d91160d8273efffdf817af5fd608cb"
+    },
+    {
+      "path": "src/assets/logos/xuelang.png",
+      "bytes": 4286,
+      "sha256": "db74ab0b78338c1f778f8398c45f4103c99aea0e845a3118a7750b4eeafd3445"
+    },
+    {
+      "path": "src/assets/qq-group.jpg",
+      "bytes": 225098,
+      "sha256": "bc6bf48bae2b25899066eb8607ea4778c51a0e7e2ca11425699a630a332ade49"
+    },
+    {
+      "path": "src/assets/reward-qr.jpg",
+      "bytes": 122532,
+      "sha256": "7b520b949301ed19e8d7e49d1896686fbe809438920c70277e62b3fdfe85dfc3"
+    },
+    {
+      "path": "src/assets/sticker-qr.png",
+      "bytes": 28295,
+      "sha256": "26b2008ca259af8f90961982696ee0fd2cad376696d2904e7b7844d63a720624"
+    },
+    {
+      "path": "src/assets/stickers/hello.png",
+      "bytes": 137785,
+      "sha256": "8cebea27f31778a5a30c01602f7ce20135f81bda567aaed1d23ecb3d68c1a5ca"
+    },
+    {
+      "path": "src/assets/stickers/log/cheer.png",
+      "bytes": 119182,
+      "sha256": "0c2f2f77ddf7bcfc86253af73ee3724458afdc37691221c0a226177793e4a793"
+    },
+    {
+      "path": "src/assets/stickers/log/focus.png",
+      "bytes": 121028,
+      "sha256": "3fedb1d6b83c6f637b647eb6d1e7e6406dddce5686cfb45dfedf2bcad3a77432"
+    },
+    {
+      "path": "src/assets/stickers/log/happy.png",
+      "bytes": 117041,
+      "sha256": "f9e30edcda6e693b4eaf45c6d843dfca31269c4abb469f8a6412289f2cfd192d"
+    },
+    {
+      "path": "src/assets/stickers/log/hmm.png",
+      "bytes": 98096,
+      "sha256": "eaa85464a3085e66e945f5bab322f7d74b0d66df0411e15de94170d08fe42cea"
+    },
+    {
+      "path": "src/assets/stickers/log/salute.png",
+      "bytes": 118895,
+      "sha256": "e181d5aa58bc1b5f7a1bc1bae02855fd0ac80adf5a3648774ec5b8c845397a20"
+    },
+    {
+      "path": "src/assets/stickers/log/writing.png",
+      "bytes": 119609,
+      "sha256": "c9bb65a4623da8c869621e537d2133431ebb69832fc33c8a8e70e2b050e3f655"
+    },
+    {
+      "path": "src/assets/stickers/mascot.png",
+      "bytes": 104411,
+      "sha256": "d525b083a46163998b32ebbd65695b896311e28acf86d69c64aab47568ce8c76"
+    },
+    {
+      "path": "src/assets/stickers/sparkle.png",
+      "bytes": 141652,
+      "sha256": "6367041065e439afa7fae6335ae105098b9e81ac74c70c3fe8799ada18743b7c"
+    },
+    {
+      "path": "src/assets/stickers/study.png",
+      "bytes": 101623,
+      "sha256": "0e07f0ea3005fcb4363b6d55909dc85a1bbc773bee125f680da5106da5d328d1"
+    },
+    {
+      "path": "src/feedback.css",
+      "bytes": 1973,
+      "sha256": "1b46dd73efa010c9cb4dd998bf1e26e4b30ccf71065801a7095757ab1775c6a5"
+    },
+    {
+      "path": "src/feedback.html",
+      "bytes": 2338,
+      "sha256": "f5b249224a0061d0aef1c6a02c480060a1be60e6d21534ece15b5db251888b6f"
+    },
+    {
+      "path": "src/feedback.js",
+      "bytes": 3257,
+      "sha256": "b8d8fa82abffc0fe22d6cf74fab93b49b5c3d48b342bbee0429680159cfe9b86"
+    },
+    {
+      "path": "src/index.html",
+      "bytes": 52144,
+      "sha256": "af71ba2775dd60b901116990c01adf2ac821bb1ed6b4b40b48695c5dc9dc5be9"
+    },
+    {
+      "path": "src/job-refresh-status.js",
+      "bytes": 3072,
+      "sha256": "b0683939f0d09c9ed7331f824e72acbae48063e020af03cd2795e730951bd65f"
+    },
+    {
+      "path": "src/resume-batch-ui.js",
+      "bytes": 5759,
+      "sha256": "0d6c9ef548016204894221b3aaed5f0f1cc8de4b693fba31ac80a4844cf3c62b"
+    },
+    {
+      "path": "src/resume-editor-values.js",
+      "bytes": 2285,
+      "sha256": "43c23b0352f293535df69848427de0da03c8e72367f4b0c1fa7c6e274bf95d8d"
+    },
+    {
+      "path": "src/resume-sync-flow.js",
+      "bytes": 1616,
+      "sha256": "b09e09689f7dfb0540745c4e9f74ac9281b35630e90d02dd44aa7ea8242a2a42"
+    },
+    {
+      "path": "src/styles.css",
+      "bytes": 54257,
+      "sha256": "f5b02a54064594cf13e29214f62e0bad9c2b927a773c997b2e66ef8dcc3191e4"
+    },
+    {
+      "path": "src/text-entry.js",
+      "bytes": 3576,
+      "sha256": "8b24b4ddb387ef03889218973bab4a3baf40fa57c2aa9624b8b122de1fc8ef65"
+    },
+    {
+      "path": "src/update-install-status.js",
+      "bytes": 1126,
+      "sha256": "95def09701f58a47d8fb6fefa1b6b9006d6bb499f7a4d2e0765ffd98f2e0b0b3"
+    }
+  ]
+}

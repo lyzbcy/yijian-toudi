@@ -7,12 +7,24 @@ const {planJdWidgets,executeJdWidgets}=require('../jd-widget-fill.cjs');
 const {buildJdRequiredFieldsScript}=require('../jd-required-fields.cjs');
 const {resolveBaiduFormControl}=require('../baidu-form-context.cjs');
 const {planBaiduMonths,executeBaiduMonths}=require('../baidu-month-fill.cjs');
+const {planBaiduSelections,executeBaiduSelections}=require('../baidu-selection-fill.cjs');
+const {buildBaiduRequiredFieldsScript}=require('../baidu-required-fields.cjs');
 
 function radioComparableValue(value) {
   const normalized = normalizeComparableValue(value);
   if (normalized === '1') return '是';
   if (normalized === '0') return '否';
   return normalized;
+}
+
+function widgetManualReason(error) {
+  if(error==='date-day-required')return '官网要求具体日期，简历仅提供月份';
+  if(error==='month-precision-required')return '官网按月份选择，请核对日期；具体日期不会自动截断';
+  if(/^another-/.test(error||''))return '页面有未完成的选择，请先关闭当前选择器';
+  if(/year-option/.test(error||''))return '官网没有可用的对应年份';
+  if(/option|radio-disabled|select-disabled/.test(error||''))return '官网没有可用且完全一致的选项';
+  if(/row|control-missing/.test(error||''))return '官网字段暂未识别，请手动核对';
+  return '官网填写或选中状态尚未确认，请手动核对';
 }
 
 function planGenericResumeFields(plan, fields) {
@@ -329,14 +341,15 @@ function createGenericResumeFill(companyId, siteName) {
     }
     const localPlan = createUniversalResumePlan(resume);
     const baiduRequests=companyId==='baidu'?planBaiduMonths(localPlan,fields):[];
-    const widgetRequests=companyId==='jd'&&new URL(url).origin==='https://campus.jd.com'?planJdWidgets(resume):baiduRequests;
+    const baiduSelections=companyId==='baidu'?planBaiduSelections(resume):[];
+    const widgetRequests=companyId==='jd'&&new URL(url).origin==='https://campus.jd.com'?planJdWidgets(resume):[...baiduSelections,...baiduRequests];
     const widgetKeys=new Set(widgetRequests.map(item=>item.key));
-    const widgetExecution=widgetRequests.length?(companyId==='baidu'?await executeBaiduMonths(workspace,baiduRequests):await executeJdWidgets(workspace,resume)):[];
+    const widgetExecution=widgetRequests.length?(companyId==='baidu'?[...await executeBaiduSelections(workspace,baiduSelections),...await executeBaiduMonths(workspace,baiduRequests)]:await executeJdWidgets(workspace,resume)):[];
     if(widgetRequests.length){
       fields=await workspace.run(INSPECT_FORM_FIELDS);
       for(const item of widgetExecution){
         const verified=item.written&&item.expected===item.observed;
-        step(verified?'field-verified':'field-manual',verified?`「${item.locator.label}」控件已回读核验 ✓`:`「${item.locator.label}」需核对：${item.error==='date-day-required'?'官网要求具体日期，简历仅提供月份':item.error==='option-missing'?'官网没有对应选项':item.error||'回读不一致'}`);
+        step(verified?'field-verified':'field-manual',verified?`「${item.locator.label}」控件已回读核验 ✓`:`「${item.locator.label}」需核对：${widgetManualReason(item.error)}`);
       }
     }
     const textPlan=localPlan.filter(item=>!widgetKeys.has(item.key));
@@ -361,12 +374,13 @@ function createGenericResumeFill(companyId, siteName) {
     const manualKeys=[...new Set([...planned.manual.map(item=>item.key),...verification.mismatched,...verification.failed])];
     const needsReview = manualKeys.length;
     let requiredFields=null;
-    if(companyId==='jd'&&new URL(url).origin==='https://campus.jd.com'){
-      try {requiredFields=await workspace.run(buildJdRequiredFieldsScript());}
+    if(companyId==='baidu'||companyId==='jd'&&new URL(url).origin==='https://campus.jd.com'){
+      try {requiredFields=await workspace.run(companyId==='baidu'?buildBaiduRequiredFieldsScript():buildJdRequiredFieldsScript());}
       catch {requiredFields={applicable:false,structurallyComplete:false,officialValidationProven:false,reason:'inspection-failed',requiredRows:[],missing:[],unknown:[]};}
       if(!requiredFields||!['requiredRows','missing','unknown'].every(k=>Array.isArray(requiredFields[k])))requiredFields={applicable:false,structurallyComplete:false,officialValidationProven:false,reason:'inspection-result-invalid',requiredRows:[],missing:[],unknown:[]};
-      for(const row of requiredFields.missing||[])step('required-missing',`「${row.label}」（${row.sectionId} 第${row.groupNumber}段）必填项为空，请补充真实信息`);
-      for(const row of requiredFields.unknown||[])step('required-unknown',`「${row.label}」（${row.sectionId} 第${row.groupNumber}段）控件未核实，请人工检查`);
+      const requiredContext=row=>({info:'基本信息',consent:'本人确认',edu:'教育经历',education:'教育经历',experience:'工作经历',program:'项目经历',projects:'项目经历'}[row.sectionId]||'简历')+(['info','consent'].includes(row.sectionId)?'':` 第${row.groupNumber}段`);
+      for(const row of requiredFields.missing||[])step('required-missing',`「${row.label}」（${requiredContext(row)}）${row.sectionId==='consent'?'需要你本人阅读并决定是否勾选':'必填项为空，请补充真实信息'}`);
+      for(const row of requiredFields.unknown||[])step('required-unknown',`「${row.label}」（${requiredContext(row)}）控件未核实，请人工检查`);
     }
     const requiredMessage=requiredFields?(requiredFields.applicable&&requiredFields.requiredRows.length
       ? `；官网 ${requiredFields.missing.length} 行必填项仍为空，${requiredFields.unknown.length} 行控件未识别（仅结构检查，不代表官网已保存）`
@@ -384,6 +398,7 @@ function createGenericResumeFill(companyId, siteName) {
 }
 
 module.exports = {
+  widgetManualReason,
   planGenericResumeFields,
   executeFieldPlanWithRetry,
   buildExecuteFieldPlanScript,

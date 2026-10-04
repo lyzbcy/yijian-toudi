@@ -101,6 +101,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          include-hidden-files: true
           name: macos-candidate-${{ github.run_id }}-${{ matrix.runner }}
           if-no-files-found: error
           path: |
