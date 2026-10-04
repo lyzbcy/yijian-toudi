@@ -8,6 +8,18 @@ const parts=version.split('.').map(Number);parts[2]++;const nextVersion=parts.jo
 const work=fs.mkdtempSync(path.join(root,'.local-data/mac-auto-update-')),target='/Applications/一键投递-Auto-CI-'+crypto.randomBytes(6).toString('hex')+'.app',profile=path.join(work,'profile'),directory=path.join(profile,'desktop-updates'),executable=path.join(target,'Contents/MacOS/一键投递');
 const manifest=JSON.parse(fs.readFileSync(path.join(output,'mac-candidate.json'))),sourceZip=manifest.artifacts.find(a=>a.name.endsWith('.zip'));
 const report={version,nextVersion,architecture:process.arch,ok:false,fixtureOnly:true,mode:'actual-native-IPC-helper-transaction-and-open',incomingVersionIsTestFixture:true,officialPublicUpdateProven:false,endUserGatekeeperVerified:false,realAccountsVerified:false,checks:[],pageErrors:[]};
+report.helperDiagnostics=[];
+const actualLaunchHelper=mac.launchUpdateHelper;
+mac.launchUpdateHelper=async(payload,dir,options={})=>{
+ const started=Date.now(),diagnostic={template:options.templatePath?path.basename(options.templatePath):'production-worker',startedAt:new Date(started).toISOString()};
+ report.helperDiagnostics.push(diagnostic);
+ try{return await actualLaunchHelper(payload,dir,{...options,spawnFn:(bin,args,spawnOptions)=>{
+  const log=path.join(work,'worker-'+report.helperDiagnostics.length+'.log'),fd=fs.openSync(log,'a');
+  diagnostic.spawnMs=Date.now()-started;diagnostic.attempt=path.basename(path.dirname(args[0]));diagnostic.log=log;
+  let worker;try{worker=cp.spawn(bin,args,{...spawnOptions,stdio:['ignore',fd,fd]});}finally{fs.closeSync(fd);}
+  worker.once('exit',(code,signal)=>{diagnostic.exitCode=code;diagnostic.exitSignal=signal;diagnostic.exitMs=Date.now()-started;});return worker;
+ }});}catch(error){diagnostic.error=error.message;throw error;}finally{diagnostic.returnMs=Date.now()-started;}
+};
 let application,ownsTarget=false;const check=s=>report.checks.push(s),delay=ms=>new Promise(r=>setTimeout(r,ms));
 const run=(bin,args,timeout=60000)=>cp.execFileSync(bin,args,{encoding:'utf8',timeout,maxBuffer:8*1024*1024}).trim();
 async function until(fn,timeout=90000){const end=Date.now()+timeout;while(Date.now()<end){const v=await fn();if(v)return v;await delay(150);}throw Error('native-Mac-update-timeout');}
@@ -60,4 +72,4 @@ async function main(){
  await killReopened(15000);page=await launch();assert.equal(await application.evaluate(({app})=>app.getVersion()),nextVersion);await page.locator('.sidebar [data-page="resume"]').click();assert.equal(await page.locator('[name="education.0.school"]').inputValue(),'Mac自动升级保留样本大学');const after=await page.evaluate(()=>window.oneClick.getState());assert.ok(after.settings.apiToken===before.settings.apiToken,'retained API credential');assert.equal(sha(fs.readFileSync(attachment)),attachmentHash);const cookies=await application.evaluate(async({session})=>session.fromPartition('persist:mac-auto-fixture').cookies.get({url:'https://mac-auto.example.test'}));assert(cookies.some(c=>c.name==='retention'&&c.value==='fixture'));
  await page.screenshot({path:path.join(output,'mac-auto-update-reopened.png'),animations:'disabled'});check('Subsequent visible cold reopen confirms new version and retained UI resume/API credential/attachment bytes/persistent sample Cookie');assert.deepEqual(report.pageErrors,[]);report.ok=true;
 }
-main().catch(e=>{report.error=e.stack||e.message;process.exitCode=1;}).finally(async()=>{try{await close();await killReopened();}catch{}if(ownsTarget){for(const row of fs.readdirSync('/Applications')){const full=path.join('/Applications',row);if(full===target||full.startsWith(target+'.yjt-')){assert(/^\/Applications\/一键投递-Auto-CI-[a-f0-9]{12}\.app(?:\.yjt-(?:stage|backup|failed)-[a-f0-9]{48}|\.yjt-update-lock)?$/.test(full));fs.rmSync(full,{recursive:true,force:true});}}}fs.writeFileSync(path.join(output,'mac-auto-update.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));});
+main().catch(e=>{report.error=e.stack||e.message;process.exitCode=1;}).finally(async()=>{try{await close();await killReopened();}catch{}for(const diagnostic of report.helperDiagnostics){if(diagnostic.log&&fs.existsSync(diagnostic.log)){diagnostic.workerOutput=fs.readFileSync(diagnostic.log,'utf8').slice(-16000);delete diagnostic.log;}}if(ownsTarget){for(const row of fs.readdirSync('/Applications')){const full=path.join('/Applications',row);if(full===target||full.startsWith(target+'.yjt-')){assert(/^\/Applications\/一键投递-Auto-CI-[a-f0-9]{12}\.app(?:\.yjt-(?:stage|backup|failed)-[a-f0-9]{48}|\.yjt-update-lock)?$/.test(full));fs.rmSync(full,{recursive:true,force:true});}}}fs.writeFileSync(path.join(output,'mac-auto-update.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));});
