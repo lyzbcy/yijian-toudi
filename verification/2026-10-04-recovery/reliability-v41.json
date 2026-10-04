@@ -1,0 +1,216 @@
+{
+  "ok": true,
+  "version": "0.5.41",
+  "fixtureOnly": true,
+  "promptStubbed": false,
+  "deletionConfirmStubbed": true,
+  "loops": 10,
+  "profileOperations": 30,
+  "visibleWindows": 0,
+  "pageErrors": 0,
+  "persisted": true,
+  "elapsedMs": 62955,
+  "timings": [
+    {
+      "iteration": 0,
+      "step": "begin",
+      "elapsedMs": 2416
+    },
+    {
+      "iteration": 0,
+      "step": "created",
+      "elapsedMs": 4419
+    },
+    {
+      "iteration": 0,
+      "step": "switched",
+      "elapsedMs": 6414
+    },
+    {
+      "iteration": 0,
+      "step": "deleted-and-verified",
+      "elapsedMs": 8441
+    },
+    {
+      "iteration": 1,
+      "step": "begin",
+      "elapsedMs": 8442
+    },
+    {
+      "iteration": 1,
+      "step": "created",
+      "elapsedMs": 10485
+    },
+    {
+      "iteration": 1,
+      "step": "switched",
+      "elapsedMs": 12445
+    },
+    {
+      "iteration": 1,
+      "step": "deleted-and-verified",
+      "elapsedMs": 14470
+    },
+    {
+      "iteration": 2,
+      "step": "begin",
+      "elapsedMs": 14471
+    },
+    {
+      "iteration": 2,
+      "step": "created",
+      "elapsedMs": 16514
+    },
+    {
+      "iteration": 2,
+      "step": "switched",
+      "elapsedMs": 18495
+    },
+    {
+      "iteration": 2,
+      "step": "deleted-and-verified",
+      "elapsedMs": 20502
+    },
+    {
+      "iteration": 3,
+      "step": "begin",
+      "elapsedMs": 20502
+    },
+    {
+      "iteration": 3,
+      "step": "created",
+      "elapsedMs": 22562
+    },
+    {
+      "iteration": 3,
+      "step": "switched",
+      "elapsedMs": 24561
+    },
+    {
+      "iteration": 3,
+      "step": "deleted-and-verified",
+      "elapsedMs": 26583
+    },
+    {
+      "iteration": 4,
+      "step": "begin",
+      "elapsedMs": 26583
+    },
+    {
+      "iteration": 4,
+      "step": "created",
+      "elapsedMs": 28645
+    },
+    {
+      "iteration": 4,
+      "step": "switched",
+      "elapsedMs": 30609
+    },
+    {
+      "iteration": 4,
+      "step": "deleted-and-verified",
+      "elapsedMs": 32634
+    },
+    {
+      "iteration": 5,
+      "step": "begin",
+      "elapsedMs": 32634
+    },
+    {
+      "iteration": 5,
+      "step": "created",
+      "elapsedMs": 34679
+    },
+    {
+      "iteration": 5,
+      "step": "switched",
+      "elapsedMs": 36662
+    },
+    {
+      "iteration": 5,
+      "step": "deleted-and-verified",
+      "elapsedMs": 38684
+    },
+    {
+      "iteration": 6,
+      "step": "begin",
+      "elapsedMs": 38685
+    },
+    {
+      "iteration": 6,
+      "step": "created",
+      "elapsedMs": 40712
+    },
+    {
+      "iteration": 6,
+      "step": "switched",
+      "elapsedMs": 42694
+    },
+    {
+      "iteration": 6,
+      "step": "deleted-and-verified",
+      "elapsedMs": 44717
+    },
+    {
+      "iteration": 7,
+      "step": "begin",
+      "elapsedMs": 44717
+    },
+    {
+      "iteration": 7,
+      "step": "created",
+      "elapsedMs": 46763
+    },
+    {
+      "iteration": 7,
+      "step": "switched",
+      "elapsedMs": 48744
+    },
+    {
+      "iteration": 7,
+      "step": "deleted-and-verified",
+      "elapsedMs": 50766
+    },
+    {
+      "iteration": 8,
+      "step": "begin",
+      "elapsedMs": 50766
+    },
+    {
+      "iteration": 8,
+      "step": "created",
+      "elapsedMs": 52812
+    },
+    {
+      "iteration": 8,
+      "step": "switched",
+      "elapsedMs": 54777
+    },
+    {
+      "iteration": 8,
+      "step": "deleted-and-verified",
+      "elapsedMs": 56800
+    },
+    {
+      "iteration": 9,
+      "step": "begin",
+      "elapsedMs": 56801
+    },
+    {
+      "iteration": 9,
+      "step": "created",
+      "elapsedMs": 58861
+    },
+    {
+      "iteration": 9,
+      "step": "switched",
+      "elapsedMs": 60844
+    },
+    {
+      "iteration": 9,
+      "step": "deleted-and-verified",
+      "elapsedMs": 62867
+    }
+  ],
+  "scope": "Windows 19-suite run; later changes only refined Mac validation"
+}

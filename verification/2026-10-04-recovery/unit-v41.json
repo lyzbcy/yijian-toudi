@@ -4,5 +4,7 @@
   "tests": 356,
   "passed": 356,
   "failed": 0,
-  "productBugRateProven": false
+  "productBugRateProven": false,
+  "sourceCommit": "03596b467071d4bde0449f078f7dfc795a0c0b3e",
+  "finalBoundaryLog": "ignored-local-unit-v41-final-boundaries.log"
 }

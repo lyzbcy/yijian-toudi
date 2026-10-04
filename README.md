@@ -31,7 +31,7 @@ pnpm pack:mac
 pnpm dist:mac
 ```
 
-封存40的Mac两架构完整ad-hoc资源签名及Applications CLI手动安装升级通过。当前41已加入可写Applications位置的自动更新事务，真实原生验收待运行，详见[Mac更新](doc/integrations/macos-update.md)。Developer ID、公证和用户Gatekeeper仍未完成；DMG/ZIP不包含旧 `installer/一键安装.command`，该脚本不应随当前候选分发。
+封存40的Mac两架构完整ad-hoc资源签名及Applications CLI手动安装升级通过。当前41可写Applications位置的自动更新事务，两架构真实原生fixture各6组通过，详见[Mac更新](doc/integrations/macos-update.md)。Developer ID、公证、用户Gatekeeper和公众正式升级仍未完成；DMG/ZIP不包含旧 `installer/一键安装.command`，该脚本不应随当前候选分发。
 
 Windows x64 可在 Windows 开发机运行：
 

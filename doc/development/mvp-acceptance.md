@@ -3,9 +3,13 @@
 负责人：项目维护 Agent
 最后更新：2026-10-04
 
-## 当前开发候选 v0.5.41（原生验收待运行）
+## 当前接续候选 v0.5.41（未正式发布）
 
-Mac自动安装更新已加入实际IPC入口、ZIP链接预检、完整资源签名与同级备份事务、ready/commit/abort、失败恢复和可见重启确认；仅在已安装且可写的Applications位置启用。当前356单测通过，原生两架构自动安装/重启/失败回滚尚未运行，不记为交付完成。第一次Windows路径策略测试误报保留mac-auto-update-v41-unit-attempt1。全部原目标继续active。
+Mac两架构实际原生自动更新事务各6组通过：ready后abort、测试worker注入替换后故障的真实回滚、实际IPC下载/hash/commit/退出/同级包替换/open/可见新版nonce确认、冷重开资料/凭据/附件字节/样本Cookie保留。入站下一版42和URL响应为测试样本，不计公众42或正式升级。37193622432在03596b4成功；严格资源签名/114源文件审计及38→41Applications CLI手动升级各9组也通过。
+
+Windows实际包三宽度/输入、默认NSIS6组、40→41真实IPC/helper/NSIS/可见重启与资料保留两种桌面偏好各8组通过。19套Windows后台通过后Mac专用验证修订，最终全量356单测再通过；Linux41独立systemd/Caddy本地CA/Compose运行通过。首次POSIX路径测试误报和两架构原生zipinfo文本检查拒绝均保留，不推算总体bug率。7个payload与精确checksum核对，汇总delivery-manifest-v41.json。
+
+Mac完整ad-hoc资源签名不等于Developer ID、公证或用户信任，quarantine下spctl仍拒绝；真正公众下载升级、本人账号完整保存/授权申请回执、生产公网反馈/企微/异机日志/默认地址、云Skill、Windows原生向导、完整41演示和代表性质量证据继续保留，目标仍active。39局部视频不计当前完整视频。
 
 ## 封存 v0.5.40（未正式发布）
 

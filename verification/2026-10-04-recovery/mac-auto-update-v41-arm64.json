@@ -1,0 +1,23 @@
+{
+  "version": "0.5.41",
+  "nextVersion": "0.5.42",
+  "architecture": "arm64",
+  "ok": true,
+  "fixtureOnly": true,
+  "mode": "actual-native-IPC-helper-transaction-and-open",
+  "incomingVersionIsTestFixture": true,
+  "officialPublicUpdateProven": false,
+  "endUserGatekeeperVerified": false,
+  "realAccountsVerified": false,
+  "checks": [
+    "Actual native current ZIP installs into unique Applications path; distinct future fixture ZIP is built with full resource signature",
+    "Actual detached helper is ready before abort; current process and complete old bundle remain unchanged",
+    "Injected test-worker failure after real bundle replacement restores full original signed bundle; isolated user data stays intact",
+    "Actual installed main IPC selects future fixture, downloads genuine native ZIP and verifies exact SHA-256",
+    "Real IPC ready/commit/exit helper transaction replaces bundle and open launches visible next app with authenticated restart confirmation",
+    "Subsequent visible cold reopen confirms new version and retained UI resume/API credential/attachment bytes/persistent sample Cookie"
+  ],
+  "pageErrors": [],
+  "workflowRun": 37193622432,
+  "sourceCommit": "03596b467071d4bde0449f078f7dfc795a0c0b3e"
+}
