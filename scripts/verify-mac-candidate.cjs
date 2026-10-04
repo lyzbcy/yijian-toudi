@@ -5,7 +5,7 @@ const root=path.resolve(__dirname,'..'),version=require('../package.json').versi
 const application=path.join(root,'release',process.arch==='arm64'?'mac-arm64':'mac','一键投递.app');
 const executable=path.join(application,'Contents/MacOS/一键投递');assert.ok(fs.statSync(executable).isFile());
 const audit=auditAppAsar(path.join(application,'Contents/Resources/app.asar'),root,version);
-const names=fs.readdirSync(path.join(root,'release')).filter(name=>name===`一键投递-${version}-${process.arch}.zip`||name===`一键投递-${version}-${process.arch}.dmg`);
+const names=fs.readdirSync(path.join(root,'release')).filter(name=>name===`yijian-toudi-${version}-${process.arch}.zip`||name===`yijian-toudi-${version}-${process.arch}.dmg`);
 assert.equal(names.length,2,'Current native-architecture ZIP and DMG are required');
 const artifacts=names.map(name=>{const bytes=fs.readFileSync(path.join(root,'release',name));return{name,bytes:bytes.length,sha256:sha(bytes)};});
 for(const file of artifacts)fs.writeFileSync(path.join(root,'release',file.name+'.sha256'),`${file.sha256}  ${file.name}\n`);

@@ -64,7 +64,7 @@
         "dmg",
         "zip"
       ],
-      "artifactName": "一键投递-${version}-${arch}.${ext}",
+      "artifactName": "yijian-toudi-${version}-${arch}.${ext}",
       "hardenedRuntime": false,
       "gatekeeperAssess": false
     },

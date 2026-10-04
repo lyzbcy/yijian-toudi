@@ -1,0 +1,38 @@
+{
+  "at": "2026-10-04T07:13:51.327Z",
+  "version": "0.5.38",
+  "releaseDraft": true,
+  "releaseUrl": "https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-790352050ba76de7e32c",
+  "assetCount": 14,
+  "verifiedBinaryAssets": [
+    {
+      "name": "yijian-toudi-setup-0.5.38.exe",
+      "bytes": 104227354,
+      "sha256": "dfb34605ce62cdb9cd2ce5a857502d52f98d06205a46cfab4a46608108f5527e"
+    },
+    {
+      "name": "yijian-toudi-skill-0.5.38.tar.gz",
+      "bytes": 13907,
+      "sha256": "995fcecf71f56d4446bee39cf25091e8f3de1bb1e1f8f61de8d9c616f3b608aa"
+    },
+    {
+      "name": "yijian-toudi-feedback-server-0.5.38.tar.gz",
+      "bytes": 12432,
+      "sha256": "2e61b6c0ed454bfc0fb4fb55e8509236ee37435eda3e2ec5ca8dbcc8949cc667"
+    },
+    {
+      "name": "yijian-toudi-0.5.38-arm64.dmg",
+      "bytes": 129097314,
+      "sha256": "4c23aa6b522b006452f32a1edea0dbaa212fd7d2cc987cb4add84cf2dee94a20"
+    },
+    {
+      "name": "yijian-toudi-0.5.38-arm64.zip",
+      "bytes": 127192778,
+      "sha256": "9e9090b42bb325eb1ee8cec2816fdca34f840cae558e49729cc8d215968522ca"
+    }
+  ],
+  "canonicalMacChecksumAndAssetSelection": true,
+  "productionUpdateProven": false,
+  "retainedPriorMetadataAssets": 3,
+  "fullGoalComplete": false
+}
