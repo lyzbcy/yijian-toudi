@@ -1,10 +1,12 @@
 const { createUniversalResumePlan } = require('../resume-plan.cjs');
-const { matchField, normalizeComparableValue } = require('../field-matching.cjs');
+const { matchField, normalizeComparableValue, isUnsafeField } = require('../field-matching.cjs');
 const { resolvePlatformUrl } = require('../platform-manifests.cjs');
 const { LOGIN_AND_FORM_PROBE, INSPECT_FORM_FIELDS } = require('../form-inspection.cjs');
 const {resolveJdFormControl,buildEnsureJdGroupsScript}=require('../jd-form-context.cjs');
 const {planJdWidgets,executeJdWidgets}=require('../jd-widget-fill.cjs');
 const {buildJdRequiredFieldsScript}=require('../jd-required-fields.cjs');
+const {resolveBaiduFormControl}=require('../baidu-form-context.cjs');
+const {planBaiduMonths,executeBaiduMonths}=require('../baidu-month-fill.cjs');
 
 function radioComparableValue(value) {
   const normalized = normalizeComparableValue(value);
@@ -19,11 +21,14 @@ function planGenericResumeFields(plan, fields) {
   const used = new Set();
   // 页面是否带经历区块信息（实习经历-1/项目经历-2…）
   const hasSections = (fields || []).some((field) => field.section);
+  const hasBaiduContext=(fields||[]).some(field=>field.baiduLocator);
   for (const item of plan) {
     const expected = normalizeComparableValue(item.value);
     let available = (fields || []).filter((field) => {
       if (used.has(field.index)) return false;
       if (field.readOnly) return false;
+      if(hasBaiduContext&&(isUnsafeField(field)||String(field.type||'').includes('file')))return false;
+      if(hasBaiduContext&&field.baiduLocator?.key!==item.key)return false;
       if (!String(field.type || '').includes('radio')) return true;
       const optionValue = radioComparableValue(field.controlValue || field.label?.split(/\s+/).at(-1));
       return !optionValue || optionValue === expected;
@@ -41,8 +46,8 @@ function planGenericResumeFields(plan, fields) {
     // resume-plan decorates segment 2+ keywords for display. Once the actual
     // numbered section is scoped, that annotation is not part of the site label.
     const matchItem=hasSections&&item.sectionHint?{...item,keywords:(item.keywords||[]).map(k=>k.replace(/\(第\d+段\)$/,''))}:item;
-    let match = matchField(matchItem, available);
-    if (match.status === 'ambiguous') {
+    let match = hasBaiduContext ? (available.length===1?{status:'matched',field:available[0],confidence:1}:{status:available.length?'ambiguous':'missing',confidence:0}) : matchField(matchItem, available);
+    if (match.status === 'ambiguous'&&!hasBaiduContext) {
       // 同构多槽位：阿里等站的多段经历每段都有完全相同的「公司或组织名称」等字段。
       // 候选标签/类型/占位符完全一致时视为槽位数组而非真歧义，按顺序取第一个未占用的槽位。
       const cands = match.candidates || [];
@@ -76,7 +81,7 @@ function planGenericResumeFields(plan, fields) {
       fieldType: match.field.type,
       confidence: match.confidence,
       observedBefore: match.field.value
-      , locator: match.field.jdLocator ? {kind:'jd-context',...match.field.jdLocator} : String(match.field.type || '').includes('radio') ? radioLocator : plainLocator
+      , locator: match.field.baiduLocator ? {kind:'baidu-context',...match.field.baiduLocator} : match.field.jdLocator ? {kind:'jd-context',...match.field.jdLocator} : String(match.field.type || '').includes('radio') ? radioLocator : plainLocator
     });
   }
   return { writable, manual };
@@ -91,7 +96,11 @@ function buildExecuteFieldPlanScript(fieldPlan) {
       .filter((control) => !control.closest('form[action*="login"], [class*="login"], [class*="captcha"], [class*="auth"], [role="dialog"]'));
     return planned.map((item) => {
       let control = null;
-      if (item.locator?.kind === 'jd-context') {
+      if(item.locator?.kind==='baidu-context'){
+        if(item.locator.hidden||item.locator.widgetKind!=='text'||!item.locator.key)return {key:item.key,written:false,observed:'',error:'unsupported-control'};
+        control=resolveBaiduFormControl(item.locator);
+        if(control?.closest('.brick-date-picker, .ant-select, .brick-select'))control=null;
+      } else if (item.locator?.kind === 'jd-context') {
         control=resolveJdFormControl(item.locator);
       } else if (item.locator?.kind === 'index') {
         const all = inspectControls();
@@ -145,7 +154,7 @@ function buildExecuteFieldPlanScript(fieldPlan) {
       }
     });
   }
-  return `(()=>{const resolveJdFormControl=${resolveJdFormControl.toString()};return (${execute.toString()})(${JSON.stringify(fieldPlan)});})()`;
+  return `(()=>{const resolveBaiduFormControl=${resolveBaiduFormControl.toString()};const resolveJdFormControl=${resolveJdFormControl.toString()};return (${execute.toString()})(${JSON.stringify(fieldPlan)});})()`;
 }
 
 function mergeExecutionWithInspection(execution, fieldsAfter) {
@@ -160,6 +169,7 @@ function mergeExecutionWithInspection(execution, fieldsAfter) {
           : (field?.value || '');
       }
       const stable = (fieldsAfter || []).filter((field) => {
+        if(item.locator?.kind==='baidu-context')return field.baiduLocator&&JSON.stringify({kind:'baidu-context',...field.baiduLocator})===JSON.stringify(item.locator);
         if (item.locator?.kind === 'jd-context') return field.jdLocator&&JSON.stringify({kind:'jd-context',...field.jdLocator})===JSON.stringify(item.locator);
         if (item.locator?.kind === 'id') return field.id === item.locator.value;
         if (item.locator?.kind === 'radio') return field.name === item.locator.value && field.controlValue === item.locator.controlValue;
@@ -318,9 +328,10 @@ function createGenericResumeFill(companyId, siteName) {
       return { ok: false, status: 'manual-required', message: `${siteName}页面没有可识别的简历字段（可能在登录页），请完成登录后重新更新` };
     }
     const localPlan = createUniversalResumePlan(resume);
-    const widgetRequests=companyId==='jd'&&new URL(url).origin==='https://campus.jd.com'?planJdWidgets(resume):[];
+    const baiduRequests=companyId==='baidu'?planBaiduMonths(localPlan,fields):[];
+    const widgetRequests=companyId==='jd'&&new URL(url).origin==='https://campus.jd.com'?planJdWidgets(resume):baiduRequests;
     const widgetKeys=new Set(widgetRequests.map(item=>item.key));
-    const widgetExecution=widgetRequests.length?await executeJdWidgets(workspace,resume):[];
+    const widgetExecution=widgetRequests.length?(companyId==='baidu'?await executeBaiduMonths(workspace,baiduRequests):await executeJdWidgets(workspace,resume)):[];
     if(widgetRequests.length){
       fields=await workspace.run(INSPECT_FORM_FIELDS);
       for(const item of widgetExecution){

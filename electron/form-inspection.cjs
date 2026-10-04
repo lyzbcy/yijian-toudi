@@ -32,8 +32,10 @@ const LOGIN_AND_FORM_PROBE = `(() => new Promise((resolve) => {
 }))()`;
 
 const {getJdFormContext}=require('./jd-form-context.cjs');
+const {getBaiduFormContext}=require('./baidu-form-context.cjs');
 const INSPECT_FORM_FIELDS = `(() => {
   const jdContext = ${getJdFormContext.toString()};
+  const baiduContext = ${getBaiduFormContext.toString()};
   function describe(control) {
     const labelByFor = control.id ? document.querySelector('label[for="' + CSS.escape(control.id) + '"]')?.innerText : '';
     // Real UD/MTD forms place the caption outside the deeply nested input.
@@ -55,7 +57,7 @@ const INSPECT_FORM_FIELDS = `(() => {
       node = node.parentElement;
     }
     return [
-      jdContext(control)?.label, labelByFor, itemLabel, control.closest('label')?.innerText, control.placeholder, control.name, control.id,
+      baiduContext(control)?.label, jdContext(control)?.label, labelByFor, itemLabel, control.closest('label')?.innerText, control.placeholder, control.name, control.id,
       control.getAttribute('aria-label'), control.getAttribute('autocomplete'), control.className,
       ancestorTexts.join(' ')
     ].filter(Boolean).join(' ').trim();
@@ -86,6 +88,7 @@ const INSPECT_FORM_FIELDS = `(() => {
   } catch (error) {}
   const headerNodes = [...headerCandidates.values()].sort((a, b) => a.top - b.top);
   const sectionOf = (control) => {
+    const baidu=baiduContext(control);if(baidu)return baidu.section;
     const jd=jdContext(control);
     const aliases={edu:'教育经历',experience:'实习经历',program:'项目经历'};
     if(jd&&aliases[jd.sectionId])return aliases[jd.sectionId]+'-'+jd.groupNumber;
@@ -100,7 +103,8 @@ const INSPECT_FORM_FIELDS = `(() => {
   return controls.map((control, index) => ({
     index,
     jdLocator: jdContext(control),
-    readOnly: Boolean(control.readOnly || control.closest('.ud__select, .mtd-select') || (jdContext(control)&&control.matches('.ant-select-search__field'))),
+    baiduLocator: baiduContext(control),
+    readOnly: Boolean(control.readOnly || (baiduContext(control)&&(baiduContext(control).hidden||!baiduContext(control).key||baiduContext(control).widgetKind!=='text')) || control.closest('.ud__select, .mtd-select') || (jdContext(control)&&control.matches('.ant-select-search__field'))),
     section: sectionOf(control),
     label: describe(control).slice(0, 240),
     type: control.tagName.toLowerCase() + (control.type ? ':' + control.type : ''),

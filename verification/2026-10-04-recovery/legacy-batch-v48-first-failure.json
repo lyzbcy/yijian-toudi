@@ -1,0 +1,10 @@
+{
+  "version": "0.5.48",
+  "packaged": true,
+  "ok": false,
+  "offlineFixture": true,
+  "error": "Target page, context or browser has been closed at test/ui-resume-batch.cjs:73:38",
+  "concurrentDefaultNsisInstall": true,
+  "causeProven": false,
+  "sequentialRetestPending": true
+}

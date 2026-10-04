@@ -17,7 +17,7 @@ const { JsonStore } = require('../electron/store.cjs');
     executablePath: process.env.YJT_PACKAGED_EXECUTABLE || process.env.ELECTRON_EXECUTABLE || undefined,
     env: { ...process.env, YIJIAN_BACKGROUND_TEST: process.env.YJT_VISIBLE_TEST === '1' ? '0' : '1', ELECTRON_DISABLE_SECURITY_WARNINGS: 'true' }
   });
-  const errors = [], checks = [];
+  const errors = [], checks = [], renameAttempts=[];
   let page;
   const phase = async (page, name) => {
     const manifest = process.env.YJT_PROFILE_OBSERVER_MANIFEST;
@@ -37,10 +37,9 @@ const { JsonStore } = require('../electron/store.cjs');
     page.on('pageerror', e => errors.push(e.message));
     await page.evaluate(() => {
       window.profileInputEvents = [];
-      for (const type of ['click', 'dblclick']) document.addEventListener(type, event => {
-        if (!event.target.closest('#resumeProfilesBar')) return;
-        window.profileInputEvents.push({ type, detail: event.detail, target: event.target.tagName, rename: !!event.target.closest('[data-rename-profile]'), active: !!event.target.closest('.profile-tab.active'), open: !!document.querySelector('#textEntryDialog[open]') });
-        if (window.profileInputEvents.length > 30) window.profileInputEvents.shift();
+      for (const type of ['pointerdown', 'pointerup', 'click', 'dblclick']) document.addEventListener(type, event => {
+        window.profileInputEvents.push({ type, detail: event.detail, target: event.target.tagName, inProfiles:!!event.target.closest('#resumeProfilesBar'), x:event.clientX,y:event.clientY,focused:document.hasFocus(), rename: !!event.target.closest('[data-rename-profile]'), active: !!event.target.closest('.profile-tab.active'), open: !!document.querySelector('#textEntryDialog[open]') });
+        if (window.profileInputEvents.length > 60) window.profileInputEvents.shift();
       }, true);
     });
     await page.locator('#onboardingDialog[open]').waitFor();
@@ -60,6 +59,10 @@ const { JsonStore } = require('../electron/store.cjs');
     const add = async () => { await page.locator('[data-add-profile]').click(); await dialog.waitFor(); };
     const submit = async value => { await input.fill(value); await input.press('Enter'); await dialog.waitFor({ state: 'hidden' }); };
     const activeIs = async id => page.waitForFunction(id => document.querySelector('.profile-tab.active')?.dataset.profile === id, id);
+    const renameSnapshot=async(locator,phase)=>renameAttempts.push(await locator.evaluate((e,phase)=>{
+      const r=e.getBoundingClientRect(),parents=[];for(let p=e.parentElement;p;p=p.parentElement)if(p.scrollHeight>p.clientHeight)parents.push({tag:p.tagName,scrollTop:p.scrollTop,clientHeight:p.clientHeight,scrollHeight:p.scrollHeight});
+      return{phase,connected:e.isConnected,focused:document.hasFocus(),rect:{x:r.x,y:r.y,width:r.width,height:r.height},viewport:{width:innerWidth,height:innerHeight},parents,dialogOpen:!!document.querySelector('#textEntryDialog[open]')};
+    },phase));
     await page.locator('[name="intention.roles"]').fill('前端工程师');
     await page.locator('[name="education.0.school"]').fill('默认大学');
     await save();
@@ -99,7 +102,10 @@ const { JsonStore } = require('../electron/store.cjs');
     checks.push('Actual labeled modal at three widths creates independent profile with Enter; native prompt unchanged');
     await page.locator('[name="education.0.school"]').fill('产品大学');
     await page.locator('[name="intention.roles"]').fill('产品经理');
-    await page.locator(`[data-rename-profile="${newId}"]`).dblclick();
+    const firstRename=page.locator(`[data-rename-profile="${newId}"]`);
+    await renameSnapshot(firstRename,'before-first-dblclick');
+    await firstRename.dblclick();
+    await renameSnapshot(firstRename,'after-first-dblclick');
     await dialog.waitFor();
     assert.equal(await input.inputValue(), '产品方向');
     await input.fill('   ');
@@ -166,11 +172,11 @@ const { JsonStore } = require('../electron/store.cjs');
     assert.equal(await page.evaluate(() => String(window.prompt)), nativePrompt);
     assert.deepEqual(errors, []);
     checks.push('Reload retains names, independent resume content and shared identity with zero page errors');
-    const report = { ok: true, version: require('../package.json').version, fixtureOnly: true, packaged: !!process.env.YJT_PACKAGED_EXECUTABLE, promptStubbed: false, checks, pageErrors: errors };
+    const report = { ok: true, version: require('../package.json').version, fixtureOnly: true, packaged: !!process.env.YJT_PACKAGED_EXECUTABLE, promptStubbed: false, checks, pageErrors: errors,renameAttempts };
     fs.writeFileSync(path.join(output, 'resume-profiles.json'), JSON.stringify(report, null, 2));
     console.log(JSON.stringify(report));
   } catch (error) {
-    const report = { ok: false, version: require('../package.json').version, fixtureOnly: true, packaged: !!process.env.YJT_PACKAGED_EXECUTABLE, promptStubbed: false, checks, pageErrors: errors, error: error.message };
+    const report = { ok: false, version: require('../package.json').version, fixtureOnly: true, packaged: !!process.env.YJT_PACKAGED_EXECUTABLE, promptStubbed: false, checks, pageErrors: errors,renameAttempts, error: error.message };
     if (page && !page.isClosed()) {
       report.inputEvents = await page.evaluate(() => window.profileInputEvents || []).catch(() => []);
       report.dialogState = await page.evaluate(() => ({ open: !!document.querySelector('#textEntryDialog[open]'), activeTabCount: document.querySelectorAll('.profile-tab.active').length, tabCount: document.querySelectorAll('.profile-tab[data-profile]').length })).catch(() => null);

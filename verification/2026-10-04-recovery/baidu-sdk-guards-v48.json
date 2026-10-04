@@ -1,0 +1,12 @@
+{
+  "version": "0.5.48",
+  "sealed": true,
+  "realWebsiteSdk": true,
+  "officialSaveUploadApplications": 0,
+  "fullDateRejected": true,
+  "unavailableYearRejected": true,
+  "existingCalendarRejectedAndPreserved": true,
+  "existingDatePreserved": true,
+  "selectSearchInputsUnchanged": true,
+  "ok": true
+}

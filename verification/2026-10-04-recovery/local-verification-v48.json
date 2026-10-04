@@ -1,0 +1,192 @@
+{
+  "ok": true,
+  "version": "0.5.48",
+  "at": "2026-10-04T17:24:23.763Z",
+  "runtimeSourceFingerprints": "source-fingerprints-v48.json",
+  "candidateManifest": "candidate-manifest-v0.5.48.json",
+  "ownFilesMatched": 119,
+  "authenticode": "NotSigned",
+  "units": {
+    "backgroundPassed": 372,
+    "finalPassed": 374,
+    "failed": 0,
+    "skipped": 0
+  },
+  "background": {
+    "at": "2026-10-04T17:22:45.439Z",
+    "ok": true,
+    "results": [
+      {
+        "name": "unit",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 5635
+      },
+      {
+        "name": "check",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 406
+      },
+      {
+        "name": "ui-smoke",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 12017
+      },
+      {
+        "name": "ui-resume-segments",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 62511
+      },
+      {
+        "name": "ui-resume-profiles",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 50617
+      },
+      {
+        "name": "ui-capabilities",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 6233
+      },
+      {
+        "name": "ui-workspace-exit",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 5029
+      },
+      {
+        "name": "ui-resume-batch",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 51041
+      },
+      {
+        "name": "ui-batch-actions",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 2022
+      },
+      {
+        "name": "ui-login-upload",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 17951
+      },
+      {
+        "name": "ui-live-window-fixes",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 22534
+      },
+      {
+        "name": "ui-jd-login",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 12432
+      },
+      {
+        "name": "ui-auth-frame",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 4430
+      },
+      {
+        "name": "ui-ai-browser",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 19505
+      },
+      {
+        "name": "ui-ai-preview",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 20374
+      },
+      {
+        "name": "ui-reliability",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 144231
+      },
+      {
+        "name": "ui-boss-recovery",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 5342
+      },
+      {
+        "name": "ui-delivery-layout",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 36806
+      },
+      {
+        "name": "ui-feedback",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 11627
+      },
+      {
+        "name": "ui-update-install-status",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 2938
+      },
+      {
+        "name": "ui-job-refresh-status",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 3664
+      },
+      {
+        "name": "ui-author-page",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 39663
+      },
+      {
+        "name": "ui-windows-shell",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 1540
+      }
+    ]
+  },
+  "siteSmokePassed": true,
+  "skillAndFeedbackPackagesVersionMatched": true,
+  "packagedWindows": {
+    "shell": "windows-shell-packaged-v48.json",
+    "legacyAttachmentBatch": "legacy-batch-packaged-v48.json",
+    "resumeProfiles": "resume-profiles-packaged-v48.json",
+    "defaultNsis": "windows-default-install-v48.json",
+    "defaultNsisGroups": 6,
+    "defaultNsisConcurrentBatchFirstFailure": "legacy-batch-v48-first-failure.json",
+    "nativeCaptionButtonsAndWizardClicked": false,
+    "upgrade47To48Tested": false
+  },
+  "realBaidu": {
+    "sdk": "baidu-sdk-v48.json",
+    "guards": "baidu-sdk-guards-v48.json",
+    "isolatedAuthCopy": true,
+    "allExternalRequestsBlockedDuringEdits": true,
+    "syntheticMonthsVerified": 6,
+    "syntheticProjectTextsVerified": 4,
+    "officialSaveUploadApplications": 0,
+    "personalAppRestarted": false
+  },
+  "mac47": {
+    "run": 37217382949,
+    "intel": "success",
+    "arm64": "failure",
+    "failure": "mac-profiles-v47-arm64-first-failure.json",
+    "causeProven": false
+  },
+  "mac48": "not-yet-run",
+  "goal": "active",
+  "completeMvp": false,
+  "bugRateBelowOnePercentProven": false
+}

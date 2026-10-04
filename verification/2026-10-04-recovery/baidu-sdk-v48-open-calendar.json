@@ -1,0 +1,63 @@
+{
+  "at": "2026-10-04T17:13:15.369Z",
+  "sourceVersion": "0.5.48",
+  "sealed": true,
+  "realWebsiteSdk": true,
+  "syntheticLocalEditsOnly": true,
+  "officialSaveUploadApplications": 0,
+  "contextCount": 26,
+  "hiddenControlCount": 4,
+  "hiddenMirrors": 3,
+  "selectSearchesProtected": true,
+  "dates": [
+    {
+      "key": "education.0.start",
+      "written": false,
+      "verified": true,
+      "error": "another-calendar-open"
+    },
+    {
+      "key": "education.0.end",
+      "written": false,
+      "verified": true,
+      "error": "another-calendar-open"
+    },
+    {
+      "key": "experience.0.start",
+      "written": false,
+      "verified": true,
+      "error": "another-calendar-open"
+    },
+    {
+      "key": "experience.0.end",
+      "written": false,
+      "verified": true,
+      "error": "another-calendar-open"
+    },
+    {
+      "key": "projects.0.start",
+      "written": false,
+      "verified": true,
+      "error": "another-calendar-open"
+    },
+    {
+      "key": "projects.0.end",
+      "written": false,
+      "verified": true,
+      "error": "another-calendar-open"
+    }
+  ],
+  "datesRetainedAfterTextEdits": true,
+  "text": {
+    "verified": [
+      "projects.0.name",
+      "projects.0.role",
+      "projects.0.description",
+      "projects.0.contribution"
+    ],
+    "mismatched": [],
+    "failed": []
+  },
+  "blockedExternalRequests": 1,
+  "ok": false
+}
