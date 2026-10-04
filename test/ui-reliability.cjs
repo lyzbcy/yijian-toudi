@@ -14,13 +14,17 @@ const { _electron: electron } = require('playwright-core');
   const errors = [];
   try {
     const page = await application.firstWindow();
+    page.setDefaultTimeout(15000);
     page.on('pageerror', (error) => errors.push(error.message));
     await page.waitForSelector('.hero-card');
     assert.equal(await application.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows().some(w => w.isVisible())), false);
-    if (await page.locator('#onboardingDialog[open]').count()) await page.locator('[data-recruit="social"]').click();
+    await page.locator('#onboardingDialog[open]').waitFor({state:'visible'});
+    await page.locator('[data-recruit="social"]').click();
+    await page.locator('#onboardingDialog[open]').waitFor({state:'hidden'});
     await page.locator('.sidebar [data-page="resume"]').click();
     await page.evaluate(() => { window.prompt = () => '回归测试'; window.confirm = () => true; });
     for (let i = 0; i < 10; i++) {
+      console.log(`profile reliability iteration ${i}: add/switch/delete`);
       const school = `未保存的学校-${i}`;
       await page.locator('[name="education.0.school"]').fill(school);
       // 新建前没有点击保存；操作必须自动保留原简历输入。
@@ -46,7 +50,10 @@ const { _electron: electron } = require('playwright-core');
     assert.equal(disk.resume.basic.name, '姓名-9');
     assert.equal(disk.resume.profiles.length, 1);
     assert.deepEqual(errors, []);
-    console.log(JSON.stringify({ ok: true, loops: 10, profileOperations: 30, visibleWindows: 0, pageErrors: 0, persisted: true }));
+    const report={ok:true,version:require('../package.json').version,fixtureOnly:true,loops:10,profileOperations:30,visibleWindows:0,pageErrors:0,persisted:true};
+    fs.mkdirSync(path.join(root,'test-output'),{recursive:true});
+    fs.writeFileSync(path.join(root,'test-output/reliability.json'),JSON.stringify(report,null,2));
+    console.log(JSON.stringify(report));
   } finally {
     await application.close();
     fs.rmSync(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });

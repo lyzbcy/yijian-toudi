@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "version": "0.5.38",
+  "fixtureOnly": true,
+  "loops": 10,
+  "profileOperations": 30,
+  "visibleWindows": 0,
+  "pageErrors": 0,
+  "persisted": true
+}

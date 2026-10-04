@@ -53,3 +53,13 @@
 ## v0.5.38 Linux部署修订（进行中）
 
 37的19套后台/351单测通过，macOS arm64实际DMG/ZIP/ASAR审计和可见UI通过，首次远端报告及下载hash已回读。Linux CI实际验证发现runner Node路径与模板示例不同，按文档修改ExecStart再验证通过；随后发现示例Docker目录在chown后chmod对普通用户失败，修正为先chmod再chown。37归档保留不覆盖，最终候选升38。所有失败远端运行记录保留，38最终结果待补。
+
+### 38当前已取得的实证
+
+Windows35→38真实NSIS和IPC/helper升级、可见重开确认、资料/凭证/附件/持久Cookie样本保留和卸载恢复，两种桌面偏好各8组通过（install-upgrade-v38及-desktop）。独立观察确认当前可见ASAR版本38及三阶段像素/DOM，三宽度布局回归通过（windows-ui-v38/ui-observer-v38）。
+
+Mac arm64真实运行37183937648成功：DMG挂载复制、ZIP解压与源码审计、复制出的包可见UI/保存/凭证通过；取回两原生资产字节/hash一致（mac-candidate-v38/mac-ui-v38）。Linux运行37183855095及后续37183937656成功：Compose真实启动/重启/未知收据持久化/只读非root、Caddy及适配Node路径的systemd配置验证（linux-feedback-v38）。这是本地CI验证，不是公网TLS/企微、systemd服务运行或用户Gatekeeper验收。
+
+38首次完整后台复验前15组通过，第16组隐藏档案压力回归180秒超时，失败保留在background-v38-attempt1。只读连接遗留测试实例确认在第9轮新档案、原样本大学字段仍在，不能据此推断根因或整体无缺陷。补显式等待首次引导、有界动作等待及逐轮诊断，单独10轮30档案操作/重开持久化通过；顺序全套正在复验。同期有真实安装/可见测试并行，但未证明它们导致超时。
+
+38最终顺序完整后台19套/351单测均通过，压力档案10轮30操作与重开持久化通过（background-v38/reliability-v38）。此前超时记录与根因未证明限制保留，不以重试改变首次失败记账。当前完整候选汇总delivery-manifest-v38，仍未正式发布、完整目标未完成。
