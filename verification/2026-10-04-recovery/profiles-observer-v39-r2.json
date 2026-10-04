@@ -1,0 +1,210 @@
+{
+  "date": "2026-10-04",
+  "version": "0.5.39",
+  "status": "pass_for_observed_profile_input_scope",
+  "method": "Independent read-only CDP on same visible native packaged Electron instance, port50842. Observer did not click, fill, call prompt or replace any function.",
+  "phases": [
+    {
+      "phase": "input",
+      "observation": {
+        "version": "0.5.39",
+        "phase": "input",
+        "port": 50842,
+        "method": "read_only_CDP_same_visible_packaged_Electron_instance",
+        "ok": true,
+        "findings": [],
+        "observed": {
+          "title": "一键投递",
+          "version": "0.5.39",
+          "runtimeVersion": "0.5.39",
+          "packagedAsarRenderer": true,
+          "documentVisibility": "visible",
+          "nativePromptUnchanged": true,
+          "currentPages": [
+            "page-resume"
+          ],
+          "profilesCount": 1,
+          "tabs": [
+            {
+              "id": "default",
+              "active": true,
+              "label": "默认简历"
+            }
+          ],
+          "schoolInput": "未保存的默认大学",
+          "schoolPersisted": "默认大学",
+          "toasts": [],
+          "dialog": {
+            "visible": true,
+            "title": "新建简历方向",
+            "label": "简历方向名称",
+            "hint": "例如：产品方向、运营方向、实习。留空会自动命名。",
+            "value": "产品方向",
+            "inputVisible": true,
+            "inputDisabled": false,
+            "inputFocused": true,
+            "maxLength": 80,
+            "buttons": [
+              {
+                "text": "取消",
+                "visible": true
+              },
+              {
+                "text": "确定",
+                "visible": true
+              }
+            ],
+            "width": 460,
+            "height": 270.19793701171875,
+            "opacity": "1"
+          },
+          "overflow": -15
+        },
+        "screenshot": "E:\\共享\\创业\\一键投递-交付开发-2026-10-04\\verification\\2026-10-04-recovery\\profiles-observer-v39-r2-input.png",
+        "actualPixelsViewed": true,
+        "kimiAcceptance": false
+      },
+      "ack": {
+        "phase": "input",
+        "ok": true,
+        "findings": [],
+        "actualPixelsViewed": true,
+        "method": "read_only_CDP_same_visible_packaged_Electron_instance"
+      }
+    },
+    {
+      "phase": "created",
+      "observation": {
+        "version": "0.5.39",
+        "phase": "created",
+        "port": 50842,
+        "method": "read_only_CDP_same_visible_packaged_Electron_instance",
+        "ok": true,
+        "findings": [],
+        "observed": {
+          "title": "一键投递",
+          "version": "0.5.39",
+          "runtimeVersion": "0.5.39",
+          "packagedAsarRenderer": true,
+          "documentVisibility": "visible",
+          "nativePromptUnchanged": true,
+          "currentPages": [
+            "page-resume"
+          ],
+          "profilesCount": 2,
+          "tabs": [
+            {
+              "id": "default",
+              "active": false,
+              "label": "默认简历"
+            },
+            {
+              "id": "profile-e2788b04-0c39-48c6-b8c0-ce3185dc2be2",
+              "active": true,
+              "label": "产品方向"
+            }
+          ],
+          "schoolInput": "",
+          "schoolPersisted": "",
+          "toasts": [],
+          "dialog": null,
+          "overflow": -15
+        },
+        "screenshot": "E:\\共享\\创业\\一键投递-交付开发-2026-10-04\\verification\\2026-10-04-recovery\\profiles-observer-v39-r2-created.png",
+        "actualPixelsViewed": true,
+        "kimiAcceptance": false
+      },
+      "ack": {
+        "phase": "created",
+        "ok": true,
+        "findings": [],
+        "actualPixelsViewed": true,
+        "method": "read_only_CDP_same_visible_packaged_Electron_instance"
+      }
+    },
+    {
+      "phase": "renamed",
+      "observation": {
+        "version": "0.5.39",
+        "phase": "renamed",
+        "port": 50842,
+        "method": "read_only_CDP_same_visible_packaged_Electron_instance",
+        "ok": true,
+        "findings": [],
+        "observed": {
+          "title": "一键投递",
+          "version": "0.5.39",
+          "runtimeVersion": "0.5.39",
+          "packagedAsarRenderer": true,
+          "documentVisibility": "visible",
+          "nativePromptUnchanged": true,
+          "currentPages": [
+            "page-resume"
+          ],
+          "profilesCount": 2,
+          "tabs": [
+            {
+              "id": "default",
+              "active": false,
+              "label": "默认简历"
+            },
+            {
+              "id": "profile-e2788b04-0c39-48c6-b8c0-ce3185dc2be2",
+              "active": true,
+              "label": "产品与运营方向"
+            }
+          ],
+          "schoolInput": "产品大学",
+          "schoolPersisted": "产品大学",
+          "toasts": [],
+          "dialog": null,
+          "overflow": -15
+        },
+        "screenshot": "E:\\共享\\创业\\一键投递-交付开发-2026-10-04\\verification\\2026-10-04-recovery\\profiles-observer-v39-r2-renamed.png",
+        "actualPixelsViewed": true,
+        "kimiAcceptance": false
+      },
+      "ack": {
+        "phase": "renamed",
+        "ok": true,
+        "findings": [],
+        "actualPixelsViewed": true,
+        "method": "read_only_CDP_same_visible_packaged_Electron_instance"
+      }
+    }
+  ],
+  "findings": [],
+  "parentEvidence": {
+    "path": "test-output/resume-profiles.json",
+    "report": {
+      "ok": true,
+      "version": "0.5.39",
+      "fixtureOnly": true,
+      "packaged": true,
+      "promptStubbed": false,
+      "checks": [
+        "New-profile Escape/button cancellation preserves unsaved content and returns keyboard focus",
+        "Actual labeled modal at three widths creates independent profile with Enter; native prompt unchanged",
+        "Rename prefill, required validation, cancellation and Enter retain unsaved current resume",
+        "Automatic blank-name fallback, independent directions and shared identity verified",
+        "Both customer-dialog cancellations, digit validation and optional tail work without launching browser or sending",
+        "Reload retains names, independent resume content and shared identity with zero page errors"
+      ],
+      "pageErrors": []
+    },
+    "note": "Additional cancellation, IME Enter, three-width, whitespace validation, shared/independent fields, customer dialog and reload checks are parent test evidence."
+  },
+  "previousFailure": {
+    "version": "0.5.38",
+    "finding": "Unsupported native prompt on new direction",
+    "state": "resolved_in_observed_v39_new_direction_and_rename"
+  },
+  "coordinationNote": "First attempt preserved a passing input observation but parent timed out waiting for ack; this was a coordination failure, not product failure. Successful second attempt used fresh live-profiles-v39-r2 manifest and ack files, with all three phases independently viewed before acknowledgment.",
+  "screenshotNote": "Input dialog, created tab and renamed tab were actually reviewed as pixels. Product school field is below screenshot viewport and was checked independently through DOM input and current persisted state, both 产品大学.",
+  "kimiAcceptance": false,
+  "kimiNote": "The provided Kimi browser extension APIs cannot attach to this separate native Electron renderer. This is same-instance CDP verification, not Kimi extension interaction acceptance.",
+  "limitations": [
+    "Isolated fixture data only; no recruitment accounts or real messages touched.",
+    "This verifies new direction and rename behavior; it cannot establish complete distribution readiness or overall defect rate below 1%."
+  ]
+}

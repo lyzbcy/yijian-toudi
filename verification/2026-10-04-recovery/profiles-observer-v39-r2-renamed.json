@@ -1,0 +1,40 @@
+{
+  "version": "0.5.39",
+  "phase": "renamed",
+  "port": 50842,
+  "method": "read_only_CDP_same_visible_packaged_Electron_instance",
+  "ok": true,
+  "findings": [],
+  "observed": {
+    "title": "一键投递",
+    "version": "0.5.39",
+    "runtimeVersion": "0.5.39",
+    "packagedAsarRenderer": true,
+    "documentVisibility": "visible",
+    "nativePromptUnchanged": true,
+    "currentPages": [
+      "page-resume"
+    ],
+    "profilesCount": 2,
+    "tabs": [
+      {
+        "id": "default",
+        "active": false,
+        "label": "默认简历"
+      },
+      {
+        "id": "profile-e2788b04-0c39-48c6-b8c0-ce3185dc2be2",
+        "active": true,
+        "label": "产品与运营方向"
+      }
+    ],
+    "schoolInput": "产品大学",
+    "schoolPersisted": "产品大学",
+    "toasts": [],
+    "dialog": null,
+    "overflow": -15
+  },
+  "screenshot": "E:\\共享\\创业\\一键投递-交付开发-2026-10-04\\verification\\2026-10-04-recovery\\profiles-observer-v39-r2-renamed.png",
+  "actualPixelsViewed": true,
+  "kimiAcceptance": false
+}

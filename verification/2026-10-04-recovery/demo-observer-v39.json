@@ -1,0 +1,73 @@
+{
+  "observer": "independent_candidate_recording_frame_reviewer",
+  "date": "2026-10-04",
+  "version": "0.5.39",
+  "status": "sampled_frames_reviewed_with_visual_coverage_gaps",
+  "method": "Read supplied candidate recording report and filesystem metadata, then use image viewer to inspect actual pixels of all eight supplied PNG frames. No live application observation or Kimi interaction is claimed; no video or source edits performed.",
+  "video": {
+    "path": "release/yijian-toudi-preview-0.5.39.mp4",
+    "bytesVerified": 6040024,
+    "sha256Verified": "D53F28025DDBCA0EE92857179F5CD625A9A671496D5FAE4DC5EFFFB553DD9827",
+    "durationSecondsFromCandidateReport": 116.2,
+    "dimensionsFromCandidateReport": [1280, 960],
+    "fullPlaybackInspected": false
+  },
+  "reviewedFrames": [
+    {"second":3,"file":".local-data/demo-0.5.39-V8i1vz/frames/frame-3.png","actualPixelsViewed":true,"observations":["Recruitment homepage with no jobs yet, readable search/company/date filters, cart and applied counters both zero.","Bottom candidate/sample/speed/unpublished caption is clear."]},
+    {"second":18,"file":".local-data/demo-0.5.39-V8i1vz/frames/frame-18.png","actualPixelsViewed":true,"observations":["In-app Chinese new-direction modal is centered with label, input, example hint, Cancel and Confirm controls.","Input is empty in this exact frame; typing and submission timing are not proven by this frame.","Background blur is expected modal backdrop, not blank application rendering."]},
+    {"second":40,"file":".local-data/demo-0.5.39-V8i1vz/frames/frame-40.png","actualPixelsViewed":true,"observations":["Resume page includes second direction label 产品与运营（演示样本）.","Name field explicitly says 演示样本（非真实求职者）, avoiding representation as real applicant identity.","Contact inputs shown are empty placeholders."]},
+    {"second":55,"file":".local-data/demo-0.5.39-V8i1vz/frames/frame-55.png","actualPixelsViewed":true,"observations":["Refresh is visibly in progress; 1374 jobs and Baidu 18% progress displayed.","Footer clearly discloses accelerated middle refresh wait."]},
+    {"second":70,"file":".local-data/demo-0.5.39-V8i1vz/frames/frame-70.png","actualPixelsViewed":true,"observations":["1383 jobs, ByteDance 34% progress and actual named role appear; no application result shown."]},
+    {"second":85,"file":".local-data/demo-0.5.39-V8i1vz/frames/frame-85.png","actualPixelsViewed":true,"observations":["1838 jobs and Xiaomi 52% progress shown; refresh remains in progress."]},
+    {"second":101,"file":".local-data/demo-0.5.39-V8i1vz/frames/frame-101.png","actualPixelsViewed":true,"observations":["4158 jobs displayed and refresh button restored, consistent with recording report's completed refresh count.","Company/search/date filter controls visible, but this frame does not show filtered job rows.","Small English Select option overlay appears at top right; optional presentation polish issue."]},
+    {"second":112,"file":".local-data/demo-0.5.39-V8i1vz/frames/frame-112.png","actualPixelsViewed":true,"observations":["Agent page renders fully and Authorization line shows a copy-time credential placeholder rather than private token value.","Local API loopback endpoint and service-running label visible.","Cart sidebar counter is one and applied counter remains zero; cart content page is outside this frame."]}
+  ],
+  "caption": {
+    "observedInAllEightFrames": true,
+    "text": "候选 v0.5.39 | 样本简历 | 中段刷新等待 8 倍速 | 未正式发布",
+    "candidateStatusClear": true,
+    "sampleDataClear": true,
+    "acceleratedWaitDisclosureClear": true,
+    "notFormallyPublishedClear": true,
+    "accelerationRateIndependentlyMeasured": false
+  },
+  "sampledPrivacyAndClaims": {
+    "privateTokenVisible": false,
+    "realResumeIdentityVisible": false,
+    "qrCodeVisible": false,
+    "realApplicationSuccessImplied": false,
+    "agentAuthorizationMaskedInObservedFrame": true,
+    "sampleNameExplicitInObservedResumeFrame": true,
+    "scope": "These results apply to the eight reviewed image frames only; no guarantee is made for unreviewed video intervals or audio."
+  },
+  "recordingReportEvidence": {
+    "candidateReport": "verification/2026-10-04-recovery/demo-candidate-v39.json",
+    "rawRecordingReport": ".local-data/demo-0.5.39-V8i1vz/report.json",
+    "candidate": true,
+    "completeDemo": false,
+    "realApplicationsReported": 0,
+    "externalMessagesReported": 0,
+    "jobsSourceReported": "anonymous-live-official-providers",
+    "refreshJobCountReported": 4158,
+    "refreshProvidersReported": ["tencent", "baidu", "bytedance", "xiaomi", "jd", "meituan"],
+    "pageErrorsReported": [],
+    "reportedFilteringAndCartOperation": true,
+    "scope": "These are recording operator's logged results inspected by reviewer. The sampled frames corroborate progress/counts, sample labeling and public Prompt mask, but do not independently establish all actions or anonymous network provenance."
+  },
+  "preservedArtifactsExistenceVerified": [
+    {"file":".local-data/demo-0.5.39-V8i1vz/page@00e3c559a74da0be4dafdfa0bf952bc9.webm","bytes":3271101},
+    {"file":".local-data/demo-0.5.39-V8i1vz/page@889f7fa73f2d68b6d72e8ff8732802c6.webm","bytes":16306045},
+    {"file":".local-data/demo-0.5.39-V8i1vz/candidate-full.mp4","bytes":10836336}
+  ],
+  "findings": [
+    {"id":"DEMO-OBS-001","priority":"P3","kind":"presentation_polish","frameSecond":101,"title":"English Select option overlay in Chinese demo","evidence":"Small gray overlay visible at top right of 101s frame.","impact":"Minor visual distraction; does not prove software failure.","recommendation":"If editing a future candidate, avoid recording automation action overlays or allow them to clear before showcase pauses."},
+    {"id":"DEMO-OBS-002","kind":"evidence_coverage_gap","title":"Sampled frames do not show job rows, filtering result or cart content","evidence":"Job frames capture homepage top and toolbar; 112s only shows cart count one.","impact":"Eight-frame review supports visual appearance and labels, not full job/filter/cart interaction verification.","recommendation":"For stronger recording review, provide frames from the actual filtered job list and cart content portion, while retaining the complete raw candidate recording."}
+  ],
+  "limitations": [
+    "Only eight discrete frames at 3,18,40,55,70,85,101,112 seconds were visually inspected.",
+    "No complete playback, audio review, frame-by-frame privacy audit, independent encoding probe or speed-rate measurement performed.",
+    "No simultaneous application observation, Kimi interaction or new product test performed.",
+    "This is a clearly labeled candidate demonstration and sample resume; it does not prove full MVP delivery or software defect rate below 1%.",
+    "No source, raw recording or candidate MP4 was edited during review."
+  ]
+}

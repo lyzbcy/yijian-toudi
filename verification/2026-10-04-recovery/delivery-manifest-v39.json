@@ -1,0 +1,163 @@
+{
+  "version": "0.5.39",
+  "readiness": "draft-candidate-not-complete-delivery",
+  "fullGoalComplete": false,
+  "sourceCommit": "e7bb45fa08e02fa1a2847d45728b1823b3a789ef",
+  "artifacts": [
+    {
+      "name": "yijian-toudi-setup-0.5.39.exe",
+      "bytes": 104229912,
+      "sha256": "1c062c11df3c20bd6eaada76332fecad2ecf061b836db7dd756def4749371f61",
+      "checksum": "yijian-toudi-setup-0.5.39.sha256"
+    },
+    {
+      "name": "yijian-toudi-skill-0.5.39.tar.gz",
+      "bytes": 13908,
+      "sha256": "fd903613070d9db5b068b80c5de071c70d31381bc9b012036ffc70592533bd8c",
+      "checksum": "yijian-toudi-skill-0.5.39.sha256"
+    },
+    {
+      "name": "yijian-toudi-feedback-server-0.5.39.tar.gz",
+      "bytes": 12429,
+      "sha256": "90d098f55f096cc79a7e95de0f9bde3fed44f8345ebf7ad70682249aa7581778",
+      "checksum": "yijian-toudi-feedback-server-0.5.39.sha256"
+    },
+    {
+      "name": "yijian-toudi-0.5.39-arm64.dmg",
+      "bytes": 129103963,
+      "sha256": "b5020c6a6b6370c830a553a527635d1c9a74f632732c32d80137df2962c283f8",
+      "checksum": "yijian-toudi-0.5.39-arm64.dmg.sha256"
+    },
+    {
+      "name": "yijian-toudi-0.5.39-arm64.zip",
+      "bytes": 127194099,
+      "sha256": "720b08b1f978908f044660a40438b8d0666c238b29c9847847640bea8fe5dfcc",
+      "checksum": "yijian-toudi-0.5.39-arm64.zip.sha256"
+    },
+    {
+      "name": "yijian-toudi-0.5.39-x64.dmg",
+      "bytes": 130893946,
+      "sha256": "9658fb01c3e4bf4b908e6659f8e34b17a467953ce35adadf526ec82456efd829",
+      "checksum": "yijian-toudi-0.5.39-x64.dmg.sha256"
+    },
+    {
+      "name": "yijian-toudi-0.5.39-x64.zip",
+      "bytes": 129034918,
+      "sha256": "826e5754c930327ff9d5ac0d3e900295759cabdf2a042fe5ac1feaab6945627f",
+      "checksum": "yijian-toudi-0.5.39-x64.zip.sha256"
+    }
+  ],
+  "preview": {
+    "name": "yijian-toudi-preview-0.5.39.mp4",
+    "bytes": 6040024,
+    "durationSeconds": 116.2,
+    "dimensions": [
+      1280,
+      960
+    ],
+    "codec": "h264",
+    "sha256": "d53f28025ddbca0ee92857179f5cd625a9a671496d5fae4dc5efffb553dd9827",
+    "checksum": "yijian-toudi-preview-0.5.39.mp4.sha256",
+    "completeDemo": false,
+    "realApplications": 0,
+    "externalMessages": 0,
+    "actualLiveJobs": 4158,
+    "liveRefreshAt": "2026-10-04T08:17:14.223Z",
+    "editing": {
+      "rawPreserved": true,
+      "fullMp4Preserved": true,
+      "actualAppPixels": true,
+      "footerLabelsCandidateAndSample": true,
+      "onlyWaitIntervalAccelerated": {
+        "startSeconds": 55,
+        "endSeconds": 304.32,
+        "rate": 8
+      },
+      "noOutcomeFabricated": true
+    },
+    "visualReview": {
+      "rootReviewedFrames": [
+        3,
+        18,
+        40,
+        55,
+        70,
+        85,
+        101,
+        112
+      ],
+      "independentReport": "verification/2026-10-04-recovery/demo-observer-v39.json",
+      "fullPlaybackInspected": false,
+      "limitations": [
+        "Only eight discrete frames at 3,18,40,55,70,85,101,112 seconds were visually inspected.",
+        "No complete playback, audio review, frame-by-frame privacy audit, independent encoding probe or speed-rate measurement performed.",
+        "No simultaneous application observation, Kimi interaction or new product test performed.",
+        "This is a clearly labeled candidate demonstration and sample resume; it does not prove full MVP delivery or software defect rate below 1%.",
+        "No source, raw recording or candidate MP4 was edited during review."
+      ],
+      "minorPresentationFinding": "101s English Select option overlay retained"
+    }
+  },
+  "verificationReports": [
+    "verification/2026-10-04-recovery/profiles-packaged-v39.json",
+    "verification/2026-10-04-recovery/windows-ui-v39.json",
+    "verification/2026-10-04-recovery/default-install-v39.json",
+    "verification/2026-10-04-recovery/install-upgrade-v39.json",
+    "verification/2026-10-04-recovery/install-upgrade-v39-desktop.json",
+    "verification/2026-10-04-recovery/mac-ui-v39-arm64.json",
+    "verification/2026-10-04-recovery/mac-ui-v39-x64.json",
+    "verification/2026-10-04-recovery/mac-profiles-v39-arm64.json",
+    "verification/2026-10-04-recovery/mac-profiles-v39-x64.json",
+    "verification/2026-10-04-recovery/linux-feedback-v39.json",
+    "verification/2026-10-04-recovery/reliability-v39.json"
+  ],
+  "latestUnits": {
+    "passed": 352,
+    "failed": 0
+  },
+  "background": {
+    "suites": 19,
+    "unitCount": 351,
+    "report": "verification/2026-10-04-recovery/background-v39.json"
+  },
+  "windows": {
+    "signature": "NotSigned",
+    "defaultNSISInstallVerified": true,
+    "upgradeDesktopOnAndOffVerified": true,
+    "releaseNetwork": "controlled-fixture",
+    "nativeWizardChoicesVerified": false
+  },
+  "mac": {
+    "reports": [
+      {
+        "architecture": "arm64",
+        "workflowRun": 37187658202,
+        "report": "verification/2026-10-04-recovery/mac-candidate-v39-arm64.json"
+      },
+      {
+        "architecture": "x64",
+        "workflowRun": 37187658202,
+        "report": "verification/2026-10-04-recovery/mac-candidate-v39-x64.json"
+      }
+    ],
+    "endUserGatekeeperSigningApplicationsInstallUpgradeVerified": false
+  },
+  "preservedFailures": [
+    "verification/2026-10-04-recovery/background-v39-attempt1.json",
+    "verification/2026-10-04-recovery/reliability-v39-attempt1-observation.json",
+    "verification/2026-10-04-recovery/profile-observation-v39-coordination-failure.json",
+    "verification/2026-10-04-recovery/mac-intel-v39-attempt1.json",
+    "verification/2026-10-04-recovery/default-install-v38-test-expectation-failure.json",
+    "verification/2026-10-04-recovery/live-prompt-probe-v38.json"
+  ],
+  "remainingGates": [
+    "real-account-complete-save-reopen-and-authorized-application-receipts",
+    "Boss-limit-and-unknown-receipt-review",
+    "public-HTTPS-feedback-and-real-WeCom-and-systemd-runtime",
+    "public-official-download-update-and-cloud-Skill",
+    "Windows-native-installer-wizard-choices",
+    "Mac-end-user-Gatekeeper-signing-Applications-install-upgrade",
+    "current-complete-real-demonstration-video",
+    "representative-product-bug-rate-below-1-percent"
+  ]
+}

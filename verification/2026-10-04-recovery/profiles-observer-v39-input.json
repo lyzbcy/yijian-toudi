@@ -1,0 +1,58 @@
+{
+  "version": "0.5.39",
+  "phase": "input",
+  "port": 49485,
+  "method": "read_only_CDP_same_visible_packaged_Electron_instance",
+  "ok": true,
+  "findings": [],
+  "observed": {
+    "title": "一键投递",
+    "version": "0.5.39",
+    "runtimeVersion": "0.5.39",
+    "packagedAsarRenderer": true,
+    "documentVisibility": "visible",
+    "nativePromptUnchanged": true,
+    "currentPages": [
+      "page-resume"
+    ],
+    "profilesCount": 1,
+    "tabs": [
+      {
+        "id": "default",
+        "active": true,
+        "label": "默认简历"
+      }
+    ],
+    "schoolInput": "未保存的默认大学",
+    "schoolPersisted": "默认大学",
+    "toasts": [],
+    "dialog": {
+      "visible": true,
+      "title": "新建简历方向",
+      "label": "简历方向名称",
+      "hint": "例如：产品方向、运营方向、实习。留空会自动命名。",
+      "value": "产品方向",
+      "inputVisible": true,
+      "inputDisabled": false,
+      "inputFocused": true,
+      "maxLength": 80,
+      "buttons": [
+        {
+          "text": "取消",
+          "visible": true
+        },
+        {
+          "text": "确定",
+          "visible": true
+        }
+      ],
+      "width": 460,
+      "height": 270.19793701171875,
+      "opacity": "1"
+    },
+    "overflow": -15
+  },
+  "screenshot": "E:\\共享\\创业\\一键投递-交付开发-2026-10-04\\verification\\2026-10-04-recovery\\profiles-observer-v39-input.png",
+  "actualPixelsViewed": true,
+  "kimiAcceptance": false
+}

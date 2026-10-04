@@ -1,0 +1,9 @@
+{
+  "version": "0.5.39",
+  "ok": true,
+  "tests": 352,
+  "passed": 352,
+  "failed": 0,
+  "backgroundSuiteRunUnits": 351,
+  "latestUnitSupplementAfterIntelTestRepair": true
+}
