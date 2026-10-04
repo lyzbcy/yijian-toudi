@@ -1,0 +1,56 @@
+name: Verify sealed macOS Applications install and manual upgrade
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'test/macos-install-upgrade.cjs'
+      - '.github/workflows/candidate-macos-install.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  installation:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [macos-latest, macos-15-intel]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Read exact sealed v39 native candidate artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run download 37187658202 --repo lyzbcy/yijian-toudi --name macos-candidate-37187658202-${{ matrix.runner }} --dir .local-data/sealed-mac-input
+      - name: Obtain recorded v38 source without changing current checkout
+        uses: actions/checkout@v6
+        with:
+          ref: b32bb9e1d39142512847ffce99273acc36f45738
+          path: .local-data/mac-baseline-source
+      - name: Build actual native v38 baseline app
+        run: |
+          ln -s "$GITHUB_WORKSPACE/node_modules" .local-data/mac-baseline-source/node_modules
+          pnpm exec electron-builder --projectDir .local-data/mac-baseline-source --mac dir --config.directories.output="$GITHUB_WORKSPACE/.local-data/mac-baseline-build"
+      - name: Actual Applications first install, manual 38 to 39 replacement and data retention
+        run: node test/macos-install-upgrade.cjs .local-data/sealed-mac-input .local-data/mac-baseline-source .local-data/mac-baseline-build
+      - name: Save installation and trust observations
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-install-${{ github.run_id }}-${{ matrix.runner }}
+          if-no-files-found: warn
+          path: |
+            test-output/mac-install-upgrade.json
+            test-output/mac-install-*.png
