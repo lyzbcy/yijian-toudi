@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "version": "0.5.37",
+  "ownFilesMatched": 110,
+  "asarEntries": 1135,
+  "noPrivateDataFiles": true,
+  "noKnownKeyPatterns": true,
+  "host": "darwin",
+  "architecture": "arm64",
+  "artifacts": [
+    {
+      "name": "一键投递-0.5.37-arm64.dmg",
+      "bytes": 129097431,
+      "sha256": "c768bd0076b0463b6a70a8751aad486be418772b9760adeab897f0bc02fd8ef9"
+    },
+    {
+      "name": "一键投递-0.5.37-arm64.zip",
+      "bytes": 127191784,
+      "sha256": "3f950f6379d251983d8b3e2c25bcdf5ab7420616e9794caefdade0ea8b6b0a92"
+    }
+  ],
+  "signature": "not-verified",
+  "endUserInstall": "not-verified",
+  "realAccounts": "not-verified"
+}

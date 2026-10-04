@@ -47,8 +47,8 @@ jobs:
           chmod 600 feedback.env
           mkdir -p feedback-data/receipts
           printf '%s' '{"requestId":"11111111-1111-4111-8111-111111111111","status":"unknown","createdAt":0}' > feedback-data/receipts/11111111-1111-4111-8111-111111111111.json
-          sudo chown -R 1000:1000 feedback-data
           chmod 700 feedback-data
+          sudo chown -R 1000:1000 feedback-data
           docker compose config --quiet
           docker compose up -d --build
           curl --fail --retry 20 --retry-delay 1 --retry-connrefused http://127.0.0.1:8096/healthz > health.json

@@ -45,8 +45,8 @@ cp feedback.env.example feedback.env
 chmod 600 feedback.env
 # 在本机安全编辑 feedback.env，填写真实值后再启动。
 mkdir -p feedback-data
-sudo chown 1000:1000 feedback-data
 chmod 700 feedback-data
+sudo chown 1000:1000 feedback-data
 docker compose up -d --build
 docker compose ps
 curl --fail http://127.0.0.1:8096/healthz
@@ -72,4 +72,3 @@ curl --fail http://127.0.0.1:8096/healthz
 App 设置 `feedbackEndpoint=https://真实域名/v1/feedback`。从另一台公网客户端发送明确标记测试的反馈，核对群里的版本/完整留言、官方回执、外网日志长链接；再验证取消日志、断网后查收据、服务重启防重、限流与备份恢复。健康端点和离线通知样本不能代替此验收。
 
 服务包不包含实际 feedback.env、数据、群密钥、简历或 Cookie。App 未配置服务地址时明确提示；仓库不内置虚假正式域名。个人投递企微通知由 App 本机配置，开发者反馈 webhook 由服务端配置，两者独立。
-
