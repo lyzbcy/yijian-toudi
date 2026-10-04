@@ -46,6 +46,23 @@ async function main(){
  const pid=application.process().pid,stagedFile=path.join(directory,name);fs.mkdirSync(directory,{recursive:true});fs.copyFileSync(zip,stagedFile);
  const payload={pid,root:target,oldExe:executable,userData:profile,file:stagedFile,sha256:digest,version:nextVersion,oldVersion:version,arch:process.arch};
  const originalHash=sha(fs.readFileSync(path.join(target,'Contents/Resources/app.asar')));
+ // Run an actual detached worker whose native preflight is deliberately slow.
+ // Historical launcher is genuine v43 source; applications are current/next fixtures.
+ const historicalLauncherPath=path.resolve(process.argv[3]||'.local-data/mac-v43-launcher/electron/macos-update.cjs');
+ const historicalLauncher=require(historicalLauncherPath),slowWorker=path.join(work,'slow-native-preflight.sh');
+ const workerSource=fs.readFileSync(path.join(root,'electron/install-update-mac.sh'),'utf8'),verifyStart='verify "$root" "$oldVersion" || die old-bundle-changed';assert(workerSource.includes(verifyStart));
+ fs.writeFileSync(slowWorker,workerSource.replace(verifyStart,'/bin/sleep 16 # explicit test-only native preflight delay\n'+verifyStart));
+ let oldAttempt;
+ const oldStart=Date.now();await assert.rejects(historicalLauncher.launchUpdateHelper(payload,directory,{templatePath:slowWorker,spawnFn:(bin,args,options)=>{oldAttempt=path.dirname(args[0]);return cp.spawn(bin,args,options);}}),/helper-ready-timeout-current-app-retained/);
+ assert(oldAttempt);const oldPayload=JSON.parse(fs.readFileSync(path.join(oldAttempt,'payload.json')));
+ await until(()=>readResult()?.nonce===oldPayload.nonce&&readResult()?.status==='failed');await until(()=>!fs.existsSync(target+'.yjt-update-lock'));
+ assert.equal(readResult().message,'update-aborted');assert.equal(sha(fs.readFileSync(path.join(target,'Contents/Resources/app.asar'))),originalHash);assert(bundlePids().includes(application.process().pid));
+ const historicalCleanupTotalMs=Date.now()-oldStart;
+ const currentStart=Date.now(),slow=await mac.launchUpdateHelper(payload,directory,{templatePath:slowWorker});
+ const slowWaitMs=Date.now()-currentStart;assert(slowWaitMs>=16000);await slow.abort();await until(()=>readResult()?.nonce===slow.nonce&&readResult()?.status==='failed');await until(()=>!fs.existsSync(target+'.yjt-update-lock'));
+ assert.equal(readResult().message,'update-aborted');assert.equal(sha(fs.readFileSync(path.join(target,'Contents/Resources/app.asar'))),originalHash);assert(bundlePids().includes(application.process().pid));
+ report.slowPreflight={historicalLauncherVersion:'0.5.43',historicalSource:'23995dbc5c45876e4fbf692cceea7d6338f80a63',actualAppFrom:version,actualAppTo:nextVersion,injectedPreflightDelaySeconds:16,historicalReadyTimeoutMs:15000,currentReadyTimeoutMs:60000,historicalTimedOutAndAborted:true,historicalCleanupTotalMs,slowCurrentPreparationMs:slowWaitMs,currentDefaultReachedReady:true,bothAbortLeaveCurrentRunning:true,originalIntelFailureRootCauseProven:false};
+ check('Actual signed bundles and detached worker with explicit 16-second preflight delay reproduce v43 ready timeout; current default reaches ready, both abort without replacing or exiting current app');
  // Reproduce the historical v41 helper gap without changing its other logic.
  const launcher='/usr/bin/open -n "$root" --args "--user-data-dir=$userData" || die updated-app-launch-failed';
  const baselineWorker=path.resolve(process.argv[2]||'.local-data/baseline-worker-v41.sh'),historical=fs.readFileSync(baselineWorker,'utf8');assert(historical.includes(launcher));

@@ -77,11 +77,16 @@ jobs:
         with:
           ref: b206eb5f0aa0b56098b219f0f4b95879a893d356
           path: .local-data/mac-v41-worker
+      - name: Obtain historical v43 launcher for slow native readiness regression
+        uses: actions/checkout@v6
+        with:
+          ref: 23995dbc5c45876e4fbf692cceea7d6338f80a63
+          path: .local-data/mac-v43-launcher
       - name: Verify real native automatic update, abort and injected rollback
         env:
           CSC_FOR_PULL_REQUEST: 'true'
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
-        run: node test/macos-auto-update.cjs .local-data/mac-v41-worker/electron/install-update-mac.sh
+        run: node test/macos-auto-update.cjs .local-data/mac-v41-worker/electron/install-update-mac.sh .local-data/mac-v43-launcher/electron/macos-update.cjs
       - name: Save native evidence and candidate artifacts
         if: always()
         uses: actions/upload-artifact@v4

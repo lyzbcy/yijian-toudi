@@ -42,7 +42,9 @@ async function validateStagedUpdate(staged,{directory,current,arch}){
  if(!staged?.ok||!staged.staged||staged.installed||!staged.shaOk||!staged.shaChecked||compareVersions(staged.version,current)!==1||!validPath(staged.file)||!inside(directory,staged.file)||path.basename(staged.file)!==`yijian-toudi-${staged.version}-${arch}.zip`||!/^[a-f\d]{64}$/.test(staged.sha256)||!Number.isSafeInteger(staged.bytes)||staged.bytes<=0)throw Error('verified-mac-update-required');
  const stat=await fs.lstat(staged.file);if(!stat.isFile()||stat.isSymbolicLink()||stat.size!==staged.bytes||await shaFile(staged.file)!==staged.sha256)throw Error('staged-update-changed');return staged;
 }
-async function launchUpdateHelper(payload,directory,{spawnFn=spawn,timeoutMs=15000,templatePath=path.join(__dirname,'install-update-mac.sh')}={}){
+// Worker repeats bundle signatures and archive hash before ready. Keep the
+// current application running while slower native checks complete.
+async function launchUpdateHelper(payload,directory,{spawnFn=spawn,timeoutMs=60000,templatePath=path.join(__dirname,'install-update-mac.sh')}={}){
  const options={executable:payload.oldExe,userData:payload.userData,current:payload.oldVersion,platform:process.platform,arch:payload.arch,packaged:true};
  const record=await readInstallation(options);if(record.root!==payload.root||!Number.isInteger(payload.pid)||payload.pid<=0||compareVersions(payload.version,payload.oldVersion)!==1||!/^[a-f\d]{64}$/.test(payload.sha256)||!validPath(directory)||!inside(directory,payload.file)||await shaFile(payload.file)!==payload.sha256)throw Error('mac-helper-payload-invalid');
  await fs.mkdir(directory,{recursive:true});const attempt=await fs.mkdtemp(path.join(directory,'install-')),nonce=crypto.randomBytes(24).toString('hex');

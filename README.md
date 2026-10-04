@@ -2,13 +2,13 @@
 
 **AI 本地调试**：双击 `zeen-tools/一键AI调试预览.bat`，用 `node scripts/ai-browser.cjs list` 直接操作当前软件的网页/Shadow DOM/iframe/子窗口；关闭用 `zeen-tools/关闭AI调试预览.bat`。操作格式与可复用 AI 提示词见 [AI 网页调试](doc/integrations/ai-browser.md)。普通本地预览不启用 CDP。
 
-当前源码为 **v0.5.43 接续开发候选**：从共享文件与完整性校验通过的 v0.5.33 ASAR 恢复运行代码，并在独立工作树继续开发。原设备的聊天、登录会话和未同步修改尚未恢复。修复与当前验收见 [接续交付进度](doc/progress/2026-10-04-recovery-delivery.md)，全部交付要求见 [MVP 验收矩阵](doc/development/mvp-acceptance.md)。当前候选未正式发布，整体 bug 率低于 1% 尚无充分证据。
+当前源码为 **v0.5.44 接续开发候选**：从共享文件与完整性校验通过的 v0.5.33 ASAR 恢复运行代码，并在独立工作树继续开发。原设备的聊天、登录会话和未同步修改尚未恢复。修复与当前验收见 [接续交付进度](doc/progress/2026-10-04-recovery-delivery.md)，全部交付要求见 [MVP 验收矩阵](doc/development/mvp-acceptance.md)。当前候选未正式发布，整体 bug 率低于 1% 尚无充分证据。
 
 43新增真实启动确认期限与无进程恢复、运行中保护，并修复Windows PowerShell原子结果覆盖的空路径错误。Windows20套/357单测、真实默认NSIS与41→43安装恢复/升级、Mac两架构9组原生更新样本及Linux独立部署通过；首次失败和未证明原因保留。[43维护者草稿备份](https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-ffa507b29002ee6ac32e)的16附件已全部下载逐字节/hash核对，需仓库访问权限。草稿不属于公众正式分发，历史39局部视频不计43完整演示。
 
 一个 macOS 优先、面向未来跨平台的本地求职工作台。它把招聘岗位、统一简历、招聘邮件和自动化任务放在同一个桌面应用里，并提供仅监听本机的 Agent API。
 
-> 源码当前为 v0.5.43 Windows 与 Mac 接续交付候选；最近公开版本为 [v0.5.1 Windows x64 测试预发布](https://github.com/lyzbcy/yijian-toudi/releases/tag/v0.5.1)，最近稳定 Release 为 `v0.3.1`。2026-10-04 匿名读取六家官网社招岗位均通过，共 4159 条；这不代表官网简历保存或投递已验收。Mac两架构完整ad-hoc资源签名、Applications CLI手动升级和原生fixture自动更新已验；用户信任、公证及正式公众升级仍待完成。
+> 源码当前为 v0.5.44 Windows 与 Mac 接续交付候选；最近公开版本为 [v0.5.1 Windows x64 测试预发布](https://github.com/lyzbcy/yijian-toudi/releases/tag/v0.5.1)，最近稳定 Release 为 `v0.3.1`。2026-10-04 匿名读取六家官网社招岗位均通过，共 4159 条；这不代表官网简历保存或投递已验收。Mac两架构完整ad-hoc资源签名、Applications CLI手动升级和原生fixture自动更新已验；用户信任、公证及正式公众升级仍待完成。
 
 2026-09-28 Windows 真实账号实测：v0.5.1 首批确认 25 笔，安全验证后续批确认 6 笔，本轮新增 31 笔；网站随后返回 403 并提示限时恢复，未达到 100 笔。v0.5.2 候选修复访问受限分类及空查询限速，待打包版复验。腾讯校招简历自动填写回读 11 项，但未验证官网保存。详见 [实测记录](doc/progress/2026-09-28-release-readiness.md)；每日 100 份计划未启用。
 
