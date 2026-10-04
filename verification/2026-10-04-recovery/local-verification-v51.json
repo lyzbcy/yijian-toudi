@@ -1,0 +1,200 @@
+{
+  "ok": true,
+  "version": "0.5.51",
+  "at": "2026-10-04T20:45:30.169Z",
+  "scope": "Final local regression, packaged Windows upgrade/batch, and isolated authenticated drafts; not complete fan delivery",
+  "sourceFingerprints": "source-fingerprints-v51.json",
+  "candidateManifest": "candidate-manifest-v0.5.51.json",
+  "ownFilesMatched": 122,
+  "authenticode": "NotSigned",
+  "units": {
+    "passed": 397,
+    "failed": 0,
+    "skipped": 0
+  },
+  "background": {
+    "at": "2026-10-04T20:42:12.937Z",
+    "ok": true,
+    "results": [
+      {
+        "name": "unit",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 5707
+      },
+      {
+        "name": "check",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 384
+      },
+      {
+        "name": "ui-smoke",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 11984
+      },
+      {
+        "name": "ui-resume-segments",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 64603
+      },
+      {
+        "name": "ui-resume-profiles",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 50684
+      },
+      {
+        "name": "ui-capabilities",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 8309
+      },
+      {
+        "name": "ui-workspace-exit",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 5049
+      },
+      {
+        "name": "ui-resume-batch",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 50274
+      },
+      {
+        "name": "ui-batch-actions",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 4983
+      },
+      {
+        "name": "ui-login-upload",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 17657
+      },
+      {
+        "name": "ui-live-window-fixes",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 22555
+      },
+      {
+        "name": "ui-jd-login",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 12269
+      },
+      {
+        "name": "ui-auth-frame",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 4026
+      },
+      {
+        "name": "ui-ai-browser",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 19389
+      },
+      {
+        "name": "ui-ai-preview",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 20809
+      },
+      {
+        "name": "ui-reliability",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 144392
+      },
+      {
+        "name": "ui-boss-recovery",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 5389
+      },
+      {
+        "name": "ui-delivery-layout",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 36843
+      },
+      {
+        "name": "ui-feedback",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 11583
+      },
+      {
+        "name": "ui-update-install-status",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 2925
+      },
+      {
+        "name": "ui-job-refresh-status",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 3535
+      },
+      {
+        "name": "ui-author-page",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 41542
+      },
+      {
+        "name": "ui-windows-shell",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 1638
+      },
+      {
+        "name": "ui-alibaba-staging",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 8889
+      }
+    ]
+  },
+  "site": {
+    "ok": true,
+    "brokenImages": 0,
+    "overflow": 0
+  },
+  "skillAndFeedbackArchives": {
+    "sameVersion": true
+  },
+  "alibaba": {
+    "report": "alibaba-staged-sdk-v51.json",
+    "verifiedControls": 16,
+    "manualSourceFacts": 45,
+    "projectSegments": 5,
+    "editingCards": 4,
+    "organizationValuesRetained": true,
+    "saveClicks": 0,
+    "submitClicks": 0,
+    "officialValidationProven": false,
+    "organizationFieldsChecked": 5
+  },
+  "otherAdapters": "other-adapters-staged-v51.json",
+  "authCopy": "auth-session-copy-v51.json",
+  "packagedBatch": "legacy-batch-packaged-v51.json",
+  "upgrade": {
+    "report": "windows-install-upgrade-v51.json",
+    "checks": 8,
+    "sourceHelperOverride": false,
+    "nativeWizardVerified": false
+  },
+  "mac50": "mac-readback-v50.json",
+  "mac51": "pending-native-run",
+  "goalStatus": "active",
+  "productDefectRateBelowOnePercentProven": false,
+  "officialSaveUploadApplications": 0,
+  "externalMessages": 0
+}

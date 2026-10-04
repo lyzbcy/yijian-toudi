@@ -1,0 +1,20 @@
+{
+  "version": "0.5.50",
+  "realWebsiteSdk": true,
+  "isolatedCopy": true,
+  "officialWrites": 0,
+  "originalPersonalAppUntouched": true,
+  "result": {
+    "firstHasSaveBefore": false,
+    "firstHasSaveAfter": false,
+    "secondHasSave": false,
+    "firstStillConnected": true,
+    "controlStillConnected": true,
+    "canaryRetained": true,
+    "visibleSaves": 0,
+    "remainingEdits": 3,
+    "allExternalRequestsSealed": true
+  },
+  "probeLimitation": "Early probe counted only button tags and missed div[role=button] Save controls; false save booleans/zero count do not prove absence. Final four-card retention proof supersedes the selector assumption.",
+  "finalProof": "alibaba-staged-sdk-v51.json"
+}

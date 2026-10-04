@@ -1,0 +1,413 @@
+{
+  "version": "0.5.51",
+  "productionAdapterExecuted": true,
+  "isolatedProfile": true,
+  "allRequestsSealedDuringFill": true,
+  "officialWrites": 0,
+  "privateResumeCookiesAndDomOmitted": true,
+  "navigationPreparedReadOnly": true,
+  "saveClicks": 0,
+  "submitClicks": 0,
+  "organizationFieldsChecked": 5,
+  "organizationValuesRetained": true,
+  "visibleSaves": 4,
+  "projectRows": 5,
+  "ok": true,
+  "status": "review-required",
+  "message": "已暂存 16 个控件、回读核验 16 个；另有 45 项需人工核对。请逐区核对并点击保存；尚未保存到官网",
+  "report": {
+    "sections": [
+      {
+        "card": "个人信息",
+        "wrote": 3,
+        "verified": 3,
+        "keys": [
+          "basic.name",
+          "basic.phone",
+          "basic.email"
+        ],
+        "editing": true
+      },
+      {
+        "card": "教育情况",
+        "wrote": 1,
+        "verified": 1,
+        "keys": [
+          "basic.github"
+        ],
+        "editing": true
+      },
+      {
+        "card": "实习/项目经历",
+        "wrote": 11,
+        "verified": 11,
+        "keys": [
+          "projects.0.role",
+          "projects.0.description",
+          "projects.1.role",
+          "projects.1.description",
+          "projects.2.role",
+          "projects.2.description",
+          "projects.3.role",
+          "projects.3.description",
+          "projects.4.role",
+          "projects.4.description",
+          "extras.awards"
+        ],
+        "editing": true
+      },
+      {
+        "card": "其他信息",
+        "wrote": 1,
+        "verified": 1,
+        "keys": [
+          "extras.summary"
+        ],
+        "editing": true
+      }
+    ],
+    "attachment": null,
+    "manual": [
+      {
+        "key": "basic.website",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "basic.nationality",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "intention.roles",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "intention.cities",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "intention.salaryUnit",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "ai.tools",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "ai.collaboration",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "intention.employmentType",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "intention.preferredLocations",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "intention.expectCountry",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "skills.keywords",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "skills.proficiency",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "skills.languages",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "skills.devLanguages",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "skills.englishLevel",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "skills.englishScore",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "skills.certificates",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "skills.portfolioUrl",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "skills.interests",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "extras.campus",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "education.0.school",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "education.0.major",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "education.0.degree",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "education.0.degreeName",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "education.0.start",
+        "reason": "date-widget-manual"
+      },
+      {
+        "key": "education.0.end",
+        "reason": "date-widget-manual"
+      },
+      {
+        "key": "education.0.courses",
+        "reason": "unverified-or-unsupported-field"
+      },
+      {
+        "key": "experience.0.company",
+        "reason": "work-group-or-field-unavailable"
+      },
+      {
+        "key": "experience.0.department",
+        "reason": "work-group-or-field-unavailable"
+      },
+      {
+        "key": "experience.0.role",
+        "reason": "work-group-or-field-unavailable"
+      },
+      {
+        "key": "experience.0.start",
+        "reason": "date-widget-manual"
+      },
+      {
+        "key": "experience.0.end",
+        "reason": "date-widget-manual"
+      },
+      {
+        "key": "experience.0.employmentType",
+        "reason": "work-group-or-field-unavailable"
+      },
+      {
+        "key": "experience.0.description",
+        "reason": "work-group-or-field-unavailable"
+      },
+      {
+        "key": "experience.0.achievements",
+        "reason": "work-group-or-field-unavailable"
+      },
+      {
+        "key": "projects.0.start",
+        "reason": "date-widget-manual"
+      },
+      {
+        "key": "projects.0.end",
+        "reason": "date-widget-manual"
+      },
+      {
+        "key": "projects.1.start",
+        "reason": "date-widget-manual"
+      },
+      {
+        "key": "projects.1.end",
+        "reason": "date-widget-manual"
+      },
+      {
+        "key": "projects.2.start",
+        "reason": "date-widget-manual"
+      },
+      {
+        "key": "projects.2.end",
+        "reason": "date-widget-manual"
+      },
+      {
+        "key": "projects.3.start",
+        "reason": "date-widget-manual"
+      },
+      {
+        "key": "projects.3.end",
+        "reason": "date-widget-manual"
+      },
+      {
+        "key": "projects.4.start",
+        "reason": "date-widget-manual"
+      },
+      {
+        "key": "projects.4.end",
+        "reason": "date-widget-manual"
+      }
+    ],
+    "mappings": [
+      {
+        "controlKey": "basic.name",
+        "sourceKeys": [
+          "basic.name"
+        ],
+        "representation": "direct"
+      },
+      {
+        "controlKey": "basic.phone",
+        "sourceKeys": [
+          "basic.phone"
+        ],
+        "representation": "direct"
+      },
+      {
+        "controlKey": "basic.email",
+        "sourceKeys": [
+          "basic.email"
+        ],
+        "representation": "direct"
+      },
+      {
+        "controlKey": "basic.github",
+        "sourceKeys": [
+          "basic.github"
+        ],
+        "representation": "direct"
+      },
+      {
+        "controlKey": "projects.0.role",
+        "sourceKeys": [
+          "projects.0.role"
+        ],
+        "representation": "direct"
+      },
+      {
+        "controlKey": "projects.0.description",
+        "sourceKeys": [
+          "projects.0.name",
+          "projects.0.client",
+          "projects.0.description",
+          "projects.0.contribution",
+          "projects.0.techStack",
+          "projects.0.outcome"
+        ],
+        "representation": "labeled-project-description"
+      },
+      {
+        "controlKey": "projects.1.role",
+        "sourceKeys": [
+          "projects.1.role"
+        ],
+        "representation": "direct"
+      },
+      {
+        "controlKey": "projects.1.description",
+        "sourceKeys": [
+          "projects.1.name",
+          "projects.1.client",
+          "projects.1.description",
+          "projects.1.contribution",
+          "projects.1.techStack",
+          "projects.1.outcome"
+        ],
+        "representation": "labeled-project-description"
+      },
+      {
+        "controlKey": "projects.2.role",
+        "sourceKeys": [
+          "projects.2.role"
+        ],
+        "representation": "direct"
+      },
+      {
+        "controlKey": "projects.2.description",
+        "sourceKeys": [
+          "projects.2.name",
+          "projects.2.description",
+          "projects.2.contribution",
+          "projects.2.techStack",
+          "projects.2.outcome",
+          "projects.2.link"
+        ],
+        "representation": "labeled-project-description"
+      },
+      {
+        "controlKey": "projects.3.role",
+        "sourceKeys": [
+          "projects.3.role"
+        ],
+        "representation": "direct"
+      },
+      {
+        "controlKey": "projects.3.description",
+        "sourceKeys": [
+          "projects.3.name",
+          "projects.3.client",
+          "projects.3.description",
+          "projects.3.contribution",
+          "projects.3.techStack",
+          "projects.3.outcome"
+        ],
+        "representation": "labeled-project-description"
+      },
+      {
+        "controlKey": "projects.4.role",
+        "sourceKeys": [
+          "projects.4.role"
+        ],
+        "representation": "direct"
+      },
+      {
+        "controlKey": "projects.4.description",
+        "sourceKeys": [
+          "projects.4.name",
+          "projects.4.description",
+          "projects.4.contribution",
+          "projects.4.techStack",
+          "projects.4.outcome",
+          "projects.4.link"
+        ],
+        "representation": "labeled-project-description"
+      },
+      {
+        "controlKey": "extras.awards",
+        "sourceKeys": [
+          "extras.awards"
+        ],
+        "representation": "direct"
+      },
+      {
+        "controlKey": "extras.summary",
+        "sourceKeys": [
+          "extras.summary"
+        ],
+        "representation": "direct"
+      }
+    ],
+    "verified": [
+      "basic.name",
+      "basic.phone",
+      "basic.email",
+      "basic.github",
+      "projects.0.role",
+      "projects.0.description",
+      "projects.1.role",
+      "projects.1.description",
+      "projects.2.role",
+      "projects.2.description",
+      "projects.3.role",
+      "projects.3.description",
+      "projects.4.role",
+      "projects.4.description",
+      "extras.awards",
+      "extras.summary"
+    ],
+    "mismatched": [],
+    "saved": false,
+    "compliance": "untouched"
+  }
+}

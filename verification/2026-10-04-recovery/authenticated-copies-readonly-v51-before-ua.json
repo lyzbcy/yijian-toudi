@@ -1,0 +1,436 @@
+{
+  "version": "0.5.50",
+  "privateResumeCookiesAndDomOmitted": true,
+  "personalAppUnmodified": true,
+  "isolatedProfile": true,
+  "onlyGetHeadOptionsAllowedDuringLoad": true,
+  "allExternalRequestsSealedAfterRead": true,
+  "officialWrites": 0,
+  "rows": [
+    {
+      "companyId": "tencent",
+      "track": "campus",
+      "productionAdapterExecuted": false,
+      "officialWrites": 0,
+      "probe": {
+        "loginRequired": false,
+        "isNotFound": false,
+        "inputCount": 194
+      },
+      "fields": 190,
+      "readOnlyFields": 42,
+      "identifiedStructuralFields": 0,
+      "formObserved": true,
+      "originAndPath": "https://join.qq.com/resumeedit.html",
+      "blockedRequests": [
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://otheve.beacon.qq.com/analytics/v2_upload"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://otheve.beacon.qq.com/analytics/v2_upload"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://otheve.beacon.qq.com/analytics/v2_upload"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://otheve.beacon.qq.com/analytics/v2_upload"
+        }
+      ]
+    },
+    {
+      "companyId": "bytedance",
+      "track": "campus",
+      "productionAdapterExecuted": false,
+      "officialWrites": 0,
+      "probe": {
+        "loginRequired": false,
+        "isNotFound": false,
+        "inputCount": 0
+      },
+      "fields": 0,
+      "readOnlyFields": 0,
+      "identifiedStructuralFields": 0,
+      "formObserved": false,
+      "originAndPath": "https://jobs.bytedance.com/campus/resume/edit",
+      "blockedRequests": [
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://mon-va.byteoversea.com/monitor_browser/collect/batch/"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://mon-va.byteoversea.com/monitor_browser/collect/batch/"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://mon-va.byteoversea.com/monitor_browser/collect/batch/"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://mon-va.byteoversea.com/monitor_browser/collect/batch/"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://verify.snssdk.com/captcha/reportFrontend"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://verify.snssdk.com/captcha/reportFrontend"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://mon-va.byteoversea.com/monitor_browser/collect/batch/"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://mcs-bd-my.larkoffice.com/v1/list"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://mon-va.byteoversea.com/monitor_browser/collect/batch/"
+        }
+      ]
+    },
+    {
+      "companyId": "alibaba",
+      "track": "campus",
+      "productionAdapterExecuted": false,
+      "officialWrites": 0,
+      "probe": {
+        "loginRequired": false,
+        "isNotFound": false,
+        "inputCount": 5
+      },
+      "fields": 5,
+      "readOnlyFields": 0,
+      "identifiedStructuralFields": 0,
+      "formObserved": false,
+      "originAndPath": "https://campus-talent.alibaba.com/personal/resume",
+      "blockedRequests": [
+        {
+          "method": "POST",
+          "kind": "ping",
+          "url": "https://gm.mmstat.com/aes.1.1"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://campus-talent.alibaba.com/major/list"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://campus-talent.alibaba.com/_gw/rpc/agent/isInstallAssistant"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://campus-talent.alibaba.com/_gw/aliding/ai/assistant/getUsingFrontConfig.json"
+        },
+        {
+          "method": "POST",
+          "kind": "ping",
+          "url": "https://gm.mmstat.com/aes.1.1"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://campus-talent.alibaba.com/_gw/xiaomi/common/service"
+        },
+        {
+          "method": "GET",
+          "kind": "webSocket",
+          "url": "wss://im-eibu.alibaba-inc.com/alime/im"
+        },
+        {
+          "method": "POST",
+          "kind": "ping",
+          "url": "https://proxy.mmstat.com/aes.1.1"
+        },
+        {
+          "method": "POST",
+          "kind": "ping",
+          "url": "https://log.mmstat.com/o.gif"
+        },
+        {
+          "method": "POST",
+          "kind": "ping",
+          "url": "https://gm.mmstat.com/aes.1.1"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://aes.cn-wulanchabu.log.aliyuncs.com/logstores/aes-resourcetiming/track"
+        },
+        {
+          "method": "POST",
+          "kind": "ping",
+          "url": "https://proxy.mmstat.com/aes.1.1"
+        }
+      ]
+    },
+    {
+      "companyId": "meituan",
+      "track": "campus",
+      "productionAdapterExecuted": false,
+      "officialWrites": 0,
+      "probe": {
+        "loginRequired": false,
+        "isNotFound": false,
+        "inputCount": 12
+      },
+      "fields": 10,
+      "readOnlyFields": 3,
+      "identifiedStructuralFields": 0,
+      "formObserved": false,
+      "originAndPath": "https://zhaopin.meituan.com/web/personal-center/resume-detail",
+      "blockedRequests": [
+        {
+          "method": "POST",
+          "kind": "ping",
+          "url": "https://gm.mmstat.com/aes.1.1"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://catfront.dianping.com/api/pvts"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://catfront.dianping.com/api/pvts"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://catfront.dianping.com/rapi/metricjts"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://catfront.dianping.com/rapi/metricjts"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://catfront.dianping.com/pbbatchts"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://catfront.dianping.com/rapi/metricjts"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://catfront.dianping.com/rapi/metricjts"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://catfront.dianping.com/pbbatchts"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://catfront.dianping.com/rapi/metricjts"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://catfront.dianping.com/rapi/metricjts"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://catfront.dianping.com/pbbatchts"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://zhaopin.meituan.com/api/official/resume/isExist"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://zhaopin.meituan.com/api/official/resume/isExist"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://zhaopin.meituan.com/api/official/user/individualPrivacy/getStatus"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://catfront.dianping.com/api/logts"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://catfront.dianping.com/api/logts"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://zhaopin.meituan.com/api/official/resume/isExist"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://catfront.dianping.com/api/logts"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://catfront.dianping.com/api/logts"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://zhaopin.meituan.com/api/official/enum/getTreeEnumByCategory"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://catfront.dianping.com/api/logts"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://logan.sankuai.com/logger/webLogUploadV2.json"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://catfront.dianping.com/rapi/metricjts"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://catfront.dianping.com/api/logts"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://catfront.dianping.com/rapi/metricjts"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://logan.sankuai.com/logger/queryPreSubmit.json"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://catfront.dianping.com/api/logts"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://logan.sankuai.com/logger/queryPreSubmit.json"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://logan.sankuai.com/logger/queryPreSubmit.json"
+        }
+      ]
+    },
+    {
+      "companyId": "jd",
+      "track": "campus",
+      "productionAdapterExecuted": false,
+      "officialWrites": 0,
+      "probe": {
+        "loginRequired": false,
+        "isNotFound": false,
+        "inputCount": 18
+      },
+      "fields": 18,
+      "readOnlyFields": 2,
+      "identifiedStructuralFields": 10,
+      "formObserved": true,
+      "originAndPath": "https://campus.jd.com/",
+      "blockedRequests": [
+        {
+          "method": "POST",
+          "kind": "ping",
+          "url": "https://mercury.jd.com/log.gif"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://sgm-m.jd.com/h5/init"
+        },
+        {
+          "method": "POST",
+          "kind": "ping",
+          "url": "https://mercury.jd.com/log.gif"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://api-ai.jd.com/outer/campus/agent/hitGrayscaleRule"
+        }
+      ]
+    },
+    {
+      "companyId": "xiaomi",
+      "track": "campus",
+      "productionAdapterExecuted": false,
+      "officialWrites": 0,
+      "probe": {
+        "loginRequired": false,
+        "isNotFound": false,
+        "inputCount": 0
+      },
+      "fields": 0,
+      "readOnlyFields": 0,
+      "identifiedStructuralFields": 0,
+      "formObserved": false,
+      "originAndPath": "https://xiaomi.jobs.f.mioffice.cn/campus/resume/edit",
+      "blockedRequests": [
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://verify.snssdk.com/captcha/reportFrontend"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://verify.snssdk.com/captcha/reportFrontend"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://mon.zijieapi.com/monitor_browser/collect/batch/"
+        },
+        {
+          "method": "POST",
+          "kind": "xhr",
+          "url": "https://mon.zijieapi.com/monitor_browser/collect/batch/"
+        }
+      ]
+    }
+  ],
+  "readinessHeuristicLimitation": "Original >10 field threshold misclassifies Alibaba view state and Meituan partial detail forms; false formObserved does not prove failed authentication. SPA can settle after the 1.2-second probe. Cookie copy equivalence is not proven.",
+  "cookieEquivalenceEvidence": "auth-session-copy-v51.json"
+}

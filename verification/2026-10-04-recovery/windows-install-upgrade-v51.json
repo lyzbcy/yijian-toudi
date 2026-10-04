@@ -1,0 +1,21 @@
+{
+  "version": "0.5.51",
+  "oldVersion": "0.5.50",
+  "desktop": false,
+  "mode": "real-nsis-controlled-release-response",
+  "base": "install-smoke-9lLSSL",
+  "checks": [
+    "Real NSIS installed baseline into chosen Chinese path with desktop option disabled",
+    "Installed baseline opened visible UI, completed onboarding and saved resume through real UI",
+    "Actual installed IPC updater selected candidate, downloaded real installer and checked SHA-256",
+    "Ready/commit helper performed real NSIS cross-version upgrade and new visible app confirmed restart",
+    "Restarted actual candidate served retained resume over authenticated API; token and attachment preserved",
+    "Candidate reopened with retained resume DOM and persistent cookie fixture",
+    "Real uninstaller removed registration and retained isolated user profile",
+    "Original shortcuts and updater cache restored byte-for-byte"
+  ],
+  "ok": true,
+  "restartCase": null,
+  "helperScriptSourceOverriddenForTest": false,
+  "nativeWizardVerified": false
+}

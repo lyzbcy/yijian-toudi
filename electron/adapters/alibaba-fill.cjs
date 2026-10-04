@@ -1,252 +1,108 @@
-// 阿里校招简历页适配器：查看态 + 各分区「编辑」按钮结构（2026-08-25 真站实测）。
-// 流程：打开简历页 → 处理「刷新简历」弹窗（点取消，不覆盖）→ 逐分区点「编辑」→
-//       在弹出的编辑层内用通用引擎写入并回读 → 点该层「保存/确定」→ 下一个分区。
-// 安全边界：真实承诺/申请协议/投递类勾选与按钮永不触碰；「去选择职位」永不点击。
 const { createUniversalResumePlan } = require('../resume-plan.cjs');
-const { planGenericResumeFields, buildExecuteFieldPlanScript, mergeExecutionWithInspection, summarizeGenericVerification } = require('./generic-resume-fill.cjs');
 const { resolvePlatformUrl } = require('../platform-manifests.cjs');
-const { LOGIN_AND_FORM_PROBE, INSPECT_FORM_FIELDS } = require('../form-inspection.cjs');
+const { LOGIN_AND_FORM_PROBE } = require('../form-inspection.cjs');
 const { normalizeComparableValue } = require('../field-matching.cjs');
+const {buildAlibabaCardScript,buildAlibabaInspectScript,buildAlibabaAddScript,buildAlibabaWriteScript,buildAlibabaReadbackScript}=require('../alibaba-form-context.cjs');
+const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const CARDS=['个人信息','教育情况','实习/项目经历','其他信息'];
+const PROJECT_LABELS={name:'项目名称',client:'客户/服务客户',description:'项目背景',contribution:'个人贡献',techStack:'技术栈',outcome:'项目成果',link:'项目链接'};
 
-async function probeFormState(workspace) {
-  try { return await workspace.run(LOGIN_AND_FORM_PROBE); }
-  catch { await new Promise((r) => setTimeout(r, 2000)); return workspace.run(LOGIN_AND_FORM_PROBE); }
-}
-
-// 页面侧：找到第 n 个「编辑」按钮并点击，返回是否点到了
-const CLICK_EDIT_SCRIPT = (index) => `(() => {
-  const edits = [...document.querySelectorAll('button,[role=button]')].filter(b => (b.innerText || '').trim() === '编辑');
-  if (!edits[${index}]) return false;
-  for (const t of ['pointerdown','mousedown','pointerup','mouseup','click']) edits[${index}].dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true }));
-  return true;
-})()`;
-
-// 页面侧：点当前展开区的「保存/确定/完成」。
-// 阿里是内联展开编辑：每个大栏目底部有独立保存按钮（非弹窗层）。取页面上可见的
-// 保存类按钮中最靠下的一个（= 当前展开区底部），绝不匹配「提交/投递/申请/去选择职位」。
-const CLICK_SAVE_SCRIPT = `(() => {
-  const cands = [...document.querySelectorAll('button,[role=button]')]
-    .filter(b => {
-      const t = (b.innerText || '').trim();
-      if (!/^(保存|确 ?定|完 ?成)$/.test(t)) return false;
-      if (/提交|投递|申请|选择职位/.test(t)) return false;
-      return b.offsetParent !== null; // 可见
-    })
-    .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
-  if (!cands.length) return false;
-  const btn = cands[cands.length - 1];
-  for (const t of ['pointerdown','mousedown','pointerup','mouseup','click']) btn.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true }));
-  return btn.innerText.trim();
-})()`;
-
-// ===== 阿里「实习/项目经历」区：槽位感知填写 =====
-// 页面把实习槽（含公司或组织名称）和项目槽（只有职位/描述）混排在同一区，
-// 通用引擎会跨槽串写。先在页面侧聚类出槽位并返回结构，再按「经历第N段→经历槽N、
-// 项目第N段→项目槽N」写入，每槽点自己的保存按钮。
-
-// 页面侧：聚类槽位。返回 [{ kind: 'experience'|'project', fields: [{index, kind: 'company'|'role'|'description'}] }]
-const COLLECT_SLOTS_SCRIPT = `(() => {
-  // 阿里字段带可靠 name：tfitem_N.name(公司或组织名称)/.responsibility(职位或职责)/.description(工作描述)
-  // 按 tfitem_N 聚槽：有 .name 的是经历槽，只有职责/描述的是项目槽
-  const all = [...document.querySelectorAll('input, textarea, select')]
-    .filter((c) => !c.disabled && c.type !== 'hidden' && c.type !== 'button' && c.type !== 'submit')
-    .filter((c) => !c.closest('form[action*="login"], [class*="login"], [class*="captcha"], [class*="auth"], [role="dialog"]'));
-  const groups = new Map();
-  for (const c of all) {
-    const m = (c.name || '').match(/^(tfitem_\\d+)\\.(name|responsibility|description)$/);
-    if (!m) continue;
-    const key = m[1];
-    if (!groups.has(key)) groups.set(key, []);
-    const kind = m[2] === 'name' ? 'company' : (m[2] === 'responsibility' ? 'role' : 'description');
-    groups.get(key).push({ kind, index: all.indexOf(c), name: c.name });
-  }
-  return [...groups.entries()].map(([slotName, fields]) => ({
-    kind: fields.some((f) => f.kind === 'company') ? 'experience' : 'project',
-    slotName,
-    fields
-  }));
-})()`;
-
-// 页面侧：点某个槽自己的保存按钮（从槽内字段向上找容器内的「保存」）
-const CLICK_SLOT_SAVE_SCRIPT = () => `(() => {
-  // 实习/项目区每段有独立保存：点所有可见的保存类按钮（自上而下），绝不匹配提交/投递类
-  const btns = [...document.querySelectorAll('button,[role=button]')]
-    .filter(b => {
-      const t = (b.innerText || '').trim();
-      return /^(保存|确 ?定|完 ?成)$/.test(t) && !/提交|投递|申请|选择职位/.test(t) && b.offsetParent !== null;
-    })
-    .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
-  if (!btns.length) return 0;
-  for (const btn of btns) {
-    for (const t of ['pointerdown','mousedown','pointerup','mouseup','click']) btn.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true }));
-  }
-  return btns.length;
-})()`;
-
-// 主进程侧：把一个 plan 项写进指定控件（index 定位）并即时回读
-async function writeSlotField(workspace, item, fieldIndex, execBuffer) {
-  execBuffer.push({ key: item.key, value: item.value, fieldIndex, fieldType: 'input:text', locator: { kind: 'index', value: fieldIndex } });
-}
-
-async function fillAliExperienceSection(workspace, plan, step) {
-  const slots = await workspace.run(COLLECT_SLOTS_SCRIPT).catch(() => []);
-  if (!Array.isArray(slots) || !slots.length) return null;
-  const expSlots = slots.filter((s) => s.kind === 'experience');
-  const projSlots = slots.filter((s) => s.kind === 'project');
-  const groupItems = (prefix) => {
-    const map = new Map();
-    for (const item of plan) {
-      const m = item.key.match(new RegExp('^' + prefix + '\\.(\\d+)\\.'));
-      if (!m) continue;
-      const idx = Number(m[1]);
-      if (!map.has(idx)) map.set(idx, []);
-      map.get(idx).push(item);
-    }
-    return map;
+function planAlibabaCard(plan,inspection,card){
+  const writes=[],represented=new Set(),mappings=[];
+  const write=(item,candidates,keys,representation='direct')=>{
+    if(!item?.value||candidates.length!==1||candidates[0].readOnly)return;
+    keys=keys||[item.key];writes.push({key:item.key,value:String(item.value),locator:candidates[0].locator});keys.forEach(key=>represented.add(key));mappings.push({controlKey:item.key,sourceKeys:keys,representation});
   };
-  const expMap = groupItems('experience');
-  const projMap = groupItems('projects');
-  const section = { wrote: 0, verified: 0, keys: [] };
-  const assignments = [];
-  // 经历第 N 段 → 经历槽 N；项目第 N 段 → 项目槽 N
-  for (const [seg, items] of expMap) {
-    const slot = expSlots[seg];
-    if (!slot) continue;
-    for (const item of items) {
-      const kindMap = { company: 'company', role: 'role', description: 'description' };
-      const fieldKind = item.key.split('.').pop();
-      const target = slot.fields.find((f) => f.kind === (kindMap[fieldKind] || ''));
-      if (target && item.value) assignments.push({ item, fieldIndex: target.index, slotName: slot.slotName, kind: fieldKind });
+  const fields=inspection.fields||[],exact=name=>fields.filter(f=>f.name===name),caption=label=>fields.filter(f=>f.label===label&&!f.readOnly),item=key=>plan.find(i=>i.key===key);
+  if(card==='个人信息'){
+    for(const [key,label] of [['basic.name','姓名'],['basic.phone','手机'],['basic.email','邮箱']])write(item(key),caption(label));
+    const ids=[item('basic.idCard'),/^(身份证|居民身份证)$/.test(item('basic.idType')?.value||'')?item('basic.idNumber'):null].filter(Boolean);
+    if(ids.length&&ids.every(i=>i.value===ids[0].value))write(ids[0],caption('身份证号'),ids.map(i=>i.key));
+  }
+  if(card==='教育情况'){
+    const group=inspection.groups?.find(g=>g.kind==='education'&&g.recognized);
+    (group?.rows||[]).forEach((row,index)=>{
+      for(const [local,remote] of [['department','academy'],['advisor','tutor']])write(item(`education.${index}.${local}`),exact(`${row}.${remote}`));
+      const score=item(`education.${index}.gpa`),base=item(`education.${index}.gpaBase`);
+      if(score&&base)write({...score,value:score.value+'/'+base.value},exact(`${row}.gpaScore`),[score.key,base.key],'score/full-score');
+    });
+    write(item('basic.github'),exact('github'));
+  }
+  if(card==='实习/项目经历'){
+    for(const kind of ['experience','projects']){
+      const group=inspection.groups?.find(g=>g.kind===kind&&g.recognized);
+      (group?.rows||[]).forEach((row,index)=>{
+        write(item(`${kind}.${index}.role`),exact(`${row}.responsibility`));
+        if(kind==='experience'){
+          write(item(`${kind}.${index}.company`),exact(`${row}.name`));write(item(`${kind}.${index}.description`),exact(`${row}.description`));
+        }else{
+          const facts=Object.entries(PROJECT_LABELS).map(([field,label])=>({item:item(`projects.${index}.${field}`),label})).filter(f=>f.item);
+          if(facts.length)write({key:`projects.${index}.description`,value:facts.map(f=>`${f.label}：${f.item.value}`).join('\n')},exact(`${row}.description`),facts.map(f=>f.item.key),'labeled-project-description');
+          // .name means organization. Project title/client are different facts.
+        }
+      });
     }
+    write(item('extras.awards'),exact('reward'));
   }
-  for (const [seg, items] of projMap) {
-    const slot = projSlots[seg];
-    if (!slot) continue;
-    for (const item of items) {
-      const fieldKind = item.key.split('.').pop();
-      const target = slot.fields.find((f) => f.kind === (fieldKind === 'role' ? 'role' : 'description'));
-      if (!target) continue;
-      // 项目槽只有一个描述框：项目背景+个人贡献合并写入
-      if (fieldKind === 'description' || fieldKind === 'contribution') {
-        const merged = [plan.find((x) => x.key === 'projects.' + seg + '.description'), plan.find((x) => x.key === 'projects.' + seg + '.contribution')]
-          .filter(Boolean).map((x) => x.value).join('\n');
-        if (merged) assignments.push({ item: { ...item, value: merged }, fieldIndex: target.index, slotName: slot.slotName, kind: 'description' });
-      } else if (fieldKind === 'role' && item.value) {
-        assignments.push({ item, fieldIndex: target.index, slotName: slot.slotName, kind: 'role' });
-      }
-    }
-  }
-  // 去重（描述合并可能产生两条同 index），逐槽写入并保存
-  const bySlot = new Map();
-  for (const a of assignments) {
-    if (!bySlot.has(a.slotName)) bySlot.set(a.slotName, []);
-    const arr = bySlot.get(a.slotName);
-    if (!arr.some((x) => x.fieldIndex === a.fieldIndex)) arr.push(a);
-  }
-  for (const [slotName, writes] of bySlot) {
-    const exec = writes.map((w) => ({ key: w.item.key, value: String(w.item.value), fieldIndex: w.fieldIndex, fieldType: 'textarea:textarea', locator: { kind: 'index', value: w.fieldIndex } }));
-    const immediate = await workspace.run(buildExecuteFieldPlanScript(exec)).catch(() => []);
-    await new Promise((r) => setTimeout(r, 800));
-    const fieldsAfter = await workspace.run(INSPECT_FORM_FIELDS).catch(() => []);
-    const execution = mergeExecutionWithInspection(immediate, fieldsAfter);
-    const verification = summarizeGenericVerification(execution);
-    const savedCount = await workspace.run(CLICK_SLOT_SAVE_SCRIPT()).catch(() => 0);
-    const saved = Number(savedCount) > 0;
-    section.wrote += exec.length;
-    section.verified += verification.verified.length;
-    section.keys.push(...verification.verified);
-    step('slot-filled', `槽 ${slotName}：写入 ${exec.length} 项、核验 ${verification.verified.length} 项${saved ? '，已点全部 ' + savedCount + ' 个保存按钮' : '，未找到保存按钮'}`);
-    await new Promise((r) => setTimeout(r, 1200));
-  }
-  return section;
+  if(card==='其他信息')write(item('extras.summary'),fields.filter(f=>f.type==='textarea'&&f.locator.widget==='text'));
+  return {writes,represented,mappings};
 }
-
-async function fillAlibabaResume(resume, { workspace, company, recruitType = 'campus', syncTargetId, taskId, onStep, attachmentPath } = {}) {
-  if (!workspace?.openWorkspace || !workspace?.run) throw new Error('浏览器工作区未就绪');
-  const step = (name, message) => onStep?.({ step: name, message });
-  const track = ['campus', 'summer-intern', 'daily-intern'].includes(recruitType) ? 'campus' : 'social';
-  const url = resolvePlatformUrl('alibaba', track, 'resume');
-  step('loading', '正在打开阿里巴巴简历页…');
-  const openArgs = {
-    company, url, mode: 'resume-review', title: '核对阿里巴巴简历',
-    context: { action: 'fill-resume', companyId: 'alibaba', syncTargetId: syncTargetId || 'alibaba', taskId: taskId || null, recruitType: track }
-  };
-  try {
-    await workspace.openWorkspace(openArgs);
-  } catch (error) {
-    // SSO 令牌回跳（sendBucSSOToken.do）期间 loadURL 可能瞬时 ERR_ABORTED，等待后重开一次
-    if (!/ERR_ABORTED/.test(String(error.message))) throw error;
-    await new Promise((r) => setTimeout(r, 2500));
-    await workspace.openWorkspace(openArgs);
-  }
-  const probe = await probeFormState(workspace);
-  if (probe.isNotFound || probe.loginRequired) {
-    return { ok: false, status: 'login-required', message: '请先在当前阿里巴巴页面完成登录，然后重新更新' };
-  }
-  // 附件：注入用户上传的简历文件（重新上传入口）
-  let attachment = null;
-  if (attachmentPath && workspace.setInputFiles) {
-    step('attachment', '检测到简历附件入口，正在上传你的简历文件…');
-    try { attachment = await workspace.setInputFiles(attachmentPath); }
-    catch (error) { attachment = { uploaded: false, reason: String(error.message).slice(0, 80) }; }
-    if (attachment?.refresh && attachment.refresh.phase !== 'ready') {
-      return { ok: false, status: 'review-required', message: '附件已选择；刷新确认或解析尚未完成，请在当前页面核对后继续', report: { attachment } };
+async function ensureRows(workspace,card,plan,step){
+  let inspection=await workspace.run(buildAlibabaInspectScript(card));
+  for(const kind of ['education','experience','projects']){
+    const desired=Math.max(0,...plan.filter(i=>i.key.startsWith(kind+'.')).map(i=>Number(i.key.split('.')[1])+1));
+    if(!desired)continue;
+    for(let attempts=0;attempts<Math.min(desired,20);attempts++){
+      const group=inspection.groups?.find(g=>g.kind===kind&&g.recognized);if(!group||group.rows.length>=desired)break;
+      if(!await workspace.run(buildAlibabaAddScript(card,group.add,group.rows.length)))break;
+      let next;for(let polls=0;polls<8;polls++){await pause(150);next=await workspace.run(buildAlibabaInspectScript(card));if((next.groups?.find(g=>g.kind===kind)?.rows.length||0)>group.rows.length)break;}
+      if((next?.groups?.find(g=>g.kind===kind)?.rows.length||0)!==group.rows.length+1)break;
+      inspection=next;step('row-added',`${card}：已暂存一段${kind==='projects'?'项目':kind==='education'?'教育':'实习'}经历`);
     }
-    if (attachment?.refresh?.confirmed) step('attachment-refreshed', '已确认使用附件刷新信息，解析已稳定，继续核对字段');
-
   }
-  const plan = createUniversalResumePlan(resume).filter((item) => item.value);
-
-  // 逐分区：点「编辑」→ 填写编辑层 → 保存
-  const results = [];
-  const usedFieldIndexes = new Set();
-  for (let editIndex = 0; editIndex < 8; editIndex += 1) {
-    let opened;
-    try { opened = await workspace.run(CLICK_EDIT_SCRIPT(editIndex)); } catch { opened = false; }
-    if (opened && editIndex === 2) {
-      // 实习/项目经历区：槽位感知填写（经历/项目分段对位 + 每槽独立保存）
-      const slotResult = await fillAliExperienceSection(workspace, plan, step);
-      if (slotResult) {
-        results.push({ section: 3, ...slotResult });
-        await new Promise((r) => setTimeout(r, 800));
-        continue;
-      }
-      // 槽位聚类失败：绝不退回通用填写（那是跨槽串写路径），提示人工处理
-      step('manual-required', '实习/项目经历区未能识别槽位结构，为避免串写已跳过，请手动核对');
-      await new Promise((r) => setTimeout(r, 800));
-      continue;
-    }
-    if (!opened || opened.timeout) break;
-    await new Promise((r) => setTimeout(r, 1800));
-    const fields = await workspace.run(INSPECT_FORM_FIELDS).catch(() => []);
-    // 空字段（如附件区）不终止流程：跳过写入但仍尝试保存并继续下一个分区
-    const available = Array.isArray(fields) ? fields.filter((f) => !usedFieldIndexes.has(f.index)) : [];
-    const planned = planGenericResumeFields(plan, available);
-    let verified = [];
-    if (planned.writable.length) {
-      const immediate = await workspace.run(buildExecuteFieldPlanScript(planned.writable)).catch(() => []);
-      await new Promise((r) => setTimeout(r, 800));
-      const fieldsAfter = immediate.length ? await workspace.run(INSPECT_FORM_FIELDS).catch(() => []) : [];
-      const execution = mergeExecutionWithInspection(immediate, fieldsAfter);
-      const verification = summarizeGenericVerification(execution);
-      verified = verification.verified;
-      for (const item of planned.writable) usedFieldIndexes.add(item.fieldIndex);
-      results.push({ section: editIndex + 1, wrote: planned.writable.length, verified: verified.length, keys: verified });
-    }
-    const saved = await workspace.run(CLICK_SAVE_SCRIPT).catch(() => false);
-    step('section-filled', `第 ${editIndex + 1} 区：写入 ${planned.writable.length} 项、核验 ${verified.length} 项${saved ? `，已点保存（${saved}）` : '（未找到保存按钮，请手动检查该区）'}`);
-    await new Promise((r) => setTimeout(r, 1500));
-  }
-  const verifiedTotal = results.reduce((sum, r) => sum + r.verified, 0);
-  const wroteTotal = results.reduce((sum, r) => sum + r.wrote, 0);
-  const message = `已逐区写入 ${wroteTotal} 项、回读核验 ${verifiedTotal} 项，分区保存已触发但官网结果仍需核对；真实承诺/申请协议类勾选未触碰，由你本人确认`;
-  step('review-required', message);
-  return {
-    ok: verifiedTotal > 0,
-    status: 'review-required',
-    message,
-    report: { sections: results, attachment, compliance: 'untouched' }
-  };
+  return inspection;
 }
-
-module.exports = { fillAlibabaResume };
+async function fillAlibabaResume(resume,{workspace,company,recruitType='campus',syncTargetId,taskId,onStep,attachmentPath}={}){
+  if(!workspace?.openWorkspace||!workspace?.run)throw Error('浏览器工作区未就绪');
+  const step=(name,message)=>onStep?.({step:name,message}),track=['campus','summer-intern','daily-intern'].includes(recruitType)?'campus':'social';
+  const openArgs={company,url:resolvePlatformUrl('alibaba',track,'resume'),mode:'resume-review',title:'核对阿里巴巴简历',context:{action:'fill-resume',companyId:'alibaba',syncTargetId:syncTargetId||'alibaba',taskId:taskId||null,recruitType:track}};
+  step('loading','正在打开阿里巴巴简历页…');
+  try{await workspace.openWorkspace(openArgs);}catch(error){if(!/ERR_ABORTED/.test(String(error.message)))throw error;await pause(2500);await workspace.openWorkspace(openArgs);}
+  const probe=await workspace.run(LOGIN_AND_FORM_PROBE);
+  if(probe.isNotFound||probe.loginRequired)return {ok:false,status:'login-required',message:'请先在当前阿里巴巴页面完成登录，然后重新更新'};
+  let attachment=null;
+  if(attachmentPath&&workspace.setInputFiles){
+    step('attachment','正在选择你的简历附件…');
+    try{attachment=await workspace.setInputFiles(attachmentPath);}catch{attachment={uploaded:false,reason:'附件选择未完成，请手动核对'};}
+    if(attachment?.refresh&&attachment.refresh.phase!=='ready')return {ok:false,status:'review-required',message:'附件已选择；刷新确认或解析尚未完成，请在当前页面核对后继续',report:{attachment}};
+  }
+  const plan=createUniversalResumePlan(resume).filter(i=>i.value),sections=[],execution=[],mappings=[];
+  // A view-state attachment input can precede the SPA's cards. Wait for structure,
+  // not a field-count threshold, before declaring the first card unsupported.
+  for(let polls=0;polls<20;polls++){
+    const ready=await workspace.run(buildAlibabaInspectScript(CARDS[0]));
+    if(ready.ok)break;
+    await pause(200);
+  }
+  for(const card of CARDS){
+    const opened=await workspace.run(buildAlibabaCardScript(card));
+    if(!opened?.ok){sections.push({card,reason:opened?.reason||'card-unrecognized',wrote:0,verified:0,keys:[]});continue;}
+    let inspection;for(let polls=0;polls<10;polls++){await pause(150);inspection=await workspace.run(buildAlibabaInspectScript(card));if(inspection.ok&&inspection.editing&&inspection.fields.length)break;}
+    if(!inspection?.ok||!inspection.editing){sections.push({card,reason:'edit-not-ready',wrote:0,verified:0,keys:[]});continue;}
+    inspection=await ensureRows(workspace,card,plan,step);
+    const planned=planAlibabaCard(plan,inspection,card);mappings.push(...planned.mappings);
+    const immediate=planned.writes.length?await workspace.run(buildAlibabaWriteScript(planned.writes)):[];
+    execution.push(...immediate);sections.push({card,wrote:immediate.filter(i=>i.written).length,verified:0,keys:[],editing:true});
+    step('section-filled',`${card}：已填写 ${immediate.filter(i=>i.written).length} 个控件，等待所有分区完成后回读`);
+  }
+  await pause(500);
+  const final=execution.length?await workspace.run(buildAlibabaReadbackScript(execution)):[];
+  const verified=final.filter(i=>i.written&&i.retained&&normalizeComparableValue(i.expected)===normalizeComparableValue(i.observed));
+  const verifiedControls=new Set(verified.map(i=>i.key)),represented=new Set(mappings.filter(m=>verifiedControls.has(m.controlKey)).flatMap(m=>m.sourceKeys));
+  for(const section of sections){section.keys=verified.filter(i=>i.locator.card===section.card).map(i=>i.key);section.verified=section.keys.length;}
+  const manual=plan.filter(i=>!represented.has(i.key)).map(i=>({key:i.key,reason:/\.(start|end)$/.test(i.key)?'date-widget-manual':i.key.startsWith('experience.')?'work-group-or-field-unavailable':'unverified-or-unsupported-field'}));
+  const wrote=sections.reduce((sum,s)=>sum+s.wrote,0),message=`已暂存 ${wrote} 个控件、回读核验 ${verified.length} 个；另有 ${manual.length} 项需人工核对。请逐区核对并点击保存；尚未保存到官网`;
+  step('review-required',message);
+  return {ok:verified.length>0,status:'review-required',message,report:{sections,attachment,manual,mappings,verified:verified.map(i=>i.key),mismatched:final.filter(i=>i.written&&!verifiedControls.has(i.key)).map(i=>i.key),saved:false,compliance:'untouched'}};
+}
+module.exports={fillAlibabaResume,planAlibabaCard};
