@@ -44,6 +44,6 @@ async function confirmUpdateRestart(directory,{version,executable,visible,readIn
  let pending,result;try{pending=JSON.parse(await fs.readFile(path.join(directory,'install-pending.json'),'utf8'));result=JSON.parse((await fs.readFile(path.join(directory,'install-result.json'),'utf8')).replace(/^\uFEFF/,''));}catch{return null;}
  if(!visible||result.status!=='installed'||!pending.nonce||result.nonce!==pending.nonce||result.version!==version||pending.version!==version||path.resolve(result.exe||'')!==path.resolve(executable)||path.resolve(pending.exe||'')!==path.resolve(executable))return null;
  const record=await readInstallationFn();if(record?.version!==version||path.resolve(record.root||'')!==path.dirname(path.resolve(executable)))throw Error('restart-installation-mismatch');
- const next={...result,status:'restarted',runningVersion:version,runningExe:executable,restartConfirmedAt:new Date().toISOString()};await fs.writeFile(path.join(directory,'install-result.json'),JSON.stringify(next,null,2));return next;
+ const next={...result,status:'restarted',runningVersion:version,runningExe:executable,restartConfirmedAt:new Date().toISOString()};await require('./update-install-result.cjs').writeInstallResult(path.join(directory,'install-result.json'),next);return next;
 }
 module.exports={readInstallation,installationMatches,validateStagedUpdate,launchUpdateHelper,confirmUpdateRestart,shaFile,GUID};

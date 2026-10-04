@@ -1202,9 +1202,7 @@ Authorization: Bearer ${state.settings.apiToken}
       renderState();
     });
     window.oneClick.onWorkspaceChanged(renderWorkspaceStatus);
-    window.oneClick.updateInstallStatus?.().then(result=>{
-      if(result?.status==='failed')toast(`上次更新失败：${result.message||'请重新下载'}。${result.restored?'旧版文件已恢复。':''}请重试或打开发布页。`,'error');
-    }).catch(()=>{});
+    void window.watchDesktopInstallStatus(window.oneClick.updateInstallStatus, message=>toast(message,'error'));
     window.oneClick.onUpdateProgress?.(progress=>{
       const box=$('#updateProgress');box.hidden=false;
       const labels={checking:'正在重新确认最新正式版本',downloading:'正在下载',verifying:'正在校验 SHA-256',verified:'下载校验完成，尚未安装',preparing:'安装助手正在确认就绪，当前软件尚未退出',installing:'助手已确认，正在安装并重新打开',failed:'更新下载失败，请重试或打开发布页'};

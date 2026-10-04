@@ -82,6 +82,6 @@ async function confirmUpdateRestart(directory,{version,executable,visible,arch=p
  let pending,result;try{pending=JSON.parse(await fs.readFile(path.join(directory,'install-pending.json'),'utf8'));result=JSON.parse(await fs.readFile(path.join(directory,'install-result.json'),'utf8'));}catch{return null;}
  if(!visible||result.status!=='installed'||!pending.nonce||result.nonce!==pending.nonce||result.version!==version||pending.version!==version||result.exe!==executable||pending.exe!==executable)return null;
  await validateBundle(result.root,version,arch);const next={...result,status:'restarted',runningVersion:version,restartConfirmedAt:new Date().toISOString()};
- await fs.writeFile(path.join(directory,'install-result.json'),JSON.stringify(next,null,2));return next;
+ await require('./update-install-result.cjs').writeInstallResult(path.join(directory,'install-result.json'),next);return next;
 }
 module.exports={installationRoot,readInstallation,validateStagedUpdate,validateBundle,launchUpdateHelper,confirmUpdateRestart,machoArchitectures};

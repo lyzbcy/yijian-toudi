@@ -2,11 +2,11 @@
 
 **AI 本地调试**：双击 `zeen-tools/一键AI调试预览.bat`，用 `node scripts/ai-browser.cjs list` 直接操作当前软件的网页/Shadow DOM/iframe/子窗口；关闭用 `zeen-tools/关闭AI调试预览.bat`。操作格式与可复用 AI 提示词见 [AI 网页调试](doc/integrations/ai-browser.md)。普通本地预览不启用 CDP。
 
-当前源码为 **v0.5.41 接续开发候选**：从共享文件与完整性校验通过的 v0.5.33 ASAR 恢复运行代码，并在独立工作树继续开发。原设备的聊天、登录会话和未同步修改尚未恢复。修复与当前验收见 [接续交付进度](doc/progress/2026-10-04-recovery-delivery.md)，全部交付要求见 [MVP 验收矩阵](doc/development/mvp-acceptance.md)。当前候选未正式发布，整体 bug 率低于 1% 尚无充分证据。
+当前源码为 **v0.5.42 接续开发候选**：从共享文件与完整性校验通过的 v0.5.33 ASAR 恢复运行代码，并在独立工作树继续开发。原设备的聊天、登录会话和未同步修改尚未恢复。修复与当前验收见 [接续交付进度](doc/progress/2026-10-04-recovery-delivery.md)，全部交付要求见 [MVP 验收矩阵](doc/development/mvp-acceptance.md)。当前候选未正式发布，整体 bug 率低于 1% 尚无充分证据。
 
 一个 macOS 优先、面向未来跨平台的本地求职工作台。它把招聘岗位、统一简历、招聘邮件和自动化任务放在同一个桌面应用里，并提供仅监听本机的 Agent API。
 
-> 源码当前为 v0.5.41 Windows 与 Mac 接续交付候选；最近公开版本为 [v0.5.1 Windows x64 测试预发布](https://github.com/lyzbcy/yijian-toudi/releases/tag/v0.5.1)，最近稳定 Release 为 `v0.3.1`。2026-10-04 匿名读取六家官网社招岗位均通过，共 4159 条；这不代表官网简历保存或投递已验收。Mac两架构完整ad-hoc资源签名、Applications CLI手动升级和原生fixture自动更新已验；用户信任、公证及正式公众升级仍待完成。
+> 源码当前为 v0.5.42 Windows 与 Mac 接续交付候选；最近公开版本为 [v0.5.1 Windows x64 测试预发布](https://github.com/lyzbcy/yijian-toudi/releases/tag/v0.5.1)，最近稳定 Release 为 `v0.3.1`。2026-10-04 匿名读取六家官网社招岗位均通过，共 4159 条；这不代表官网简历保存或投递已验收。Mac两架构完整ad-hoc资源签名、Applications CLI手动升级和原生fixture自动更新已验；用户信任、公证及正式公众升级仍待完成。
 
 2026-09-28 Windows 真实账号实测：v0.5.1 首批确认 25 笔，安全验证后续批确认 6 笔，本轮新增 31 笔；网站随后返回 403 并提示限时恢复，未达到 100 笔。v0.5.2 候选修复访问受限分类及空查询限速，待打包版复验。腾讯校招简历自动填写回读 11 项，但未验证官网保存。详见 [实测记录](doc/progress/2026-09-28-release-readiness.md)；每日 100 份计划未启用。
 
@@ -31,7 +31,7 @@ pnpm pack:mac
 pnpm dist:mac
 ```
 
-封存40的Mac两架构完整ad-hoc资源签名及Applications CLI手动安装升级通过。当前41可写Applications位置的自动更新事务，两架构真实原生fixture各6组通过，详见[Mac更新](doc/integrations/macos-update.md)。Developer ID、公证、用户Gatekeeper和公众正式升级仍未完成；DMG/ZIP不包含旧 `installer/一键安装.command`，该脚本不应随当前候选分发。
+封存40的Mac两架构完整ad-hoc资源签名及Applications CLI手动安装升级通过。封存41可写Applications位置的自动更新事务，两架构真实原生fixture各6组通过，详见[Mac更新](doc/integrations/macos-update.md)。Developer ID、公证、用户Gatekeeper和公众正式升级仍未完成；DMG/ZIP不包含旧 `installer/一键安装.command`，该脚本不应随当前候选分发。
 
 Windows x64 可在 Windows 开发机运行：
 

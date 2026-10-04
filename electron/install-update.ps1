@@ -5,7 +5,7 @@ $guid='3c9e6782-3db2-56c2-b59b-7731dce81b79'
 $uninstallKey='HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\'+$guid
 $installKey='HKCU:\Software\'+$guid
 function HashFile([string]$file){$stream=[IO.File]::OpenRead($file);$hash=[Security.Cryptography.SHA256]::Create();try{return [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-','').ToLowerInvariant()}finally{$stream.Dispose();$hash.Dispose()}}
-function WriteJson([string]$file,$value){[IO.File]::WriteAllText($file,($value|ConvertTo-Json -Depth 8 -Compress),(New-Object Text.UTF8Encoding $false))}
+function WriteJson([string]$file,$value){$temp=$file+'.tmp-'+$PID;[IO.File]::WriteAllText($temp,($value|ConvertTo-Json -Depth 8 -Compress),(New-Object Text.UTF8Encoding $false));if([IO.File]::Exists($file)){[IO.File]::Replace($temp,$file,$null)}else{[IO.File]::Move($temp,$file)}}
 function KnownRoot {
  $full=[IO.Path]::GetFullPath($p.root).TrimEnd('\');$exe=[IO.Path]::GetFullPath($p.oldExe)
  if($full.Length -lt 10 -or $full -ne [IO.Path]::GetDirectoryName($exe) -or [IO.Path]::GetFileName($exe) -ne '一键投递.exe'){throw 'invalid-install-root'}
@@ -65,11 +65,20 @@ try {
  WriteJson $p.resultFile @{status='installed';version=$p.version;nonce=$p.nonce;exe=$p.oldExe;root=$root;backup=$backupRoot;shortcuts=$links;desktop=$desktop}
  # Interactive app must be visible. Pass the exact existing profile, not a shell command.
  Start-Process -FilePath $p.oldExe -ArgumentList ('"--user-data-dir='+$p.userData+'"') -WindowStyle Normal | Out-Null
+ $restartDeadline=[DateTime]::UtcNow.AddSeconds(90);$restartConfirmed=$false
+ while([DateTime]::UtcNow-lt$restartDeadline){
+  try{$ack=[IO.File]::ReadAllText($p.resultFile,[Text.Encoding]::UTF8)|ConvertFrom-Json}catch{$ack=$null}
+  if($ack-and$ack.nonce-eq$p.nonce-and$ack.status-eq'restarted'-and$ack.runningVersion-eq$p.version-and$ack.runningExe-eq$p.oldExe){$restartConfirmed=$true;break}
+  Start-Sleep -Milliseconds 100
+ }
+ if(!$restartConfirmed){throw 'updated-app-restart-not-confirmed'}
+ WriteJson (Join-Path $p.attempt 'completion.json') @{status='restarted';version=$p.version;nonce=$p.nonce}
 } catch {
- $message=$_.Exception.Message;$restored=$false;$restoreError=$null
+ $message=$_.Exception.Message;$restored=$false;$restoreError=$null;$restorationDeferred=$false
  if($p-and$backupReady-and$installerStarted){
   try {
    $root=KnownRoot
+   if(@(Get-CimInstance Win32_Process|Where-Object {$_.ExecutablePath-and$_.ExecutablePath.StartsWith($root+'\',[StringComparison]::OrdinalIgnoreCase)}).Count){$restorationDeferred=$true;throw 'rollback-refused-running-installation'}
    $failed=Join-Path $p.attempt 'failed-install-root'
    if(Test-Path -LiteralPath $root){Move-Item -LiteralPath $root -Destination $failed}
    Copy-Item -LiteralPath $backupRoot -Destination $root -Recurse
@@ -82,8 +91,8 @@ try {
    $restored=$true
   }catch{$restoreError=$_.Exception.Message}
  }
- if($p-and$p.resultFile){WriteJson $p.resultFile @{status='failed';version=$p.version;nonce=$p.nonce;message=$message;restored=$restored;restoreError=$restoreError}}
- if($p-and$committed-and(!(Get-Process -Id $p.pid -ErrorAction SilentlyContinue))-and(Test-Path -LiteralPath $p.oldExe -PathType Leaf)){
+ if($p-and$p.resultFile){WriteJson $p.resultFile @{status='failed';version=$p.version;nonce=$p.nonce;message=$message;restored=$restored;restorationDeferred=$restorationDeferred;restoreError=$restoreError;backup=$backupRoot}}
+ if($p-and$committed-and(!$installerStarted-or$restored)-and(!(Get-Process -Id $p.pid -ErrorAction SilentlyContinue))-and(Test-Path -LiteralPath $p.oldExe -PathType Leaf)){
   Start-Process -FilePath $p.oldExe -ArgumentList ('"--user-data-dir='+$p.userData+'"') -WindowStyle Normal | Out-Null
  }
  exit 1

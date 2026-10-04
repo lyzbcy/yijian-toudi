@@ -1284,7 +1284,7 @@ app.whenReady().then(async () => {
     try {const result=await getDesktopUpdater().download(input);stagedDesktopUpdate=result;const canInstall=await canInstallDesktopUpdate();if(!canInstall)shell.showItemInFolder(result.file);return {...result,canInstall};}
     catch(error){return {ok:false,message:error.message};}
   });
-  ipcMain.handle('update:install-status',async(event)=>{if(event.sender!==window.webContents)throw Error('main-window-required');try{const r=JSON.parse(fs.readFileSync(path.join(updateDirectory(),'install-result.json'),'utf8').replace(/^\uFEFF/,''));return {status:r.status,version:r.version,runningVersion:r.runningVersion,message:r.message,restored:r.restored};}catch{return null;}});
+  ipcMain.handle('update:install-status',async(event)=>{if(event.sender!==window.webContents)throw Error('main-window-required');try{const r=JSON.parse(fs.readFileSync(path.join(updateDirectory(),'install-result.json'),'utf8').replace(/^\uFEFF/,''));return {status:r.status,version:r.version,runningVersion:r.runningVersion,message:r.message,restored:r.restored,restorationDeferred:r.restorationDeferred};}catch{return null;}});
   ipcMain.handle('update:install',async(event,input={})=>{
     if(event.sender!==window.webContents)throw Error('main-window-required');
     if(installInProgress)return {ok:false,message:'update-install-in-progress'};

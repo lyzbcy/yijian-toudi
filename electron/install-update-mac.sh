@@ -9,7 +9,7 @@ nonce=$(field nonce); stage=$(field stage); backup=$(field backup); failed=$(fie
 lock=$(field lock); attempt=$(field attempt); readyFile=$(field readyFile)
 commitFile=$(field commitFile); abortFile=$(field abortFile); resultFile=$(field resultFile)
 archive=$(field file); expectedHash=$(field sha256)
-committed=0; movedOld=0; placedNew=0; finished=0; restored=false; message=mac-update-failed
+committed=0; movedOld=0; placedNew=0; finished=0; restored=false; restorationDeferred=false; message=mac-update-failed
 json() {
  local destination=$1 status=$2 temp="$1.tmp-$$"
  /usr/bin/plutil -create xml1 "$temp"
@@ -22,21 +22,31 @@ json() {
  /usr/bin/plutil -insert backup -string "$backup" "$temp"
  /usr/bin/plutil -insert message -string "$message" "$temp"
  /usr/bin/plutil -insert restored -bool "$restored" "$temp"
+ /usr/bin/plutil -insert restorationDeferred -bool "$restorationDeferred" "$temp"
  /usr/bin/plutil -convert json "$temp"
  /bin/mv "$temp" "$destination"
 }
 die() { message=$1; exit 1; }
 ownedPath() { [[ "$1" == "$root.yjt-stage-$nonce" || "$1" == "$root.yjt-update-lock" ]]; }
+bundleRunning() { local commands; commands=$(/bin/ps -ww -axo comm=) || return 2; /usr/bin/grep -F "$root/Contents/" <<< "$commands" >/dev/null; }
 cleanup() {
  local status=$?
  trap - EXIT
  if [[ $finished -eq 0 ]]; then
   if [[ $movedOld -eq 1 ]]; then
-   if [[ $placedNew -eq 1 && -d "$root" && ! -e "$failed" ]]; then /bin/mv "$root" "$failed" || true; fi
-   if [[ ! -e "$root" && -d "$backup" ]]; then /bin/mv "$backup" "$root" && restored=true || true; fi
+   if bundleRunning; then
+    restorationDeferred=true
+   else
+    if [[ $? -ne 1 ]]; then
+     restorationDeferred=true
+    else
+     if [[ $placedNew -eq 1 && -d "$root" && ! -e "$failed" ]]; then /bin/mv "$root" "$failed" || true; fi
+     if [[ ! -e "$root" && -d "$backup" ]]; then /bin/mv "$backup" "$root" && restored=true || true; fi
+    fi
+   fi
   fi
   json "$resultFile" failed || true
-  if [[ $committed -eq 1 ]] && ! /bin/kill -0 "$oldPid" 2>/dev/null && [[ -x "$oldExe" ]]; then
+  if [[ $committed -eq 1 && ( $movedOld -eq 0 || "$restored" == true ) ]] && ! /bin/kill -0 "$oldPid" 2>/dev/null && [[ -x "$oldExe" ]]; then
    /usr/bin/open -n "$root" --args "--user-data-dir=$userData" || true
   fi
  fi
@@ -78,12 +88,11 @@ for ((tick=0;tick<600;tick++)); do
 done
 ! /bin/kill -0 "$oldPid" 2>/dev/null || die old-process-did-not-exit
 # Let Electron children finish. A second instance of this bundle prevents replacement.
-bundleRunning() { /bin/ps -ww -axo comm= | /usr/bin/grep -F "$root/Contents/" >/dev/null; }
 for ((tick=0;tick<100;tick++)); do
- if ! bundleRunning; then break; fi
+ if bundleRunning; then :; elif [[ $? -eq 1 ]]; then break; else die cannot-inspect-installed-processes; fi
  /bin/sleep 0.1
 done
-! bundleRunning || die another-installed-instance-is-running
+if bundleRunning; then die another-installed-instance-is-running; elif [[ $? -ne 1 ]]; then die cannot-inspect-installed-processes; fi
 [[ ! -e "$abortFile" ]] || die update-aborted
 verify "$root" "$oldVersion" || die old-bundle-changed-before-replacement
 verify "$stage" "$version" || die staged-bundle-changed-before-replacement
@@ -92,5 +101,15 @@ verify "$stage" "$version" || die staged-bundle-changed-before-replacement
 verify "$root" "$version" || die installed-bundle-verification-failed
 json "$resultFile" installed
 /usr/bin/open -n "$root" --args "--user-data-dir=$userData" || die updated-app-launch-failed
-finished=1
+# A successful launcher call does not prove that the new application started.
+restartDeadline=$((SECONDS+90))
+while [[ $SECONDS -lt $restartDeadline ]]; do
+ if [[ $(/usr/bin/plutil -extract nonce raw -o - "$resultFile" 2>/dev/null || true) == "$nonce" && $(/usr/bin/plutil -extract status raw -o - "$resultFile" 2>/dev/null || true) == restarted && $(/usr/bin/plutil -extract runningVersion raw -o - "$resultFile" 2>/dev/null || true) == "$version" ]]; then
+  json "$attempt/completion.json" restarted
+  finished=1
+  break
+ fi
+ /bin/sleep 0.1
+done
+[[ $finished -eq 1 ]] || die updated-app-restart-not-confirmed
 # The complete old bundle remains as a recovery copy; user data is never moved.

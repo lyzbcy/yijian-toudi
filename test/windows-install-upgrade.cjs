@@ -23,6 +23,9 @@ async function until(fn, timeout = 180000) {
   const version = require('../package.json').version;
   const oldVersion = process.env.YJT_BASELINE_VERSION || '0.5.34';
   const desktop = process.env.YJT_TEST_DESKTOP === '1';
+  const restartCase=process.env.YJT_RESTART_CASE||null,helperTemplate=process.env.YJT_HELPER_TEMPLATE?path.resolve(process.env.YJT_HELPER_TEMPLATE):null;
+  if(restartCase)assert(['baseline-no-process','no-process','live-unconfirmed','confirmed'].includes(restartCase));
+  if(helperTemplate)assert(fs.existsSync(helperTemplate));
   const base = fs.mkdtempSync(path.join(root, 'verification', '2026-10-04-recovery', 'install-smoke-'));
   const installRoot = path.join(base, '中文安装目录'), profile = path.join(base, 'isolated-profile');
   assert.ok(installRoot.startsWith(base + path.sep));
@@ -38,7 +41,7 @@ async function until(fn, timeout = 180000) {
   seed.update(s => { s.settings.kimiBridgeEnabled = false; s.settings.autoCheckUpdates = false; s.settings.jobs.autoRefresh = false; s.settings.apiPort = 0; return s; });
   const newInstaller = path.join(root, 'release', `yijian-toudi-setup-${version}.exe`);
   const digest = await shaFile(newInstaller), bytes = fs.statSync(newInstaller).size;
-  const checks = [], report = { version, oldVersion, desktop, mode: 'real-nsis-controlled-release-response', base, checks, ok: false };
+  const checks = [], report = { version, oldVersion, desktop, mode: 'real-nsis-controlled-release-response', base, checks, ok: false, restartCase, helperScriptSourceOverriddenForTest:!!helperTemplate, nativeWizardVerified:false };
   let application;
   try {
     const installer = path.join(root, 'release', `yijian-toudi-setup-${oldVersion}.exe`);
@@ -47,6 +50,7 @@ async function until(fn, timeout = 180000) {
     assert.equal(path.resolve(record.root), installRoot); assert.equal(record.version, oldVersion); assert.equal(record.desktop, desktop);
     checks.push(`Real NSIS installed baseline into chosen Chinese path with desktop option ${desktop ? 'enabled' : 'disabled'}`);
     const executable = path.join(installRoot, '一键投递.exe');
+    const originalAsarHash=await shaFile(path.join(installRoot,'resources','app.asar'));
     application = await electron.launch({ executablePath: executable, args: [`--user-data-dir=${profile}`], env: { ...process.env, YIJIAN_BACKGROUND_TEST: '0' } });
     const page = await application.firstWindow();
     await page.locator('#onboardingDialog[open]').waitFor();
@@ -84,6 +88,7 @@ async function until(fn, timeout = 180000) {
     assert.equal(downloaded.ok, true); assert.equal(downloaded.shaOk, true); assert.equal(downloaded.canInstall, true);
     assert.equal(downloaded.sha256, digest);
     checks.push('Actual installed IPC updater selected candidate, downloaded real installer and checked SHA-256');
+    if(helperTemplate)await application.evaluate(({app},templatePath)=>{const req=process.getBuiltinModule('node:module').createRequire(app.getAppPath()+'/electron/main.cjs'),update=req('./windows-update.cjs'),launch=update.launchUpdateHelper;update.launchUpdateHelper=(payload,directory)=>launch(payload,directory,{templatePath});},helperTemplate);
     const closed = application.waitForEvent('close');
     let handoff;
     try { handoff = await page.evaluate(version => window.oneClick.installUpdate({ confirmed: true, version }), version); }
@@ -91,6 +96,20 @@ async function until(fn, timeout = 180000) {
     if (handoff) assert.equal(handoff.ok, true, handoff.message);
     await closed; application = null;
     const resultFile = path.join(profile, 'desktop-updates', 'install-result.json');
+    const pending=JSON.parse(fs.readFileSync(path.join(profile,'desktop-updates','install-pending.json'),'utf8'));
+    if(restartCase&&restartCase!=='confirmed'){
+      const fixtureResult=restartCase==='live-unconfirmed'?path.join(pending.attempt,'withheld-result.json'):resultFile;
+      const outcome=await until(()=>{try{const r=JSON.parse(fs.readFileSync(fixtureResult,'utf8').replace(/^\uFEFF/,''));return r.nonce===pending.nonce&&r.status===(restartCase==='baseline-no-process'?'installed':'failed')?r:false;}catch{return false;}});
+      const ready=JSON.parse(fs.readFileSync(path.join(pending.attempt,'ready.json'),'utf8').replace(/^\uFEFF/,''));await until(()=>{try{process.kill(ready.pid,0);return false;}catch{return true;}});
+      record=await readInstallation();const rootData={root:installRoot,executable};fs.writeFileSync(operationFile,JSON.stringify(rootData));
+      const running=Number(ps(`$p=Get-Content -Raw -Encoding UTF8 -LiteralPath '${operationFile.replaceAll("'","''")}'|ConvertFrom-Json;@(Get-CimInstance Win32_Process|Where-Object {$_.ExecutablePath -eq $p.executable}).Count`));
+      if(restartCase==='baseline-no-process'){assert.equal(running,0);assert.equal(record.version,version);assert(!fs.existsSync(path.join(pending.attempt,'completion.json')));assert.equal(await shaFile(path.join(outcome.backup,'resources','app.asar')),originalAsarHash);report.baselineGap={helperVersion:'0.5.41',sourceCommit:'b206eb5f0aa0b56098b219f0f4b95879a893d356',successfulLauncherResponseInjected:true,installedWithoutNewProcessOrRecovery:true};checks.push('Actual historical v41 IPC and worker installs genuine next candidate but exits installed with no process/recovery when launcher success without process is injected');}
+      else if(restartCase==='no-process'){assert.equal(outcome.message,'updated-app-restart-not-confirmed');assert.equal(outcome.restored,true);assert.equal(outcome.restorationDeferred,false);assert.equal(record.version,oldVersion);assert.equal(await shaFile(path.join(installRoot,'resources','app.asar')),originalAsarHash);await until(()=>Number(ps(`$p=Get-Content -Raw -Encoding UTF8 -LiteralPath '${operationFile.replaceAll("'","''")}'|ConvertFrom-Json;@(Get-CimInstance Win32_Process|Where-Object {$_.ExecutablePath -eq $p.executable}).Count`))>0);checks.push('Current worker detects no new process after shortened test deadline, restores original complete root/registration/shortcuts/cache and reopens old application');}
+      else{assert.equal(outcome.message,'updated-app-restart-not-confirmed');assert.equal(outcome.restored,false);assert.equal(outcome.restorationDeferred,true);assert(running>0);assert.equal(record.version,version);assert.equal(await shaFile(path.join(outcome.backup,'resources','app.asar')),originalAsarHash);checks.push('Live next candidate with withheld confirmation remains running, current installation is not moved and complete old recovery copy is retained');}
+      const retained=JSON.parse(fs.readFileSync(path.join(profile,'state.json'),'utf8'));assert.equal(retained.resume.education[0].school,before.resume.education[0].school);assert.ok(retained.settings.apiToken===before.settings.apiToken);assert.equal(await shaFile(attachment),attachmentHash);
+      if(restartCase!=='baseline-no-process'){const actual=await until(async()=>{try{return await(await fetch(`http://127.0.0.1:${retained.settings.apiPort}/v1/status`,{headers:{Authorization:'Bearer '+retained.settings.apiToken}})).json();}catch{return false;}});assert.equal(actual.version,restartCase==='no-process'?oldVersion:version);}
+      checks.push('Real profile, credential and attachment bytes retained; live or restored process authenticated version verified when applicable');report.ok=true;return;
+    }
     const result = await until(() => {
       if (!fs.existsSync(resultFile)) return false;
       const item = JSON.parse(fs.readFileSync(resultFile, 'utf8').replace(/^\uFEFF/, ''));
@@ -98,6 +117,7 @@ async function until(fn, timeout = 180000) {
       return item.status === 'restarted' ? item : false;
     });
     assert.equal(result.version, version); assert.equal(result.runningVersion, version); assert.equal(path.resolve(result.runningExe), executable);
+    if(restartCase==='confirmed'){await until(()=>fs.existsSync(path.join(pending.attempt,'completion.json')));const complete=JSON.parse(fs.readFileSync(path.join(pending.attempt,'completion.json'),'utf8'));assert.equal(complete.status,'restarted');assert.equal(complete.nonce,pending.nonce);checks.push('Current worker stays alive until real candidate confirms visible matching restart and then records completion');}
     record = await readInstallation(); assert.equal(record.version, version); assert.equal(record.desktop, desktop);
     checks.push('Ready/commit helper performed real NSIS cross-version upgrade and new visible app confirmed restart');
     const state = JSON.parse(fs.readFileSync(path.join(profile, 'state.json'), 'utf8'));
