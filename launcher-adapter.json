@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "yijian-toudi",
   "name": "一键投递",
-  "version": "0.5.39",
+  "version": "0.5.40",
   "platform": "win32",
   "architecture": "x64",
   "executable": "一键投递.exe",
@@ -15,13 +15,13 @@
   ],
   "package": {
     "type": "installer",
-    "path": "release/yijian-toudi-setup-0.5.39.exe",
+    "path": "release/yijian-toudi-setup-0.5.40.exe",
     "url": null,
-    "sha256": "1c062c11df3c20bd6eaada76332fecad2ecf061b836db7dd756def4749371f61"
+    "sha256": null
   },
   "installation": {
     "displayName": "一键投递"
   },
-  "releaseStatus": "candidate-unpublished",
-  "notes": "当前包已本机校验；公网URL须在真实上传并下载回读后填写。历史视频不计为当前完整演示。"
+  "releaseStatus": "candidate-build-pending",
+  "notes": "40构建与校验尚待完成；39已封存候选和真实视频保留，不将其记作40完整交付。"
 }

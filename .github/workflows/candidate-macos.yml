@@ -56,6 +56,18 @@ jobs:
         run: |
           node test/ui-delivery-layout.cjs
           node test/ui-resume-profiles.cjs
+      - name: Obtain actual v38 baseline source for Applications upgrade test
+        uses: actions/checkout@v6
+        with:
+          ref: b32bb9e1d39142512847ffce99273acc36f45738
+          path: .local-data/mac-baseline-source
+      - name: Build native baseline and verify current Applications installation
+        env:
+          YJT_REQUIRE_VALID_BUNDLE_SIGNATURE: '1'
+        run: |
+          ln -s "$GITHUB_WORKSPACE/node_modules" .local-data/mac-baseline-source/node_modules
+          pnpm exec electron-builder --projectDir .local-data/mac-baseline-source --mac dir --config.directories.output="$GITHUB_WORKSPACE/.local-data/mac-baseline-build"
+          node test/macos-install-upgrade.cjs . .local-data/mac-baseline-source .local-data/mac-baseline-build test-output/mac-candidate.json
       - name: Save native evidence and candidate artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -68,6 +80,8 @@ jobs:
             test-output/delivery-*.png
             test-output/resume-profiles.json
             test-output/profiles-text-entry.png
+            test-output/mac-install-upgrade.json
+            test-output/mac-install-*.png
             release/*.dmg
             release/*.zip
             release/*.sha256

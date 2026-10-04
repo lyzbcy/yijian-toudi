@@ -103,3 +103,13 @@ Mac arm64真实运行37183937648成功：DMG挂载复制、ZIP解压与源码审
 封存39反馈归档11文件与当前源仍一致，SHA90d098f55f096cc79a7e95de0f9bde3fed44f8345ebf7ad70682249aa7581778，未改产品/配套归档或18项云资产。追加反馈部署证据feedback-deployment-supplement-v39；旧delivery-manifest/cloud-backup仍保留原封存时间的事实，不改写历史。实际本地TLS不等于生产公网证书、异机链接或企微送达；生产主机/域名/密钥及默认App服务地址、备份负载现场仍缺。当前goal继续active。
 
 更新草稿说明后GitHub重新生成untagged链接，当前39草稿URL为https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-70ee233573d7e31fa8b1；target仍e7bb45fa08e02fa1a2847d45728b1823b3a789ef，18项远端名称/size/digest与已下载回读hash再次比对全部一致。旧链接和回读时间保留在cloud-backup-v39的历史中，不再通过说明编辑反复变更草稿。
+
+## 39 Mac Applications实测与真实签名缺陷
+
+37190550144的arm64/Intel均使用最终封存39 ZIP及精确hash/校验行，通过9组实际Applications CLI首装、UI引导保存、进程冷重开、真实38原生baseline构建、38→39手动包替换、简历/API凭据/附件字节/持久Cookie样本保留、新建方向、同版替换和删除应用保留用户目录。附件选择对话框受控，实际IPC文件复制；不冒充原生选择器点击、Finder安装、自动更新或真实招聘登录。根实际看两架构升级截图，字段在截图视口外时不以像素推断保存。
+
+spctl assessments enabled下，隔离quarantine探针的arm64包实际被拒绝：code has no resources but signature indicates they must be present；codesign显示仅Electron可执行链接临时签名、Info.plist not bound、Sealed Resources=none。Intel未签名，spctl rejected/source=no usable signature。CLI直接运行成功不等于粉丝下载后能正常信任打开。两份签名失败与9组通过并存，报告mac-install-upgrade-v39-{arm64,x64}保留。
+
+Mac自动安装更新目前代码只允许Windows，仍未实现；资料手动替换结果不能抵消该功能缺口。下一候选升40，配置完整应用包临时签名并在构建/DMG/ZIP验证codesign --verify --deep --strict；临时签名仍不是Developer ID/公证，端用户信任和自动Mac更新门槛继续保留。39封存包不修改。
+
+当前源版本已升0.5.40，Skill同步；Mac identity="-"由实际electron-builder 26.15.3的MacTargetHelper支持，签完整bundle。构建验证将对全部容器严格核签，不能只看Mach-O link签名。40构建/完整测试正在执行；39的18项云资产及配套归档保持原字节。当前Mac自动更新尚缺，不将手动包替换宣传为已完成。
