@@ -1,6 +1,20 @@
 # 反馈服务部署验收
 
-当前候选 v0.5.39；完整交付尚未完成。部署入口和协议见 [服务包说明](../../support/README.md)，归档包含 11 个文件，不含实际环境配置、密钥或用户数据。
+当前候选 v0.5.44；完整交付尚未完成。部署入口和协议见 [服务包说明](../../support/README.md)，归档包含 11 个文件，不含实际环境配置、密钥或用户数据。下文39运行记录保持历史版本范围。
+
+## 44隔离备份恢复与并发补验
+
+直接加载封存44归档内的服务模块，Windows本机真实回环HTTP通过4组集成验证。200请求同时发起，按20个明确的代理客户端地址样本、每个默认10次限额运行；通知传输用20毫秒延迟样本，预期180 sent、10 failed、10 unknown全部落盘。每个客户端第11次请求均429，healthz仍可用。并发批次416毫秒完成，p95为382毫秒；此数值只属于本机与该通知样本，不是生产吞吐承诺。
+
+停服务后复制整个数据目录和无密钥的私有配置样本，共401文件；将原目录移离后恢复到全新目录，每文件字节/hash一致。恢复服务读取全部200收据、并发重放原请求均保持原结果；failed/unknown不能重发，通知调用增量为0。相同ID不同内容拒绝，原诊断内容及text/plain/nosniff/noindex/no-store保留，恢复目录全部字节仍一致。
+
+报告见 [44备份负载补验](../../verification/2026-10-04-recovery/feedback-backup-load-v44-windows.json)。封存反馈归档SHA仍为 `ecd9b1f39050f47771f28725f690ee3f5ee75084817702ec354c2b850f14c5a7`；产品源码、11文件归档、16项草稿资产与既有manifest不改写。本补验未覆盖生产权限/私有密钥保管、真实反代客户端、真实企微、公网负载或公网恢复，也不构成独立代表性的产品bug率证据。
+
+复现命令（在开发工作树运行，样本数据只写入忽略的 `.local-data/`）：
+
+```sh
+node test/feedback-backup-load.cjs release/yijian-toudi-feedback-server-0.5.44.tar.gz release/yijian-toudi-feedback-server-0.5.44.sha256 0.5.44 .local-data/feedback-backup-load-v44.json
+```
 
 ## 已验证的运行机制
 

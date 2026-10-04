@@ -185,3 +185,7 @@ Windows44实际116源文件ASAR/输入布局、默认NSIS6组通过；43→44直
 44 Intel未注入16秒预检延迟的用例中，实际spawn到ready返回最长45010ms，超过旧15秒期限；新版60秒允许完成就绪。对应模板的其他故障发生在ready之后，不计作原43首次失败根因证明。
 
 44草稿已全部取回核对：https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-7b9c279e8070701ee46a，target a89b7bb0de18d0674b7fa81a9b459fccf43993b1；16附件逐字节/hash一致，配套归档各11文件。假定正式URL仅检查精确架构选择，实际草稿被更新器拒绝；公众稳定版仍v0.3.1。原设备聊天未恢复，完整goal仍active。
+
+## 44反馈备份恢复与并发补验
+
+封存44归档在Windows直接运行模块，4组隔离集成通过：200并发真实回环HTTP、20代理IP样本/默认每分钟10次与第11次429；通知传输为20毫秒延迟样本，180 sent/10 failed/10 unknown如预期持久化。停服复制数据与无密钥配置样本401文件，原目录移离、恢复到新根后逐文件字节/hash一致；200收据查询及并发重放0新增通知，相同ID冲突和诊断保护头保留。批次416ms/p95 382ms仅本机样本范围；不证明公网负载/生产备份/真实企微或产品bug率。报告feedback-backup-load-v44-windows.json，实际归档SHA ecd9b1f39050f47771f28725f690ee3f5ee75084817702ec354c2b850f14c5a7；封存产品/manifest/云16资产均不变。原设备聊天仍未恢复，goal继续active。
