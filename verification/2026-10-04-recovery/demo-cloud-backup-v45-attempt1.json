@@ -1,0 +1,15 @@
+{
+  "version": "0.5.45",
+  "stage": "download-existing-video-draft",
+  "command": "node .local-data/backup-demo-v45.cjs readback",
+  "ok": false,
+  "releaseDraftCreated": true,
+  "releaseUrl": "https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-60a399dadce1c922202a",
+  "failedAssetEndpoint": "https://api.github.com/repos/lyzbcy/yijian-toudi/releases/assets/609971533",
+  "error": "HTTP 500 (https://api.github.com/repos/lyzbcy/yijian-toudi/releases/assets/609971533)",
+  "exitCode": 1,
+  "metadataAndPartialDirectoryPreservedLocally": true,
+  "allFourAssetsByteHashDigestVerified": false,
+  "rootCauseProven": false,
+  "nextAction": "Read and download same existing draft again into a fresh local directory; do not recreate or overwrite release assets"
+}

@@ -53,7 +53,7 @@ Windows、Mac arm64/Intel、Skill与反馈服务7个候选包及SHA-256汇总在
 
 当前维护者备份：[v0.5.41草稿候选](https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-16da055dc535b1289ce2)，16项资产已全部取回核对；须有仓库权限。草稿不是公众稳定下载或正式自动更新。核对报告为 verification/2026-10-04-recovery/cloud-backup-v41.json。
 
-最新维护者备份：[v0.5.44草稿候选](https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-7b9c279e8070701ee46a)，16项资产全部取回逐字节/hash核对；须有仓库权限。此前41条目为历史备份。44完整视频仍未完成；草稿不是公众稳定下载或正式自动更新。核对报告为 verification/2026-10-04-recovery/cloud-backup-v44.json。
+历史维护者备份：[v0.5.44草稿候选](https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-7b9c279e8070701ee46a)，16项资产全部取回逐字节/hash核对；须有仓库权限。此前41条目为历史备份。44完整视频仍未完成；草稿不是公众稳定下载或正式自动更新。核对报告为 verification/2026-10-04-recovery/cloud-backup-v44.json。
 
 ## 44当前操作录像与客户端备份补验
 
@@ -69,4 +69,14 @@ Windows客户端真实按钮/IPC的5组备份闭环通过：导出不含Token/�
 
 ## 45维护者候选备份
 
-[45草稿](https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-cadf3db47d0848370131)的16附件全部取回逐字节/hash核对，须有仓库权限，仍不是公众正式下载或自动更新。当前安装与服务7包见delivery-manifest-v45.json。当前录像仍是44局部操作素材，不算45完整求职视频。刷新主循环6组的平台请求为受控样本；真实44部分抓取快照的3694条保留与45持续提示另外实测，原数据文件未改。
+[45草稿](https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-cadf3db47d0848370131)的16附件全部取回逐字节/hash核对，须有仓库权限，仍不是公众正式下载或自动更新。当前安装与服务7包见delivery-manifest-v45.json。刷新主循环6组的平台请求为受控样本；真实44部分抓取快照的3694条保留与45持续提示另外实测，原数据文件未改。
+
+## 45候选操作录像与独立备份
+
+本机 `release/yijian-toudi-preview-0.5.45-realtime.mp4` 为332.44秒、1280×960 H.264、无音轨，正常速度，不删减或加速等待。运行源98ee881、实际Windows ASAR117应用文件匹配。录制样本简历、方向创建/重命名/独立资料、实际进程冷重开、匿名官网刷新、筛选/本地购物车及遮罩Agent页；底栏标明候选/样本/未发布。原始两个WebM与隔离profile保留本机，私有目录不上传。
+
+2026-10-04T14:02:39.211Z六家官网全部成功，共4159条唯一岗位：腾讯1374、百度9、字节456、小米203、京东974、美团1143。此成功不证明44网络失败根因。没有真实申请/外部消息，本地购物车不是投递回执。
+
+整段解码通过，实际查看40个时间点的10张联系表与3/18/42/307/315/327/331秒7张原尺寸画面，未观察到真实身份/联系方式或私有凭证；331秒显示“[复制时自动加入本机凭证]”。未完整播放或逐帧隐私审阅，不作全面隐私保证。账号官网保存、公网反馈、正式下载安装更新等片段未完成，`completeDemo=false`，不证明产品整体bug率低于1%。
+
+[45候选录像独立草稿](https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-60a399dadce1c922202a)含MP4、精确SHA、报告与说明4附件，全部下载逐字节/hash/digest核对，须仓库权限。首次下载HTTP500保留为demo-cloud-backup-v45-attempt1.json，复验同一草稿成功，具体根因未证明。回读报告为demo-cloud-backup-v45.json；原45安装/服务16附件的名称、大小及digest仍与封存回读一致，manifest和旧44/39录像未改写。

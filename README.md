@@ -8,7 +8,9 @@
 
 44将Mac助手就绪等待从15秒增加到有上限的60秒，准备期间旧应用继续运行。两架构原生自动更新样本各10组通过；Intel未注入慢预检的用例实际最长等待45.01秒，原43首次超时的具体根因仍未证明。Windows20套/357单测、真实43→44直接升级及Linux独立部署通过。[44维护者草稿备份](https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-7b9c279e8070701ee46a)的16附件已全部取回逐字节/hash核对，需仓库访问权限；完整事实见 [云端回读记录](verification/2026-10-04-recovery/cloud-backup-v44.json)。草稿不属于公众正式分发，旧39局部视频不计44完整演示。
 
-新增[44当前操作素材草稿](https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-895f5d82a52d493064fd)：正常速度291.84秒、无音轨、样本简历及匿名真实岗位，4附件全部回读一致，需仓库权限。此次仅四家成功读取3694岗位、百度/字节失败；不是完整求职演示。客户端5组实际按钮/IPC备份恢复补验通过，原生文件选择/确认响应为样本，见[录制与备份说明](doc/delivery-guide.md)。原44安装/服务资产与旧39视频保持原字节。
+新增[45候选操作素材草稿](https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-60a399dadce1c922202a)：真实打包UI、样本简历/方向/冷重开、六家匿名官网此次全部成功读取4159岗位、筛选/本地购物车及遮罩Agent页。332.44秒正常速度、无音轨、不删减或加速等待，4附件全部下载逐字节/hash/digest核对，须仓库权限。实际查看40个时间点和7张原尺寸关键帧，未完整播放或逐帧隐私审阅；无申请/外部消息，不算完整求职演示。首次云端下载HTTP500及复验保留，见[录像回读报告](verification/2026-10-04-recovery/demo-cloud-backup-v45.json)和[录制说明](doc/delivery-guide.md)。原45安装/服务16附件与manifest不改写。
+
+历史[44操作素材草稿](https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-895f5d82a52d493064fd)：正常速度291.84秒、无音轨、样本简历及匿名真实岗位，4附件全部回读一致，需仓库权限。当次仅四家成功读取3694岗位、百度/字节失败；45此次成功不证明原失败根因。客户端5组实际按钮/IPC备份恢复补验通过，原生文件选择/确认响应为样本。原44安装/服务资产与旧39视频保持原字节。
 
 43新增真实启动确认期限与无进程恢复、运行中保护，并修复Windows PowerShell原子结果覆盖的空路径错误。Windows20套/357单测、真实默认NSIS与41→43安装恢复/升级、Mac两架构9组原生更新样本及Linux独立部署通过；首次失败和未证明原因保留。[43维护者草稿备份](https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-ffa507b29002ee6ac32e)的16附件已全部下载逐字节/hash核对，需仓库访问权限。草稿不属于公众正式分发，历史39局部视频不计43完整演示。
 
