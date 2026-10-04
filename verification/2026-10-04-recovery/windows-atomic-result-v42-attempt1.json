@@ -1,0 +1,25 @@
+{
+  "version": "0.5.42",
+  "oldVersion": "0.5.41",
+  "desktop": false,
+  "mode": "real-nsis-controlled-release-response",
+  "base": "E:\\共享\\创业\\一键投递-交付开发-2026-10-04\\verification\\2026-10-04-recovery\\install-smoke-G135xT",
+  "checks": [
+    "Real NSIS installed baseline into chosen Chinese path with desktop option disabled",
+    "Installed baseline opened visible UI, completed onboarding and saved resume through real UI",
+    "Actual installed IPC updater selected candidate, downloaded real installer and checked SHA-256",
+    "Real uninstaller removed registration and retained isolated user profile",
+    "Original shortcuts and updater cache restored byte-for-byte"
+  ],
+  "ok": false,
+  "restartCase": "no-process",
+  "helperScriptSourceOverriddenForTest": true,
+  "nativeWizardVerified": false,
+  "error": "Windows installation verification timed out",
+  "sourceCommit": "201a0377a52dda97c5403629f23b5935e7edc55e",
+  "nativeWorkerStderr": "使用“3”个参数调用“Replace”时发生异常:“路径的形式不合法。”",
+  "cause": "Windows PowerShell converts untyped $null passed to File.Replace backup path into an empty string",
+  "atomicRecoveryResultNotWritten": true,
+  "installedStatusLeftUnchanged": true,
+  "cleanupVerified": true
+}

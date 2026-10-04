@@ -1,0 +1,129 @@
+{
+  "at": "2026-10-04T10:42:31.545Z",
+  "ok": true,
+  "results": [
+    {
+      "name": "unit",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 5697
+    },
+    {
+      "name": "check",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 333
+    },
+    {
+      "name": "ui-smoke",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 12975
+    },
+    {
+      "name": "ui-resume-segments",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 62546
+    },
+    {
+      "name": "ui-resume-profiles",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 53730
+    },
+    {
+      "name": "ui-capabilities",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 6252
+    },
+    {
+      "name": "ui-workspace-exit",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 5007
+    },
+    {
+      "name": "ui-resume-batch",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 49485
+    },
+    {
+      "name": "ui-batch-actions",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 2009
+    },
+    {
+      "name": "ui-login-upload",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 17621
+    },
+    {
+      "name": "ui-live-window-fixes",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 22468
+    },
+    {
+      "name": "ui-jd-login",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 12299
+    },
+    {
+      "name": "ui-auth-frame",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 4072
+    },
+    {
+      "name": "ui-ai-browser",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 14785
+    },
+    {
+      "name": "ui-ai-preview",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 19992
+    },
+    {
+      "name": "ui-reliability",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 143008
+    },
+    {
+      "name": "ui-boss-recovery",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 5375
+    },
+    {
+      "name": "ui-delivery-layout",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 36832
+    },
+    {
+      "name": "ui-feedback",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 8343
+    },
+    {
+      "name": "ui-update-install-status",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 3771
+    }
+  ],
+  "version": "0.5.42",
+  "sourceCommit": "01b893365a5c84561f86b839841d5254758ba4e6",
+  "scope": "Sequential Windows source UI/IPC fixtures; diagnostic-only profile test changes committed during run; no production source changes during run"
+}

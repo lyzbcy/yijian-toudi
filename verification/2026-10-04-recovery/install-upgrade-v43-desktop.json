@@ -1,0 +1,23 @@
+{
+  "version": "0.5.43",
+  "oldVersion": "0.5.41",
+  "desktop": true,
+  "mode": "real-nsis-controlled-release-response",
+  "base": "E:\\共享\\创业\\一键投递-交付开发-2026-10-04\\verification\\2026-10-04-recovery\\install-smoke-dgcHrw",
+  "checks": [
+    "Real NSIS installed baseline into chosen Chinese path with desktop option enabled",
+    "Installed baseline opened visible UI, completed onboarding and saved resume through real UI",
+    "Actual installed IPC updater selected candidate, downloaded real installer and checked SHA-256",
+    "Current worker stays alive until real candidate confirms visible matching restart and then records completion",
+    "Ready/commit helper performed real NSIS cross-version upgrade and new visible app confirmed restart",
+    "Restarted actual candidate served retained resume over authenticated API; token and attachment preserved",
+    "Candidate reopened with retained resume DOM and persistent cookie fixture",
+    "Real uninstaller removed registration and retained isolated user profile",
+    "Original shortcuts and updater cache restored byte-for-byte"
+  ],
+  "ok": true,
+  "restartCase": "confirmed",
+  "helperScriptSourceOverriddenForTest": true,
+  "nativeWizardVerified": false,
+  "sourceCommit": "478bd2d6b4b0e9ba922f0b11a159b68c13e4c333"
+}

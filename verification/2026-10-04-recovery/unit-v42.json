@@ -1,0 +1,8 @@
+{
+  "ok": true,
+  "version": "0.5.42",
+  "passed": 356,
+  "failed": 0,
+  "sourceCommit": "01b893365a5c84561f86b839841d5254758ba4e6",
+  "scope": "Full source unit suite in background run; no product defect rate inferred"
+}

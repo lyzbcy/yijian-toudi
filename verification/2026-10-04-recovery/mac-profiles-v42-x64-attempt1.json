@@ -1,0 +1,16 @@
+{
+  "version": "0.5.42",
+  "ok": false,
+  "workflowRun": 37195777786,
+  "architecture": "x64",
+  "sourceCommit": "01b893365a5c84561f86b839841d5254758ba4e6",
+  "stage": "actual-packaged-profile-rename",
+  "error": "locator.waitFor: Timeout 15000ms exceeded; waiting for locator('#textEntryDialog[open]')",
+  "location": "test/ui-resume-profiles.cjs:94",
+  "priorStagePassed": "packaged-three-width-layout-and-native-package-signature-audit",
+  "automaticUpdateExecuted": false,
+  "inputEventsCaptured": false,
+  "rootCauseProven": false,
+  "rawLog": "ignored-local-mac-v42-x64-attempt1.log",
+  "subsequentDiagnosticsCommit": "201a0377a52dda97c5403629f23b5935e7edc55e"
+}

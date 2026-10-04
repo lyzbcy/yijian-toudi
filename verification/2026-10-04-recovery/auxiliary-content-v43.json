@@ -1,0 +1,133 @@
+{
+  "version": "0.5.43",
+  "ok": true,
+  "localSourceCommit": "478bd2d6b4b0e9ba922f0b11a159b68c13e4c333",
+  "nativeSourceCommit": "fd82e1f2702e251b61805e9430c9bdc1fbf9eaad",
+  "nativeWorkflowRun": 37197464455,
+  "filesEach": 11,
+  "scope": "Exact file set and each body compared; line endings normalized only for text equivalence, original immutable local archives preserved",
+  "reports": [
+    {
+      "type": "skill",
+      "files": [
+        {
+          "name": "SKILL.md",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        },
+        {
+          "name": "version.json",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        },
+        {
+          "name": "references/deploy.md",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        },
+        {
+          "name": "references/update.md",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        },
+        {
+          "name": "scripts/daily-boss.cjs",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        },
+        {
+          "name": "scripts/boss-engine.cjs",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        },
+        {
+          "name": "scripts/bootstrap.cjs",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        },
+        {
+          "name": "scripts/use.cjs",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        },
+        {
+          "name": "scripts/update-worker.cjs",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        },
+        {
+          "name": "scripts/release-source.cjs",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        },
+        {
+          "name": "scripts/package-files.cjs",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        }
+      ],
+      "archiveBytesIdentical": false
+    },
+    {
+      "type": "feedback-server",
+      "files": [
+        {
+          "name": "version.json",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        },
+        {
+          "name": "support/README.md",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        },
+        {
+          "name": "support/feedback-server.cjs",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        },
+        {
+          "name": "electron/feedback.cjs",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        },
+        {
+          "name": "electron/diagnostics.cjs",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        },
+        {
+          "name": "electron/wecom-notify.cjs",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        },
+        {
+          "name": "support/deploy/feedback.env.example",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        },
+        {
+          "name": "support/deploy/Caddyfile.example",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        },
+        {
+          "name": "support/deploy/yijian-feedback.service",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        },
+        {
+          "name": "support/deploy/Dockerfile",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        },
+        {
+          "name": "support/deploy/compose.yml",
+          "byteEqual": true,
+          "textEqualAfterLineEndingNormalization": true
+        }
+      ],
+      "archiveBytesIdentical": false
+    }
+  ]
+}

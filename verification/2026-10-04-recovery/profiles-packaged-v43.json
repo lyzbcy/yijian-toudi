@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "version": "0.5.43",
+  "fixtureOnly": true,
+  "packaged": true,
+  "promptStubbed": false,
+  "checks": [
+    "New-profile Escape/button cancellation preserves unsaved content and returns keyboard focus",
+    "Actual labeled modal at three widths creates independent profile with Enter; native prompt unchanged",
+    "Rename prefill, required validation, cancellation and Enter retain unsaved current resume",
+    "Automatic blank-name fallback, independent directions and shared identity verified",
+    "Both customer-dialog cancellations, digit validation and optional tail work without launching browser or sending",
+    "Reload retains names, independent resume content and shared identity with zero page errors"
+  ],
+  "pageErrors": [],
+  "sourceCommit": "478bd2d6b4b0e9ba922f0b11a159b68c13e4c333"
+}

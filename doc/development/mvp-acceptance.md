@@ -3,9 +3,17 @@
 负责人：项目维护 Agent
 最后更新：2026-10-04
 
-## 当前开发候选 v0.5.43（Windows原子写入修正，原生验收待运行）
+## 当前接续候选 v0.5.43（未正式发布）
 
-42实际Windows无新进程恢复测试失败：PowerShell将File.Replace第三个参数$null转换成空字符串，导致覆盖install-result时报路径不合法，最终仍显示installed并使测试超时。旧包恢复副本、首次stderr及清理结果保留于windows-atomic-result-v42-attempt1.json。43改用NullString.Value确保.NET收到真正null；实际Windows PowerShell隔离专项已复现历史参数错误并验证当前覆盖写入，整套后台和真实安装尚待复验。42 Mac最终两架构原生9组测试通过，但Windows42不计通过、不封存为交付成功。
+两平台安装助手等待90秒真实可见新版nonce/版本/路径确认后才完成。缺少确认且目标无进程时恢复旧安装并重开；目标仍运行时保留当前安装和完整旧备份。状态原子写入，界面继续观察安装结果。43修复42实际Windows恢复时File.Replace备份路径被PowerShell转换为空字符串的错误，用NullString.Value传递真实null；首次失败、stderr和实际原生专项复现保留。
+
+Windows真实41→43 IPC/download/hash/helper/NSIS实测复现历史41助手无进程却报告installed的缺口；当前43助手无进程恢复旧41、运行中新43确认截断时保护安装、两种桌面偏好正常重启确认/冷重开资料保留通过。旧41 JS交接到43助手用显式测试模板覆盖，封存41不含43助手。启动成功无进程、确认截断及缩短期限是明确故障注入，二进制/进程真实。默认NSIS6组、116源文件ASAR/实际包输入布局通过；NotSigned，原生向导点击未验。
+
+Mac arm64/Intel完整ad-hoc资源签名、四处容器、116源文件、可见输入及Applications CLI38→43手动升级各9组通过；43→44样本自动更新各9组，含历史41助手缺口、无进程恢复、运行中保护、ready/abort、替换失败恢复、实际IPC/open/新版确认与冷重开资料/凭据/附件/Cookie样本保留。44和正式URL响应为样本，不是公众44发布。临时签名不是Developer ID/公证，Gatekeeper隔离探针拒绝。42 Intel首次重命名输入框15秒未出现已保留；复验成功未证明首次原因。43 Intel首轮在运行中保护测试前助手就绪15秒超时，旧应用保留；新增实际worker时间和输出诊断后复验，首次根因仍未证明，记录mac-auto-update-v43-x64-attempt1保留。
+
+20套Windows后台、357单测通过，包含实际Windows PowerShell原子覆盖；Mac单测跳过该Windows专项，未将其记为Mac通过。Linux43独立归档真实systemd/Caddy本地CA HTTPS/Compose通过，无新通知。7包+7 SHA+manifest+说明，共16草稿附件。
+
+原账号保存重开/授权申请回执、Boss限制复核、公网反馈/真实企微/异机链接/默认地址、正式下载更新/云Skill、原生用户信任/向导、完整当前视频和代表性质量证据仍缺。旧39局部视频不改标当前版本；原电脑聊天/未同步改动/登录态未恢复。证据见delivery-manifest-v43.json及草稿PR #1。
 
 ## 封存 v0.5.41（未正式发布）
 
