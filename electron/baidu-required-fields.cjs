@@ -6,7 +6,7 @@ function inspectBaiduRequiredFields() {
   const rows=[...document.querySelectorAll('.brick-field')].filter(row=>visible(row)&&row.querySelector('.brick-field-label-required-mark'));
   if(!rows.length)return{...blank,reason:'required-structure-missing'};
   const requiredRows=rows.map((row,index)=>{
-    const identities=[...row.classList].map(c=>c.match(/^field-\d+-([a-zA-Z]+)(\d*)$/)).filter(Boolean);
+    const identities=[...row.classList].map(c=>c.match(/^field-\d+(?:\.\d*)?-([a-zA-Z]+)(\d*)$/)).filter(Boolean);
     const identity=identities.length===1?identities[0]:null,property=identity?.[1]||'',segment=identity?.[2]||'';
     const group=/^(?:school|edudate|academic|major)$/.test(property)?'education':/^(?:companyName|industryType|workdate|department|positionName|workDesc)$/.test(property)?'experience':/^(?:subjectName|position|subjectDate|subjectDesc)$/.test(property)?'projects':'info';
     const consent=[...row.classList].some(c=>c.startsWith('sign-private-field'));

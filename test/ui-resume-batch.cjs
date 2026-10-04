@@ -31,7 +31,7 @@ async function poll(read) {
       const { REGISTRY } = req('./adapters/registry.cjs');
       const { createGenericResumeFill } = req('./adapters/generic-resume-fill.cjs');
       for (const a of REGISTRY.filter(a => a.fillResume)) {
-        session.fromPartition(`persist:${a.id}`).protocol.handle('https', () => new Response(`<!doctype html><meta charset="utf-8"><style>body{font:18px system-ui;padding:24px;background:#fcfbf8}input{padding:12px;margin:16px;width:75%}</style><h2>${a.name} · 离线回归样本</h2><p>简历编辑（不连接招聘网站）</p><label for="name">姓名</label><input id="name" name="name"><label for="email">邮箱</label><input id="email" type="email"><button>保存样本</button>`, { headers: { 'content-type': 'text/html; charset=utf-8' } }));
+        session.fromPartition(`persist:${a.id}`).protocol.handle('https', () => new Response(`<!doctype html><meta charset="utf-8"><style>body{font:18px system-ui;padding:24px;background:#fcfbf8}input{padding:12px;margin:16px;width:75%}</style><h2>${a.name} · 离线回归样本</h2><p>简历编辑（不连接招聘网站）</p><div class="brick-field field-56411.-name"><label class="brick-field-label-wrap" for="name">姓名</label><input id="name" name="name"></div><div class="brick-field field-56411.-email"><label class="brick-field-label-wrap" for="email">邮箱</label><input id="email" type="email"></div><button>保存样本</button>`, { headers: { 'content-type': 'text/html; charset=utf-8' } }));
         const fill = createGenericResumeFill(a.id, a.name);
         a.fillResume = (resume, options) => {
           if (!options.attachmentPath?.endsWith('旧版中文简历（样本）.pdf')) throw Error('旧版附件未传入同步引擎');

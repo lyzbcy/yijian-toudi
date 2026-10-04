@@ -17,6 +17,7 @@ function buildBaiduMonthScript(requests) {
       const fail=(error,observed='')=>({...base,written:false,observed,error});
       let ownsPanel=false;
       try{
+        if(/^(?:至今|现在|目前|present|current|ongoing)$/i.test(request.value.trim())){results.push(fail('ongoing-date-manual'));continue;}
         if(!/^\d{4}-(?:0[1-9]|1[0-2])$/.test(request.value)){results.push(fail('month-precision-required'));continue;}
         let control=resolveBaiduFormControl(request.locator);
         if(!control){results.push(fail('control-missing-or-ambiguous'));continue;}

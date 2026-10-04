@@ -1,0 +1,85 @@
+{
+  "ok": true,
+  "version": "0.5.49",
+  "sourceCommit": "e6910ccbfd2b33022951c0c3eac4ddc6b09e3146",
+  "readiness": "maintainer-draft-not-public-release",
+  "url": "https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-d435e06f5c787c2f4b49",
+  "draft": true,
+  "allAssetsReadBack": true,
+  "assetCount": 10,
+  "reports": [
+    {
+      "name": "candidate-manifest-v0.5.49.json",
+      "bytes": 1090,
+      "sha256": "0c33945d781951255691012a76506e81563ed4388f2ad0ed05fd183406e9ffa8",
+      "byteForByteEqual": true,
+      "remoteDigestEqual": true
+    },
+    {
+      "name": "local-verification-v49.json",
+      "bytes": 4518,
+      "sha256": "3d98f17469a3bebe6faff506ed0aaeb9490f14a7972aadd6a1cf5d48f140efaa",
+      "byteForByteEqual": true,
+      "remoteDigestEqual": true
+    },
+    {
+      "name": "source-fingerprints-v49.json",
+      "bytes": 20541,
+      "sha256": "b022fc51cf8c34a7816409efc3a5b73bd0ca7cfe34ccb626a8ca1a2a01b467f8",
+      "byteForByteEqual": true,
+      "remoteDigestEqual": true
+    },
+    {
+      "name": "yijian-toudi-0.5.49-candidate-guide.md",
+      "bytes": 606,
+      "sha256": "9bff72ff649e63f11d5e14427300c16ad1aecfd1697dde8b81c32c54d895399d",
+      "byteForByteEqual": true,
+      "remoteDigestEqual": true
+    },
+    {
+      "name": "yijian-toudi-0.5.49-SHA256.txt",
+      "bytes": 304,
+      "sha256": "c9c8e825c1fe15e2ca9c3d637f2625c067291a121ccf5fc2847c37b26639e042",
+      "byteForByteEqual": true,
+      "remoteDigestEqual": true
+    },
+    {
+      "name": "yijian-toudi-feedback-server-0.5.49.sha256",
+      "bytes": 109,
+      "sha256": "f60794be46fb05926220aab9180a734f9b437fd2146009241acdddba355d8692",
+      "byteForByteEqual": true,
+      "remoteDigestEqual": true
+    },
+    {
+      "name": "yijian-toudi-feedback-server-0.5.49.tar.gz",
+      "bytes": 12434,
+      "sha256": "22ca3365c87cffacf26c398ba2327975b11c5c863fb4f5d61e23f8e2d4804494",
+      "byteForByteEqual": true,
+      "remoteDigestEqual": true
+    },
+    {
+      "name": "yijian-toudi-setup-0.5.49.exe",
+      "bytes": 104308097,
+      "sha256": "f687a7cea01412aca4d974ca32a97988849ce70d8a93af028297ab2765099f56",
+      "byteForByteEqual": true,
+      "remoteDigestEqual": true
+    },
+    {
+      "name": "yijian-toudi-skill-0.5.49.sha256",
+      "bytes": 99,
+      "sha256": "d07c9231b305db41948a6d1985c6c8ebd26f9fd0d4b8e160e165e53f1c760e8d",
+      "byteForByteEqual": true,
+      "remoteDigestEqual": true
+    },
+    {
+      "name": "yijian-toudi-skill-0.5.49.tar.gz",
+      "bytes": 13909,
+      "sha256": "ecf7c36d839bacd0678cc0a4be44c96af0d6e4e2510567269aaddfebb0865456",
+      "byteForByteEqual": true,
+      "remoteDigestEqual": true
+    }
+  ],
+  "containsMac49": false,
+  "completeMvp": false,
+  "bugRateBelowOnePercentProven": false
+}

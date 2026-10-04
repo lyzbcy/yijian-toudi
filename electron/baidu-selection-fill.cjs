@@ -21,7 +21,7 @@ function resolveBaiduSelectionRow(request) {
   const properties={school:'school',major:'major',degree:'academic',radio:'sex'};
   if(properties[request.widget]!==request.property||!(request.widget==='radio'?request.segmentIndex===null:Number.isSafeInteger(request.segmentIndex)&&request.segmentIndex>=0))return null;
   const suffix=request.property+(request.segmentIndex===null?'':request.segmentIndex);
-  const rows=[...document.querySelectorAll('.brick-field')].filter(row=>[...row.classList].some(c=>/^field-\d+-/.test(c)&&c.split('-').at(-1)===suffix));
+  const rows=[...document.querySelectorAll('.brick-field')].filter(row=>[...row.classList].some(c=>/^field-\d+(?:\.\d*)?-/.test(c)&&c.split('-').at(-1)===suffix));
   return rows.length===1?rows[0]:null;
 }
 function buildBaiduSelectionScript(request) {
@@ -40,7 +40,7 @@ function buildBaiduSelectionScript(request) {
       return true;
     };
     const otherPopups=()=>[...document.querySelectorAll('.ant-select-dropdown, .brick-select-options-popper, .brick-date-picker-panel-wrapper')].filter(activePopup);
-    let input=null,ownedPopup=null,oldSearch='',succeeded=false;
+    let input=null,ownedPopup=null,ownsInput=false,oldSearch='',succeeded=false;
     try{
       let row=resolveBaiduSelectionRow(request);
       if(!row||!visible(row))return fail('row-missing-or-ambiguous');
@@ -78,9 +78,24 @@ function buildBaiduSelectionScript(request) {
       input=selects[0].querySelector('input[role="combobox"]');
       if(disabled(input)||input.readOnly)return fail('search-input-disabled-or-missing');
       oldSearch=input.value;
+      ownsInput=true;
       selects[0].querySelector('.ant-select-selector').dispatchEvent(new MouseEvent('mousedown',{bubbles:true}));input.focus();
       Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(input,request.option);
       input.dispatchEvent(new Event('input',{bubbles:true}));
+      // The observed major component is free-input Ant AutoComplete. Its model
+      // accepts a literal profession even when its suggestion list has no match.
+      // Standard school Select still requires an exact committed option.
+      if(request.widget==='major'&&selects[0].classList.contains('ant-select-auto-complete')){
+        await pause(400);input.blur();
+        document.body.dispatchEvent(new MouseEvent('mousedown',{bubbles:true}));await pause(400);
+        row=resolveBaiduSelectionRow(request);
+        const committed=row?.querySelector('input[role="combobox"]')?.value||'';
+        if(committed!==request.option)return fail('selection-readback-mismatch',committed);
+        await pause(300);row=resolveBaiduSelectionRow(request);
+        const retained=row?.querySelector('input[role="combobox"]')?.value||'';
+        succeeded=retained===request.option;
+        return {...base,written:succeeded,observed:retained,error:succeeded?null:'selection-not-retained',action:'autocomplete-literal-retained'};
+      }
       const until=Date.now()+2500;let menu,options=[];
       do{
         menu=document.getElementById(input.getAttribute('aria-controls')||'')?.closest('.ant-select-dropdown');
@@ -106,9 +121,12 @@ function buildBaiduSelectionScript(request) {
     }catch{return fail('selection-widget-error');}
     finally{
       // Failed searches restore the previous query without selecting a fallback.
-      if(input&&!succeeded){Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(input,oldSearch);input.dispatchEvent(new Event('input',{bubbles:true}));}
-      if(ownedPopup){
+      if(ownsInput&&!succeeded){Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(input,oldSearch);input.dispatchEvent(new Event('input',{bubbles:true}));}
+      // Restoring a failed search can open a menu even when no candidate menu
+      // appeared originally. Close only after this transaction acquired control.
+      if(ownedPopup||ownsInput){
         if(input)input.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',code:'Escape',keyCode:27,which:27,bubbles:true}));
+        if(ownsInput)input.blur();
         document.body.dispatchEvent(new MouseEvent('mousedown',{bubbles:true}));await pause(50);
       }
     }

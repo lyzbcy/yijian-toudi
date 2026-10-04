@@ -5,7 +5,7 @@ const { LOGIN_AND_FORM_PROBE, INSPECT_FORM_FIELDS } = require('../form-inspectio
 const {resolveJdFormControl,buildEnsureJdGroupsScript}=require('../jd-form-context.cjs');
 const {planJdWidgets,executeJdWidgets}=require('../jd-widget-fill.cjs');
 const {buildJdRequiredFieldsScript}=require('../jd-required-fields.cjs');
-const {resolveBaiduFormControl}=require('../baidu-form-context.cjs');
+const {resolveBaiduFormControl,executeBaiduGroups}=require('../baidu-form-context.cjs');
 const {planBaiduMonths,executeBaiduMonths}=require('../baidu-month-fill.cjs');
 const {planBaiduSelections,executeBaiduSelections}=require('../baidu-selection-fill.cjs');
 const {buildBaiduRequiredFieldsScript}=require('../baidu-required-fields.cjs');
@@ -18,6 +18,7 @@ function radioComparableValue(value) {
 }
 
 function widgetManualReason(error) {
+  if(error==='ongoing-date-manual')return '简历填写“至今”，官网的对应选项尚未核实，请手动核对；不会改成今天的日期';
   if(error==='date-day-required')return '官网要求具体日期，简历仅提供月份';
   if(error==='month-precision-required')return '官网按月份选择，请核对日期；具体日期不会自动截断';
   if(/^another-/.test(error||''))return '页面有未完成的选择，请先关闭当前选择器';
@@ -313,6 +314,7 @@ function createGenericResumeFill(companyId, siteName) {
     }
     if (attachment?.refresh?.confirmed) step('attachment-refreshed', '已确认使用附件刷新信息，解析已稳定，继续核对字段');
     let sectionSetup=null;
+    if(companyId==='baidu')sectionSetup=await executeBaiduGroups(workspace,resume);
     if(companyId==='jd'&&['campus','summer-intern','daily-intern'].includes(recruitType)){
       sectionSetup=await workspace.run(buildEnsureJdGroupsScript([
         {sectionId:'edu',count:(resume.education||[]).length},

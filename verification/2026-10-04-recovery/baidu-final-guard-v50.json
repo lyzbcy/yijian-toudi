@@ -1,0 +1,16 @@
+{
+  "version": "0.5.50",
+  "allReadingsPrivate": true,
+  "knownTextFields": 27,
+  "unknownFieldsAllManual": true,
+  "projectTextSegments": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "sealed": true,
+  "officialWrites": 0,
+  "ok": true
+}

@@ -36,6 +36,7 @@ const {getBaiduFormContext}=require('./baidu-form-context.cjs');
 const INSPECT_FORM_FIELDS = `(() => {
   const jdContext = ${getJdFormContext.toString()};
   const baiduContext = ${getBaiduFormContext.toString()};
+  const baiduResume = location.origin==='https://talent.baidu.com'&&['/jobs/resume/create','/jobs/resume/create/','/jobs/center','/jobs/center/'].includes(location.pathname);
   function describe(control) {
     const labelByFor = control.id ? document.querySelector('label[for="' + CSS.escape(control.id) + '"]')?.innerText : '';
     // Real UD/MTD forms place the caption outside the deeply nested input.
@@ -104,7 +105,7 @@ const INSPECT_FORM_FIELDS = `(() => {
     index,
     jdLocator: jdContext(control),
     baiduLocator: baiduContext(control),
-    readOnly: Boolean(control.readOnly || (baiduContext(control)&&(baiduContext(control).hidden||!baiduContext(control).key||baiduContext(control).widgetKind!=='text')) || control.closest('.ud__select, .mtd-select') || (jdContext(control)&&control.matches('.ant-select-search__field'))),
+    readOnly: Boolean(control.readOnly || (baiduResume&&!baiduContext(control)) || (baiduContext(control)&&(baiduContext(control).hidden||!baiduContext(control).key||baiduContext(control).widgetKind!=='text')) || control.closest('.ud__select, .mtd-select') || (jdContext(control)&&control.matches('.ant-select-search__field'))),
     section: sectionOf(control),
     label: describe(control).slice(0, 240),
     type: control.tagName.toLowerCase() + (control.type ? ':' + control.type : ''),

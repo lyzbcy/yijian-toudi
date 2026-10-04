@@ -1,0 +1,193 @@
+{
+  "ok": true,
+  "scope": "Local final-source regression and packaged Windows checks; authenticated Baidu edits in sealed isolated copy, no official saves",
+  "version": "0.5.50",
+  "at": "2026-10-04T18:40:41.109Z",
+  "sourceFingerprints": "source-fingerprints-v50.json",
+  "candidateManifest": "candidate-manifest-v0.5.50.json",
+  "ownFilesMatched": 121,
+  "authenticode": "NotSigned",
+  "units": {
+    "passed": 393,
+    "failed": 0,
+    "skipped": 0
+  },
+  "background": {
+    "at": "2026-10-04T18:40:28.321Z",
+    "ok": true,
+    "results": [
+      {
+        "name": "unit",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 5750
+      },
+      {
+        "name": "check",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 447
+      },
+      {
+        "name": "ui-smoke",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 13080
+      },
+      {
+        "name": "ui-resume-segments",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 62587
+      },
+      {
+        "name": "ui-resume-profiles",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 56820
+      },
+      {
+        "name": "ui-capabilities",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 7342
+      },
+      {
+        "name": "ui-workspace-exit",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 4006
+      },
+      {
+        "name": "ui-resume-batch",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 35296
+      },
+      {
+        "name": "ui-batch-actions",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 5018
+      },
+      {
+        "name": "ui-login-upload",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 17704
+      },
+      {
+        "name": "ui-live-window-fixes",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 22524
+      },
+      {
+        "name": "ui-jd-login",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 12339
+      },
+      {
+        "name": "ui-auth-frame",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 4013
+      },
+      {
+        "name": "ui-ai-browser",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 19475
+      },
+      {
+        "name": "ui-ai-preview",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 20535
+      },
+      {
+        "name": "ui-reliability",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 61578
+      },
+      {
+        "name": "ui-boss-recovery",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 5274
+      },
+      {
+        "name": "ui-delivery-layout",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 36962
+      },
+      {
+        "name": "ui-feedback",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 11623
+      },
+      {
+        "name": "ui-update-install-status",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 2926
+      },
+      {
+        "name": "ui-job-refresh-status",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 3706
+      },
+      {
+        "name": "ui-author-page",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 36637
+      },
+      {
+        "name": "ui-windows-shell",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 1595
+      }
+    ]
+  },
+  "site": {
+    "ok": true,
+    "brokenImages": 0,
+    "overflow": 0
+  },
+  "skillAndFeedbackArchives": {
+    "sameVersion": true
+  },
+  "personalBaidu": {
+    "report": "baidu-personal-resume-v50.json",
+    "verified": 41,
+    "mismatched": 0,
+    "manual": 45,
+    "unsupportedOngoingEndDates": 3,
+    "requiredRows": 39,
+    "requiredMissing": 9,
+    "requiredUnknown": 0,
+    "fiveProjectSegmentsRetained": true,
+    "officialValidationProven": false
+  },
+  "unidentifiedFormGuard": "baidu-final-guard-v50.json",
+  "packagedBatch": "legacy-batch-packaged-v50.json",
+  "upgrade": {
+    "report": "windows-install-upgrade-v50.json",
+    "checks": 8,
+    "sourceHelperOverride": false,
+    "nativeWizardVerified": false
+  },
+  "mac49": "mac-readback-v49.json",
+  "mac50": "pending-native-run",
+  "goalStatus": "active",
+  "productDefectRateBelowOnePercentProven": false,
+  "officialSaveUploadApplications": 0,
+  "externalMessages": 0
+}

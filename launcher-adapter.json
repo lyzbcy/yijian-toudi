@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "yijian-toudi",
   "name": "一键投递",
-  "version": "0.5.46",
+  "version": "0.5.50",
   "platform": "win32",
   "architecture": "x64",
   "executable": "一键投递.exe",
@@ -15,9 +15,9 @@
   ],
   "package": {
     "type": "installer",
-    "path": "release/yijian-toudi-setup-0.5.46.exe",
+    "path": "release/yijian-toudi-setup-0.5.50.exe",
     "url": null,
-    "sha256": "011ef2cd96bc62d7f4e03f90e946e8f88741fcefbea940ce339977565eabb8ef"
+    "sha256": "ce8c9b5706ec19f4629b707fbeebea45470639af9eefeefb8ac92261894d0afb"
   },
   "installation": {
     "displayName": "一键投递"

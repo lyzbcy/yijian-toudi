@@ -23,3 +23,7 @@ test('Duplicate required identities become unknown, while a complete structural 
 test('Missing required markers or another route does not silently claim a complete form',()=>{
  assert.equal(inspect([]).applicable,false);assert.equal(inspect([]).structurallyComplete,false);assert.equal(inspect([row('name')],'/jobs/login').applicable,false);
 });
+test('Required grouping follows observed decimal form prefixes and keeps project segment identity',()=>{
+ const sample=row('subjectName4',{values:['样本']});sample.classList=['brick-field','field-56411.-subjectName4'];
+ const r=inspect([sample]);assert.equal(r.requiredRows[0].key,'subjectName4');assert.equal(r.requiredRows[0].sectionId,'projects');assert.equal(r.requiredRows[0].groupNumber,5);
+});

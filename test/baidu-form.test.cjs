@@ -32,6 +32,20 @@ test('Hidden sizing textarea does not shift semantic ordinal; school search stay
  assert.equal(f.context(f.controls[1]).ordinal,-1);assert.equal(f.resolve(f.context(f.controls[0])),f.controls[0]);
  const school=fixture('school',{select:true});assert.equal(school.context(school.controls[0]).widgetKind,'select');
 });
+test('Baidu numeric form prefix can include the observed trailing decimal separator',()=>{
+ for(const prefix of ['56411.','56411.12']){
+  const f=fixture('subjectDate',{prefix,count:2});const locator=f.context(f.controls[1]);
+  assert.equal(locator.key,'projects.0.end');assert.equal(f.resolve(locator),f.controls[1]);
+ }
+});
+test('An unrecognized Baidu form never falls back to caption-based writing',()=>{
+ const f=fixture('subjectName');f.row.classList=['brick-field','field-unknown-subjectName0'];
+ const input=f.controls[0];input.placeholder='项目名称';input.getAttribute=()=>null;
+ f.environment.document.querySelectorAll=()=>[input];
+ const fields=vm.runInNewContext(INSPECT_FORM_FIELDS,f.environment);
+ assert.equal(fields[0].baiduLocator,null);assert.equal(fields[0].readOnly,true);
+ assert.equal(planGenericResumeFields([{key:'projects.0.name',value:'不能误写',keywords:['项目名称']}],fields).writable.length,0);
+});
 test('Baidu planner refuses ambiguous same-shaped fields and never falls back to another resume key',()=>{
  const f=fixture('subjectName');const locator=f.context(f.controls[0]);
  const fields=[{index:0,type:'input:text',value:'',label:'项目名称 公司名称',section:'项目经历-1',baiduLocator:locator}];
@@ -51,9 +65,15 @@ test('Month planner scopes six dates and refuses duplicate controls',()=>{
 test('Month driver preserves full dates, invalid months and present values without touching DOM',async()=>{
  let touched=0;
  const document={querySelectorAll(){touched++;return[]}};
- const requests=['2024-06-01','2024-13','至今'].map((value,i)=>({key:String(i),value,locator:{}}));
+ const requests=['2024-06-01','2024-13'].map((value,i)=>({key:String(i),value,locator:{}}));
  const result=await vm.runInNewContext(buildBaiduMonthScript(requests),{document});
  assert.equal(touched,0);assert.ok(result.every(r=>!r.written&&r.error==='month-precision-required'));
+});
+test('Ongoing work dates remain an explicit manual fact without inventing a month',async()=>{
+ let touched=0;const document={querySelectorAll(){touched++;return[]}};
+ const result=await vm.runInNewContext(buildBaiduMonthScript(['至今','Present','current','ongoing'].map(value=>({value,locator:{}}))),{document});
+ assert.equal(touched,0);assert.ok(result.every(r=>!r.written&&r.error==='ongoing-date-manual'));
+ const {widgetManualReason}=require('../electron/adapters/generic-resume-fill.cjs');assert.match(widgetManualReason(result[0].error),/至今/);
 });
 test('Month driver leaves another open calendar untouched instead of acting on its controls',async()=>{
  const f=fixture('subjectDate',{count:2});const locator=f.context(f.controls[0]);let bodyTouches=0;
