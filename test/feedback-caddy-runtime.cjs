@@ -10,7 +10,7 @@ const compose=(...args)=>run('docker',['compose',...args],{cwd:deploy});
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 let containerOwned=false,logOwned=false,logFile;
 function request(port,{ca,path:route='/healthz',headers={}}={}){
- return new Promise((resolve,reject)=>{const req=https.request({hostname:'localhost',port,path:route,method:'GET',lookup:(_host,_options,callback)=>callback(null,'127.0.0.1',4),ca,rejectUnauthorized:true,timeout:2500,headers},res=>{const chunks=[];res.on('data',chunk=>chunks.push(chunk));res.on('error',reject);res.on('end',()=>resolve({status:res.statusCode,headers:res.headers,body:Buffer.concat(chunks).toString('utf8')}));});req.on('error',reject);req.on('timeout',()=>req.destroy(Error('caddy-test-request-timeout')));req.end();});
+ return new Promise((resolve,reject)=>{const req=https.request({hostname:'localhost',port,path:route,method:'GET',lookup:(_host,options,callback)=>options.all?callback(null,[{address:'127.0.0.1',family:4}]):callback(null,'127.0.0.1',4),ca,rejectUnauthorized:true,timeout:2500,headers},res=>{const chunks=[];res.on('data',chunk=>chunks.push(chunk));res.on('error',reject);res.on('end',()=>resolve({status:res.statusCode,headers:res.headers,body:Buffer.concat(chunks).toString('utf8')}));});req.on('error',reject);req.on('timeout',()=>req.destroy(Error('caddy-test-request-timeout')));req.end();});
 }
 async function waitRelay(){for(let i=0;i<80;i++){try{const r=await fetch('http://127.0.0.1:8096/healthz',{signal:AbortSignal.timeout(1000)});if(r.ok)return;}catch{}await sleep(250);}throw Error('compose-relay-not-ready');}
 async function main(){
