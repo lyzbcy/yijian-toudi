@@ -22,6 +22,11 @@
   font-synthesis: none;
 }
 * { box-sizing: border-box; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #c8c5da; border: 2px solid transparent; background-clip: padding-box; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #a29bbf; background-clip: padding-box; }
+::-webkit-scrollbar-corner { background: transparent; }
 html { scroll-behavior: smooth; }
 body { margin: 0; min-width: 1024px; min-height: 100vh; background: var(--bg); }
 button, input, select, textarea { font: inherit; }
@@ -36,8 +41,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .brand { display: flex; align-items: center; gap: 12px; padding: 18px 12px 28px; }
 .brand-mark {
   width: 42px; height: 42px; display: grid; place-items: center; border-radius: 14px;
-  background: var(--primary); color: #fff; font-weight: 900; box-shadow: 0 10px 20px rgba(102, 87, 232, .25);
+  background: var(--primary-soft); overflow: hidden;
 }
+.brand-mark img { width: 100%; height: 100%; object-fit: contain; }
 .brand strong, .brand span { display: block; }
 .brand strong { font-size: 16px; letter-spacing: -.02em; }
 .brand span { color: var(--muted); font-size: 11px; margin-top: 4px; }
@@ -451,7 +457,13 @@ input:focus, select:focus, textarea:focus { border-color: #9d93ec; background: #
 .text-entry-dialog input:focus { outline: 2px solid var(--primary); outline-offset: 2px; }
 .text-entry-hint { color: var(--muted); font-size: 12px; line-height: 1.6; }
 .text-entry-dialog .dialog-actions { margin-top: 24px; }
-.promo-dialog { width: min(700px, 90vw); }
+.author-card { max-width: 1100px; }
+.author-qr-hint { margin: 20px 0 0; color: var(--muted); font-size: 13px; }
+.author-qr-button { display: block; width: 100%; padding: 0; border: 0; background: transparent; cursor: zoom-in; }
+.author-qr-button:focus-visible { outline: 3px solid var(--primary); outline-offset: 4px; }
+.author-qr-dialog { width: min(800px, 90vw); }
+.author-qr-dialog h2 { margin: 0 36px 18px 0; font-size: 18px; }
+.author-qr-dialog > img { display: block; width: 100%; height: 70vh; object-fit: contain; }
 
 /* 腾讯简历字段差异报告弹窗 */
 .resume-report-dialog { width: min(880px, 94vw); max-height: 88vh; padding: 0; overflow: hidden; }
@@ -483,7 +495,7 @@ dialog:not([open]) { display: none; }
 .promo-author { display: flex; gap: 18px; align-items: center; }
 .promo-author > img { width: 90px; height: 90px; object-fit: contain; }
 .promo-author span { color: var(--primary); font-size: 9px; font-weight: 800; }
-.promo-author h3 { margin: 5px 0; font-size: 20px; }
+.promo-author h2 { margin: 5px 0; font-size: 20px; }
 .promo-author p { margin: 0; color: var(--muted); font-size: 10px; }
 .qr-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 24px; }
 .qr-grid figure { margin: 0; padding: 13px; border: 1px solid var(--line); border-radius: 16px; text-align: center; }
@@ -580,6 +592,7 @@ body.workspace-active .workspace-bar { display: flex !important; }
 .workspace-bar-text span { display: block; color: #9ea0b8; font-size: 10px; white-space: normal; word-break: break-all; max-height: 28px; overflow: hidden; font-family: ui-monospace, monospace; cursor: pointer; }
 .workspace-bar .ghost-button { background: rgba(255,255,255,.12); color: #fff; border-color: transparent; }
 .workspace-bar .ghost-button:hover { background: rgba(255,255,255,.2); }
+.windows-shell .workspace-bar { padding-left: 20px; padding-right: 160px; }
   #workspaceBarHint[data-auth-state]:not([data-auth-state=""]) { cursor: default; font-family: inherit; }
   #workspaceBarHint[data-auth-state="failed"], #workspaceBarHint[data-auth-state="stale"] { color: #ffd18a; }
   #workspaceBarHint[data-auth-state="verified"] { color: #a9e3be; }

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, shell, dialog, safeStorage, net, Notification } = require('electron');
+const { app, BrowserWindow, ipcMain, shell, dialog, safeStorage, net, Notification, Menu } = require('electron');
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
@@ -88,7 +88,7 @@ async function openFeedback(kind='bug'){
   if(feedbackWindow&&!feedbackWindow.isDestroyed()){feedbackWindow.focus();return{opened:true};}
   const pending=ensureFeedbackClient().pending();
   feedbackSession={kind:pending?.payload.kind||(kind==='review'?'review':'bug'),requestId:pending?.payload.requestId||crypto.randomUUID(),logs:diagnosticEntries(logger.recent()),pending};
-  feedbackWindow=new BrowserWindow({parent:window,modal:true,show:false,width:650,height:735,minWidth:520,minHeight:600,title:'遇到问题反馈 · 一键投递',backgroundColor:'#f6f7fb',webPreferences:{preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,sandbox:true,nodeIntegration:false}});
+  feedbackWindow=new BrowserWindow({parent:window,modal:true,show:false,width:650,height:735,minWidth:520,minHeight:600,title:'遇到问题反馈 · 一键投递',backgroundColor:'#f6f7fb',icon:path.join(__dirname,'..','src','assets','stickers','mascot.png'),...(process.platform==='win32'?{titleBarStyle:'hidden',titleBarOverlay:{color:'#f6f7fb',symbolColor:'#52566f',height:40}}:{}),webPreferences:{preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,sandbox:true,nodeIntegration:false}});
   feedbackWindow.webContents.setWindowOpenHandler(()=>({action:'deny'}));feedbackWindow.on('closed',()=>{feedbackWindow=null;feedbackSession=null;});
   try{await feedbackWindow.loadFile(path.join(__dirname,'..','src','feedback.html'));if(!backgroundTest)feedbackWindow.show();return{opened:true};}catch{feedbackWindow?.destroy();return{opened:false};}
 }
@@ -274,7 +274,9 @@ function createWindow() {
     height: 920,
     minWidth: 1080,
     minHeight: 720,
-    titleBarStyle: 'hiddenInset',
+    titleBarStyle: process.platform === 'win32' ? 'hidden' : 'hiddenInset',
+    ...(process.platform === 'win32' ? { titleBarOverlay: { color: '#f5f6fa', symbolColor: '#52566f', height: 40 } } : {}),
+    icon: path.join(__dirname, '..', 'src', 'assets', 'stickers', 'mascot.png'),
     trafficLightPosition: { x: 18, y: 18 },
     backgroundColor: '#f6f7fb',
     webPreferences: {
@@ -981,6 +983,7 @@ app.setPath(
 );
 
 app.whenReady().then(async () => {
+  if (process.platform === 'win32') Menu.setApplicationMenu(null);
   store = new JsonStore(app.getPath('userData'));
   store.init();
   store.update(state=>{state.meta=migratePromotion(state.meta);return state;});
@@ -1470,7 +1473,7 @@ app.whenReady().then(async () => {
     const company = store.get().companies.find((item) => item.id === companyId);
     if (!company) throw new Error('未找到公司');
     logger.info('打开嵌入式登录', { company: company.name, portal: company.portal });
-    return loginManager.openLoginView(company, companyId === 'jd' && recruitType === 'campus' ? 'campus' : 'social');
+    return loginManager.openLoginView(company, recruitType);
   }));
   ipcMain.handle('login:close', () => resumeSyncExecutionQueue.run(async () => {
     logger.info('关闭嵌入式登录');

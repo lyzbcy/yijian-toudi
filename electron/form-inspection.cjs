@@ -36,6 +36,13 @@ const INSPECT_FORM_FIELDS = `(() => {
   const jdContext = ${getJdFormContext.toString()};
   function describe(control) {
     const labelByFor = control.id ? document.querySelector('label[for="' + CSS.escape(control.id) + '"]')?.innerText : '';
+    // Real UD/MTD forms place the caption outside the deeply nested input.
+    // Read only the nearest field's caption, never a sibling field or value.
+    const fieldItem = control.closest('.ud-formily-item, .mtd-form-item');
+    const itemLabel = fieldItem?.querySelector('.ud-formily-item-label')?.textContent?.trim()
+      || fieldItem?.querySelector('.mtd-form-item-label')?.textContent?.trim()
+      || fieldItem?.querySelector(':scope > .mtd-form-item-body > .label')?.textContent?.trim();
+    if (itemLabel) return itemLabel.replace(/^[*＊\\s]+|[*＊\\s：:]+$/g, '').trim();
     const ancestorTexts = [];
     let node = control.parentElement;
     for (let depth = 0; depth < 5 && node; depth += 1) {
@@ -48,7 +55,7 @@ const INSPECT_FORM_FIELDS = `(() => {
       node = node.parentElement;
     }
     return [
-      jdContext(control)?.label, labelByFor, control.closest('label')?.innerText, control.placeholder, control.name, control.id,
+      jdContext(control)?.label, labelByFor, itemLabel, control.closest('label')?.innerText, control.placeholder, control.name, control.id,
       control.getAttribute('aria-label'), control.getAttribute('autocomplete'), control.className,
       ancestorTexts.join(' ')
     ].filter(Boolean).join(' ').trim();
@@ -93,7 +100,7 @@ const INSPECT_FORM_FIELDS = `(() => {
   return controls.map((control, index) => ({
     index,
     jdLocator: jdContext(control),
-    readOnly: Boolean(control.readOnly || (jdContext(control)&&control.matches('.ant-select-search__field'))),
+    readOnly: Boolean(control.readOnly || control.closest('.ud__select, .mtd-select') || (jdContext(control)&&control.matches('.ant-select-search__field'))),
     section: sectionOf(control),
     label: describe(control).slice(0, 240),
     type: control.tagName.toLowerCase() + (control.type ? ':' + control.type : ''),

@@ -1,0 +1,346 @@
+{
+  "version": "0.5.46",
+  "at": "2026-10-04T15:33:28.380Z",
+  "userReportedAllSevenLoggedIn": true,
+  "plannedRestartCompleted": true,
+  "personalProfile": true,
+  "privateValuesIncluded": false,
+  "productionFillAdaptersExecuted": false,
+  "genericPlannerDoesNotRepresentTencentOrAlibabaDedicatedAdapterCoverage": true,
+  "fieldsWrittenByUs": 0,
+  "filesUploadedByUs": 0,
+  "officialSavesPerformedByUs": 0,
+  "realApplications": 0,
+  "externalMessages": 0,
+  "platforms": [
+    {
+      "companyId": "baidu",
+      "track": "campus",
+      "url": null,
+      "probe": null,
+      "fields": null,
+      "genericDryRunMatches": [],
+      "genericDryRunUnmatchedCount": null,
+      "attachments": null,
+      "error": "page.evaluate: Error: Error invoking remote method 'login:open': Error: 打开网页失败：ERR_ABORTED (-3) loading 'about:blank'"
+    },
+    {
+      "companyId": "tencent",
+      "track": "campus",
+      "url": "https://join.qq.com/resumeedit.html",
+      "probe": {
+        "loginRequired": false,
+        "isNotFound": false,
+        "inputCount": 194
+      },
+      "fields": {
+        "total": 190,
+        "nonempty": 163,
+        "readOnly": 42
+      },
+      "genericDryRunMatches": [
+        {
+          "key": "basic.name",
+          "confidence": 0.9,
+          "alreadyEqual": true
+        },
+        {
+          "key": "basic.phone",
+          "confidence": 0.9,
+          "alreadyEqual": true
+        },
+        {
+          "key": "basic.email",
+          "confidence": 0.76,
+          "alreadyEqual": true
+        },
+        {
+          "key": "basic.website",
+          "confidence": 0.82,
+          "alreadyEqual": true
+        },
+        {
+          "key": "skills.keywords",
+          "confidence": 0.82,
+          "alreadyEqual": false
+        },
+        {
+          "key": "skills.devLanguages",
+          "confidence": 0.78,
+          "alreadyEqual": false
+        },
+        {
+          "key": "skills.portfolioUrl",
+          "confidence": 0.9,
+          "alreadyEqual": false
+        },
+        {
+          "key": "experience.0.company",
+          "confidence": 0.76,
+          "alreadyEqual": true
+        },
+        {
+          "key": "experience.0.role",
+          "confidence": 0.9,
+          "alreadyEqual": true
+        }
+      ],
+      "genericDryRunUnmatchedCount": 77,
+      "attachments": {
+        "fileInputCount": 4,
+        "uploadEntryPresent": true,
+        "existingPdfMention": false
+      },
+      "error": null
+    },
+    {
+      "companyId": "bytedance",
+      "track": "campus",
+      "url": "https://jobs.bytedance.com/campus/resume/edit",
+      "probe": {
+        "loginRequired": false,
+        "isNotFound": false,
+        "inputCount": 46
+      },
+      "fields": {
+        "total": 46,
+        "nonempty": 29,
+        "readOnly": 9
+      },
+      "genericDryRunMatches": [
+        {
+          "key": "basic.name",
+          "confidence": 0.94,
+          "alreadyEqual": true
+        },
+        {
+          "key": "basic.phone",
+          "confidence": 0.94,
+          "alreadyEqual": true
+        },
+        {
+          "key": "basic.email",
+          "confidence": 0.94,
+          "alreadyEqual": true
+        },
+        {
+          "key": "education.0.major",
+          "confidence": 0.94,
+          "alreadyEqual": true
+        },
+        {
+          "key": "experience.0.company",
+          "confidence": 0.94,
+          "alreadyEqual": true
+        },
+        {
+          "key": "experience.0.role",
+          "confidence": 0.94,
+          "alreadyEqual": false
+        },
+        {
+          "key": "projects.0.name",
+          "confidence": 0.94,
+          "alreadyEqual": true
+        },
+        {
+          "key": "projects.0.role",
+          "confidence": 0.94,
+          "alreadyEqual": false
+        }
+      ],
+      "genericDryRunUnmatchedCount": 78,
+      "attachments": {
+        "fileInputCount": 1,
+        "uploadEntryPresent": false,
+        "existingPdfMention": true
+      },
+      "error": null
+    },
+    {
+      "companyId": "alibaba",
+      "track": "campus",
+      "url": "https://campus-talent.alibaba.com/personal/resume",
+      "probe": {
+        "loginRequired": false,
+        "isNotFound": false,
+        "inputCount": 5
+      },
+      "fields": {
+        "total": 5,
+        "nonempty": 3,
+        "readOnly": 0
+      },
+      "genericDryRunMatches": [],
+      "genericDryRunUnmatchedCount": 86,
+      "attachments": {
+        "fileInputCount": 1,
+        "uploadEntryPresent": true,
+        "existingPdfMention": true
+      },
+      "error": null
+    },
+    {
+      "companyId": "meituan",
+      "track": "campus",
+      "url": "https://zhaopin.meituan.com/web/personal-center/resume-detail",
+      "probe": {
+        "loginRequired": false,
+        "isNotFound": false,
+        "inputCount": 106
+      },
+      "fields": {
+        "total": 101,
+        "nonempty": 72,
+        "readOnly": 33
+      },
+      "genericDryRunMatches": [
+        {
+          "key": "basic.name",
+          "confidence": 0.94,
+          "alreadyEqual": true
+        },
+        {
+          "key": "basic.email",
+          "confidence": 0.94,
+          "alreadyEqual": true
+        },
+        {
+          "key": "projects.0.name",
+          "confidence": 0.94,
+          "alreadyEqual": false
+        },
+        {
+          "key": "projects.0.role",
+          "confidence": 0.94,
+          "alreadyEqual": false
+        },
+        {
+          "key": "projects.0.description",
+          "confidence": 0.94,
+          "alreadyEqual": false
+        }
+      ],
+      "genericDryRunUnmatchedCount": 81,
+      "attachments": {
+        "fileInputCount": 3,
+        "uploadEntryPresent": true,
+        "existingPdfMention": true
+      },
+      "error": null
+    },
+    {
+      "companyId": "jd",
+      "track": "campus",
+      "url": "https://campus.jd.com/#/resume",
+      "probe": {
+        "loginRequired": false,
+        "isNotFound": false,
+        "inputCount": 18
+      },
+      "fields": {
+        "total": 18,
+        "nonempty": 1,
+        "readOnly": 2
+      },
+      "genericDryRunMatches": [
+        {
+          "key": "basic.name",
+          "confidence": 0.96,
+          "alreadyEqual": false
+        },
+        {
+          "key": "basic.phone",
+          "confidence": 0.92,
+          "alreadyEqual": false
+        },
+        {
+          "key": "basic.email",
+          "confidence": 0.96,
+          "alreadyEqual": false
+        },
+        {
+          "key": "skills.interests",
+          "confidence": 0.9,
+          "alreadyEqual": false
+        }
+      ],
+      "genericDryRunUnmatchedCount": 82,
+      "attachments": {
+        "fileInputCount": 6,
+        "uploadEntryPresent": true,
+        "existingPdfMention": false
+      },
+      "error": null
+    },
+    {
+      "companyId": "xiaomi",
+      "track": "campus",
+      "url": "https://xiaomi.jobs.f.mioffice.cn/campus/resume/edit",
+      "probe": {
+        "loginRequired": false,
+        "isNotFound": false,
+        "inputCount": 32
+      },
+      "fields": {
+        "total": 32,
+        "nonempty": 13,
+        "readOnly": 0
+      },
+      "genericDryRunMatches": [
+        {
+          "key": "basic.name",
+          "confidence": 0.96,
+          "alreadyEqual": true
+        },
+        {
+          "key": "basic.email",
+          "confidence": 0.96,
+          "alreadyEqual": true
+        },
+        {
+          "key": "extras.summary",
+          "confidence": 0.84,
+          "alreadyEqual": false
+        },
+        {
+          "key": "education.0.school",
+          "confidence": 0.84,
+          "alreadyEqual": true
+        },
+        {
+          "key": "education.0.end",
+          "confidence": 0.78,
+          "alreadyEqual": false
+        },
+        {
+          "key": "experience.0.company",
+          "confidence": 0.84,
+          "alreadyEqual": true
+        },
+        {
+          "key": "experience.0.role",
+          "confidence": 0.84,
+          "alreadyEqual": false
+        },
+        {
+          "key": "projects.0.name",
+          "confidence": 0.84,
+          "alreadyEqual": false
+        },
+        {
+          "key": "projects.0.role",
+          "confidence": 0.84,
+          "alreadyEqual": false
+        }
+      ],
+      "genericDryRunUnmatchedCount": 77,
+      "attachments": {
+        "fileInputCount": 2,
+        "uploadEntryPresent": true,
+        "existingPdfMention": true
+      },
+      "error": null
+    }
+  ]
+}

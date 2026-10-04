@@ -1,6 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('oneClick', {
+  platform: process.platform,
   getState: () => ipcRenderer.invoke('state:get'),
   saveResume: (resume) => ipcRenderer.invoke('resume:save', resume),
   switchProfile: (profileId) => ipcRenderer.invoke('resume:switch-profile', profileId),

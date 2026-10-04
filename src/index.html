@@ -41,7 +41,7 @@
   <div class="app-shell">
     <aside class="sidebar">
       <div class="brand">
-        <div class="brand-mark">投</div>
+        <div class="brand-mark"><img src="./assets/stickers/mascot.png" alt="一键投递"></div>
         <div>
           <strong>一键投递</strong>
           <span>求职工作台</span>
@@ -63,6 +63,7 @@
         <button class="nav-item" data-page="connections"><span class="nav-icon">⌘</span><span>公司与邮箱</span></button>
         <button class="nav-item" data-page="agent"><span class="nav-icon">✦</span><span>连接 AI Agent</span></button>
         <button class="nav-item" data-page="settings"><span class="nav-icon">⚙</span><span>设置</span></button>
+        <button class="nav-item" data-page="author"><span class="nav-icon">🐟</span><span>关于捞鱼</span></button>
       </nav>
 
       <div class="sidebar-card">
@@ -70,7 +71,7 @@
         <strong id="sidebarMotto">今天也在认真投递</strong>
         <span>数据只保存在你的电脑里</span>
       </div>
-      <div class="version">本地优先 · v<span id="appVersion">0.5.45</span></div>
+      <div class="version">本地优先 · v<span id="appVersion">0.5.46</span></div>
     </aside>
 
     <main class="main">
@@ -568,9 +569,20 @@ node scripts/daily-boss.cjs
           </section>
           <section class="content-card settings-card about-card">
             <img src="./assets/stickers/mascot.png" alt="">
-            <div><h3>一键投递 v<span id="aboutAppVersion">0.5.45</span></h3><p>一个弱小但有梦想的开发者，想把重复投简历这件事做得轻松一点。</p><a href="https://lyzbcy.github.io/" data-external>关于捞鱼 ↗</a></div>
+            <div><h3>一键投递 v<span id="aboutAppVersion">0.5.46</span></h3><p>一个弱小但有梦想的开发者，想把重复投简历这件事做得轻松一点。</p><button class="ghost-button" id="settingsAuthorButton" data-page="author">关于捞鱼</button></div>
           </section>
         </div>
+      </section>
+      <section class="page" id="page-author">
+        <section class="content-card author-card">
+          <div class="promo-author"><img src="./assets/stickers/mascot.png" alt="捞鱼头像"><div><span>捞鱼工作室</span><h2>关于捞鱼</h2><p>一个弱小但有梦想的开发者，想把重复投简历这件事做得轻松一点。</p></div></div>
+          <p class="author-qr-hint">用手机扫描下方二维码。看不清时，点击图片放大。</p>
+          <div class="qr-grid">
+            <figure><button class="author-qr-button" data-author-qr aria-label="放大粉丝群二维码"><img src="./assets/qq-group.jpg" alt="粉丝群二维码"></button><figcaption>粉丝群</figcaption></figure>
+            <figure><button class="author-qr-button" data-author-qr aria-label="放大赞赏二维码"><img src="./assets/reward-qr.jpg" alt="赞赏二维码"></button><figcaption>赞赏支持</figcaption></figure>
+            <figure><button class="author-qr-button" data-author-qr aria-label="放大微信表情包二维码"><img src="./assets/sticker-qr.png" alt="微信表情包二维码"></button><figcaption>微信表情包</figcaption></figure>
+          </div>
+        </section>
       </section>
     </main>
   </div>
@@ -597,16 +609,12 @@ node scripts/daily-boss.cjs
     <button class="dialog-close" aria-label="关闭">×</button>
     <div id="jobDialogContent"></div>
   </dialog>
-  <dialog id="promoDialog" class="dialog promo-dialog">
+  <dialog id="authorQrDialog" class="dialog author-qr-dialog" aria-labelledby="authorQrTitle">
     <button class="dialog-close" aria-label="关闭">×</button>
-    <div class="promo-author"><img src="./assets/stickers/mascot.png" alt=""><div><span>捞鱼工作室</span><h3>关于捞鱼</h3><p>一个弱小但有梦想的开发者</p></div></div>
-    <div class="qr-grid">
-      <figure><img src="./assets/qq-group.jpg" alt="粉丝群二维码"><figcaption>粉丝群</figcaption></figure>
-      <figure><img src="./assets/reward-qr.jpg" alt="赞赏二维码"><figcaption>赞赏支持</figcaption></figure>
-      <figure><img src="./assets/sticker-qr.png" alt="微信表情包二维码"><figcaption>微信表情包</figcaption></figure>
-    </div>
+    <h2 id="authorQrTitle">二维码</h2>
+    <img id="authorQrImage" alt="">
   </dialog>
-  <button id="promoButton" class="promo-button">🐟 关于捞鱼</button>
+  <button id="promoButton" class="promo-button" data-page="author">🐟 关于捞鱼</button>
 
   <dialog id="resumeReportDialog" class="dialog resume-report-dialog">
     <button class="dialog-close" aria-label="关闭">×</button>

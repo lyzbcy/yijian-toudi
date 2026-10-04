@@ -1,0 +1,47 @@
+{
+  "ok": true,
+  "version": "0.5.46",
+  "packaged": true,
+  "platform": "win32",
+  "realApplications": 0,
+  "externalMessages": 0,
+  "native": {
+    "applicationMenuAbsent": true,
+    "menuBarVisible": false,
+    "resizable": true,
+    "minimizable": true,
+    "maximizable": true,
+    "closable": true
+  },
+  "renderer": {
+    "platformClass": true,
+    "logo": "./assets/stickers/mascot.png",
+    "logoLoaded": true,
+    "overlayVisible": true,
+    "titlebarArea": {
+      "x": 0,
+      "y": 0,
+      "width": 1303,
+      "height": 40
+    },
+    "scrollbarWidth": "8px",
+    "workspacePaddingRight": "160px"
+  },
+  "feedback": {
+    "overlayVisible": true,
+    "headerTop": 40,
+    "dragRegion": "drag",
+    "scrollbarWidth": "8px"
+  },
+  "batch": {
+    "overlayVisible": true,
+    "headerHeight": 52,
+    "captionPadding": "148px",
+    "dragRegion": "drag",
+    "titleElided": "ellipsis"
+  },
+  "nativeCaptionButtonsClicked": false,
+  "sourceStatus": "actual-ASAR117-files-matched-to-working-tree",
+  "processExitCode": 0,
+  "isolatedOutputDirectory": true
+}

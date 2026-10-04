@@ -1,0 +1,25 @@
+{
+  "version": "0.5.46",
+  "actualPersonalDevelopmentProcess": true,
+  "before": {
+    "filePresent": true,
+    "strictGeneratedPatternRejected": true,
+    "extension": ".pdf",
+    "hasDirectorySeparators": false
+  },
+  "after": {
+    "attachmentReferencePresent": true,
+    "actualFileResolved": true,
+    "legacyGeneratedPattern": false,
+    "windowsOverlayVisible": true,
+    "selectedStickerLogo": "./assets/stickers/mascot.png",
+    "scrollbarWidth": "8px"
+  },
+  "originalAttachmentReferencePreserved": true,
+  "localFormSavedBeforeRestart": true,
+  "privateValuesPrinted": false,
+  "realOfficialBatchNotAutomaticallyStarted": true,
+  "realApplications": 0,
+  "externalMessages": 0,
+  "rootCause": "Older supported document basename rejected by generated-filename-only validation"
+}

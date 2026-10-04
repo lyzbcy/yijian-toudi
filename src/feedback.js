@@ -1,4 +1,5 @@
 (() => {
+ document.body.classList.toggle('windows-shell',window.oneClick.platform==='win32');
  const $=s=>document.querySelector(s);let metadata=null,sending=false;
  const messages={'feedback-not-configured':'反馈服务尚未配置，请在主窗口设置反馈服务地址。','feedback-outbox-invalid':'本地反馈发送记录异常，文件已保留；请核对记录后继续。','feedback-busy':'正在发送，请稍候。','feedback-id-conflict':'反馈内容已变化，请关闭后重新填写。','feedback-message-required':'请填写备注或真实评价（1～1000字）。','delivery-failed':'服务确认本次未发送成功，请核对配置后重新打开反馈窗口。','delivery-unknown':'尚未取得发送回执。请点“核对回执”，不要重复发送。','feedback-receipt-missing':'没有找到本次回执，请核对服务状态。'};
  function showResult(result){

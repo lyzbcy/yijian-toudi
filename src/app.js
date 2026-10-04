@@ -1,5 +1,6 @@
 (() => {
   'use strict';
+  document.body.classList.toggle('windows-shell', window.oneClick.platform === 'win32');
 
   const pageMeta = {
     jobs: ['JOB BOARD', '招聘项目', '把不同公司的岗位放在一张清单里比较。'],
@@ -10,7 +11,8 @@
     automation: ['AUTOMATION', '自动化中心', '看清每一次自动化执行到了哪里。'],
     connections: ['CONNECTIONS', '公司与邮箱', '连接真实浏览器和 QQ 邮箱。'],
     agent: ['LOCAL API', '连接 AI Agent', '把求职数据安全地开放给本机 Agent。'],
-    settings: ['SETTINGS', '设置', '管理更新、接口与隐私选项。']
+    settings: ['SETTINGS', '设置', '管理更新、接口与隐私选项。'],
+    author: ['ABOUT THE AUTHOR', '关于捞鱼', '一个弱小但有梦想的开发者。']
   };
 
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -1635,7 +1637,13 @@ $('#bossAccountVerifyButton')?.addEventListener('click', (event) => run(event.cu
   updateBossAccounts();
 }));
 
-$('#promoButton').addEventListener('click', () => $('#promoDialog').showModal());
+    $$('#page-author [data-author-qr]').forEach(button => button.addEventListener('click', () => {
+      const image = button.querySelector('img');
+      $('#authorQrTitle').textContent = image.alt;
+      $('#authorQrImage').src = image.getAttribute('src');
+      $('#authorQrImage').alt = image.alt;
+      $('#authorQrDialog').showModal();
+    }));
     $('#workspaceRestartLogin')?.addEventListener('click', () => run($('#workspaceRestartLogin'), async () => {
       await window.oneClick.restartLogin();
       await refreshWorkspaceStatus();

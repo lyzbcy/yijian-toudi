@@ -82,6 +82,19 @@ test('单选项回读返回被选中的语义值，不把“否”误读为“�
   assert.equal(fields[0].value, '否');
 });
 
+test('深层 UD/MTD 输入只识别所属字段标题，组合下拉框保留人工选择', () => {
+  const make = (label, select = false) => ({
+    disabled:false,type:select?'search':'text',value:'',name:'',id:'',placeholder:'',className:'native-input',tagName:'INPUT',parentElement:null,
+    closest(selector){if(selector==='.ud-formily-item, .mtd-form-item')return{querySelector:()=>({textContent:label})};if(selector==='.ud__select, .mtd-select'&&select)return{};return null;},getAttribute:()=>''
+  });
+  const controls=[make('姓名'),make('学校名称'),make('学历',true)];
+  const document={body:{innerText:'基本信息 教育经历'},querySelectorAll:()=>controls,querySelector:()=>null};
+  const fields=vm.runInNewContext(INSPECT_FORM_FIELDS,{document,location:{pathname:'/resume/edit',search:''}});
+  assert.match(fields[0].label,/姓名/);assert.doesNotMatch(fields[0].label,/学校/);
+  assert.match(fields[1].label,/学校名称/);assert.equal(fields[0].readOnly,false);assert.equal(fields[2].readOnly,true);
+  assert.equal(require('../electron/field-matching.cjs').matchField({key:'basic.name',keywords:['姓名']},fields).field.index,0);
+});
+
 test('竞态兜底：首帧残留输入框后跳转登录页，最终仍判定为需要登录', async () => {
   // 复现腾讯校招真站 bug：探测首帧还停在 resumeedit.html 且带 1 个输入框，
   // 随后 SPA 跳到 login.html。旧实现立即按 inputCount 返回导致漏判登录。

@@ -14,11 +14,14 @@ async function poll(read) {
   const root = path.resolve(__dirname, '..');
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'yjt-resume-batch-'));
   const store = new JsonStore(dir); store.init();
+  const legacyAttachment = '旧版中文简历（样本）.pdf';
+  fs.mkdirSync(path.join(dir, 'resumes'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'resumes', legacyAttachment), '%PDF-1.4\nlegacy attachment fixture\n%%EOF');
   store.update(s => { s.meta.onboardingSeen = true; s.settings.kimiBridgeEnabled = false;
     s.settings.autoCheckUpdates = false; s.settings.jobs.recruitType = 'campus';
-    s.resume.basic.name = '离线测试姓名'; return s; });
-  const app = await electron.launch({ args: [root, `--user-data-dir=${dir}`],
-    executablePath: process.env.ELECTRON_EXECUTABLE || undefined,
+    s.resume.basic.name = '离线测试姓名'; s.resume.basic.resumeFile = legacyAttachment; return s; });
+  const app = await electron.launch({ args: [...(process.env.YJT_PACKAGED_EXECUTABLE ? [] : [root]), `--user-data-dir=${dir}`],
+    executablePath: process.env.YJT_PACKAGED_EXECUTABLE || process.env.ELECTRON_EXECUTABLE || undefined,
     env: { ...process.env, YIJIAN_BACKGROUND_TEST: '1', ELECTRON_DISABLE_SECURITY_WARNINGS: 'true' } });
   try {
     // In-memory HTTPS fixtures; production navigation allowlist, partitions,
@@ -29,7 +32,11 @@ async function poll(read) {
       const { createGenericResumeFill } = req('./adapters/generic-resume-fill.cjs');
       for (const a of REGISTRY.filter(a => a.fillResume)) {
         session.fromPartition(`persist:${a.id}`).protocol.handle('https', () => new Response(`<!doctype html><meta charset="utf-8"><style>body{font:18px system-ui;padding:24px;background:#fcfbf8}input{padding:12px;margin:16px;width:75%}</style><h2>${a.name} · 离线回归样本</h2><p>简历编辑（不连接招聘网站）</p><label for="name">姓名</label><input id="name" name="name"><label for="email">邮箱</label><input id="email" type="email"><button>保存样本</button>`, { headers: { 'content-type': 'text/html; charset=utf-8' } }));
-        a.fillResume = createGenericResumeFill(a.id, a.name);
+        const fill = createGenericResumeFill(a.id, a.name);
+        a.fillResume = (resume, options) => {
+          if (!options.attachmentPath?.endsWith('旧版中文简历（样本）.pdf')) throw Error('旧版附件未传入同步引擎');
+          return fill(resume, options);
+        };
       }
     });
     const page = await app.firstWindow();

@@ -60,6 +60,11 @@ jobs:
         run: |
           node test/ui-delivery-layout.cjs
           node test/ui-resume-profiles.cjs
+      - name: Verify standalone author page in actual packaged application
+        run: |
+          APP=$(find release -maxdepth 2 -type d -name '*.app' -print -quit)
+          test -n "$APP"
+          YJT_PACKAGED_EXECUTABLE="$GITHUB_WORKSPACE/$APP/Contents/MacOS/一键投递" YJT_VISIBLE_TEST=1 node test/ui-author-page.cjs
       - name: Verify persisted partial refresh with actual packaged main and UI
         run: |
           APP=$(find release -maxdepth 2 -type d -name '*.app' -print -quit)
@@ -105,6 +110,7 @@ jobs:
             test-output/resume-profiles.json
             test-output/profiles-text-entry.png
             test-output/profiles-failure.png
+            test-output/author-page/**
             test-output/mac-install-upgrade.json
             test-output/mac-install-*.png
             test-output/mac-auto-update.json

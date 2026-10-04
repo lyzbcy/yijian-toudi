@@ -1,0 +1,43 @@
+{
+  "version": "0.5.45",
+  "actualPackagedApp": true,
+  "settingsEntry": {
+    "label": "关于捞鱼 ↗",
+    "href": "https://lyzbcy.github.io/",
+    "external": true
+  },
+  "authorPageExists": false,
+  "authorNavigationExists": false,
+  "existingAuthorIsModal": true,
+  "qrs": [
+    {
+      "src": "./assets/qq-group.jpg",
+      "alt": "粉丝群二维码",
+      "naturalWidth": 1284,
+      "naturalHeight": 2283,
+      "width": 176.6666717529297,
+      "height": 176.6666717529297
+    },
+    {
+      "src": "./assets/reward-qr.jpg",
+      "alt": "赞赏二维码",
+      "naturalWidth": 828,
+      "naturalHeight": 1124,
+      "width": 176.6666717529297,
+      "height": 176.6666717529297
+    },
+    {
+      "src": "./assets/sticker-qr.png",
+      "alt": "微信表情包二维码",
+      "naturalWidth": 444,
+      "naturalHeight": 444,
+      "width": 176.6666717529297,
+      "height": 176.6666717529297
+    }
+  ],
+  "realApplications": 0,
+  "externalMessages": 0,
+  "externalLinksOpened": 0,
+  "requirement": "作者独立页内呈现、真实入口无外跳冗余",
+  "requirementSatisfied": false
+}

@@ -1,0 +1,120 @@
+{
+  "ok": true,
+  "version": "0.5.46",
+  "actualPackagedPixels": true,
+  "decoder": "ZXing-C++ 3.1.1 with OpenCV image reader",
+  "sourceImages": 3,
+  "enlargedImages": 9,
+  "allPayloadHashesMatched": true,
+  "phoneScanOrTargetAvailabilityVerified": false,
+  "results": [
+    {
+      "file": "qq-group.jpg",
+      "dimensions": [
+        1284,
+        2283
+      ],
+      "decoded": true,
+      "payloadSha256": "ff53f154e29523a4a81118d90319c98578c7d166f815069c67f361fa9077b710"
+    },
+    {
+      "file": "reward-qr.jpg",
+      "dimensions": [
+        828,
+        1124
+      ],
+      "decoded": true,
+      "payloadSha256": "e5cf167e076cd4d46cf7db51ee55e83dd19e037c4b45f372c0aafbae909653cf"
+    },
+    {
+      "file": "sticker-qr.png",
+      "dimensions": [
+        444,
+        444
+      ],
+      "decoded": true,
+      "payloadSha256": "8d40bdecead52d42d4682fb6327011c1eea03434ee8aec11a458db6a2575fb42"
+    },
+    {
+      "file": "enlarged-1100-0.png",
+      "dimensions": [
+        1110,
+        945
+      ],
+      "decoded": true,
+      "payloadSha256": "ff53f154e29523a4a81118d90319c98578c7d166f815069c67f361fa9077b710"
+    },
+    {
+      "file": "enlarged-1100-1.png",
+      "dimensions": [
+        1110,
+        945
+      ],
+      "decoded": true,
+      "payloadSha256": "e5cf167e076cd4d46cf7db51ee55e83dd19e037c4b45f372c0aafbae909653cf"
+    },
+    {
+      "file": "enlarged-1100-2.png",
+      "dimensions": [
+        1110,
+        945
+      ],
+      "decoded": true,
+      "payloadSha256": "8d40bdecead52d42d4682fb6327011c1eea03434ee8aec11a458db6a2575fb42"
+    },
+    {
+      "file": "enlarged-1280-0.png",
+      "dimensions": [
+        1110,
+        945
+      ],
+      "decoded": true,
+      "payloadSha256": "ff53f154e29523a4a81118d90319c98578c7d166f815069c67f361fa9077b710"
+    },
+    {
+      "file": "enlarged-1280-1.png",
+      "dimensions": [
+        1110,
+        945
+      ],
+      "decoded": true,
+      "payloadSha256": "e5cf167e076cd4d46cf7db51ee55e83dd19e037c4b45f372c0aafbae909653cf"
+    },
+    {
+      "file": "enlarged-1280-2.png",
+      "dimensions": [
+        1110,
+        945
+      ],
+      "decoded": true,
+      "payloadSha256": "8d40bdecead52d42d4682fb6327011c1eea03434ee8aec11a458db6a2575fb42"
+    },
+    {
+      "file": "enlarged-1440-0.png",
+      "dimensions": [
+        1110,
+        945
+      ],
+      "decoded": true,
+      "payloadSha256": "ff53f154e29523a4a81118d90319c98578c7d166f815069c67f361fa9077b710"
+    },
+    {
+      "file": "enlarged-1440-1.png",
+      "dimensions": [
+        1110,
+        945
+      ],
+      "decoded": true,
+      "payloadSha256": "e5cf167e076cd4d46cf7db51ee55e83dd19e037c4b45f372c0aafbae909653cf"
+    },
+    {
+      "file": "enlarged-1440-2.png",
+      "dimensions": [
+        1110,
+        945
+      ],
+      "decoded": true,
+      "payloadSha256": "8d40bdecead52d42d4682fb6327011c1eea03434ee8aec11a458db6a2575fb42"
+    }
+  ]
+}

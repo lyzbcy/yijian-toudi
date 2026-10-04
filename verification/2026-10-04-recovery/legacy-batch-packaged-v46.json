@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "platformCount": 7,
+  "concurrency": [
+    4,
+    6
+  ],
+  "realNativeWindows": true,
+  "genericFieldReadback": true,
+  "queueAdvance": true,
+  "historyPersisted": true,
+  "falseSaved": 0,
+  "externalRequests": 0,
+  "offlineFixture": true,
+  "version": "0.5.46",
+  "packaged": true,
+  "sourceStatus": "actual-ASAR117-files-matched-to-working-tree",
+  "processExitCode": 0
+}
