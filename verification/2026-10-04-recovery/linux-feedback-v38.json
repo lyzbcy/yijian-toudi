@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "version": "0.5.38",
+  "platform": "linux",
+  "systemdTemplateValidated": true,
+  "caddyTemplateValidated": true,
+  "composeBootAndRestart": true,
+  "persistentUnknownReceipt": true,
+  "readonlyContainer": true,
+  "realPublicTLS": false,
+  "realWecom": false,
+  "systemdRuntime": false
+}
