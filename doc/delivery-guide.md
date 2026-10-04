@@ -1,6 +1,6 @@
 # 一键投递候选体验与录制准备
 
-适用候选：v0.5.39 Windows x64。此文供维护者验收/录制准备，当前还未正式发布，不应标为完整交付。macOS 需单独完成验收。
+适用候选：v0.5.39 Windows x64 与 macOS arm64/Intel。此文供维护者验收/录制准备，当前还未正式发布，不应标为完整交付。Mac原生构建运行已通过，用户信任、安装和升级仍需验收。
 
 ## 安装和第一次使用
 
@@ -46,3 +46,5 @@
 实际候选视频为 `release/yijian-toudi-preview-0.5.39.mp4`（116.2秒）。2026-10-04六家匿名官网UI刷新完成4158岗位；样本简历与本地购物车、遮罩Agent页均实际录制，无申请/外部消息。中段55–304.32秒刷新等待加速8倍，其余正常速度，候选/样本/未发布标注贯穿。原始WebM与完整正常速度MP4保留，独立8帧审阅不等于完整视频验收，101秒英文操作提示保留。报告见 `verification/2026-10-04-recovery/demo-candidate-v39.json` 与 `demo-observer-v39.json`。
 
 Windows、Mac arm64/Intel、Skill与反馈服务7个候选包及SHA-256汇总在 `delivery-manifest-v39.json`；草稿资产用于维护者跨设备备份，正式公众升级仍待验收。
+
+维护者草稿备份：[v0.5.39候选](https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-590242610188421cf24b)，须有仓库访问权限；18项附件全部取回核对一致。该草稿不属于正式公众下载或自动更新。

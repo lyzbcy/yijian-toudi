@@ -91,3 +91,5 @@ Mac arm64真实运行37183937648成功：DMG挂载复制、ZIP解压与源码审
 完成实际可见Windows候选录像：样本简历、新建/重命名、保存/进程冷重开，实际六家匿名官网UI刷新完成4158岗位（京东974，比先前基线少1，真实动态结果），筛选与本地购物车、遮罩Agent页。无真实申请/消息。116.2秒MP4仅将原始55–304.32秒刷新等待加速8倍，页脚标注候选/样本/加速/未发布；原始两个WebM和334.32秒完整MP4保留。根与独立观察员均看8张抽帧，未声称完整播放检查；101秒英文操作提示保留。录制/审阅报告demo-candidate-v39与demo-observer-v39，completeDemo仍false。
 
 7个软件/配套payload及精确SHA校验行已逐字节核对，双架构Mac采用最终e7bb45f运行37187658202的原生字节。汇总delivery-manifest-v39保留首次后台超时、观察协调超时、Intel测试隔离失败和38原生prompt产品失败；最新352单测与19套后台当时351单测分列。完整目标继续active。
+
+39云端草稿已创建并全部取回：https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-590242610188421cf24b，target e7bb45fa08e02fa1a2847d45728b1823b3a789ef。18项附件逐字节/hash与封存本机文件一致（7 payload+7 checksum+manifest+视频/checksum+候选说明）；两个配套归档再次独立验证11文件/version，Windows/Mac arm64/x64精确资产选择仅使用假定正式URL检查schema，实际草稿被更新器拒绝，不冒充正式升级。公网latest仍v0.3.1。完整目标未完成，原设备聊天/未同步状态未迁移。回读证据cloud-backup-v39.json。
