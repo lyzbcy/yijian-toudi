@@ -5,6 +5,7 @@ const fs = require('node:fs'), path = require('node:path'), assert = require('no
 const { _electron: electron } = require('playwright-core');
 const { JsonStore } = require('../electron/store.cjs');
 const root = path.resolve(__dirname, '..'), version = require('../package.json').version;
+fs.mkdirSync(path.join(root, '.local-data'), { recursive: true });
 const output = fs.mkdtempSync(path.join(root, '.local-data', 'job-refresh-ui-' + version + '-'));
 const profile = path.join(output, 'profile'), store = new JsonStore(profile); store.init();
 const cached = companyId => ({ id: companyId + '-cached', companyId, title: '旧岗位（样本）',

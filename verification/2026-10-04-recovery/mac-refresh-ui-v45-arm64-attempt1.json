@@ -1,0 +1,25 @@
+{
+  "version": "0.5.45",
+  "sourceCommit": "45f1087b310cb188753426ce1c3b6902af3b37bb",
+  "workflowRun": 37204738391,
+  "architecture": "arm64",
+  "otherArchitecture": {
+    "architecture": "x64",
+    "conclusion": "failure",
+    "sameMissingOutputParentConfirmedByWorkflowFailedLog": true,
+    "applicationStartedByFailedTest": false
+  },
+  "ok": false,
+  "failedStep": "Verify persisted partial refresh with actual packaged main and UI",
+  "error": "ENOENT: no such file or directory, mkdtemp '/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/job-refresh-ui-0.5.45-XXXXXX'",
+  "stackLocation": "test/ui-job-refresh-status.cjs:8:19",
+  "rootCauseProven": true,
+  "cause": "New test used mkdtemp inside .local-data before creating that parent on a clean CI checkout; Windows working tree already had the ignored directory",
+  "applicationStartedByFailedTest": false,
+  "completedBeforeFailure": ["Native arm64 build and bundle/container/source audit", "Actual packaged layout", "Actual packaged profile dialogs"],
+  "notExecutedAfterFailure": ["Applications install/manual upgrade", "Native automatic update"],
+  "correction": "Create the test output parent recursively before mkdtemp; no product runtime change",
+  "realApplications": 0,
+  "externalMessages": 0,
+  "fullGoalComplete": false
+}

@@ -219,3 +219,7 @@ cbc3e2c的自动Mac复验37201486248最终两架构success；此前14b4ff7的同
 较早79c7942同源44的Mac复验37202565684：Intel成功，arm64在手动升级后新建方向立即断言数量1≠2，后续自动更新跳过。输入框关闭本身早于两个异步保存/新增IPC和DOM刷新，测试新增等待实际存储/DOM均2及失败stack/数量截图；首次具体根因仍未证明。原失败mac-install-upgrade-v44-arm64-repeat-attempt1.json保留。封存Mac手动安装37202565658成功；不以复验改写原44原生37198787611证据或资产。
 
 45本机证据见local-verification-v45.json，Mac新专项/原生与Linux服务尚待运行，45云候选尚未创建。旧44所有资产/录像/失败证据原字节保留。完整账号、公网反馈/更新/云Skill、发行信任、完整视频与代表性质量门槛仍缺，goal保持active。
+
+45源45f1087已推送。Linux37204738346独立归档实际Compose/systemd/Caddy本地CA HTTPS通过，systemd6组、HTTPS3组，实际停服24ms，无新通知，不等于生产公网。实际45包读取44真实partial录像状态的隔离副本：3694原岗位和刷新任务ID保留，最近尝试/尚无完整成功记录正确显示，岗位页持续显示原百度/字节失败详情；原profile字节/hash不变。截图已实际查看，报告partial-refresh-visible-time-v45.json。
+
+Mac45首轮37204738391的arm64原生包/资源签名/布局/方向输入通过，新刷新专项在启动应用前mkdtemp报ENOENT：干净CI的.local-data父目录未创建，本机已有忽略目录掩盖了测试前置条件缺口。原因由实际job日志和堆栈确定，mac-refresh-ui-v45-arm64-attempt1.json保留；添加mkdirSync recursive仅修测试输出初始化，产品运行文件和Windows安装包不变，同一Windows专项6组复验通过，Mac两架构重新验证待运行。
