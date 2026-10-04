@@ -9,6 +9,7 @@ on:
       - 'electron/diagnostics.cjs'
       - 'electron/wecom-notify.cjs'
       - 'scripts/package-feedback.cjs'
+      - 'test/feedback-systemd-runtime.cjs'
       - 'package.json'
       - '.github/workflows/candidate-feedback.yml'
   workflow_dispatch:
@@ -38,6 +39,8 @@ jobs:
           sed "s|/usr/bin/node|$(command -v node)|" support/deploy/yijian-feedback.service > .local-data/yijian-feedback.service
           systemd-analyze verify .local-data/yijian-feedback.service
           docker run --rm -v "$PWD/support/deploy/Caddyfile.example:/etc/caddy/Caddyfile:ro" caddy:2 caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+      - name: Verify actual systemd lifecycle with persistent unknown receipt
+        run: node test/feedback-systemd-runtime.cjs .local-data/linux-deploy/yijian-toudi-feedback-server .local-data/systemd-runtime.json
       - name: Build and start isolated Linux Compose deployment
         working-directory: .local-data/linux-deploy/yijian-toudi-feedback-server/support/deploy
         run: |
@@ -69,6 +72,7 @@ jobs:
             .local-data/linux-deploy/yijian-toudi-feedback-server/support/deploy/linux-candidate.json
             .local-data/linux-deploy/yijian-toudi-feedback-server/support/deploy/health.json
             .local-data/linux-deploy/yijian-toudi-feedback-server/support/deploy/receipt.json
+            .local-data/systemd-runtime.json
       - name: Stop only test deployment
         if: always()
         run: |
