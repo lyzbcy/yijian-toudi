@@ -49,6 +49,10 @@ jobs:
           pnpm pack:skill
           pnpm pack:feedback
       - name: Build native macOS DMG and ZIP
+        env:
+          # Ad-hoc only: no private certificate or publishing credentials.
+          CSC_FOR_PULL_REQUEST: 'true'
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
         run: pnpm dist:mac
       - name: Audit actual macOS bundle and native artifacts
         run: node scripts/verify-mac-candidate.cjs
