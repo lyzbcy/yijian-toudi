@@ -2,7 +2,7 @@
   "at": "2026-10-04T08:32:24.268Z",
   "version": "0.5.39",
   "releaseDraft": true,
-  "releaseUrl": "https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-590242610188421cf24b",
+  "releaseUrl": "https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-70ee233573d7e31fa8b1",
   "targetCommitish": "e7bb45fa08e02fa1a2847d45728b1823b3a789ef",
   "assetCount": 18,
   "verifiedAssets": [
@@ -141,5 +141,18 @@
   },
   "productionUpdateProven": false,
   "originalDeviceChatRecovered": false,
-  "fullGoalComplete": false
+  "fullGoalComplete": false,
+  "releaseUrlHistory": [
+    {
+      "url": "https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-590242610188421cf24b",
+      "at": "2026-10-04T08:32:24.268Z",
+      "scope": "binary-readback-before-notes-edit"
+    }
+  ],
+  "notesEditMetadataRevalidation": {
+    "at": "2026-10-04T08:48:35.854Z",
+    "targetCommitish": "e7bb45fa08e02fa1a2847d45728b1823b3a789ef",
+    "unchangedAssetDigests": 18,
+    "reason": "GitHub regenerated untagged draft URL after notes-only edit; no binary replaced"
+  }
 }

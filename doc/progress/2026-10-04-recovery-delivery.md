@@ -101,3 +101,5 @@ Mac arm64真实运行37183937648成功：DMG挂载复制、ZIP解压与源码审
 37189749038的Caddy首轮失败为测试客户端Node24 lookup忽略options.all，产生Invalid IP address: undefined，失败报告linux-caddy-v39-attempt1保留；本机Node24真实回环HTTP修复回调验证通过。最终37189853837（5b4035a）systemd再次6组通过，停止31ms；实际Caddy容器使用原反代/header模板及隔离本地CA运行HTTPS，显式信任CA访问健康成功、默认信任拒绝测试CA；真实诊断响应保留text/plain/nosniff/noindex/no-store；11次伪造X-Forwarded-For仍按真实来源共用10次限额，第11次429。Docker启动重启持久化也通过。
 
 封存39反馈归档11文件与当前源仍一致，SHA90d098f55f096cc79a7e95de0f9bde3fed44f8345ebf7ad70682249aa7581778，未改产品/配套归档或18项云资产。追加反馈部署证据feedback-deployment-supplement-v39；旧delivery-manifest/cloud-backup仍保留原封存时间的事实，不改写历史。实际本地TLS不等于生产公网证书、异机链接或企微送达；生产主机/域名/密钥及默认App服务地址、备份负载现场仍缺。当前goal继续active。
+
+更新草稿说明后GitHub重新生成untagged链接，当前39草稿URL为https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-70ee233573d7e31fa8b1；target仍e7bb45fa08e02fa1a2847d45728b1823b3a789ef，18项远端名称/size/digest与已下载回读hash再次比对全部一致。旧链接和回读时间保留在cloud-backup-v39的历史中，不再通过说明编辑反复变更草稿。
