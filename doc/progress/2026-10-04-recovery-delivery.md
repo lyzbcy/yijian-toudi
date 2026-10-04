@@ -123,3 +123,11 @@ Mac自动安装更新目前代码只允许Windows，仍未实现；资料手动�
 Linux37191556368实际Compose/systemd/Caddy本地CA HTTPS成功；systemd41ms停止，SIGKILL恢复/未知收据保留；HTTPS默认拒绝不信任CA，伪造XFF11次按真实来源10次允许第11次429。无新外部消息。未证明公网TLS/企微/异机日志链接。7个封存40包hash与精确checksum已核对，双配套11文件归档不覆盖；delivery-manifest-v40保留所有失败和未完门槛。39局部视频未重标40，完整目标仍active。
 
 40云端草稿已创建并全部取回：https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-e379eb0f895439dbdcec，target 4379745f2c020818ed78e6068f03ccf72ddc9e18。16项附件逐字节/hash与封存本机文件一致（7 payload+7 checksum+manifest+候选说明）；两个配套归档再次独立验证11文件/version，Windows/Mac arm64/x64精确资产选择仅使用假定正式URL检查schema，实际草稿被更新器拒绝，不冒充正式升级。公网latest仍v0.3.1。完整目标未完成，原设备聊天/未同步状态未迁移。回读证据cloud-backup-v40.json。
+
+## 41 Mac自动更新实现（原生验收待运行）
+
+40草稿16项资产已全部取回字节/hash一致，Skill/反馈各11文件再次核对；实际草稿被更新器拒绝，公网latest仍v0.3.1。当前草稿https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-e379eb0f895439dbdcec，源4379745；云备份证据cloud-backup-v40，代码/报告已提交cb9f60f。39草稿和视频保留原版。
+
+41新增Mac可写Applications安装判断与实际IPC安装、ZIP中央目录/软链接预检、严格资源签名/版本/架构核验，同级旧包备份及ready/commit/abort助手，不提升权限或移除quarantine。主进程保存资料和Cookie，ack后退出；失败恢复旧包，open重启同一用户目录并校验可见新版本nonce。当前356单测通过，Windows上纯Mac路径判断第一次误报已修正为POSIX策略，失败保留mac-auto-update-v41-unit-attempt1。
+
+原生测试以真实当前App加独立构建的下一版fixture ZIP走实际下载/IPC/helper/open，另验abort和测试worker注入替换后失败的真实回滚。版本/网络/失败注入均明示fixture，不算公众较新版更新。当前尚未运行，不凭单测称Mac自动更新完成。原招聘账号、公网反馈/真实企微/异机日志、正式分发更新/云Skill、完整视频与总体质量证据继续保留。

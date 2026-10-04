@@ -1,0 +1,10 @@
+{
+  "version": "0.5.41-development",
+  "ok": false,
+  "tests": 12,
+  "passed": 11,
+  "failed": 1,
+  "failure": "Mac installation location pure-function test returned null on Windows because host path.resolve used Windows separators for supplied Darwin paths",
+  "fix": "Use path.posix for the Darwin installation-location policy; retain native filesystem paths for actual staged files",
+  "nativeMacRuntimeProven": false
+}

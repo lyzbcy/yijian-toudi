@@ -29,7 +29,7 @@ jobs:
       matrix:
         runner: [macos-latest, macos-15-intel]
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 25
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
@@ -72,6 +72,11 @@ jobs:
           ln -s "$GITHUB_WORKSPACE/node_modules" .local-data/mac-baseline-source/node_modules
           pnpm exec electron-builder --projectDir .local-data/mac-baseline-source --mac dir --config.directories.output="$GITHUB_WORKSPACE/.local-data/mac-baseline-build"
           node test/macos-install-upgrade.cjs . .local-data/mac-baseline-source .local-data/mac-baseline-build test-output/mac-candidate.json
+      - name: Verify real native automatic update, abort and injected rollback
+        env:
+          CSC_FOR_PULL_REQUEST: 'true'
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: node test/macos-auto-update.cjs
       - name: Save native evidence and candidate artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -86,6 +91,8 @@ jobs:
             test-output/profiles-text-entry.png
             test-output/mac-install-upgrade.json
             test-output/mac-install-*.png
+            test-output/mac-auto-update.json
+            test-output/mac-auto-update-*.png
             release/*.dmg
             release/*.zip
             release/*.sha256

@@ -3,7 +3,11 @@
 负责人：项目维护 Agent
 最后更新：2026-10-04
 
-## 当前接续候选 v0.5.40（未正式发布）
+## 当前开发候选 v0.5.41（原生验收待运行）
+
+Mac自动安装更新已加入实际IPC入口、ZIP链接预检、完整资源签名与同级备份事务、ready/commit/abort、失败恢复和可见重启确认；仅在已安装且可写的Applications位置启用。当前356单测通过，原生两架构自动安装/重启/失败回滚尚未运行，不记为交付完成。第一次Windows路径策略测试误报保留mac-auto-update-v41-unit-attempt1。全部原目标继续active。
+
+## 封存 v0.5.40（未正式发布）
 
 完整19套后台与352单测通过；Windows默认NSIS首装6组、39→40真实IPC/helper/安装/可见重启及资料保留两种桌面偏好各8组通过。Mac arm64/Intel实际原生构建、完整ad-hoc资源签名四处严格核验、可见UI及输入专项通过；Applications CLI首装/38→40手动替换/冷重开/数据保留各9组通过，37191556375成功。quarantine下Gatekeeper实际拒绝，Developer ID/公证/用户信任及Mac自动更新仍缺。Linux37191556368真实systemd/Caddy本地CA/Compose运行通过，公网服务未验收。
 

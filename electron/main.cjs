@@ -36,6 +36,7 @@ const { BossBatchController } = require('./boss-control.cjs');
 const { AccountBrowserManager } = require('./account-browser.cjs');
 const { createDesktopUpdater } = require('./desktop-updater.cjs');
 const windowsUpdate=require('./windows-update.cjs');
+const macosUpdate=require('./macos-update.cjs');
 const {diagnosticEntries}=require('./diagnostics.cjs');
 const {shouldPrompt,migratePromotion,dismissPromotion}=require('./promo-policy.cjs');
 const {endpointUrl,payloadForFeedback,createFeedbackClient}=require('./feedback.cjs');
@@ -66,9 +67,11 @@ function stopKimiBridge() {
 
 let desktopUpdater,stagedDesktopUpdate=null,installInProgress=false;
 const updateDirectory=()=>path.join(app.getPath('userData'),'desktop-updates');
+const installationContext=()=>({executable:process.execPath,current:app.getVersion(),platform:process.platform,arch:process.arch,packaged:app.isPackaged,userData:app.getPath('userData')});
+const desktopInstaller=()=>process.platform==='darwin'?macosUpdate:windowsUpdate;
 async function canInstallDesktopUpdate(){
- if(process.platform!=='win32'||process.arch!=='x64'||!app.isPackaged||localPreview||backgroundTest)return false;
- try{return windowsUpdate.installationMatches(await windowsUpdate.readInstallation(),{executable:process.execPath,current:app.getVersion(),platform:process.platform,arch:process.arch,packaged:app.isPackaged,userData:app.getPath('userData')});}catch{return false;}
+ if(!app.isPackaged||localPreview||backgroundTest)return false;
+ try{if(process.platform==='darwin'){await macosUpdate.readInstallation(installationContext());return true;}return windowsUpdate.installationMatches(await windowsUpdate.readInstallation(),installationContext());}catch{return false;}
 }
 function getDesktopUpdater(){
  if(!desktopUpdater)desktopUpdater=createDesktopUpdater({store,directory:path.join(app.getPath('userData'),'desktop-updates'),fetchFn:(...args)=>net.fetch(...args),current:app.getVersion(),platform:process.platform,arch:process.arch,onProgress:progress=>{if(window&&!window.isDestroyed())window.webContents.send('update:progress',progress);}});
@@ -283,8 +286,8 @@ function createWindow() {
     }
   });
   window.webContents.once('did-finish-load', () => {
-    if (process.platform !== 'win32' || !app.isPackaged || backgroundTest || localPreview) return;
-    void windowsUpdate.confirmUpdateRestart(updateDirectory(), {
+    if (!['win32','darwin'].includes(process.platform) || !app.isPackaged || backgroundTest || localPreview) return;
+    void desktopInstaller().confirmUpdateRestart(updateDirectory(), {
       version: app.getVersion(), executable: process.execPath, visible: window.isVisible()
     }).then(result => {
       if (result) logger.info('[desktop-update]', `Restart confirmed: ${result.runningVersion}`);
@@ -1289,11 +1292,12 @@ app.whenReady().then(async () => {
     try {
       if(input.confirmed!==true||input.version!==stagedDesktopUpdate?.version)throw Error('update-confirmation-required');
       if(loginManager.isActive()||resumeBatch?.isActive()||bossBatchController?.status().running)throw Error('finish-current-workspace-before-update');
-      if(!await canInstallDesktopUpdate())throw Error('installed-windows-version-required');
-      const staged=await windowsUpdate.validateStagedUpdate(stagedDesktopUpdate,{directory:updateDirectory(),current:app.getVersion()});
-      const record=await windowsUpdate.readInstallation();
+      if(!await canInstallDesktopUpdate())throw Error('installed-writable-version-required');
+      const installer=desktopInstaller();
+      const staged=await installer.validateStagedUpdate(stagedDesktopUpdate,{directory:updateDirectory(),current:app.getVersion(),arch:process.arch});
+      const record=await installer.readInstallation(installationContext());
       window.webContents.send('update:progress',{phase:'preparing',percent:100});
-      handoff=await windowsUpdate.launchUpdateHelper({pid:process.pid,version:staged.version,oldVersion:app.getVersion(),root:record.root,oldExe:process.execPath,userData:app.getPath('userData'),file:staged.file,sha256:staged.sha256,desktop:record.desktop},updateDirectory());
+      handoff=await installer.launchUpdateHelper({pid:process.pid,version:staged.version,oldVersion:app.getVersion(),root:record.root,oldExe:process.execPath,userData:app.getPath('userData'),file:staged.file,sha256:staged.sha256,desktop:record.desktop,arch:process.arch},updateDirectory());
       store.flush();await require('electron').session.defaultSession.cookies.flushStore();
       await handoff.commit();committed=true;
       window.webContents.send('update:progress',{phase:'installing',percent:100});
