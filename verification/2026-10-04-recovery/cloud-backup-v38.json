@@ -2,7 +2,7 @@
   "at": "2026-10-04T07:13:51.327Z",
   "version": "0.5.38",
   "releaseDraft": true,
-  "releaseUrl": "https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-790352050ba76de7e32c",
+  "releaseUrl": "https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-7cdebd01064e5d0c33f7",
   "assetCount": 14,
   "verifiedBinaryAssets": [
     {
@@ -34,5 +34,14 @@
   "canonicalMacChecksumAndAssetSelection": true,
   "productionUpdateProven": false,
   "retainedPriorMetadataAssets": 3,
-  "fullGoalComplete": false
+  "fullGoalComplete": false,
+  "initialReleaseUrl": "https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-790352050ba76de7e32c",
+  "targetCommitish": "b32bb9e1d39142512847ffce99273acc36f45738",
+  "canonicalMacBuildConfirmation": {
+    "runId": 37185204243,
+    "conclusion": "success",
+    "headSha": "b32bb9e1d39142512847ffce99273acc36f45738",
+    "status": "completed",
+    "url": "https://github.com/lyzbcy/yijian-toudi/actions/runs/37185204243"
+  }
 }
