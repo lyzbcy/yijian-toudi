@@ -105,7 +105,7 @@ const INSPECT_FORM_FIELDS = `(() => {
     index,
     jdLocator: jdContext(control),
     baiduLocator: baiduContext(control),
-    readOnly: Boolean(control.readOnly || (baiduResume&&!baiduContext(control)) || (baiduContext(control)&&(baiduContext(control).hidden||!baiduContext(control).key||baiduContext(control).widgetKind!=='text')) || control.closest('.ud__select, .mtd-select') || (jdContext(control)&&control.matches('.ant-select-search__field'))),
+    readOnly: Boolean(control.readOnly || (baiduResume&&!baiduContext(control)) || (baiduContext(control)&&(baiduContext(control).hidden||!baiduContext(control).key||baiduContext(control).widgetKind!=='text')) || control.closest('.ud__select, .mtd-select') || control.closest('.atsx-select, .atsx-date-picker, .resumeEditForm-hiddenField') || (jdContext(control)&&control.matches('.ant-select-search__field'))),
     section: sectionOf(control),
     label: describe(control).slice(0, 240),
     type: control.tagName.toLowerCase() + (control.type ? ':' + control.type : ''),

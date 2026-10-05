@@ -1,0 +1,80 @@
+{
+  "ok": true,
+  "scope": "Native ARM and Intel build/runtime/CLI-install/sample-update; actual packaged state revision regression; no public distribution proof",
+  "version": "0.5.54",
+  "nativeRun": 37244297017,
+  "sourceCommit": "391c48dabf84532f5ef7d20dbda50fc54b324ff2",
+  "sourceExtractedFromExactCommit": true,
+  "comparisonTextNormalization": "CRLF to LF in extracted Git text only; binary exact",
+  "reports": [
+    {
+      "architecture": "arm64",
+      "artifacts": [
+        {
+          "name": "yijian-toudi-0.5.54-arm64.dmg",
+          "bytes": 126471721,
+          "sha256": "90eb567cda9d521e02d61fcdab081c24f24ab022a454a4156821253dca7b639a"
+        },
+        {
+          "name": "yijian-toudi-0.5.54-arm64.zip",
+          "bytes": 125319211,
+          "sha256": "81ab27e7ca403894eccde873dbab52c695f4aa8372d705a6416f91dd330eeb2a"
+        }
+      ],
+      "audit": {
+        "version": "0.5.54",
+        "ownFilesMatched": 127,
+        "asarEntries": 1152,
+        "noPrivateDataFiles": true,
+        "noKnownKeyPatterns": true
+      },
+      "installationOk": true,
+      "manualChecks": 9,
+      "automaticUpdateOk": true,
+      "automaticChecks": 10,
+      "profileChecks": 6,
+      "refreshChecks": 6,
+      "packagedStateRevisionChecks": 7,
+      "adHocSignatureVerified": true,
+      "developerID": false,
+      "notarized": false,
+      "officialPublicUpdateProven": false
+    },
+    {
+      "architecture": "x64",
+      "artifacts": [
+        {
+          "name": "yijian-toudi-0.5.54-x64.dmg",
+          "bytes": 131201041,
+          "sha256": "b52185e296fb4527ff210e827e135e5e38d8bde1c9390ccf521ee9da447b4d06"
+        },
+        {
+          "name": "yijian-toudi-0.5.54-x64.zip",
+          "bytes": 130080876,
+          "sha256": "6fb9e927d59ce4ed5a72af5250ceea1138f4ca3a4240cfac373c838c86577f41"
+        }
+      ],
+      "audit": {
+        "version": "0.5.54",
+        "ownFilesMatched": 127,
+        "asarEntries": 1152,
+        "noPrivateDataFiles": true,
+        "noKnownKeyPatterns": true
+      },
+      "installationOk": true,
+      "manualChecks": 9,
+      "automaticUpdateOk": true,
+      "automaticChecks": 10,
+      "profileChecks": 6,
+      "refreshChecks": 6,
+      "packagedStateRevisionChecks": 7,
+      "adHocSignatureVerified": true,
+      "developerID": false,
+      "notarized": false,
+      "officialPublicUpdateProven": false
+    }
+  ],
+  "completeBothArchitectureNativeCandidateAcceptance": true,
+  "originalMac53FailureRetained": "mac-install-upgrade-v53-x64-attempt1.json",
+  "exactOriginalMac53FailureCauseProven": false
+}

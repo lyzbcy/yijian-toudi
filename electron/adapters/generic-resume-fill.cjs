@@ -128,6 +128,11 @@ function buildExecuteFieldPlanScript(fieldPlan) {
         control = candidates.length === 1 ? candidates[0] : null;
       }
       if (!control) return { key: item.key, written: false, observed: '', error: 'control-missing' };
+      // ATSX renders search/date widgets and internal fields as text inputs.
+      // Recheck after planning so a stale locator cannot write their DOM alone.
+      if (control.readOnly || control.closest?.('.atsx-select, .atsx-date-picker, .resumeEditForm-hiddenField')) {
+        return { key: item.key, written: false, observed: '', error: 'unsupported-control' };
+      }
       const value = String(item.value ?? '');
       try {
         if (control.type === 'checkbox' || control.type === 'radio') {

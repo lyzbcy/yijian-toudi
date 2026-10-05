@@ -44,3 +44,5 @@ description: 操作一键投递应用的本地 Agent API，查询岗位与投递
 `status.requiresReview=true` 时停止日程，先向用户展示 stopReason、runId 与 pending；不得自动清除。用户明确完成复核后，可 POST `/v1/boss/batch/resolve`，body 为 `{"runId":"当前状态中的ID","action":"acknowledge-and-skip-unknown"}`。该动作只解除暂停，未知公司继续跳过、不计成功、不自动启动；后续启动是独立动作。`running=true, stopping=true` 表示旧任务仍在收尾，不启动新任务。
 
 `scripts/daily-boss.cjs` 是零依赖的定时触发器：验证版本、账号、目标上限、空闲状态和当日防重后才调用启动 API。正式运行需要 `YJTD_API_TOKEN`；可选 `YJTD_BASE_URL`、`YJTD_ACCOUNT_ID`、`YJTD_TARGET`、`YJTD_STATE_DIR`、`YJTD_DRY_RUN=1`。它只提交一次任务，不代表已投出目标笔数；后续状态由应用和监控流程确认。
+
+ATSX学校搜索/日期展示/隐藏数据输入不走通用文本写入；如待人工核对，不要把搜索框文字相等当选择目录或保存成功。

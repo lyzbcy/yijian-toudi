@@ -1,0 +1,15 @@
+{
+  "ok": false,
+  "version": "0.5.54",
+  "phase": "draft-metadata-read-before-upload",
+  "expectedMatches": 1,
+  "actualMatches": 0,
+  "extraQueryParameterUsed": true,
+  "sameDraftExistsOnCli": true,
+  "plainReleaseListAndExactIdFoundDraft": true,
+  "exactReleaseId": 403255081,
+  "rootCauseProven": false,
+  "retrySameDraft": true,
+  "successfulRetry": "cloud-backup-v54.json",
+  "noDuplicateReleaseCreated": true
+}

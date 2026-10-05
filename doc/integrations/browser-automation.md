@@ -68,3 +68,9 @@
 日期仅接受真实合法YYYY-MM-DD和正序范围，不把月份或至今编成具体日。ElDatePicker和内部ElInput共享根，需核对外层picker模型；隐藏/未聚焦窗口原生focus可不触发focus事件，若自身picker未初始化，只向这个输入补发focus事件，等待所属picker再输入，Escape关闭，失败恢复原DOM/模型。合成精确日实站隔离SDK输入后模型相等且原值已恢复，不把合成日期当本人事实。
 
 真实隔离SDK29控件最终一致、35来源事实人工、0不一致/0失败，26文本DOM、24个可检查文本模型、学校/学历模型相等；132无关控件保留，14个精度不足日期人工，本次未补组，0保存/提交点击。首次学校被学历动画阻挡及三次日期模型失败保留。24项Chromium边界回归通过，不代替官网保存。证据tencent-staged-sdk-v54.json、tencent-native-date-synthetic-v54.json及其attempt记录。
+
+## 55ATSX通用规划与执行守卫（2026-10-05，源码候选）
+
+小米校招只读生产规划实际发现education.0.school属于atsx-select搜索框、education.0.end属于atsx-date-picker展示框，却被通用文本计划接收。此诊断0表单操作/0官网写入；不把DOM赋值当目录选择或日期模型提交。隐藏数据区仍有type=text，当前个人样本未被规划命中，不能称为已观察的隐藏字段写入。
+
+55保留inspect控件索引，标记上述两种控件及resumeEditForm-hiddenField不可通用写入；执行阶段对readonly或转为上述控件的旧定位再拒绝。普通可写文本保持，未实现ATSX专用学校/日期选择；这些事实继续人工。8项真实Chromium夹具验证隐藏同名电话、索引不变、搜索/日期/内部输入0事件、普通文本独立读回，以及规划后控件变型/readonly、保存点击0。全量/包尚待验，54资产与精确源码原生验收保持原版。

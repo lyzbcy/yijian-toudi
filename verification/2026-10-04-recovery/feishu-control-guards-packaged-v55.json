@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "version": "0.5.55",
+  "packaged": true,
+  "fixtureOnly": true,
+  "checks": [
+    "inspection preserves all five indexes including internal and widget text inputs",
+    "internal text and ATSX search/date inputs are ineligible for generic writing",
+    "visible phone wins over the earlier identical caption in hidden data",
+    "school catalog and date precision remain manual",
+    "stale explicit locators are rejected at execution without any input event",
+    "ordinary visible text still writes and independently reads back",
+    "controls replaced by widgets or made readonly after planning remain unchanged",
+    "no internal field, widget, or save action occurs"
+  ],
+  "officialWrites": 0
+}

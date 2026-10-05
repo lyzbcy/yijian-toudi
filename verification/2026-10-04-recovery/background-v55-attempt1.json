@@ -1,0 +1,16 @@
+{
+  "ok": false,
+  "version": "0.5.55",
+  "phase": "unit",
+  "tests": 401,
+  "passed": 400,
+  "failed": 1,
+  "skipped": 0,
+  "failedTest": "application/site/cache-version-consistency",
+  "reason": "Version test requires exact PAGE_V declaration spacing",
+  "numericSiteVersionConsistent": true,
+  "runtimeSemanticVersionMismatchObserved": false,
+  "correctedDeclarationFormat": true,
+  "originalLogRetainedLocally": true,
+  "fullRetryRequired": true
+}

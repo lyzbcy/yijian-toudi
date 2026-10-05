@@ -1,0 +1,256 @@
+{
+  "ok": true,
+  "version": "0.5.55",
+  "at": "2026-10-05T00:08:08.141Z",
+  "scope": "Local regression and packaged Windows ATSX eligibility/upgrade/offline queue; isolated Byte/Xiaomi staged SDK; incomplete fan delivery",
+  "ownFilesMatched": 127,
+  "sourceFingerprints": "source-fingerprints-v55.json",
+  "candidateManifest": "candidate-manifest-v0.5.55.json",
+  "authenticode": "NotSigned",
+  "units": {
+    "passed": 401,
+    "failed": 0,
+    "skipped": 0
+  },
+  "background": {
+    "at": "2026-10-05T00:00:04.323Z",
+    "ok": true,
+    "results": [
+      {
+        "name": "unit",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 6460
+      },
+      {
+        "name": "check",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 396
+      },
+      {
+        "name": "ui-smoke",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 12011
+      },
+      {
+        "name": "ui-resume-segments",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 62444
+      },
+      {
+        "name": "ui-resume-profiles",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 50658
+      },
+      {
+        "name": "ui-capabilities",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 5473
+      },
+      {
+        "name": "ui-workspace-exit",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 5638
+      },
+      {
+        "name": "ui-resume-batch",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 49193
+      },
+      {
+        "name": "ui-batch-actions",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 2116
+      },
+      {
+        "name": "ui-login-upload",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 17906
+      },
+      {
+        "name": "ui-live-window-fixes",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 22560
+      },
+      {
+        "name": "ui-jd-login",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 12285
+      },
+      {
+        "name": "ui-auth-frame",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 4040
+      },
+      {
+        "name": "ui-ai-browser",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 20366
+      },
+      {
+        "name": "ui-ai-preview",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 20556
+      },
+      {
+        "name": "ui-reliability",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 206777
+      },
+      {
+        "name": "ui-boss-recovery",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 5264
+      },
+      {
+        "name": "ui-delivery-layout",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 36826
+      },
+      {
+        "name": "ui-feedback",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 12470
+      },
+      {
+        "name": "ui-update-install-status",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 2943
+      },
+      {
+        "name": "ui-job-refresh-status",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 3659
+      },
+      {
+        "name": "ui-author-page",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 36557
+      },
+      {
+        "name": "ui-windows-shell",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 1577
+      },
+      {
+        "name": "ui-alibaba-staging",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 8586
+      },
+      {
+        "name": "ui-jd-widgets",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 4114
+      },
+      {
+        "name": "ui-jd-school-search",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 16528
+      },
+      {
+        "name": "ui-tencent-campus",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 19720
+      },
+      {
+        "name": "ui-tencent-widgets",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 8935
+      },
+      {
+        "name": "ui-state-revision",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 19780
+      },
+      {
+        "name": "ui-feishu-control-guards",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 940
+      }
+    ]
+  },
+  "initialUnitFailure": "background-v55-attempt1.json",
+  "site": {
+    "ok": true,
+    "brokenImages": 0,
+    "overflow": 0
+  },
+  "skillAndFeedbackArchives": {
+    "sameVersion": true
+  },
+  "atsxGuards": {
+    "realReadonlyBefore": "xiaomi-readonly-plan-v54.json",
+    "realReadonlyAfter": "xiaomi-readonly-plan-v55.json",
+    "beforeUnsafeProposals": 2,
+    "afterUnsafeProposals": 0,
+    "source": "feishu-control-guards-source-v55.json",
+    "packaged": "feishu-control-guards-packaged-v55.json",
+    "checks": 8,
+    "specializedSchoolDateWidgetsImplemented": false
+  },
+  "isolatedSDK": {
+    "report": "byte-xiaomi-staged-v55.json",
+    "rows": [
+      {
+        "companyId": "bytedance",
+        "verifiedDOM": 8,
+        "manual": 78,
+        "failed": 0,
+        "mismatched": 0
+      },
+      {
+        "companyId": "xiaomi",
+        "verifiedDOM": 7,
+        "manual": 79,
+        "failed": 0,
+        "mismatched": 0
+      }
+    ],
+    "modelsAndFullSemanticCorrectnessNotProven": true,
+    "officialSaveProven": false
+  },
+  "upgrade": {
+    "report": "windows-install-upgrade-v55.json",
+    "checks": 8,
+    "sourceHelperOverride": false,
+    "nativeWizardVerified": false
+  },
+  "packagedBatch": "legacy-batch-packaged-v55.json",
+  "mac54": "mac-readback-v54.json",
+  "mac54SourceCommit": "391c48dabf84532f5ef7d20dbda50fc54b324ff2",
+  "mac55": "pending-native-run",
+  "linux54": "linux-readback-v54.json",
+  "goalStatus": "active",
+  "productDefectRateBelowOnePercentProven": false,
+  "officialSaveUploadApplications": 0,
+  "externalMessages": 0
+}

@@ -75,6 +75,7 @@ jobs:
           APP=$(find release -maxdepth 2 -type d -name '*.app' -print -quit)
           test -n "$APP"
           YJT_PACKAGED_EXECUTABLE="$GITHUB_WORKSPACE/$APP/Contents/MacOS/一键投递" node test/ui-state-revision.cjs
+          YJT_PACKAGED_EXECUTABLE="$GITHUB_WORKSPACE/$APP/Contents/MacOS/一键投递" node test/ui-feishu-control-guards.cjs
       - name: Obtain actual v38 baseline source for Applications upgrade test
         uses: actions/checkout@v6
         with:
@@ -115,6 +116,7 @@ jobs:
             test-output/delivery-*.png
             test-output/resume-profiles.json
             test-output/state-revision.json
+            test-output/feishu-control-guards.json
             test-output/profiles-text-entry.png
             test-output/profiles-failure.png
             test-output/author-page/**
