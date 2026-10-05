@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "version": "0.5.35",
+  "isDraft": true,
+  "downloadedArtifactsMatched": 2,
+  "sourceCommit": "6b7f432ec24d17b78052895a824ce1981347dc7a",
+  "pullRequest": "https://github.com/lyzbcy/yijian-toudi/pull/1",
+  "stableReleaseUnchanged": "v0.3.1"
+}

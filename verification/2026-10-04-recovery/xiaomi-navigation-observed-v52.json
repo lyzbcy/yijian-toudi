@@ -1,0 +1,50 @@
+{
+  "version": "0.5.52",
+  "privateLabelsOmitted": true,
+  "result": {
+    "items": [],
+    "scripts": [
+      {
+        "origin": "https://lf-package-cn.feishucdn.com",
+        "path": "/obj/atsx-throne/hire-fe-prod/portal/saas-career/lib/sentry.browser.min.js"
+      },
+      {
+        "origin": "https://lf-package-cn.feishucdn.com",
+        "path": "/obj/atsx-throne/hire-fe-prod/portal/saas-career/static/js/builder-runtime.4955d521.js"
+      },
+      {
+        "origin": "https://lf-package-cn.feishucdn.com",
+        "path": "/obj/atsx-throne/hire-fe-prod/portal/saas-career/static/js/6218.437b4a52.js"
+      },
+      {
+        "origin": "https://lf-package-cn.feishucdn.com",
+        "path": "/obj/atsx-throne/hire-fe-prod/portal/saas-career/static/js/9096.6a50bdeb.js"
+      },
+      {
+        "origin": "https://lf-package-cn.feishucdn.com",
+        "path": "/obj/atsx-throne/hire-fe-prod/portal/saas-career/static/js/1702.9db529ae.js"
+      },
+      {
+        "origin": "https://lf-package-cn.feishucdn.com",
+        "path": "/obj/atsx-throne/hire-fe-prod/portal/saas-career/static/js/8825.1a2a6d3f.js"
+      },
+      {
+        "origin": "https://lf-package-cn.feishucdn.com",
+        "path": "/obj/atsx-throne/hire-fe-prod/portal/saas-career/static/js/3231.d2ae429c.js"
+      },
+      {
+        "origin": "https://lf-package-cn.feishucdn.com",
+        "path": "/obj/atsx-throne/hire-fe-prod/portal/saas-career/static/js/5115.4112056d.js"
+      },
+      {
+        "origin": "https://lf-package-cn.feishucdn.com",
+        "path": "/obj/atsx-throne/hire-fe-prod/portal/saas-career/static/js/5615.9cadf6d0.js"
+      },
+      {
+        "origin": "https://lf-package-cn.feishucdn.com",
+        "path": "/obj/atsx-throne/hire-fe-prod/portal/saas-career/static/js/pc.5bbfbb4a.js"
+      }
+    ],
+    "bodyClasses": "saas-career zh pc"
+  }
+}

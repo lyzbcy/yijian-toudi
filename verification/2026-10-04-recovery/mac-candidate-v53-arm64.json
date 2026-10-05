@@ -1,0 +1,35 @@
+{
+  "ok": true,
+  "version": "0.5.53",
+  "ownFilesMatched": 125,
+  "asarEntries": 1150,
+  "noPrivateDataFiles": true,
+  "noKnownKeyPatterns": true,
+  "host": "darwin",
+  "architecture": "arm64",
+  "artifacts": [
+    {
+      "name": "yijian-toudi-0.5.53-arm64.dmg",
+      "bytes": 126466422,
+      "sha256": "78ca581e8f677fe1f32788941aae4e39e18ce2a3c9ed2085f3488cdcd496633e"
+    },
+    {
+      "name": "yijian-toudi-0.5.53-arm64.zip",
+      "bytes": 125315435,
+      "sha256": "13cc0ee81b0641d842c5ccfd2e986e5e25c2a1a869fb1a2c8ce452ba8c1f1312"
+    }
+  ],
+  "dmgMountedAndCopied": true,
+  "zipExtractedAndAudited": true,
+  "runtimeTarget": "isolated-dmg-copy",
+  "signature": {
+    "verified": true,
+    "mode": "ad-hoc",
+    "developerIDVerified": false,
+    "notarizationVerified": false,
+    "details": "Executable=/Users/runner/work/yijian-toudi/yijian-toudi/release/mac-arm64/一键投递.app/Contents/MacOS/一键投递\nIdentifier=com.lyzbcy.yijiantoudi\nFormat=app bundle with Mach-O thin (arm64)\nCodeDirectory v=20400 size=431 flags=0x2(adhoc) hashes=3+7 location=embedded\nSignature=adhoc\nInfo.plist entries=32\nTeamIdentifier=not set\nSealed Resources version=2 rules=13 files=11\nInternal requirements count=0 size=12\n"
+  },
+  "containerSignaturesVerified": true,
+  "endUserInstall": "not-verified",
+  "realAccounts": "not-verified"
+}

@@ -1,0 +1,15 @@
+{
+  "version": "0.5.45",
+  "nativeWorkflowRun": 37205190489,
+  "nativeConclusion": "success",
+  "bothNativeArchitecturesPassed": true,
+  "ok": false,
+  "scope": "Evidence export defect; not a demonstrated application failure",
+  "observed": "Downloaded arm64 artifact has native/layout/install/update reports but no .local-data refresh report or partial-reopened screenshot",
+  "cause": "Main workflow listed refresh evidence inside hidden .local-data; upload-artifact excludes hidden files by default",
+  "correction": "Dedicated sealed-native replay verifies the exact successful ZIP hash/signature/117 source files and copies the refresh report/screenshots to explicit test-output paths before uploading",
+  "productRuntimeChange": false,
+  "productRebuildRequired": false,
+  "replayComplete": false,
+  "fullGoalComplete": false
+}

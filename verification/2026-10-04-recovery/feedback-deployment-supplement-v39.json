@@ -1,0 +1,31 @@
+{
+  "version": "0.5.39",
+  "at": "2026-10-04T08:46:42.220Z",
+  "workflow": {
+    "conclusion": "success",
+    "headSha": "5b4035a9d79795253a3d03660d1db426fd858717",
+    "status": "completed",
+    "url": "https://github.com/lyzbcy/yijian-toudi/actions/runs/37189853837"
+  },
+  "scope": "isolated-Ubuntu-CI-actual-systemd-and-local-Caddy-HTTPS",
+  "sealedServiceArchive": {
+    "name": "yijian-toudi-feedback-server-0.5.39.tar.gz",
+    "sha256": "90d098f55f096cc79a7e95de0f9bde3fed44f8345ebf7ad70682249aa7581778",
+    "files": 11,
+    "sourceFilesMatchSealedPackage": true,
+    "modified": false
+  },
+  "systemdReport": "verification/2026-10-04-recovery/linux-systemd-v39.json",
+  "caddyReport": "verification/2026-10-04-recovery/linux-caddy-v39.json",
+  "failurePreserved": "verification/2026-10-04-recovery/linux-caddy-v39-attempt1.json",
+  "realPublicTLS": false,
+  "realWecom": false,
+  "productionDefaultEndpointConfigured": false,
+  "fullGoalComplete": false,
+  "remainingProductionGates": [
+    "operator-controlled-host-and-domain",
+    "public-DNS-TLS-and-cross-device-diagnostic-retrieval",
+    "server-private-WeCom-and-authorized-test-receipt",
+    "production-health-storage-restart-backup-load-and-default-App-endpoint"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "ok": true,
+  "version": "0.5.49",
+  "ownFilesMatched": 121,
+  "asarEntries": 1146,
+  "noPrivateDataFiles": true,
+  "noKnownKeyPatterns": true,
+  "readiness": "candidate-unpublished",
+  "artifacts": [
+    {
+      "name": "yijian-toudi-setup-0.5.49.exe",
+      "bytes": 104308097,
+      "sha256": "f687a7cea01412aca4d974ca32a97988849ce70d8a93af028297ab2765099f56"
+    },
+    {
+      "name": "yijian-toudi-skill-0.5.49.tar.gz",
+      "bytes": 13909,
+      "sha256": "ecf7c36d839bacd0678cc0a4be44c96af0d6e4e2510567269aaddfebb0865456"
+    },
+    {
+      "name": "yijian-toudi-feedback-server-0.5.49.tar.gz",
+      "bytes": 12434,
+      "sha256": "22ca3365c87cffacf26c398ba2327975b11c5c863fb4f5d61e23f8e2d4804494"
+    }
+  ],
+  "signature": "NotSigned",
+  "unmetGates": [
+    "personal-resume-baidu-three-widget-failures-and-multiple-segments",
+    "seven-platform-complete-fields-save-reopen",
+    "production-feedback-service",
+    "official-download-update-and-trust",
+    "macOS-v49-runtime-and-v47-arm64-ui-failure-cause",
+    "current-complete-demo",
+    "representative-bug-rate"
+  ]
+}

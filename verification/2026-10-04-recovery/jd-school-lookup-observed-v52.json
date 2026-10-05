@@ -1,0 +1,61 @@
+{
+  "version": "0.5.51",
+  "isolatedProfile": true,
+  "sealedExceptOneExactReadonlyGet": true,
+  "officialWrites": 0,
+  "lookupResponses": [
+    {
+      "method": "GET",
+      "statusCode": 200
+    }
+  ],
+  "result": {
+    "expanded": "true",
+    "associatedMenuPresent": true,
+    "menus": [
+      {
+        "classes": "ant-select-dropdown ant-select-dropdown--single ant-select-dropdown-placement-bottomLeft",
+        "tree": [
+          {
+            "tag": "DIV",
+            "classes": "ant-select-dropdown ant-select-dropdown--single ant-select-dropdown-placement-bottomLeft",
+            "id": "",
+            "role": null
+          },
+          {
+            "tag": "DIV",
+            "classes": "",
+            "id": "fbfc38bd-51b8-4866-8c1e-2a7fa403534b",
+            "role": null
+          },
+          {
+            "tag": "UL",
+            "classes": "ant-select-dropdown-menu  ant-select-dropdown-menu-root ant-select-dropdown-menu-vertical",
+            "id": "",
+            "role": "listbox"
+          },
+          {
+            "tag": "LI",
+            "classes": "ant-select-dropdown-menu-item",
+            "id": "",
+            "role": "option"
+          },
+          {
+            "tag": "DIV",
+            "classes": "schoolOption___3Rkbz",
+            "id": "",
+            "role": null
+          },
+          {
+            "tag": "SPAN",
+            "classes": "",
+            "id": "",
+            "role": null
+          }
+        ],
+        "exactMatches": 1,
+        "options": 1
+      }
+    ]
+  }
+}

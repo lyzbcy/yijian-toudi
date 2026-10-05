@@ -1,0 +1,75 @@
+{
+  "version": "0.5.52",
+  "isolatedReadonly": true,
+  "shownInactiveWithoutFocus": true,
+  "originalWindowVisibilityRestored": true,
+  "officialWrites": 0,
+  "before": {
+    "visibility": "hidden",
+    "controls": 0
+  },
+  "after": {
+    "path": "/campus/resume/edit",
+    "visibility": "visible",
+    "controls": 32,
+    "formRows": 0,
+    "loading": false,
+    "identityPresent": true
+  },
+  "network": [
+    {
+      "companyId": "xiaomi",
+      "method": "GET",
+      "kind": "xhr",
+      "url": "https://xiaomi.jobs.f.mioffice.cn/api/v1/user/mobile/login_status"
+    },
+    {
+      "companyId": "xiaomi",
+      "method": "POST",
+      "kind": "ping",
+      "url": "https://mcs.snssdk.com/v1/list"
+    },
+    {
+      "companyId": "xiaomi",
+      "method": "GET",
+      "kind": "xhr",
+      "url": "https://xiaomi.jobs.f.mioffice.cn/api/v1/user/latest/resume"
+    },
+    {
+      "companyId": "xiaomi",
+      "method": "GET",
+      "kind": "xhr",
+      "url": "https://xiaomi.jobs.f.mioffice.cn/api/v1/user/profile"
+    },
+    {
+      "companyId": "xiaomi",
+      "method": "GET",
+      "kind": "xhr",
+      "url": "https://xiaomi.jobs.f.mioffice.cn/api/v1/user/recommend/code"
+    },
+    {
+      "companyId": "xiaomi",
+      "method": "POST",
+      "kind": "xhr",
+      "url": "https://mcs.snssdk.com/v1/list"
+    },
+    {
+      "companyId": "xiaomi",
+      "method": "POST",
+      "kind": "xhr",
+      "url": "https://mcs.snssdk.com/v1/list"
+    },
+    {
+      "companyId": "xiaomi",
+      "method": "POST",
+      "kind": "xhr",
+      "url": "https://mcs.snssdk.com/v1/list"
+    },
+    {
+      "companyId": "xiaomi",
+      "method": "POST",
+      "kind": "xhr",
+      "url": "https://mon.zijieapi.com/monitor_browser/collect/batch/"
+    }
+  ]
+}

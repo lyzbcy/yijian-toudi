@@ -22,7 +22,7 @@ const files = {
   'skill/yijian-toudi/version.json': (content) => content.replace(/"version":\s*"[^"]+"/, `"version": "${newVersion}"`),
   'src/index.html': (content) => content
     .replace(/一键投递 v[\d.]+/g, `一键投递 v${newVersion}`)
-    .replace(/<span id="appVersion">[\d.]+<\/span>/g, `<span id="appVersion">${newVersion}</span>`),
+    .replace(/<span id="(appVersion|aboutAppVersion)">[\d.]+<\/span>/g, (_,id) => `<span id="${id}">${newVersion}</span>`),
   'site/index.html': (content) => content
     .replace(/当前 v[\d.]+ /g, `当前 v${newVersion} `)
 };
@@ -55,10 +55,11 @@ fs.writeFileSync(siteHtmlPath, siteHtml);
 console.log(`  ✓ site/version.json (v=${versionJson.v}) 和 PAGE_V 已同步`);
 
 console.log(`\n📝 接下来手动执行（脚本不自动跑，避免误操作）：\n`);
-console.log(`  1. pnpm dist:mac          # 打包 dmg + zip`);
+console.log(`  1. pnpm dist:win / pnpm dist:mac  # 按目标平台构建并实际安装验收`);
 console.log(`  2. pnpm pack:skill       # 打包同版本 Skill + SHA256`);
+console.log(`     pnpm pack:feedback    # 打包同版本独立反馈服务 + SHA256`);
 console.log(`  3. 计算并写 release/一键投递-${newVersion}-SHA256.txt`);
 console.log(`  4. 核对工作树后提交、推送、打 v${newVersion} tag`);
-console.log(`  5. 创建 GitHub Release v${newVersion}；发布工作流会附加 Skill 包`);
-console.log(`  6. 上传 dmg + zip + SHA256 + 安装说明`);
+console.log(`  5. 创建 draft Release v${newVersion}；手动工作流为已有 draft 准备 Skill`);
+console.log(`  6. 上传桌面包 + Skill + 反馈服务 + SHA256 + 安装说明，下载回读校验后再 publish；published 工作流仅审计`);
 console.log(`\n✅ 版本号已统一为 ${newVersion}，打包前请先 npm test 确认全过。\n`);

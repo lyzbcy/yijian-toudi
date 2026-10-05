@@ -1,0 +1,703 @@
+{
+  "version": "0.5.50",
+  "actualPersonalLocalResume": true,
+  "resumeValuesRecorded": false,
+  "authenticationCopy": true,
+  "freshReadOnlyPageLoadedBeforeSeal": true,
+  "allExternalRequestsBlockedDuringEdits": true,
+  "officialSaveUploadApplications": 0,
+  "status": "review-required",
+  "ok": true,
+  "verification": {
+    "verified": [
+      "basic.name",
+      "basic.phone",
+      "basic.email",
+      "experience.0.company",
+      "experience.0.department",
+      "experience.0.role",
+      "experience.0.description",
+      "projects.0.name",
+      "projects.0.role",
+      "projects.0.description",
+      "projects.0.contribution",
+      "projects.1.name",
+      "projects.1.role",
+      "projects.1.description",
+      "projects.1.contribution",
+      "projects.2.name",
+      "projects.2.role",
+      "projects.2.description",
+      "projects.2.contribution",
+      "projects.3.name",
+      "projects.3.role",
+      "projects.3.description",
+      "projects.3.contribution",
+      "projects.4.name",
+      "projects.4.role",
+      "projects.4.description",
+      "projects.4.contribution",
+      "education.0.school",
+      "education.0.major",
+      "education.0.degree",
+      "education.0.start",
+      "education.0.end",
+      "experience.0.start",
+      "projects.0.start",
+      "projects.0.end",
+      "projects.1.start",
+      "projects.1.end",
+      "projects.2.start",
+      "projects.3.start",
+      "projects.3.end",
+      "projects.4.start"
+    ],
+    "mismatched": [],
+    "failed": [
+      "experience.0.end",
+      "projects.2.end",
+      "projects.4.end"
+    ],
+    "manual": [
+      "basic.website",
+      "basic.github",
+      "basic.nationality",
+      "intention.roles",
+      "intention.cities",
+      "intention.salaryUnit",
+      "ai.tools",
+      "ai.collaboration",
+      "intention.employmentType",
+      "intention.preferredLocations",
+      "intention.expectCountry",
+      "skills.keywords",
+      "skills.proficiency",
+      "skills.languages",
+      "skills.devLanguages",
+      "skills.englishLevel",
+      "skills.englishScore",
+      "skills.certificates",
+      "skills.portfolioUrl",
+      "skills.interests",
+      "extras.summary",
+      "extras.awards",
+      "extras.campus",
+      "education.0.degreeName",
+      "education.0.courses",
+      "experience.0.employmentType",
+      "experience.0.achievements",
+      "projects.0.techStack",
+      "projects.0.outcome",
+      "projects.0.client",
+      "projects.1.techStack",
+      "projects.1.outcome",
+      "projects.1.client",
+      "projects.2.techStack",
+      "projects.2.outcome",
+      "projects.2.link",
+      "projects.3.techStack",
+      "projects.3.outcome",
+      "projects.3.client",
+      "projects.4.techStack",
+      "projects.4.outcome",
+      "projects.4.link",
+      "experience.0.end",
+      "projects.2.end",
+      "projects.4.end"
+    ]
+  },
+  "sectionSetup": {
+    "sections": [
+      {
+        "sectionId": "education",
+        "requested": 1,
+        "skipped": false,
+        "count": 1,
+        "done": true,
+        "added": false,
+        "error": null
+      },
+      {
+        "sectionId": "experience",
+        "requested": 1,
+        "skipped": false,
+        "count": 1,
+        "done": true,
+        "added": false,
+        "error": null
+      },
+      {
+        "sectionId": "projects",
+        "requested": 5,
+        "skipped": false,
+        "count": 5,
+        "done": true,
+        "added": true,
+        "error": null
+      }
+    ]
+  },
+  "retainedAfterAllFields": {
+    "school": true,
+    "major": true,
+    "degree": true,
+    "projects": [
+      {
+        "index": 0,
+        "uniqueRows": true,
+        "texts": true
+      },
+      {
+        "index": 1,
+        "uniqueRows": true,
+        "texts": true
+      },
+      {
+        "index": 2,
+        "uniqueRows": true,
+        "texts": true
+      },
+      {
+        "index": 3,
+        "uniqueRows": true,
+        "texts": true
+      },
+      {
+        "index": 4,
+        "uniqueRows": true,
+        "texts": true
+      }
+    ]
+  },
+  "repeatedSetup": {
+    "sections": [
+      {
+        "sectionId": "education",
+        "requested": 1,
+        "skipped": false,
+        "count": 1,
+        "done": true,
+        "added": false,
+        "error": null
+      },
+      {
+        "sectionId": "experience",
+        "requested": 1,
+        "skipped": false,
+        "count": 1,
+        "done": true,
+        "added": false,
+        "error": null
+      },
+      {
+        "sectionId": "projects",
+        "requested": 5,
+        "skipped": false,
+        "count": 5,
+        "done": true,
+        "added": false,
+        "error": null
+      }
+    ]
+  },
+  "missingSchoolRejected": true,
+  "degreeAfterFailedSearch": true,
+  "widgets": [
+    {
+      "key": "education.0.school",
+      "written": true,
+      "error": null,
+      "verified": true
+    },
+    {
+      "key": "education.0.major",
+      "written": true,
+      "error": null,
+      "verified": true
+    },
+    {
+      "key": "education.0.degree",
+      "written": true,
+      "verified": true
+    },
+    {
+      "key": "education.0.start",
+      "written": true,
+      "error": null,
+      "verified": true
+    },
+    {
+      "key": "education.0.end",
+      "written": true,
+      "error": null,
+      "verified": true
+    },
+    {
+      "key": "experience.0.start",
+      "written": true,
+      "error": null,
+      "verified": true
+    },
+    {
+      "key": "experience.0.end",
+      "written": false,
+      "error": "ongoing-date-manual",
+      "verified": false
+    },
+    {
+      "key": "projects.0.start",
+      "written": true,
+      "error": null,
+      "verified": true
+    },
+    {
+      "key": "projects.0.end",
+      "written": true,
+      "error": null,
+      "verified": true
+    },
+    {
+      "key": "projects.1.start",
+      "written": true,
+      "error": null,
+      "verified": true
+    },
+    {
+      "key": "projects.1.end",
+      "written": true,
+      "error": null,
+      "verified": true
+    },
+    {
+      "key": "projects.2.start",
+      "written": true,
+      "error": null,
+      "verified": true
+    },
+    {
+      "key": "projects.2.end",
+      "written": false,
+      "error": "ongoing-date-manual",
+      "verified": false
+    },
+    {
+      "key": "projects.3.start",
+      "written": true,
+      "error": null,
+      "verified": true
+    },
+    {
+      "key": "projects.3.end",
+      "written": true,
+      "error": null,
+      "verified": true
+    },
+    {
+      "key": "projects.4.start",
+      "written": true,
+      "error": null,
+      "verified": true
+    },
+    {
+      "key": "projects.4.end",
+      "written": false,
+      "error": "ongoing-date-manual",
+      "verified": false
+    }
+  ],
+  "requiredFields": {
+    "applicable": true,
+    "structurallyComplete": false,
+    "officialValidationProven": false,
+    "requiredRows": [
+      {
+        "key": "name",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "姓名",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "sex",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "性别",
+        "status": "empty",
+        "reason": "checked-model"
+      },
+      {
+        "key": "country",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "国籍/地区",
+        "status": "filled",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "mobile",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "移动电话",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "email",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "电子邮箱建议使用网易或QQ邮箱；不建议使用Outlook、Gmail、教育邮箱",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "targetCity",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "目标工作城市",
+        "status": "empty",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "targetPositionType",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "目标职位类别",
+        "status": "empty",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "interviewOnlineType",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "可面试方式",
+        "status": "empty",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "school0",
+        "sectionId": "education",
+        "groupNumber": 1,
+        "label": "学校",
+        "status": "filled",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "edudate0",
+        "sectionId": "education",
+        "groupNumber": 1,
+        "label": "起止时间",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "academic0",
+        "sectionId": "education",
+        "groupNumber": 1,
+        "label": "学历",
+        "status": "filled",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "major0",
+        "sectionId": "education",
+        "groupNumber": 1,
+        "label": "专业",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "companyName0",
+        "sectionId": "experience",
+        "groupNumber": 1,
+        "label": "企业名称",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "industryType0",
+        "sectionId": "experience",
+        "groupNumber": 1,
+        "label": "行业类别",
+        "status": "empty",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "workdate0",
+        "sectionId": "experience",
+        "groupNumber": 1,
+        "label": "起止时间",
+        "status": "empty",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "department0",
+        "sectionId": "experience",
+        "groupNumber": 1,
+        "label": "所在部门",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "positionName0",
+        "sectionId": "experience",
+        "groupNumber": 1,
+        "label": "职位名称",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "workDesc0",
+        "sectionId": "experience",
+        "groupNumber": 1,
+        "label": "工作描述",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "subjectName0",
+        "sectionId": "projects",
+        "groupNumber": 1,
+        "label": "项目名称",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "position0",
+        "sectionId": "projects",
+        "groupNumber": 1,
+        "label": "项目职务",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "subjectDate0",
+        "sectionId": "projects",
+        "groupNumber": 1,
+        "label": "起止时间",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "subjectDesc0",
+        "sectionId": "projects",
+        "groupNumber": 1,
+        "label": "项目描述",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "subjectName1",
+        "sectionId": "projects",
+        "groupNumber": 2,
+        "label": "项目名称",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "position1",
+        "sectionId": "projects",
+        "groupNumber": 2,
+        "label": "项目职务",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "subjectDate1",
+        "sectionId": "projects",
+        "groupNumber": 2,
+        "label": "起止时间",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "subjectDesc1",
+        "sectionId": "projects",
+        "groupNumber": 2,
+        "label": "项目描述",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "subjectName2",
+        "sectionId": "projects",
+        "groupNumber": 3,
+        "label": "项目名称",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "position2",
+        "sectionId": "projects",
+        "groupNumber": 3,
+        "label": "项目职务",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "subjectDate2",
+        "sectionId": "projects",
+        "groupNumber": 3,
+        "label": "起止时间",
+        "status": "empty",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "subjectDesc2",
+        "sectionId": "projects",
+        "groupNumber": 3,
+        "label": "项目描述",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "subjectName3",
+        "sectionId": "projects",
+        "groupNumber": 4,
+        "label": "项目名称",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "position3",
+        "sectionId": "projects",
+        "groupNumber": 4,
+        "label": "项目职务",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "subjectDate3",
+        "sectionId": "projects",
+        "groupNumber": 4,
+        "label": "起止时间",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "subjectDesc3",
+        "sectionId": "projects",
+        "groupNumber": 4,
+        "label": "项目描述",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "subjectName4",
+        "sectionId": "projects",
+        "groupNumber": 5,
+        "label": "项目名称",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "position4",
+        "sectionId": "projects",
+        "groupNumber": 5,
+        "label": "项目职务",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "subjectDate4",
+        "sectionId": "projects",
+        "groupNumber": 5,
+        "label": "起止时间",
+        "status": "empty",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "subjectDesc4",
+        "sectionId": "projects",
+        "groupNumber": 5,
+        "label": "项目描述",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "privacy-consent",
+        "sectionId": "consent",
+        "groupNumber": 1,
+        "label": "隐私声明",
+        "status": "empty",
+        "reason": "user-consent-required"
+      }
+    ],
+    "missing": [
+      {
+        "key": "sex",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "性别",
+        "status": "empty",
+        "reason": "checked-model"
+      },
+      {
+        "key": "targetCity",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "目标工作城市",
+        "status": "empty",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "targetPositionType",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "目标职位类别",
+        "status": "empty",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "interviewOnlineType",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "可面试方式",
+        "status": "empty",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "industryType0",
+        "sectionId": "experience",
+        "groupNumber": 1,
+        "label": "行业类别",
+        "status": "empty",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "workdate0",
+        "sectionId": "experience",
+        "groupNumber": 1,
+        "label": "起止时间",
+        "status": "empty",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "subjectDate2",
+        "sectionId": "projects",
+        "groupNumber": 3,
+        "label": "起止时间",
+        "status": "empty",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "subjectDate4",
+        "sectionId": "projects",
+        "groupNumber": 5,
+        "label": "起止时间",
+        "status": "empty",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "privacy-consent",
+        "sectionId": "consent",
+        "groupNumber": 1,
+        "label": "隐私声明",
+        "status": "empty",
+        "reason": "user-consent-required"
+      }
+    ],
+    "unknown": []
+  },
+  "targetedFixesProven": true
+}

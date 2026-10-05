@@ -1,0 +1,21 @@
+{
+  "version": "0.5.54",
+  "isolatedProfile": true,
+  "syntheticExactDateSource": true,
+  "realUserDatePrecisionStillMonthOrOngoing": true,
+  "externalRequestsBlocked": true,
+  "officialWrites": 0,
+  "privateValuesOmitted": true,
+  "result": {
+    "written": false,
+    "error": "owned-date-panel-unavailable",
+    "modelKnown": false,
+    "modelEqual": false,
+    "restoredAfterFailure": false
+  },
+  "restoration": {
+    "domEqual": true,
+    "modelEqual": true,
+    "openPickers": 0
+  }
+}

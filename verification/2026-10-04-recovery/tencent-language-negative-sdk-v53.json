@@ -1,0 +1,13 @@
+{
+  "version": "0.5.53",
+  "isolatedRealSDK": true,
+  "allExternalRequestsSealed": true,
+  "unknownSyntheticLanguageRejected": true,
+  "error": "language-option-missing",
+  "privateLanguageValuesOmitted": true,
+  "selectedStillMatchesSource": true,
+  "ownPopupClosed": true,
+  "otherOpenPopups": 0,
+  "saveClicks": 0,
+  "submitClicks": 0
+}

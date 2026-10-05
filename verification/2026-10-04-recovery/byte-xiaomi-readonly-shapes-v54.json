@@ -1,0 +1,91 @@
+{
+  "version": "0.5.54",
+  "isolatedProfile": true,
+  "privateValuesOmitted": true,
+  "readonlyBeforeSeal": true,
+  "visibilityRestored": true,
+  "personalAppUnmodified": true,
+  "rows": [
+    {
+      "companyId": "bytedance",
+      "readonly": true,
+      "noFormActions": true,
+      "state": {
+        "path": "/campus/resume/edit",
+        "visibility": "visible",
+        "controls": 46,
+        "identityPresent": true,
+        "loading": false,
+        "hasProtectionPrompt": false
+      },
+      "controlTypes": {
+        "file": 1,
+        "text": 31,
+        "search": 8,
+        "checkbox": 1,
+        "textarea": 5
+      },
+      "nativeWritableText": 36,
+      "ancestorClasses": [
+        "atsx-upload atsx-upload-btn",
+        "atsx-upload atsx-upload-drag",
+        "ud__input-input__placeholder__wrapper u16gdikw u1j001gk u1kas33f uj2bo7u uhr53wp",
+        "ud__input-input-wrap",
+        "ud__input ud__input--size-lg",
+        "ud__select__selector__search",
+        "ud__select__selector__content",
+        "ud__select__selector ud__select__selector-lg ud__select__selector-border-normal ud__select__selector-not-empty",
+        "ud__select__selector ud__select__selector-lg ud__select__selector-readOnly ud__select__selector-border-normal ud__select__selector-not-empty",
+        "ud__select__selector__search__input_container",
+        "ud__select__selector__search__suffix ud__overflow__suffix",
+        "ud__overflow ud__select__selector__search",
+        "ud__select__selector ud__select__selector-lg ud__select__selector-readOnly ud__select__selector-border-normal ud__select__selector-not-empty ud__select__selector-allowClear",
+        "ud__checkbox",
+        "ud__checkbox__wrapper ud-typography-body-0 umt1vhq u5k1dk9 u1h2w2e3 applyFormModuleWrapper-no-experience",
+        "applyFormModuleWrapper-right",
+        "ud__textarea",
+        "ud-formily-item-control-content-component",
+        "ud-formily-item-control-content",
+        "ud__select__selector ud__select__selector-lg ud__select__selector-border-normal ud__select__selector-not-empty ud__select__selector-allowClear ud__select__selector-hide-arrow"
+      ],
+      "officialWrites": 0
+    },
+    {
+      "companyId": "xiaomi",
+      "readonly": true,
+      "noFormActions": true,
+      "state": {
+        "path": "/campus/resume/edit",
+        "visibility": "visible",
+        "controls": 32,
+        "identityPresent": true,
+        "loading": false,
+        "hasProtectionPrompt": false
+      },
+      "controlTypes": {
+        "file": 2,
+        "text": 26,
+        "textarea": 4
+      },
+      "nativeWritableText": 30,
+      "ancestorClasses": [
+        "atsx-upload atsx-upload-btn",
+        "atsx-upload atsx-upload-drag",
+        "atsx-form-item-children",
+        "atsx-form-item-control has-success",
+        "atsx-col atsx-form-item-control-wrapper",
+        "atsx-select-search__field__wrap",
+        "atsx-select-search atsx-select-search--inline",
+        "atsx-select-selection__rendered",
+        "atsx-input-group id-card-wrap__7225eb",
+        "atsx-date-picker atsx-date-picker-period-month",
+        "atsx-form-item-control",
+        "atsx-date-picker",
+        "ud-internal-upload",
+        "ud__upload-trigger",
+        "ud__upload"
+      ],
+      "officialWrites": 0
+    }
+  ]
+}

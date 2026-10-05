@@ -1,0 +1,45 @@
+{
+  "version": "0.5.45",
+  "ok": true,
+  "scope": "Local immutable archives independently unpacked with required version/file checks; Mac comparison pending",
+  "archives": [
+    {
+      "type": "skill",
+      "name": "yijian-toudi-skill-0.5.45.tar.gz",
+      "sha256": "ade3d837a8f1e7d750357021e284eb7a000118917924969fd15386c76770ff67",
+      "files": [
+        "SKILL.md",
+        "references/deploy.md",
+        "references/update.md",
+        "scripts/bootstrap.cjs",
+        "scripts/boss-engine.cjs",
+        "scripts/daily-boss.cjs",
+        "scripts/package-files.cjs",
+        "scripts/release-source.cjs",
+        "scripts/update-worker.cjs",
+        "scripts/use.cjs",
+        "version.json"
+      ],
+      "filesEach": 11
+    },
+    {
+      "type": "feedback-server",
+      "name": "yijian-toudi-feedback-server-0.5.45.tar.gz",
+      "sha256": "16233ee75d25209f96185e43b1fb4638dc5ec06f6d7eb3d938c07ebd1d1fbc4d",
+      "files": [
+        "electron/diagnostics.cjs",
+        "electron/feedback.cjs",
+        "electron/wecom-notify.cjs",
+        "support/README.md",
+        "support/deploy/Caddyfile.example",
+        "support/deploy/Dockerfile",
+        "support/deploy/compose.yml",
+        "support/deploy/feedback.env.example",
+        "support/deploy/yijian-feedback.service",
+        "support/feedback-server.cjs",
+        "version.json"
+      ],
+      "filesEach": 11
+    }
+  ]
+}

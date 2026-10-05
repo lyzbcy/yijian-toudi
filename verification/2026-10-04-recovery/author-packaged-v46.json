@@ -1,0 +1,135 @@
+{
+  "ok": true,
+  "version": "0.5.46",
+  "platform": "win32",
+  "packaged": true,
+  "visible": true,
+  "shownInactive": true,
+  "sampleProfile": true,
+  "checks": [
+    "Actual sidebar navigation and three widths; original packaged images load without overflow",
+    "Actual keyboard enlargement of all three QR images; Escape and close button restore focus",
+    "Settings and floating entries reach same standalone page, with one window and no external open request"
+  ],
+  "widths": [
+    {
+      "width": 1100,
+      "images": [
+        {
+          "alt": "粉丝群二维码",
+          "src": "./assets/qq-group.jpg",
+          "naturalWidth": 1284,
+          "naturalHeight": 2283,
+          "width": 230.8854217529297,
+          "height": 230.8854217529297,
+          "right": 517.2187652587891
+        },
+        {
+          "alt": "赞赏二维码",
+          "src": "./assets/reward-qr.jpg",
+          "naturalWidth": 828,
+          "naturalHeight": 1124,
+          "width": 230.8854217529297,
+          "height": 230.8854217529297,
+          "right": 789.4375457763672
+        },
+        {
+          "alt": "微信表情包二维码",
+          "src": "./assets/sticker-qr.png",
+          "naturalWidth": 444,
+          "naturalHeight": 444,
+          "width": 230.89584350585938,
+          "height": 230.89584350585938,
+          "right": 1061.6667175292969
+        }
+      ],
+      "enlargedScreenshots": [
+        "enlarged-1100-0.png",
+        "enlarged-1100-1.png",
+        "enlarged-1100-2.png"
+      ]
+    },
+    {
+      "width": 1280,
+      "images": [
+        {
+          "alt": "粉丝群二维码",
+          "src": "./assets/qq-group.jpg",
+          "naturalWidth": 1284,
+          "naturalHeight": 2283,
+          "width": 278.88543701171875,
+          "height": 278.88543701171875,
+          "right": 583.2187805175781
+        },
+        {
+          "alt": "赞赏二维码",
+          "src": "./assets/reward-qr.jpg",
+          "naturalWidth": 828,
+          "naturalHeight": 1124,
+          "width": 278.88543701171875,
+          "height": 278.88543701171875,
+          "right": 903.4375610351562
+        },
+        {
+          "alt": "微信表情包二维码",
+          "src": "./assets/sticker-qr.png",
+          "naturalWidth": 444,
+          "naturalHeight": 444,
+          "width": 278.8958435058594,
+          "height": 278.8958435058594,
+          "right": 1223.6667175292969
+        }
+      ],
+      "enlargedScreenshots": [
+        "enlarged-1280-0.png",
+        "enlarged-1280-1.png",
+        "enlarged-1280-2.png"
+      ]
+    },
+    {
+      "width": 1440,
+      "images": [
+        {
+          "alt": "粉丝群二维码",
+          "src": "./assets/qq-group.jpg",
+          "naturalWidth": 1284,
+          "naturalHeight": 2283,
+          "width": 329.5520935058594,
+          "height": 329.5520935058594,
+          "right": 633.8854370117188
+        },
+        {
+          "alt": "赞赏二维码",
+          "src": "./assets/reward-qr.jpg",
+          "naturalWidth": 828,
+          "naturalHeight": 1124,
+          "width": 329.5520935058594,
+          "height": 329.5520935058594,
+          "right": 1004.7708435058594
+        },
+        {
+          "alt": "微信表情包二维码",
+          "src": "./assets/sticker-qr.png",
+          "naturalWidth": 444,
+          "naturalHeight": 444,
+          "width": 329.5520935058594,
+          "height": 329.5520935058594,
+          "right": 1375.6563415527344
+        }
+      ],
+      "enlargedScreenshots": [
+        "enlarged-1440-0.png",
+        "enlarged-1440-1.png",
+        "enlarged-1440-2.png"
+      ]
+    }
+  ],
+  "externalLinksOpened": 0,
+  "realApplications": 0,
+  "externalMessages": 0,
+  "phoneScanOrMembershipVerified": false,
+  "externalOpenHookIsExplicitObservationFixture": true,
+  "pageErrors": [],
+  "sourceStatus": "actual-ASAR117-files-matched-to-working-tree",
+  "processExitCode": 0
+}

@@ -1,0 +1,1042 @@
+{
+  "date": "2026-10-04",
+  "phase": "new-profile",
+  "port": 54381,
+  "version": "0.5.38",
+  "method": "read_only_CDP_same_visible_packaged_Electron_instance",
+  "observed": {
+    "title": "一键投递",
+    "displayVersion": "0.5.38",
+    "runtimeVersion": "0.5.38",
+    "packagedAsarRenderer": true,
+    "documentVisibility": "visible",
+    "currentPages": [
+      "page-resume"
+    ],
+    "toasts": [
+      {
+        "className": "toast error",
+        "text": "prompt() is not supported.复制×"
+      }
+    ],
+    "openDialogs": [],
+    "visibleInputs": [
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "basic.name",
+        "placeholder": "你的姓名",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "basic.phone",
+        "placeholder": "常用手机号",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "email",
+        "id": "",
+        "name": "basic.email",
+        "placeholder": "常用邮箱",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "basic.province",
+        "placeholder": "如：江苏省（适配省/市级联）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "basic.city",
+        "placeholder": "例如：苏州",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "date",
+        "id": "",
+        "name": "basic.birthday",
+        "placeholder": null,
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "basic.wechat",
+        "placeholder": "选填",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "basic.nativePlace",
+        "placeholder": "官网完整路径：省 / 市 / 区；不确定留空",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "basic.nationality",
+        "placeholder": "中国",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "basic.ethnicity",
+        "placeholder": "如：汉族",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "basic.idCard",
+        "placeholder": "选填，仅本机保存（部分校招/背调要）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "basic.website",
+        "placeholder": "https://",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "basic.github",
+        "placeholder": "https://github.com/你的用户名",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "basic.qq",
+        "placeholder": "选填（腾讯校招要）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "basic.idNumber",
+        "placeholder": "证件号码（京东作为简历唯一标识）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "basic.emergencyContact",
+        "placeholder": "选填，姓名+电话（≠亲属）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "number",
+        "id": "",
+        "name": "basic.height",
+        "placeholder": "选填（罕用）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "basic.avatarUrl",
+        "placeholder": "选填，照片文件路径或 URL",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "intention.roles",
+        "placeholder": "多个岗位用逗号分隔",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "intention.internDuration",
+        "placeholder": "如：3-6个月（腾讯校招）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "intention.weeklyAttendance",
+        "placeholder": "如：5天（腾讯校招）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "intention.cities",
+        "placeholder": "杭州、上海",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "intention.preferredLocations",
+        "placeholder": "第一、二志愿城市（校招多志愿）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "intention.salary",
+        "placeholder": "如 200-300",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "intention.availability",
+        "placeholder": "例如：两周内 / 可随时到岗",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "intention.referralCode",
+        "placeholder": "选填，各大厂通用（影响简历优先级）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "intention.channel",
+        "placeholder": "如：宣讲会/招聘网站/内推",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "intention.expectCountry",
+        "placeholder": "如：中国内地（各家独立选择器）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "intention.workYears",
+        "placeholder": "如：3 年（社招必填，留空按经历推算）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "intention.interviewCity",
+        "placeholder": "选填（腾讯/京东校招，如：深圳）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "intention.businessGroup",
+        "placeholder": "选填（如：微信/QQ/到店/配送）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "education.0.school",
+        "placeholder": "学校名称",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "education.0.department",
+        "placeholder": "学院/系名称（腾讯/京东校招要）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "education.0.major",
+        "placeholder": "专业名称",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "education.0.majorCategory",
+        "placeholder": "官网完整路径：一级 / 二级；不确定留空",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "education.0.degreeName",
+        "placeholder": "学士/硕士/博士（≠学历）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "education.0.learningMode",
+        "placeholder": "官网选项原文，如：全日制",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "education.0.rank",
+        "placeholder": "例如：前 10% / 3/120",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "education.0.gpa",
+        "placeholder": "如 3.8（腾讯/京东校招要）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "education.0.gpaBase",
+        "placeholder": "如 4.0（与 GPA 配对）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "education.0.laboratory",
+        "placeholder": "选填（腾讯/京东校招硕博）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "education.0.start",
+        "placeholder": "YYYY-MM / YYYY-MM-DD",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "education.0.end",
+        "placeholder": "YYYY-MM / YYYY-MM-DD / 至今",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "education.0.is211",
+        "placeholder": "是/否/自动判定",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "education.0.advisor",
+        "placeholder": "选填（华为校招/博士岗）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "education.0.researchDirection",
+        "placeholder": "选填（硕博岗）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "education.0.thesisTitle",
+        "placeholder": "选填（校招）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "TEXTAREA",
+        "type": null,
+        "id": "",
+        "name": "education.0.courses",
+        "placeholder": "与目标岗位相关的课程",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "experience.0.company",
+        "placeholder": "公司名称",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "experience.0.department",
+        "placeholder": "所在部门",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "experience.0.role",
+        "placeholder": "职位名称",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "experience.0.level",
+        "placeholder": "如 P6/T5（选填）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "experience.0.start",
+        "placeholder": "YYYY-MM / YYYY-MM-DD",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "experience.0.end",
+        "placeholder": "YYYY-MM / YYYY-MM-DD / 至今",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "TEXTAREA",
+        "type": null,
+        "id": "",
+        "name": "experience.0.description",
+        "placeholder": "负责什么、如何推进、产生什么结果",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "TEXTAREA",
+        "type": null,
+        "id": "",
+        "name": "experience.0.achievements",
+        "placeholder": "尽量用数字描述",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "experience.0.leaveReason",
+        "placeholder": "选填（社招常见）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "experience.0.reportTo",
+        "placeholder": "选填（管理岗）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "experience.0.teamSize",
+        "placeholder": "选填（管理岗，如 8 人）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "projects.0.name",
+        "placeholder": "项目名称",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "projects.0.role",
+        "placeholder": "例如：独立开发",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "projects.0.start",
+        "placeholder": "YYYY-MM / YYYY-MM-DD",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "projects.0.end",
+        "placeholder": "YYYY-MM / YYYY-MM-DD / 至今",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "projects.0.techStack",
+        "placeholder": "React,Python,Unity…",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "TEXTAREA",
+        "type": null,
+        "id": "",
+        "name": "projects.0.description",
+        "placeholder": "项目解决的痛点、背景",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "TEXTAREA",
+        "type": null,
+        "id": "",
+        "name": "projects.0.contribution",
+        "placeholder": "你具体做了什么（校招要求与项目背景拆分）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "TEXTAREA",
+        "type": null,
+        "id": "",
+        "name": "projects.0.outcome",
+        "placeholder": "量化结果，如「性能提升 40%」",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "projects.0.scale",
+        "placeholder": "选填，如团队人数/用户量",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "projects.0.client",
+        "placeholder": "选填（toB 项目）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "projects.0.link",
+        "placeholder": "https://",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "games.0.genre",
+        "placeholder": "如：角色扮演类/休闲类/射击类",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "games.0.name",
+        "placeholder": "如：原神",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "games.0.duration",
+        "placeholder": "如：网游活跃3年以上",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "TEXTAREA",
+        "type": null,
+        "id": "",
+        "name": "games.0.achievement",
+        "placeholder": "如：成就数 1064 / 满级 / 排名",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "TEXTAREA",
+        "type": null,
+        "id": "",
+        "name": "games.0.extra",
+        "placeholder": "如：60级 成就数1064 活跃天数85",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "TEXTAREA",
+        "type": null,
+        "id": "",
+        "name": "ai.tools",
+        "placeholder": "如：Claude Code、Codex、GLM、Cursor、ZCode；模型：GPT-5、GLM-5.3…",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "TEXTAREA",
+        "type": null,
+        "id": "",
+        "name": "ai.collaboration",
+        "placeholder": "描述 1-3 个你与 AI 协作完成的真实项目：怎么分工、你如何把控质量、结果如何",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "TEXTAREA",
+        "type": null,
+        "id": "",
+        "name": "skills.keywords",
+        "placeholder": "React、Python、产品规划、用户研究…",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "skills.proficiency",
+        "placeholder": "如：React 精通、Python 熟练、Go 了解",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "skills.languages",
+        "placeholder": "英语 CET-6 (492)",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "skills.devLanguages",
+        "placeholder": "如：Python,Java,Go（腾讯/京东校招独立项）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "skills.englishScore",
+        "placeholder": "如：492（与等级配对）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "skills.certificates",
+        "placeholder": "PMP、软考、蓝桥杯…",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "skills.certificateIds",
+        "placeholder": "选填，含金量高的证书编号",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "skills.portfolioUrl",
+        "placeholder": "https://",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "skills.portfolio",
+        "placeholder": "选填，文件路径",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "skills.interests",
+        "placeholder": "主持、博客、3D 建模…",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "TEXTAREA",
+        "type": null,
+        "id": "",
+        "name": "extras.summary",
+        "placeholder": "用 3-5 句话概括你的优势",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "extras.awards",
+        "placeholder": "奖项或荣誉",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "extras.campus",
+        "placeholder": "社团、学生工作",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "extras.publications",
+        "placeholder": "文章、论文",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "extras.patents",
+        "placeholder": "专利或软著",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "extras.certifier",
+        "placeholder": "选填（腾讯校招），建议填导师/辅导员，如：张老师 152xxxx 计算机学院",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "family.0.name",
+        "placeholder": "家庭成员姓名",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "family.0.relation",
+        "placeholder": "如：父亲/母亲/配偶",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "family.0.company",
+        "placeholder": "选填",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "family.0.position",
+        "placeholder": "选填",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": "text",
+        "id": "",
+        "name": "family.0.phone",
+        "placeholder": "选填（仅本机保存）",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      },
+      {
+        "tag": "INPUT",
+        "type": null,
+        "id": "",
+        "name": "compliance.relativeDetail",
+        "placeholder": "亲属姓名、关系、所在部门",
+        "ariaLabel": null,
+        "disabled": false,
+        "inOpenDialog": false
+      }
+    ],
+    "profilesCount": 1,
+    "profileTabTexts": [
+      "＋"
+    ],
+    "nativePromptFunction": true,
+    "horizontalOverflow": -15
+  },
+  "screenshot": "E:\\共享\\创业\\一键投递-交付开发-2026-10-04\\verification\\2026-10-04-recovery\\prompt-probe-observer-v38.png",
+  "actualPixelsViewed": true,
+  "findings": [
+    {
+      "priority": "P1",
+      "title": "New direction action reaches unsupported native prompt",
+      "evidence": "Visible toast reports unsupported prompt; no new profile is saved."
+    }
+  ],
+  "kimiAcceptance": false,
+  "limitations": [
+    "Observer did not click, type or modify window.prompt.",
+    "Visible input descriptions include existing resume fields; naming dialog presence must be identified from screenshot and open-dialog membership.",
+    "Profile creation operation was performed by parent probe; observer only reads result."
+  ],
+  "ok": false,
+  "usableProfileNameInputPresent": false,
+  "notes": [
+    "Actual pixels show prompt() is not supported. error toast, default profile and + only; no usable profile naming dialog or DOM input appeared."
+  ]
+}

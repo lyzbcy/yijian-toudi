@@ -1,16 +1,46 @@
 # 一键投递 · AI Memory
 
+55候选修复ATSX学校搜索/日期展示误入文本计划，实际包8检查、401单测/30套后台、Windows127文件及实际54→55升级8检查/旧中文附件离线队列通过。隔离SDK字节8/78、小米7/79控件DOM一致/事实人工，不计完整语义或官网保存。54Mac双架构已回读并备份18资产，55原生另验；Windows NotSigned，首次版本格式失败保留。完整交付与整体低于1%未证明。
+
 这里是项目的渐进式维护入口。先读本页，再按当前任务进入对应文档，不需要一次性加载全部资料。
 
 ## 当前状态
+
+
+
+- 当前为 **v0.5.55 接续开发候选，未正式发布**，ATSX通用规划/执行守卫和Windows包/实际升级/队列已验，54Mac双架构已回读并备份，55原生另验；53Intel失败保留。原设备聊天尚未恢复，运行代码从v0.5.33 ASAR校验恢复。当前事实见[接续进度](progress/2026-10-04-recovery-delivery.md)，全部门槛见[当前验收矩阵](development/mvp-acceptance.md)。以下条目保留历史来源。
+
+- v0.5.15 京东延迟扫码：[计时修复与真实登录态对照](progress/2026-10-02-jd-delayed-auth.md)。
+
+- v0.5.14 京东真实loginRelay中转补齐，接续 [父子框架验收](progress/2026-10-02-jd-frame-fix.md)。
+
+- v0.5.13 京东父子框架回跳：[修复与现场验收](progress/2026-10-02-jd-frame-fix.md)。
+
+- v0.5.12 Windows 稳定性候选：[本轮修复与验收](progress/2026-10-02-mvp-hardening.md)。
+
+- v0.5.11 京东自动扫码回跳候选：精确 SSO 落地页与父工作区同步，见 [京东验收](progress/2026-09-30-jd-login.md)。
+
+- v0.5.10 同会话 AI 网页调试：随机本机 CDP、DOM/Shadow DOM、iframe/popup、JSON 请求文件与成对 bat 启停；见 [integrations/ai-browser.md](integrations/ai-browser.md)。
+
+- v0.5.10 京东真实扫码后 `qq.jd.com` 回跳和子页面 OAuth 学习修复：[京东登录验收](progress/2026-09-30-jd-login.md)。
+
+- v0.5.7 Windows 本地源码预览：[本地开发说明](../zeen-tools/本地开发说明.md)。
+
+- v0.5.6 现场回跳与附件确认修复：[progress/2026-09-29-live-window-fixes.md](progress/2026-09-29-live-window-fixes.md)。
+
+- v0.5.5 登录与上传修复：[integrations/login-upload.md](integrations/login-upload.md)；验收见 [progress/2026-09-29-login-upload.md](progress/2026-09-29-login-upload.md)。
+
+- v0.5.4 批量简历更新：[progress/2026-09-29-resume-batch.md](progress/2026-09-29-resume-batch.md)；选择/全选、历史时间、4/6 平铺窗口。实现设计见 [integrations/resume-batch.md](integrations/resume-batch.md)。
+
+- 2026-09-29 MVP P0 实施与剩余门槛：[progress/2026-09-29-mvp-p0.md](progress/2026-09-29-mvp-p0.md)。工作树 v0.5.3 开发候选，真实投递保持暂停。
 
 - v0.4.0（2026-09-20）：企微通知 + Kimi 桥控制层 + Boss 批量投递引擎（实验）已并入，设置页可配置；详见 [specs/2026-09-19-Boss一键投递与网申自动填写-design.md](specs/2026-09-19-Boss一键投递与网申自动填写-design.md) §9-§10 与 CHANGELOG
 
 - 后台稳定性修复与验收：[progress/2026-09-09-后台稳定性打磨.md](progress/2026-09-09-后台稳定性打磨.md)
 - 0.5.0 发布就绪度实测：[progress/2026-09-28-release-readiness.md](progress/2026-09-28-release-readiness.md)
 
-- 工作树版本：`0.5.0 Windows x64 测试预发布已发布`；最近稳定 Release：`v0.3.1`
-- 目标平台：macOS（Electron，架构保留 Windows 打包能力）
+- 工作树版本：`0.5.55 接续开发候选`；最近公开预发布 `v0.5.1`，最近稳定 Release：`v0.3.1`
+- 目标平台：Windows 与 macOS；当前机器执行 Windows 实测，macOS 门槛继续保留。
 - 可真实使用：本地简历保存、收藏与筛选、QQ 邮箱 IMAP 同步、本机 Agent API、更新检查、真实浏览器入口，以及腾讯、百度、字节跳动、小米、京东、美团岗位抓取；阿里职位与 BOSS 受事实源/平台协议限制仅提供官方手动入口
 - 已有安全闭环骨架：腾讯、字节、阿里简历在带退出栏的内嵌工作区进行高置信填写/核对；“全部都要”会拆成社招、校招两个方向逐站处理；保存、验证码和任何申请/投递按钮都由用户本人操作
 - 多平台简历同步设计：[plans/2026-08-12-多平台简历同步与职位聚合设计.md](plans/2026-08-12-多平台简历同步与职位聚合设计.md)
@@ -28,6 +58,10 @@
 | 查看支持哪些大厂 | [integrations/大厂清单.md](integrations/大厂清单.md) |
 | 速查招聘官网网址 | [招聘官网汇总.md](招聘官网汇总.md) |
 | 查简历字段缺口 | [specs/简历字段缺口-2026-07-26.md](specs/简历字段缺口-2026-07-26.md) |
+| 部署反馈服务与验证生产门槛 | [integrations/feedback-deployment.md](integrations/feedback-deployment.md) |
+| 维护Mac自动更新事务 | [integrations/macos-update.md](integrations/macos-update.md) |
+| 维护岗位刷新结果与自动重试间隔 | [integrations/job-refresh.md](integrations/job-refresh.md) |
+| 维护软件内作者页与二维码放大 | [integrations/author-page.md](integrations/author-page.md) |
 | 维护 QQ 邮箱同步 | [integrations/qq-mail.md](integrations/qq-mail.md) |
 | 规划下一阶段 | [development/roadmap.md](development/roadmap.md) |
 | 发布 Skill 与云端定时触发 | [../skill/yijian-toudi/references/deploy.md](../skill/yijian-toudi/references/deploy.md) |

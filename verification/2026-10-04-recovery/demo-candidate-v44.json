@@ -1,0 +1,90 @@
+{
+  "version": "0.5.44",
+  "candidate": true,
+  "completeDemo": false,
+  "sampleResume": true,
+  "jobsSource": "anonymous-live-official-providers",
+  "realApplications": 0,
+  "externalMessages": 0,
+  "output": "isolated-recording-profile",
+  "checks": [
+    "Actual onboarding, sample resume, create/rename directions and independent content through UI",
+    "Actual process cold reopen retains sample resume and named directions",
+    "Actual UI anonymous official job refresh, including real failure/partial state if any",
+    "Actual job company/search filtering and local cart; no application initiated",
+    "Visible Agent prompt masks local token; no private prompt copied"
+  ],
+  "videos": [
+    {
+      "name": "page@dfe53d7febaaa791c2fd3436363ef872.webm",
+      "durationSeconds": 38.72,
+      "sha256": "1cd04829c1a46eaba99c5591d0d73c37f99f29e1f3f112e21c3115456a92c73b"
+    },
+    {
+      "name": "page@70631f70d71de2944448bece7e66938f.webm",
+      "durationSeconds": 253.12,
+      "sha256": "04e2f4eb688a264afcc5b39bd80dd0671872a43926c2a295546e8ea6a1ba4b56"
+    }
+  ],
+  "liveRefresh": {
+    "at": "2026-10-04T12:22:28.754Z",
+    "completedAllProviders": false,
+    "jobCount": 3694,
+    "companies": [
+      "tencent",
+      "xiaomi",
+      "jd",
+      "meituan"
+    ],
+    "task": {
+      "status": "done",
+      "detail": "已抓取 3694 个岗位（近 30 天）：腾讯 1374 个，百度 0 个（失败：岗位请求超过总时限，请稍后重试），字节跳动 0 个（失败：岗位接口请求失败，保留上次岗位数据），小米 203 个，京东 974 个，美团 1143 个。"
+    }
+  },
+  "ok": true,
+  "pageErrors": [],
+  "mp4": {
+    "name": "一键投递-0.5.44-候选操作录像.mp4",
+    "bytes": 10121450,
+    "durationSeconds": 291.84,
+    "dimensions": [
+      1280,
+      960
+    ],
+    "codec": "h264",
+    "sha256": "cdbec35e920bb3bdeaaa9ee0d118dfd0b3b39ddc7578dd113e02309b099cef71"
+  },
+  "editing": {
+    "rawPreserved": true,
+    "realTime": true,
+    "trimmed": false,
+    "accelerated": false,
+    "actualAppPixels": true,
+    "footerLabelsCandidateAndSample": true,
+    "audioPresent": false
+  },
+  "verification": {
+    "fullCodecDecodePassed": true,
+    "extractedFrameSeconds": [
+      3,
+      18,
+      42,
+      267,
+      287
+    ],
+    "inspectedFrameSeconds": [
+      3,
+      18,
+      42,
+      267,
+      287
+    ],
+    "fullPlaybackInspected": false,
+    "limitations": [
+      "Five discrete frames visually inspected; complete codec decode is not full visual/privacy review.",
+      "Recorded live refresh is partial: Baidu timed out and Bytedance interface failed; original result retained.",
+      "No real account save, application, public feedback, official update or full delivery claim."
+    ]
+  },
+  "runtimeSourceCommit": "a89b7bb0de18d0674b7fa81a9b459fccf43993b1"
+}

@@ -1,0 +1,15 @@
+{
+  "version": "0.5.50",
+  "ok": false,
+  "failureStage": "fresh authenticated Baidu form structural identification, followed by retention probe",
+  "error": "lab-main-call-failed",
+  "observedPrefix": "field-56411.-",
+  "rowCount": 30,
+  "integerOnlyStructuralMatcherRecognizedRows": false,
+  "resumeValuesRecorded": false,
+  "externalWrites": 0,
+  "remedy": "accept observed numeric decimal prefix across all structural readers; unidentified Baidu forms remain manual instead of caption-based fallback",
+  "successfulRetest": "baidu-personal-resume-v50.json",
+  "completeFailureReportAvailable": false,
+  "recordedErrorMessageAndFollowupReadonlyObservationOnly": true
+}

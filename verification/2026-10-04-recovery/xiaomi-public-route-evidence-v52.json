@@ -1,0 +1,17 @@
+{
+  "version": "0.5.52",
+  "publicSourceOnly": true,
+  "url": "https://lf-package-cn.feishucdn.com/obj/atsx-throne/hire-fe-prod/portal/saas-career/static/js/pc.5bbfbb4a.js",
+  "bytes": 387679,
+  "routes": [
+    "/ambassador-profile",
+    "/resume/view",
+    "/resume"
+  ],
+  "snippets": [
+    {
+      "term": "/resume",
+      "context": "lement(C.rU,{to:\"/ambassador-profile\"},P.ZP.get(\"Ambassador.myProfile\"))):l.createElement(w.Z.Item,null,l.createElement(C.rU,{to:\"/resume/view\"},P.ZP.get(\"Components.Topbar.MyResume\"))),N?null:l.createElement(w.Z.Item,null,l.createElement(C.rU,{to:\"/position/application\"},P.ZP.get(\"Components.Topbar.MyApplication\"))),N?l.createElement(w.Z.Item,null,l.createElement(C.rU,{to:R.ZP"
+    }
+  ]
+}

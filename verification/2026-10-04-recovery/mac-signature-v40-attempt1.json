@@ -1,0 +1,16 @@
+{
+  "version": "0.5.40",
+  "workflowRun": 37191279296,
+  "sourceCommit": "804a2dda5cdb8c6a234600d69b48238ff557e7ef",
+  "ok": false,
+  "failedStep": "Audit actual macOS bundle and native artifacts",
+  "architectures": {
+    "arm64": "codesign --verify --deep --strict: code has no resources but signature indicates they must be present",
+    "x64": "codesign --verify --deep --strict: code object is not signed at all"
+  },
+  "buildLogEvidence": "Current build is a part of pull request, code signing will be skipped. Set env CSC_FOR_PULL_REQUEST to true to force code signing.",
+  "cause": "electron-builder suppresses even configured ad-hoc signing for pull-request events unless CSC_FOR_PULL_REQUEST is enabled",
+  "repair": "Enable signing only on native candidate build step with explicit mac.identity=- and identity auto-discovery disabled. No private certificate or publication credential supplied.",
+  "published": false,
+  "fullGoalComplete": false
+}

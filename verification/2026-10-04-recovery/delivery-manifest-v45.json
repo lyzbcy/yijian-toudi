@@ -1,0 +1,198 @@
+{
+  "version": "0.5.45",
+  "sourceCommit": "98ee8812a45ab93e196897af8c6a1ef7ff0fada8",
+  "artifacts": [
+    {
+      "name": "yijian-toudi-setup-0.5.45.exe",
+      "bytes": 104236085,
+      "sha256": "7f6810997ef66168c4eb7772511d35c8bfdf5d052475aa600125c890efbb428f",
+      "checksum": "yijian-toudi-setup-0.5.45.sha256"
+    },
+    {
+      "name": "yijian-toudi-skill-0.5.45.tar.gz",
+      "bytes": 13907,
+      "sha256": "ade3d837a8f1e7d750357021e284eb7a000118917924969fd15386c76770ff67",
+      "checksum": "yijian-toudi-skill-0.5.45.sha256"
+    },
+    {
+      "name": "yijian-toudi-feedback-server-0.5.45.tar.gz",
+      "bytes": 12433,
+      "sha256": "16233ee75d25209f96185e43b1fb4638dc5ec06f6d7eb3d938c07ebd1d1fbc4d",
+      "checksum": "yijian-toudi-feedback-server-0.5.45.sha256"
+    },
+    {
+      "name": "yijian-toudi-0.5.45-arm64.dmg",
+      "bytes": 127976528,
+      "sha256": "94b3d23f7a266fe0623f095c68e805f30662200f898017cf690a19d5890b49e4",
+      "checksum": "yijian-toudi-0.5.45-arm64.dmg.sha256"
+    },
+    {
+      "name": "yijian-toudi-0.5.45-arm64.zip",
+      "bytes": 126026633,
+      "sha256": "767d2736b6ebdd2c362641417d56a30d2e914d58a35968316fa24ca72c8ff165",
+      "checksum": "yijian-toudi-0.5.45-arm64.zip.sha256"
+    },
+    {
+      "name": "yijian-toudi-0.5.45-x64.dmg",
+      "bytes": 132654946,
+      "sha256": "cf40be33c0f4a00efe6de44825ea8d205ee52077cb7f667e2c4ec6b6ddec32bb",
+      "checksum": "yijian-toudi-0.5.45-x64.dmg.sha256"
+    },
+    {
+      "name": "yijian-toudi-0.5.45-x64.zip",
+      "bytes": 130788299,
+      "sha256": "615eccfc2757bc0f91ab817e835af959f3dac0f15256ac7b3bf5672207f2c122",
+      "checksum": "yijian-toudi-0.5.45-x64.zip.sha256"
+    }
+  ],
+  "fullGoalComplete": false,
+  "productBugRateBelowOnePercentProven": false,
+  "verificationReports": [
+    "verification/2026-10-04-recovery/windows-source-v45.json",
+    "verification/2026-10-04-recovery/auxiliary-content-v45-windows.json",
+    "verification/2026-10-04-recovery/unit-v45.json",
+    "verification/2026-10-04-recovery/background-v45-windows.json",
+    "verification/2026-10-04-recovery/job-refresh-ui-v45-windows.json",
+    "verification/2026-10-04-recovery/backup-roundtrip-v45-windows.json",
+    "verification/2026-10-04-recovery/windows-ui-v45.json",
+    "verification/2026-10-04-recovery/default-install-v45.json",
+    "verification/2026-10-04-recovery/install-upgrade-v45-desktop-0.json",
+    "verification/2026-10-04-recovery/install-upgrade-v45-desktop-1.json",
+    "verification/2026-10-04-recovery/partial-refresh-visible-time-v45.json",
+    "verification/2026-10-04-recovery/linux-feedback-v45.json",
+    "verification/2026-10-04-recovery/linux-systemd-v45.json",
+    "verification/2026-10-04-recovery/linux-caddy-v45.json",
+    "verification/2026-10-04-recovery/mac-candidate-v45-arm64.json",
+    "verification/2026-10-04-recovery/mac-ui-v45-arm64.json",
+    "verification/2026-10-04-recovery/mac-profiles-v45-arm64.json",
+    "verification/2026-10-04-recovery/mac-install-upgrade-v45-arm64.json",
+    "verification/2026-10-04-recovery/mac-auto-update-v45-arm64.json",
+    "verification/2026-10-04-recovery/job-refresh-ui-v45-arm64.json",
+    "verification/2026-10-04-recovery/mac-candidate-v45-x64.json",
+    "verification/2026-10-04-recovery/mac-ui-v45-x64.json",
+    "verification/2026-10-04-recovery/mac-profiles-v45-x64.json",
+    "verification/2026-10-04-recovery/mac-install-upgrade-v45-x64.json",
+    "verification/2026-10-04-recovery/mac-auto-update-v45-x64.json",
+    "verification/2026-10-04-recovery/job-refresh-ui-v45-x64.json"
+  ],
+  "latestUnits": {
+    "passed": 363,
+    "failed": 0,
+    "skipped": 0,
+    "verifiedAtRuntimeCommit": "45f1087b310cb188753426ce1c3b6902af3b37bb",
+    "scope": "Final Windows units; not overall defect rate"
+  },
+  "background": {
+    "suites": 21,
+    "initialUnitCount": 362,
+    "finalUnitCount": 363
+  },
+  "windows": {
+    "signature": "NotSigned",
+    "sourceCommit": "98ee8812a45ab93e196897af8c6a1ef7ff0fada8",
+    "verifiedRuntimeCommit": "45f1087b310cb188753426ce1c3b6902af3b37bb",
+    "sourceRuntimeUnchangedAndASARMatched": true,
+    "ownFilesMatched": 117,
+    "defaultNSISGroups": 6,
+    "upgradeFrom": "0.5.44",
+    "desktopOffGroups": 8,
+    "desktopOnConfirmedGroups": 9,
+    "bundledSealed44HelperUsed": true,
+    "helperScriptOverrideExplicit": false,
+    "nativeWizardChoicesVerified": false,
+    "negativeFaultCasesVerifiedAtVersion": "0.5.43",
+    "negativeWorkerSourceUnchanged": true,
+    "refreshGroups": 6,
+    "backupRestoreGroups": 5,
+    "releaseNetwork": "controlled-fixture"
+  },
+  "mac": {
+    "workflowRun": 37205190489,
+    "sourceCommit": "98ee8812a45ab93e196897af8c6a1ef7ff0fada8",
+    "architectures": [
+      "arm64",
+      "x64"
+    ],
+    "ownFilesMatched": 117,
+    "fullAdHocBundleSignatureVerified": true,
+    "allContainerSignaturesVerified": true,
+    "manualGroupsPerArchitecture": 9,
+    "automaticFixtureGroupsPerArchitecture": 10,
+    "incomingFixtureVersion": "0.5.46",
+    "incomingVersionIsTestFixture": true,
+    "officialPublicAutomaticUpdateProven": false,
+    "refreshGroupsPerArchitecture": 6,
+    "refreshReplayRun": 37206288492,
+    "refreshReplayUsesExactNativeZIPs": true,
+    "initialNativeHiddenReportNotUploaded": true,
+    "developerID": false,
+    "notarized": false,
+    "endUserTrustVerified": false,
+    "gatekeeperQuarantineAssessment": "rejected",
+    "readyTimeoutMs": 60000,
+    "originalIntelReadyFailureRootCauseProven": false
+  },
+  "linux": {
+    "workflowRun": 37204738346,
+    "sourceCommit": "45f1087b310cb188753426ce1c3b6902af3b37bb",
+    "actualSystemdRuntime": true,
+    "actualCaddyLocalCAHTTPS": true,
+    "composeBootRestart": true,
+    "stopMs": 24,
+    "publicTLS": false,
+    "realWecom": false
+  },
+  "legacyPartialSnapshot": {
+    "version": "0.5.44",
+    "jobs": 3694,
+    "currentV45DisplayVerified": true,
+    "originalProfileByteHashUnchanged": true
+  },
+  "preview": {
+    "version": "0.5.44",
+    "name": "yijian-toudi-preview-0.5.44-realtime.mp4",
+    "report": "verification/2026-10-04-recovery/demo-candidate-v44.json",
+    "completeDemo": false,
+    "currentVersionVideo": false,
+    "realApplications": 0,
+    "externalMessages": 0
+  },
+  "preservedFailures": [
+    "verification/2026-10-04-recovery/background-v39-attempt1.json",
+    "verification/2026-10-04-recovery/reliability-v39-attempt1-observation.json",
+    "verification/2026-10-04-recovery/profile-observation-v39-coordination-failure.json",
+    "verification/2026-10-04-recovery/mac-intel-v39-attempt1.json",
+    "verification/2026-10-04-recovery/default-install-v38-test-expectation-failure.json",
+    "verification/2026-10-04-recovery/live-prompt-probe-v38.json",
+    "verification/2026-10-04-recovery/background-v40-attempt1.json",
+    "verification/2026-10-04-recovery/mac-signature-v40-attempt1.json",
+    "verification/2026-10-04-recovery/mac-install-upgrade-v39-arm64.json",
+    "verification/2026-10-04-recovery/mac-install-upgrade-v39-x64.json",
+    "verification/2026-10-04-recovery/mac-auto-update-v41-unit-attempt1.json",
+    "verification/2026-10-04-recovery/mac-auto-update-v41-arm64-attempt1.json",
+    "verification/2026-10-04-recovery/mac-auto-update-v41-x64-attempt1.json",
+    "verification/2026-10-04-recovery/mac-profiles-v42-x64-attempt1.json",
+    "verification/2026-10-04-recovery/windows-atomic-result-v42-attempt1.json",
+    "verification/2026-10-04-recovery/mac-auto-update-v43-x64-attempt1.json",
+    "verification/2026-10-04-recovery/mac-install-upgrade-v44-arm64-repeat-attempt1.json",
+    "verification/2026-10-04-recovery/job-refresh-ui-v45-attempt1.json",
+    "verification/2026-10-04-recovery/delivery-layout-v45-attempt1.json",
+    "verification/2026-10-04-recovery/mac-refresh-ui-v45-arm64-attempt1.json",
+    "verification/2026-10-04-recovery/mac-refresh-artifact-gap-v45.json"
+  ],
+  "remainingGates": [
+    "real-account-complete-save-reopen-and-authorized-application-receipts",
+    "Boss-limit-and-unknown-receipt-review",
+    "production-public-HTTPS-feedback-real-WeCom-external-link-default-endpoint",
+    "public-official-download-update-and-cloud-Skill",
+    "Windows-native-installer-wizard-choices",
+    "Mac-end-user-Gatekeeper-DeveloperID-notarization",
+    "current-complete-real-demonstration-video",
+    "representative-product-bug-rate-below-1-percent"
+  ],
+  "inheritedVerificationReports": [
+    "verification/2026-10-04-recovery/restart-baseline-no-process-v43.json",
+    "verification/2026-10-04-recovery/restart-no-process-v43.json",
+    "verification/2026-10-04-recovery/restart-live-unconfirmed-v43.json"
+  ]
+}

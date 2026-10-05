@@ -1,6 +1,6 @@
 # 通用部署：Skill 在云端，应用在已登录的桌面
 
-Skill 包只包含操作说明与定时触发器，不包含简历、Token、Cookie、浏览器扩展或应用二进制。当前应用主要在 macOS 上运行；云服务器只负责在约定时间通过加密隧道调用本机 API，不承载浏览器登录态。桌面应用、浏览器、Agent API 和到云端的隧道必须在任务期间保持运行。
+Skill 包包含操作说明、定时触发器和静默更新引导器，不包含简历、Token、Cookie、浏览器扩展或应用二进制。应用在 Windows/macOS 桌面运行（本轮Windows实测优先，macOS仍须单独构建验收）；云服务器只负责在约定时间通过加密隧道调用本机 API，不承载浏览器登录态。桌面应用、浏览器、Agent API 和到云端的隧道必须在任务期间保持运行。
 
 ## 1. 安装同版本 Skill
 
@@ -9,21 +9,29 @@ Skill 包只包含操作说明与定时触发器，不包含简历、Token、Coo
 ```sh
 tar -xzf yijian-toudi-skill-VERSION.tar.gz -C "$HOME/.codex/skills"
 cat "$HOME/.codex/skills/yijian-toudi/version.json"
+node "$HOME/.codex/skills/yijian-toudi/scripts/use.cjs"
 ```
+
+每次使用先调用use.cjs取得有效版本/文档路径；每天首次后台检查，不等待。本次固定旧快照，新版供下次调用，失败继续旧版。主目录作为稳定引导器保留，版本缓存和原子指针在私有STATE_DIR；详见[静默更新](update.md)。首次旧版无引导器包须手动安装24及后续版本；自更新不升级桌面，桌面仍需匹配有效版本。
 
 ## 2. 建立仅回环可见的连接
 
-应用在桌面运行并开启 Agent API。桌面到云端建立**反向** SSH 隧道；云端的 153147 转发到桌面的 53147。保持 SSH 会话存活，重连机制由服务器管理员配置。
+应用在桌面运行并开启 Agent API。桌面到云端建立**反向** SSH 隧道；云端的 15347 转发到桌面的 53147。保持 SSH 会话存活，重连机制由服务器管理员配置。
 
 ```sh
-ssh -N -o ExitOnForwardFailure=yes -R 127.0.0.1:153147:127.0.0.1:53147 USER@SERVER
+ssh -N -o ExitOnForwardFailure=yes -R 127.0.0.1:15347:127.0.0.1:53147 USER@SERVER
 ```
 
-在云端检查 `curl --noproxy '*' http://127.0.0.1:153147/v1/status -H "Authorization: Bearer $YJTD_API_TOKEN"`。这里的 Token 由桌面应用显示，只保存在云端私有环境配置中（文件权限 600），不放在 crontab 文本、命令参数或日志里。若应用与 Skill 在同一台机器，跳过隧道，改用 `http://127.0.0.1:53147`。
+在云端私有环境配置中设置 `YJTD_BASE_URL=http://127.0.0.1:15347` 和 `YJTD_API_TOKEN`，然后只读检查状态。Token由桌面应用显示，只保存在私有环境配置（文件权限600），不把展开后的值写进命令参数、crontab或日志；以下命令参数仅含环境变量名：
+
+```sh
+node -e "fetch(process.env.YJTD_BASE_URL+'/v1/status',{headers:{Authorization:'Bearer '+process.env.YJTD_API_TOKEN}}).then(async r=>{if(!r.ok)throw Error('API status '+r.status);const s=await r.json();console.log(JSON.stringify({version:s.version,ok:true}));}).catch(e=>{console.error(e.message);process.exitCode=1;})"
+```
+若应用与Skill在同一台机器，跳过隧道，BASE_URL改用`http://127.0.0.1:53147`。远端端口15347在合法TCP范围内；端口冲突时选1～65535范围内未占用端口并同步BASE_URL。
 
 ## 3. 先演练，再启用日程
 
-为定时器提供 `YJTD_API_TOKEN`、`YJTD_BASE_URL=http://127.0.0.1:153147`、`YJTD_ACCOUNT_ID=default`、`YJTD_TARGET=100`。先设置 `YJTD_DRY_RUN=1` 并手工运行一次：
+为定时器提供 `YJTD_API_TOKEN`、`YJTD_BASE_URL=http://127.0.0.1:15347`、`YJTD_ACCOUNT_ID=default`、`YJTD_TARGET=100`。先设置 `YJTD_DRY_RUN=1` 并手工运行一次：
 
 ```sh
 node "$HOME/.codex/skills/yijian-toudi/scripts/daily-boss.cjs"
@@ -42,4 +50,4 @@ CRON_TZ=Asia/Shanghai
 
 ## 4. 版本发布
 
-仓库 `pnpm pack:skill` 生成与 `package.json` 同版本的 Skill tar.gz 和 SHA256。GitHub Release 发布后，`release-skill.yml` 将同版本 Skill 包附加到该 Release。应用版本和 Skill 包应成对升级、校验、演练；不能把旧版 Skill 直接指向新版 API 后立即恢复定时正式投递。
+仓库 `pnpm pack:skill` 生成与 `package.json` 同版本的 Skill tar.gz 和 SHA256，已存在归档不覆盖。先创建draft，上传桌面/Skill/校验资源、读回校验，再publish版本；`release-skill.yml`的workflow_dispatch只往现有draft准备Skill，published只下载审计不事后补包或覆盖。应用版本和 Skill 应成对升级、校验、演练；不匹配时暂停投递，不自动升级桌面。

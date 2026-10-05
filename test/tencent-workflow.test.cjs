@@ -204,6 +204,19 @@ test('planTencentResumePatch 标注覆盖风险（远端有值且与本地不同
   assert.equal(patches[0].localValue, '李四');
 });
 
+test('planTencentResumePatch 不把姓名映射到紧急联系人，0/1 分配意愿按语义对比', () => {
+  const resume = { basic: { name: '张三' }, intention: { acceptCityDeployment: false } };
+  const inspection = { fields: [
+    { index: 0, label: '请输入紧急联系人姓名 紧急联系人', placeholder: '请输入紧急联系人姓名', type: 'input:text', value: '李四' },
+    { index: 1, label: '除上述选择外，是否还接受其他城市分配 是', type: 'input:radio', controlValue: '1', value: '' },
+    { index: 2, label: '除上述选择外，是否还接受其他城市分配 否', type: 'input:radio', controlValue: '0', value: '0' }
+  ] };
+  const { patches } = planTencentResumePatch(resume, inspection, { recruitType: 'campus' });
+  const byKey = Object.fromEntries(patches.map((item) => [item.key, item]));
+  assert.equal(byKey['basic.name'].action, 'manual');
+  assert.equal(byKey['intention.acceptCityDeployment'].action, 'skip');
+});
+
 // 社招/校招简历页路由：2026-07-26 录制实测后接入。社招走 careers.tencent.com，
 // 校招走独立域名 join.qq.com（其「提交简历」会真实投递职位）。
 test('resolveResumeUrl 社招/校招选对不同域名的简历页', () => {

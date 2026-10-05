@@ -1,0 +1,65 @@
+{
+  "version": "0.5.40",
+  "oldVersion": "0.5.38",
+  "architecture": "x64",
+  "ok": true,
+  "fixtureOnly": true,
+  "method": "actual-Applications-CLI-install-and-manual-bundle-replacement",
+  "candidateBuildRun": 37191556375,
+  "baselineBuildSource": "b32bb9e1d39142512847ffce99273acc36f45738",
+  "nativeFileChooserControlled": true,
+  "nativePromptStubbed": false,
+  "automaticUpdaterVerified": false,
+  "endUserGatekeeperVerified": false,
+  "realAccountsVerified": false,
+  "checks": [
+    "Exact native ZIP/hash/checksum extracted; app version and packaged source audit match",
+    "Actual native baseline v38 app built from recorded historical source has matching bundle version and ASAR",
+    "Actual unique Applications installation visibly starts and completes onboarding and UI resume save",
+    "Cold process reopen from Applications preserves UI-saved resume and API credential",
+    "Visible v38 baseline saves resume through UI, imports sample attachment through real IPC with controlled chooser, and flushes a sample persistent Cookie",
+    "Actual manual v0.5.38→v0.5.40 Applications bundle replacement starts new version and retains resume, credential, attachment bytes and sample Cookie",
+    "Upgraded actual app creates and saves a named direction through native-unmodified HTML dialog",
+    "Same-version Applications replacement preserves both directions, current content, attachment and credential",
+    "Removing only test application leaves isolated local profile and attachment intact"
+  ],
+  "pageErrors": [],
+  "sealedCandidateBuildRun": null,
+  "canonicalZip": {
+    "name": "yijian-toudi-0.5.40-x64.zip",
+    "sha256": "080ee6886f722585771e9e1e0e06921feb0418b48cc57fce14b8b2c20823229c",
+    "bytes": 130778117
+  },
+  "candidateAudit": {
+    "version": "0.5.40",
+    "ownFilesMatched": 111,
+    "asarEntries": 1136,
+    "noPrivateDataFiles": true,
+    "noKnownKeyPatterns": true
+  },
+  "baselineAudit": {
+    "version": "0.5.38",
+    "ownFilesMatched": 110,
+    "asarEntries": 1135,
+    "noPrivateDataFiles": true,
+    "noKnownKeyPatterns": true
+  },
+  "signatureObservation": {
+    "exitCode": 0,
+    "detail": "Executable=/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app/Contents/MacOS/一键投递\nIdentifier=com.lyzbcy.yijiantoudi\nFormat=app bundle with Mach-O thin (x86_64)\nCodeDirectory v=20400 size=463 flags=0x2(adhoc) hashes=4+7 location=embedded\nSignature=adhoc\nInfo.plist entries=32\nTeamIdentifier=not set\nSealed Resources version=2 rules=13 files=11\nInternal requirements count=0 size=12\n"
+  },
+  "resourceSignatureObservation": {
+    "exitCode": 0,
+    "detail": "--prepared:/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.\n--prepared:/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler\n--validated:/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler\n--validated:/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.\n--prepared:/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.\n--validated:/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.\n--prepared:/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.\n--validated:/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.\n--prepared:/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app/Contents/Frameworks/一键投递 Helper (GPU).app\n--validated:/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app/Contents/Frameworks/一键投递 Helper (GPU).app\n--prepared:/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app/Contents/Frameworks/一键投递 Helper (Plugin).app\n--validated:/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app/Contents/Frameworks/一键投递 Helper (Plugin).app\n--prepared:/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app/Contents/Frameworks/Mantle.framework/Versions/Current/.\n--validated:/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app/Contents/Frameworks/Mantle.framework/Versions/Current/.\n--prepared:/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app/Contents/Frameworks/一键投递 Helper (Renderer).app\n--validated:/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app/Contents/Frameworks/一键投递 Helper (Renderer).app\n--prepared:/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app/Contents/Frameworks/一键投递 Helper.app\n--validated:/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app/Contents/Frameworks/一键投递 Helper.app\n/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app: valid on disk\n/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/current/一键投递.app: satisfies its Designated Requirement\n"
+  },
+  "gatekeeperObservation": {
+    "policyExitCode": 0,
+    "policy": "assessments enabled\n",
+    "assessmentExitCode": 3,
+    "assessment": "/Users/runner/work/yijian-toudi/yijian-toudi/.local-data/mac-applications-test-yDgOtY/quarantine-probe.app: rejected\n",
+    "timeout": false,
+    "scope": "CI CLI assessment of separate quarantined probe; no OS trust setting changed and no end-user launch proof"
+  },
+  "workflowRun": 37191556375,
+  "sourceCommit": "4379745f2c020818ed78e6068f03ccf72ddc9e18"
+}

@@ -1,0 +1,82 @@
+name: Verify sealed native job refresh UI
+
+on:
+  workflow_dispatch:
+    inputs:
+      native_run:
+        description: Successful native candidate workflow run with matching runtime
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  refresh:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [macos-latest, macos-15-intel]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Obtain exact successful native candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NATIVE_RUN: ${{ inputs.native_run }}
+        run: |
+          [[ "$NATIVE_RUN" =~ ^[0-9]+$ ]]
+          mkdir -p test-output .local-data
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$NATIVE_RUN" > test-output/native-run.json
+          node -e 'const r=require("./test-output/native-run.json"); if(r.status!=="completed" || r.conclusion!=="success") throw Error("Native run must have completed successfully");'
+          gh run download "$NATIVE_RUN" --repo "$GITHUB_REPOSITORY" --name "macos-candidate-$NATIVE_RUN-${{ matrix.runner }}" --dir .local-data/sealed-refresh-input
+      - name: Verify actual sealed ZIP bytes and matching signed runtime
+        run: |
+          node <<'NODE'
+          const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),cp=require('node:child_process');
+          const {auditAppAsar,sha}=require('./scripts/audit-app-asar.cjs');
+          const dir='.local-data/sealed-refresh-input',m=JSON.parse(fs.readFileSync(dir+'/test-output/mac-candidate.json')),version=require('./package.json').version;
+          assert(m.ok);assert.equal(m.version,version);assert.equal(m.architecture,process.arch);assert(m.signature.verified&&m.containerSignaturesVerified);
+          const a=m.artifacts.find(a=>a.name.endsWith('.zip')),file=dir+'/release/'+a.name,bytes=fs.readFileSync(file);
+          assert.equal(bytes.length,a.bytes);assert.equal(sha(bytes),a.sha256);assert.equal(fs.readFileSync(file+'.sha256','utf8').trim(),`${a.sha256}  ${a.name}`);
+          const target=path.resolve('.local-data/sealed-refresh-app');fs.mkdirSync(target);
+          cp.execFileSync('ditto',['-x','-k',file,target]);const app=path.join(target,'一键投递.app');
+          cp.execFileSync('codesign',['--verify','--deep','--strict',app]);
+          const audit=auditAppAsar(path.join(app,'Contents/Resources/app.asar'),process.cwd(),version);
+          fs.appendFileSync(process.env.GITHUB_ENV,'YJT_PACKAGED_EXECUTABLE='+path.join(app,'Contents/MacOS/一键投递')+'\n');
+          fs.writeFileSync('test-output/sealed-refresh-audit.json',JSON.stringify({ok:true,version,architecture:process.arch,nativeRun:JSON.parse(fs.readFileSync('test-output/native-run.json')).id,nativeSource:JSON.parse(fs.readFileSync('test-output/native-run.json')).head_sha,artifact:a,audit},null,2));
+          NODE
+      - name: Verify actual packaged refresh and retain detailed evidence
+        env:
+          YJT_VISIBLE_TEST: '1'
+        run: |
+          node test/ui-job-refresh-status.cjs
+      - name: Save report and screenshots from explicit paths
+        if: always()
+        run: |
+          for directory in .local-data/job-refresh-ui-*; do
+            test -d "$directory" || continue
+            for name in report.json partial-reopened.png failure.png; do
+              test ! -f "$directory/$name" || cp "$directory/$name" "test-output/refresh-$name"
+            done
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sealed-refresh-${{ github.run_id }}-${{ matrix.runner }}
+          if-no-files-found: error
+          path: |
+            test-output/sealed-refresh-audit.json
+            test-output/refresh-report.json
+            test-output/refresh-partial-reopened.png
+            test-output/refresh-failure.png

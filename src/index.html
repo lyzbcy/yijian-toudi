@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
+  <script>if (new URLSearchParams(location.search).has('localPreview')) document.addEventListener('DOMContentLoaded', () => { document.title = '一键投递 · LOCAL PREVIEW' + (new URLSearchParams(location.search).has('aiDebug') ? ' · AI DEBUG' : ''); });</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*">
@@ -12,15 +13,18 @@
     <span class="workspace-bar-icon">🔐</span>
     <div class="workspace-bar-text"><strong id="workspaceBarTitle">浏览器工作区</strong><span id="workspaceBarHint"></span></div>
     <button class="ghost-button" id="workspaceCopyUrl" title="复制当前网址">🔗 复制网址</button>
+    <button class="ghost-button" data-feedback="bug">遇到问题反馈</button>
+    <button class="ghost-button hidden" id="workspaceRestartLogin">重新打开登录</button>
     <button class="ghost-button" data-workspace-action="cancel" id="workspaceCancel">取消并返回</button>
     <button class="primary-button" data-workspace-action="finish" id="workspaceFinish">完成</button>
   </div>
 
-  <!-- 不打扰的求好评卡片：完成 3 次一键更新后出现一次，关闭不再打扰 -->
+  <!-- 中度使用后求 star/真实评价；关闭后15天不打扰，主进程持久化 -->
   <div class="star-card hidden" id="starCard">
     <img src="./assets/stickers/log/happy.png" alt="">
     <div class="star-card-text"><strong>用得还顺手吗？</strong><span>一键投递是开源软件，去 GitHub 给个 star 就是对作者最大的鼓励 ⭐</span></div>
     <button class="primary-button" id="starCardGo">去点 star</button>
+    <button class="ghost-button" data-feedback="review" id="starCardReview">写真实评价</button>
     <button class="ghost-button" id="starCardClose">不了</button>
   </div>
 
@@ -37,7 +41,7 @@
   <div class="app-shell">
     <aside class="sidebar">
       <div class="brand">
-        <div class="brand-mark">投</div>
+        <div class="brand-mark"><img src="./assets/stickers/mascot.png" alt="一键投递"></div>
         <div>
           <strong>一键投递</strong>
           <span>求职工作台</span>
@@ -51,6 +55,7 @@
         <button class="nav-item" data-page="resume"><span class="nav-icon">▤</span><span>我的简历</span><b id="resumeBadge">0%</b></button>
         <button class="nav-item" data-page="inbox"><span class="nav-icon">✉</span><span>招聘信息</span><b id="unreadCount">0</b></button>
         <button class="nav-item" data-page="automation"><span class="nav-icon">↻</span><span>自动化中心</span><i class="live-dot"></i></button>
+        <button class="nav-item feedback-entry" data-feedback="bug"><span class="nav-icon">💬</span><span>遇到问题反馈</span></button>
       </nav>
 
       <div class="nav-section-title">连接与帮助</div>
@@ -58,6 +63,7 @@
         <button class="nav-item" data-page="connections"><span class="nav-icon">⌘</span><span>公司与邮箱</span></button>
         <button class="nav-item" data-page="agent"><span class="nav-icon">✦</span><span>连接 AI Agent</span></button>
         <button class="nav-item" data-page="settings"><span class="nav-icon">⚙</span><span>设置</span></button>
+        <button class="nav-item" data-page="author"><span class="nav-icon">🐟</span><span>关于捞鱼</span></button>
       </nav>
 
       <div class="sidebar-card">
@@ -65,7 +71,7 @@
         <strong id="sidebarMotto">今天也在认真投递</strong>
         <span>数据只保存在你的电脑里</span>
       </div>
-      <div class="version">本地优先 · v<span id="appVersion">0.5.0</span></div>
+      <div class="version">本地优先 · v<span id="appVersion">0.5.55</span></div>
     </aside>
 
     <main class="main">
@@ -83,6 +89,12 @@
       </header>
 
       <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+      <section id="updateProgress" hidden aria-live="polite" style="padding:12px;border:1px solid #e4e7ed;border-radius:12px;margin:12px 0">
+        <span id="updateProgressLabel">下载更新</span>
+        <progress id="updateDownloadProgress" max="100" aria-label="更新下载进度"></progress>
+        <span id="updateDownloadBytes"></span>
+        <a href="https://github.com/lyzbcy/yijian-toudi/releases" data-external>打开发布页</a>
+      </section>
 
       <section class="page active" id="page-jobs">
         <div class="hero-card">
@@ -106,6 +118,10 @@
           </div>
         </div>
 
+        <section class="content-card job-refresh-notice" id="jobsRefreshResult" hidden aria-live="polite">
+          <strong id="jobsRefreshResultTitle"></strong>
+          <p id="jobsRefreshResultDetail"></p>
+        </section>
         <div class="onboarding-tasks content-card" id="onboardingTasks"></div>
 
         <div class="stats-row">
@@ -167,7 +183,7 @@
             <button class="ghost-button" id="importResumeJsonButton">导入 JSON</button>
             <button class="ghost-button" id="exportResumeButton">导出求职快照</button>
             <button class="ghost-button" id="fillResumeTencentButton">更新到腾讯</button>
-            <button class="primary-button" id="fillResumeAllButton">↻ 一键更新所有平台</button>
+            <button class="primary-button" id="fillResumeAllButton">↻ 批量更新简历</button>
             <button class="primary-button" id="saveResumeButton">保存简历</button>
           </div>
           <div class="resume-sync-status" id="resumeSyncStatus"></div>
@@ -187,13 +203,14 @@
             <a href="#resume-basic">01 基本信息</a>
             <a href="#resume-intention">02 求职意向</a>
             <a href="#resume-education">03 教育经历</a>
-            <a href="#resume-games">06 游戏经历</a>
             <a href="#resume-experience">04 工作经历</a>
             <a href="#resume-project">05 项目经历</a>
-            <a href="#resume-skills">06 技能与证书</a>
-            <a href="#resume-extras">07 补充信息</a>
-            <a href="#resume-family">08 家庭成员</a>
-            <a href="#resume-compliance">09 合规声明</a>
+            <a href="#resume-games">06 游戏经历</a>
+            <a href="#resume-ai">07 AI 应用技能</a>
+            <a href="#resume-skills">08 技能与证书</a>
+            <a href="#resume-extras">09 补充信息</a>
+            <a href="#resume-family">10 家庭成员</a>
+            <a href="#resume-compliance">11 合规声明</a>
             <div class="local-note">🔒 表单内容仅保存在本机应用数据目录。</div>
           </aside>
           <div class="resume-sections">
@@ -208,7 +225,7 @@
                 <label>性别<select name="basic.gender"><option value="">不填写</option><option>男</option><option>女</option><option>其他</option></select></label>
                 <label>出生日期<input name="basic.birthday" type="date"></label>
                 <label>微信<input name="basic.wechat" placeholder="选填"></label>
-                <label>籍贯<input name="basic.nativePlace" placeholder="如：江苏省苏州市（校招常见必填）"></label>
+                <label>籍贯<input name="basic.nativePlace" placeholder="官网完整路径：省 / 市 / 区；不确定留空"></label>
                 <label>国籍<input name="basic.nationality" placeholder="中国"></label>
                 <label>民族<input name="basic.ethnicity" placeholder="如：汉族"></label>
                 <label>政治面貌<select name="basic.politicalStatus"><option value="">不填写</option><option>中共党员</option><option>中共预备党员</option><option>共青团员</option><option>群众</option><option>民主党派</option></select></label>
@@ -268,7 +285,7 @@
               </div>
             </section>
             <section class="form-section content-card" id="resume-education">
-              <div class="section-heading"><span>03</span><div><h3>教育经历</h3><p>可加多段；多数招聘网站最多保存前 3-5 段，多余的会被标记为需手动填写</p></div></div>
+              <div class="section-heading"><span>03</span><div><h3>教育经历</h3><p>可加多段；日期支持月份或具体日，不确定日期请勿补造。学习形式/排名/专业类别请按官网选项填写；空白表示未回答。多数网站最多保存前 3-5 段。</p></div></div>
               <div class="repeatable-list" data-repeat="education"></div>
               <button type="button" class="ghost-button add-segment" data-add-segment="education">＋ 添加一段教育经历</button>
             </section>
@@ -322,12 +339,12 @@
               </div>
             </section>
             <section class="form-section content-card" id="resume-family">
-              <div class="section-heading"><span>08</span><div><h3>家庭成员</h3><p>华为等校招必填；仅本机保存</p></div></div>
+              <div class="section-heading"><span>10</span><div><h3>家庭成员</h3><p>华为等校招必填；仅本机保存</p></div></div>
               <div class="repeatable-list" data-repeat="family"></div>
               <button type="button" class="ghost-button add-segment" data-add-segment="family">＋ 添加一位家庭成员</button>
             </section>
             <section class="form-section content-card" id="resume-compliance">
-              <div class="section-heading"><span>09</span><div><h3>合规声明</h3><p>各大厂投递通用，避免重复填写</p></div></div>
+              <div class="section-heading"><span>11</span><div><h3>合规声明</h3><p>各大厂投递通用，避免重复填写</p></div></div>
               <div class="form-grid">
                 <label>曾被本公司面试<select name="compliance.previouslyInterviewed"><option value="">未回答</option><option value="true">是</option><option value="false">否</option></select></label>
                 <label>曾被本公司录用<select name="compliance.previouslyEmployed"><option value="">未回答</option><option value="true">是</option><option value="false">否</option></select></label>
@@ -438,15 +455,17 @@
         </div>
         <div class="agent-grid">
           <article class="content-card">
-            <div class="card-toolbar"><div><h3>接入 Prompt</h3><p>Token 只展示在本机，请不要发到公开聊天。</p></div><button class="primary-button" id="copyPromptButton">复制 Prompt</button></div>
+            <div class="card-toolbar"><div><h3>接入 Prompt</h3><p>凭证默认隐藏，复制时自动加入。复制内容仅用于接入，请勿公开分享。</p></div><button class="primary-button" id="copyPromptButton">复制 Prompt</button></div>
             <pre id="agentPrompt" class="prompt-box"></pre>
             <details class="agent-deploy-guide">
               <summary>Skill 版与云端定时部署</summary>
-              <p>每次 Release 附同版本 Skill 包与 SHA256。安装到 Agent 的 skills 目录后，先核对应用与 Skill 版本，运行 dryRun，再启用正式日程。</p>
+              <p>每次 Release 附同版本 Skill 包与 SHA256；先在 draft 上传并回读校验，再公开。安装到 Agent 的 skills 目录后，先核对应用与有效 Skill 版本，运行 dryRun，再启用正式日程。</p>
+              <p>Node20+；每次先调用 scripts/use.cjs，读取有效版本和文档路径。每天首次在后台静默检查，本次不等待下载、不切换版本；失败保留旧版，次日再试。主目录保留为引导器，新版在独立缓存生效；Skill 更新不升级桌面，版本不符时暂停任务。</p>
               <p>应用和已登录浏览器仍在本机运行；异机 Skill 通过 SSH 反向隧道连接本机 API。云端只访问 127.0.0.1，不把 API 暴露公网；Token 放私有环境配置，不写入计划任务或日志。</p>
-              <pre>ssh -N -o ExitOnForwardFailure=yes -R 127.0.0.1:153147:127.0.0.1:53147 USER@SERVER
-YJTD_BASE_URL=http://127.0.0.1:153147
+              <pre>ssh -N -o ExitOnForwardFailure=yes -R 127.0.0.1:15347:127.0.0.1:53147 USER@SERVER
+YJTD_BASE_URL=http://127.0.0.1:15347
 YJTD_ACCOUNT_ID=default  YJTD_TARGET=100  YJTD_DRY_RUN=1
+node scripts/use.cjs
 node scripts/daily-boss.cjs
 # 演练核对通过后，移除 YJTD_DRY_RUN；服务器 Asia/Shanghai 每日 10:00 触发。</pre>
               <p>完整跨平台部署、私有 Token 配置和防重复触发说明见仓库 README 与 Skill 内 references/deploy.md。启动不等于投出 100 份，实际数量以应用投递记录为准。</p>
@@ -482,11 +501,18 @@ node scripts/daily-boss.cjs
             <button class="primary-button" id="saveSettingsButton">保存设置</button>
           </section>
           <section class="content-card settings-card">
+            <h3>问题反馈与真实评价</h3>
+            <p>通过反馈服务把版本、留言和可选脱敏日志直接发给开发者。企业微信密钥只保留在服务端。</p>
+            <label>反馈服务地址<input id="feedbackEndpoint" type="url" placeholder="https://你的域名/v1/feedback"></label>
+            <small>公共服务部署与配置见仓库 support/README.md；未配置时界面会明确提示。</small>
+            <button class="ghost-button" data-feedback="review">写真实评价</button>
+          </section>
+          <section class="content-card settings-card">
             <h3>岗位抓取</h3>
             <p>选择你的求职方向，软件会优先抓取对应类型岗位；再设置抓取时间范围。</p>
             <label>求职方向<select id="recruitType"><option value="social">社招</option><option value="campus">校招</option><option value="summer-intern">暑期实习</option><option value="daily-intern">日常实习</option><option value="all">全部都要</option></select></label>
             <label>抓取范围（天）<input id="jobsDaysBack" type="number" min="1" max="365" placeholder="30"></label>
-            <label class="switch-row"><span><strong>每天自动刷新岗位</strong><small>打开应用时若距上次刷新超过 24 小时则自动抓取</small></span><input id="autoRefreshJobs" type="checkbox"><i></i></label>
+            <label class="switch-row"><span><strong>每天自动刷新岗位</strong><small>距上次尝试超过 24 小时才自动抓取；失败后可手动重试</small></span><input id="autoRefreshJobs" type="checkbox"><i></i></label>
             <p class="setting-hint" id="jobsLastRefresh">还没有抓取过岗位。</p>
           </section>
           <section class="content-card settings-card">
@@ -519,6 +545,7 @@ node scripts/daily-boss.cjs
               <button class="ghost-button" id="bossBatchDryRunButton">批量演练（不发送）</button>
               <button class="primary-button" id="bossBatchStartButton">开始批量投递</button>
               <button class="ghost-button" id="bossBatchStopButton" hidden>停止批量</button>
+              <button class="ghost-button" id="bossBatchResolveButton" hidden>核对上次异常</button>
             </div>
             <p class="setting-hint" id="bossBatchStatusLine">未运行。</p>
           </section>
@@ -542,9 +569,20 @@ node scripts/daily-boss.cjs
           </section>
           <section class="content-card settings-card about-card">
             <img src="./assets/stickers/mascot.png" alt="">
-            <div><h3>一键投递 v0.5.0</h3><p>一个弱小但有梦想的开发者，想把重复投简历这件事做得轻松一点。</p><a href="https://lyzbcy.github.io/" data-external>关于捞鱼 ↗</a></div>
+            <div><h3>一键投递 v<span id="aboutAppVersion">0.5.55</span></h3><p>一个弱小但有梦想的开发者，想把重复投简历这件事做得轻松一点。</p><button class="ghost-button" id="settingsAuthorButton" data-page="author">关于捞鱼</button></div>
           </section>
         </div>
+      </section>
+      <section class="page" id="page-author">
+        <section class="content-card author-card">
+          <div class="promo-author"><img src="./assets/stickers/mascot.png" alt="捞鱼头像"><div><span>捞鱼工作室</span><h2>关于捞鱼</h2><p>一个弱小但有梦想的开发者，想把重复投简历这件事做得轻松一点。</p></div></div>
+          <p class="author-qr-hint">用手机扫描下方二维码。看不清时，点击图片放大。</p>
+          <div class="qr-grid">
+            <figure><button class="author-qr-button" data-author-qr aria-label="放大粉丝群二维码"><img src="./assets/qq-group.jpg" alt="粉丝群二维码"></button><figcaption>粉丝群</figcaption></figure>
+            <figure><button class="author-qr-button" data-author-qr aria-label="放大赞赏二维码"><img src="./assets/reward-qr.jpg" alt="赞赏二维码"></button><figcaption>赞赏支持</figcaption></figure>
+            <figure><button class="author-qr-button" data-author-qr aria-label="放大微信表情包二维码"><img src="./assets/sticker-qr.png" alt="微信表情包二维码"></button><figcaption>微信表情包</figcaption></figure>
+          </div>
+        </section>
       </section>
     </main>
   </div>
@@ -571,16 +609,12 @@ node scripts/daily-boss.cjs
     <button class="dialog-close" aria-label="关闭">×</button>
     <div id="jobDialogContent"></div>
   </dialog>
-  <dialog id="promoDialog" class="dialog promo-dialog">
+  <dialog id="authorQrDialog" class="dialog author-qr-dialog" aria-labelledby="authorQrTitle">
     <button class="dialog-close" aria-label="关闭">×</button>
-    <div class="promo-author"><img src="./assets/stickers/mascot.png" alt=""><div><span>捞鱼工作室</span><h3>关于捞鱼</h3><p>一个弱小但有梦想的开发者</p></div></div>
-    <div class="qr-grid">
-      <figure><img src="./assets/qq-group.jpg" alt="粉丝群二维码"><figcaption>粉丝群</figcaption></figure>
-      <figure><img src="./assets/reward-qr.jpg" alt="赞赏二维码"><figcaption>赞赏支持</figcaption></figure>
-      <figure><img src="./assets/sticker-qr.png" alt="微信表情包二维码"><figcaption>微信表情包</figcaption></figure>
-    </div>
+    <h2 id="authorQrTitle">二维码</h2>
+    <img id="authorQrImage" alt="">
   </dialog>
-  <button id="promoButton" class="promo-button">🐟 关于捞鱼</button>
+  <button id="promoButton" class="promo-button" data-page="author">🐟 关于捞鱼</button>
 
   <dialog id="resumeReportDialog" class="dialog resume-report-dialog">
     <button class="dialog-close" aria-label="关闭">×</button>
@@ -588,6 +622,27 @@ node scripts/daily-boss.cjs
   </dialog>
 
   <script src="./resume-sync-flow.js"></script>
+  <dialog id="resumeBatchDialog" class="dialog resume-batch-dialog">
+    <button class="dialog-close" aria-label="关闭批量面板">×</button>
+    <h2>批量更新简历</h2>
+    <p>选择本次要更新的平台。不同平台并行，登录/核对互不覆盖；同一平台不同方向排队。</p>
+    <div class="resume-batch-toolbar">
+      <label><input type="checkbox" id="resumeBatchAll"> 一键全选</label>
+      <label>并行窗口 <select id="resumeBatchConcurrency"><option value="4">4 个 · 2×2</option><option value="6">6 个 · 2×3</option></select></label>
+      <span id="resumeBatchCount"></span>
+    </div>
+    <div id="resumeBatchTargets"></div>
+    <p class="resume-batch-note">更新时间区分官网证据与用户确认；填写/回读、直接关闭窗口不算已保存。登录后点重试，核对完关闭窗口可继续排队平台。</p>
+    <div class="settings-actions"><button class="primary-button" id="resumeBatchStart">开始更新所选平台</button><button class="ghost-button" id="resumeBatchStop">停止本轮</button></div>
+    <p id="resumeBatchMessage" role="status"></p>
+    <div id="resumeBatchProgress"></div>
+  </dialog>
+  <script src="./resume-batch-ui.js"></script>
+  <script src="./resume-editor-values.js"></script>
+  <script src="./text-entry.js"></script>
+  <script src="./update-install-status.js"></script>
+  <script src="./job-refresh-status.js"></script>
+  <script src="./state-revision.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>

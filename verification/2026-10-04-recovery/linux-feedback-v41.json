@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "version": "0.5.41",
+  "platform": "linux",
+  "systemdTemplateValidated": true,
+  "caddyTemplateValidated": true,
+  "composeBootAndRestart": true,
+  "persistentUnknownReceipt": true,
+  "readonlyContainer": true,
+  "realPublicTLS": false,
+  "realWecom": false,
+  "systemdRuntime": false,
+  "workflowRun": 37193200597,
+  "sourceCommit": "84728b68a5322675a6d79fb9c3763678f251f4b9"
+}

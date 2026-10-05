@@ -1,0 +1,18 @@
+{
+  "version": "0.5.43",
+  "mode": "real-nsis-default-path-no-D-override",
+  "installerHash": "b23e91f4e983e0c8496e294b0327b2a02d59f9bdab7e78602ce72650386e8cec",
+  "expectedRoot": "C:\\Users\\Administrator\\AppData\\Local\\Programs\\yijian-toudi",
+  "fixtureOnly": true,
+  "guiClicks": false,
+  "checks": [
+    "Default user-programs installation without /D, version/registration and start-menu entry verified; desktop preference disabled",
+    "Actual installed visible app completed onboarding and persisted sample resume through UI",
+    "Same-version default-path reinstall enabled desktop shortcut and retained registration path",
+    "Reinstalled actual app reopened with retained sample resume and private API credential",
+    "Actual uninstaller removed default installation and retained isolated user data",
+    "Original desktop/start-menu shortcuts and installer cache restored byte-for-byte"
+  ],
+  "ok": true,
+  "sourceCommit": "478bd2d6b4b0e9ba922f0b11a159b68c13e4c333"
+}

@@ -1,0 +1,20 @@
+{
+  "version": "0.5.46",
+  "userInitiallyReportedPreviewExit": true,
+  "initialDebugEndpointDisconnectedConfirmed": true,
+  "rootCauseOfInitialExitProven": false,
+  "applicationCrashEventObserved": false,
+  "initialBackgroundWasInterruptedAndIncomplete": true,
+  "finalBackground23SuitesPassed": true,
+  "plannedRestartsAfterSavingLocalForm": 2,
+  "newWindowOpenedWithPersistentProcessOwner": true,
+  "currentOwnerStatus": "ready",
+  "currentResumePageVisible": true,
+  "syncEntryVisible": true,
+  "personalStateBackupsIgnoredAndLocalOnly": true,
+  "privateResumeValuesIncluded": false,
+  "realPlatformReadOnlyReport": "real-account-readonly-v46.json",
+  "officialSaveNotVerified": true,
+  "realApplications": 0,
+  "externalMessages": 0
+}

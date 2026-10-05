@@ -1,0 +1,20 @@
+{
+  "ok": false,
+  "version": "0.5.46",
+  "platform": "win32",
+  "packaged": true,
+  "visible": false,
+  "sampleProfile": true,
+  "checks": [],
+  "widths": [],
+  "externalLinksOpened": 0,
+  "realApplications": 0,
+  "externalMessages": 0,
+  "phoneScanOrMembershipVerified": false,
+  "failure": {
+    "message": "page.screenshot: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n",
+    "stack": "page.screenshot: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\n    at E:\\共享\\创业\\一键投递-交付开发-2026-10-04\\test\\ui-author-page.cjs:29:15"
+  },
+  "sourceStatus": "actual-ASAR117-files-matched-to-working-tree",
+  "processExitCode": 1
+}

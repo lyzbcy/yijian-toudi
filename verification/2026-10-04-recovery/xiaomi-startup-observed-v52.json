@@ -1,0 +1,217 @@
+{
+  "version": "0.5.52",
+  "isolatedReadonly": true,
+  "officialWrites": 0,
+  "consoleCount": 10,
+  "consoleErrorKinds": [
+    {
+      "level": 2,
+      "code": null,
+      "network": false,
+      "runtime": false
+    },
+    {
+      "level": 1,
+      "code": null,
+      "network": false,
+      "runtime": false
+    },
+    {
+      "level": 1,
+      "code": null,
+      "network": false,
+      "runtime": false
+    },
+    {
+      "level": 2,
+      "code": null,
+      "network": false,
+      "runtime": false
+    },
+    {
+      "level": 2,
+      "code": null,
+      "network": false,
+      "runtime": false
+    },
+    {
+      "level": 2,
+      "code": null,
+      "network": false,
+      "runtime": false
+    },
+    {
+      "level": 2,
+      "code": null,
+      "network": false,
+      "runtime": false
+    },
+    {
+      "level": 1,
+      "code": null,
+      "network": true,
+      "runtime": true
+    },
+    {
+      "level": 1,
+      "code": null,
+      "network": true,
+      "runtime": true
+    },
+    {
+      "level": 2,
+      "code": null,
+      "network": false,
+      "runtime": false
+    }
+  ],
+  "responses": [
+    {
+      "method": "GET",
+      "path": "/campus/resume",
+      "status": 200,
+      "type": "mainFrame"
+    },
+    {
+      "method": "GET",
+      "path": "/static/pc_slide.js",
+      "status": 304,
+      "type": "script"
+    },
+    {
+      "method": "GET",
+      "path": "/people-suite/next-sdk/api/notice",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "method": "GET",
+      "path": "/obj/atsx-throne/hire-fe-prod/portal/saas-career/static/js/async/6681.51dac22c.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "method": "GET",
+      "path": "/obj/ttfe/ATSX/saas_career/application-success_1582633048158.png",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/monitor_web/settings/browser-settings",
+      "status": 200,
+      "type": "xhr"
+    },
+    {
+      "method": "POST",
+      "path": "/vc/setting",
+      "status": 200,
+      "type": "xhr"
+    },
+    {
+      "method": "GET",
+      "path": "/obj/rc-verifycenter/verifycenter/1.0.0.421/index.js",
+      "status": 200,
+      "type": "xhr"
+    },
+    {
+      "method": "GET",
+      "path": "/slardar/fe/sdk-web/plugins/common-monitors.1.10.0.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "method": "GET",
+      "path": "/monitor_web/settings/browser-settings",
+      "status": 200,
+      "type": "xhr"
+    },
+    {
+      "method": "GET",
+      "path": "/check_and_get_text/aff8e570233711eb96690bb0655fe40d/test/throne-biz",
+      "status": 200,
+      "type": "xhr"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/user/mobile/login_status",
+      "status": 200,
+      "type": "xhr"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/ip/location",
+      "status": 200,
+      "type": "xhr"
+    },
+    {
+      "method": "GET",
+      "path": "/check_and_get_text/aff8e570233711eb96690bb0655fe40d/test/throne-biz",
+      "status": 200,
+      "type": "xhr"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/user/mobile/login_status",
+      "status": 200,
+      "type": "xhr"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/common/setting",
+      "status": 200,
+      "type": "xhr"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/ip/location",
+      "status": 200,
+      "type": "xhr"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/user/profile",
+      "status": 200,
+      "type": "xhr"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/user/profile",
+      "status": 200,
+      "type": "xhr"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/user/recommend/code",
+      "status": 200,
+      "type": "xhr"
+    }
+  ],
+  "state": {
+    "path": "/campus/resume",
+    "controls": 0,
+    "loadingVisible": [],
+    "cache": [
+      {
+        "name": "__parallelCacheMap__",
+        "type": "object",
+        "keys": []
+      },
+      {
+        "name": "__pendingParallelCacheMap__",
+        "type": "object",
+        "keys": []
+      },
+      {
+        "name": "__timeoutIdMap__",
+        "type": "object",
+        "keys": []
+      },
+      {
+        "name": "__ENV__",
+        "type": "string",
+        "keys": []
+      }
+    ]
+  }
+}

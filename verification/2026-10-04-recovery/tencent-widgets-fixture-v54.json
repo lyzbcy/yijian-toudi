@@ -1,0 +1,32 @@
+{
+  "ok": true,
+  "version": "0.5.54",
+  "fixtureOnly": true,
+  "checks": [
+    "school text commits through component model and only its group",
+    "school catalog recognition is not inferred from text",
+    "DOM-only school update is rejected and restored",
+    "explicit degree alias chooses unique full label and model",
+    "owned degree popup closes after relocation",
+    "degree animation finishes before the next school transaction",
+    "inactive SchoolSearch list is not mistaken for an open popup",
+    "active SchoolSearch popup prevents unrelated degree changes",
+    "ambiguous source degree is not guessed",
+    "duplicate exact degree option is rejected before change",
+    "disabled degree candidate preserves old selection",
+    "controlled degree mismatch restores previous exact option",
+    "unrelated open popup is untouched",
+    "month precision never becomes a fabricated day",
+    "ongoing status is not converted to a calendar date",
+    "invalid calendar date is rejected",
+    "exact leap-day commits to date model",
+    "date final readback uses outer DatePicker rather than shared inner root",
+    "later model reset invalidates earlier date success",
+    "DOM-only date failure rolls back old value",
+    "inverted exact date range is blocked before any write",
+    "school control cannot be a company search component",
+    "full-time dates are not mapped into internship",
+    "no save or application actions"
+  ],
+  "officialWrites": 0
+}

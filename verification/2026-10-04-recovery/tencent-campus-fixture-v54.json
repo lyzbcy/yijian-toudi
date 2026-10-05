@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "version": "0.5.54",
+  "fixtureOnly": true,
+  "checks": [
+    "production campus adapter adds four project groups exactly",
+    "phone writes only number, country code retained",
+    "five names/roles/descriptions mapped to their own groups",
+    "each described source fact has explicit mapping",
+    "other game section remains unchanged",
+    "school widget search is untouched and manual",
+    "exact developer multiselect replaces Java and survives popup relocation",
+    "no save, submission or deletion",
+    "unknown language rejects whole transaction before changes",
+    "duplicate exact candidate is rejected",
+    "disabled exact language is rejected",
+    "controlled model failure restores original selection",
+    "preexisting unrelated popup stays open and prevents action",
+    "duplicate semantic rows fail closed",
+    "full-time work is not relabeled as internship",
+    "explicit projects enable only their no-experience toggle",
+    "later language rerender invalidates earlier text success",
+    "navigated page cannot retain old widget success",
+    "language tokens are distinct and delimiter-aware"
+  ],
+  "officialWrites": 0
+}

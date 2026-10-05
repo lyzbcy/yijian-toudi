@@ -1,0 +1,74 @@
+{
+  "ok": true,
+  "toolVersion": "0.5.47",
+  "runningAppVersion": "0.5.46",
+  "readOnly": true,
+  "websiteGuardUnmodified": true,
+  "globalRuntimeAndDebuggerDomainsNotEnabled": true,
+  "operations": [
+    "list",
+    "app.status",
+    "app.snapshot"
+  ],
+  "observations": [
+    {
+      "iteration": 1,
+      "statusActive": true,
+      "companyId": "baidu",
+      "probe": {
+        "loginRequired": false,
+        "isNotFound": false,
+        "inputCount": 32
+      }
+    },
+    {
+      "iteration": 2,
+      "statusActive": true,
+      "companyId": "baidu",
+      "probe": {
+        "loginRequired": false,
+        "isNotFound": false,
+        "inputCount": 32
+      }
+    },
+    {
+      "iteration": 3,
+      "statusActive": true,
+      "companyId": "baidu",
+      "probe": {
+        "loginRequired": false,
+        "isNotFound": false,
+        "inputCount": 32
+      }
+    },
+    {
+      "iteration": 4,
+      "statusActive": true,
+      "companyId": "baidu",
+      "probe": {
+        "loginRequired": false,
+        "isNotFound": false,
+        "inputCount": 32
+      }
+    },
+    {
+      "iteration": 5,
+      "statusActive": true,
+      "companyId": "baidu",
+      "probe": {
+        "loginRequired": false,
+        "isNotFound": false,
+        "inputCount": 32
+      }
+    }
+  ],
+  "writes": 0,
+  "uploads": 0,
+  "saves": 0,
+  "applications": 0,
+  "initialDiagnosticAttempt": {
+    "valid": false,
+    "reason": "probe Promise was not awaited, empty objects are not form evidence",
+    "retainedLocally": true
+  }
+}

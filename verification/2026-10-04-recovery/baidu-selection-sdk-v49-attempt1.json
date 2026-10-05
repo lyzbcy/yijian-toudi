@@ -1,0 +1,32 @@
+{
+  "sourceVersion": "48 plus49 worktree runtime changes",
+  "sealed": true,
+  "syntheticLocalEditsOnly": true,
+  "officialSaveUploadApplications": 0,
+  "result": [
+    {
+      "key": "basic.gender",
+      "written": true,
+      "error": null,
+      "verified": true
+    },
+    {
+      "key": "education.0.school",
+      "written": false,
+      "error": "another-popup-open",
+      "verified": false
+    },
+    {
+      "key": "education.0.major",
+      "written": false,
+      "error": "another-popup-open",
+      "verified": false
+    },
+    {
+      "key": "education.0.degree",
+      "written": false,
+      "error": "another-popup-open",
+      "verified": false
+    }
+  ]
+}

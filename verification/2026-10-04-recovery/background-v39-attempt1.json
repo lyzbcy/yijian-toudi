@@ -1,0 +1,102 @@
+{
+  "at": "2026-10-04T07:47:09.270Z",
+  "ok": false,
+  "results": [
+    {
+      "name": "unit",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 5627
+    },
+    {
+      "name": "check",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 314
+    },
+    {
+      "name": "ui-smoke",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 11936
+    },
+    {
+      "name": "ui-resume-segments",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 62579
+    },
+    {
+      "name": "ui-resume-profiles",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 51663
+    },
+    {
+      "name": "ui-capabilities",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 6267
+    },
+    {
+      "name": "ui-workspace-exit",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 3057
+    },
+    {
+      "name": "ui-resume-batch",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 50184
+    },
+    {
+      "name": "ui-batch-actions",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 1970
+    },
+    {
+      "name": "ui-login-upload",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 17681
+    },
+    {
+      "name": "ui-live-window-fixes",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 22493
+    },
+    {
+      "name": "ui-jd-login",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 12267
+    },
+    {
+      "name": "ui-auth-frame",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 4021
+    },
+    {
+      "name": "ui-ai-browser",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 14553
+    },
+    {
+      "name": "ui-ai-preview",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 20036
+    },
+    {
+      "name": "ui-reliability",
+      "ok": false,
+      "exitCode": null,
+      "ms": 180020
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "ok": false,
+  "sourceVersion": "0.5.47 plus v48 worktree runtime changes",
+  "attempt": "single script with six month transactions",
+  "labSealed": true,
+  "workspaceTimeoutMs": 15000,
+  "error": "lab-main-call-failed",
+  "individualMonthTransactionsAndModelReadbackSubsequentlyPassed": true,
+  "cause": "Whole-resume script failed while each selected month transaction subsequently passed; hidden-view timer throttling is the working explanation, not a measured proof of the initial rejection",
+  "officialSaveUploadApplications": 0,
+  "causeProven": false
+}

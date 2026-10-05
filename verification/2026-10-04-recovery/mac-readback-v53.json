@@ -1,0 +1,89 @@
+{
+  "ok": false,
+  "scope": "ARM full pass; Intel source/artifacts/profile/refresh audited, installation failed and automatic update skipped",
+  "version": "0.5.53",
+  "nativeRun": 37240907026,
+  "sourceCommit": "1be9f39120d1b694d4c0aae118904cddd1202bcd",
+  "sourceExtractedFromExactCommit": true,
+  "comparisonTextNormalization": "CRLF to LF in extracted Git text only; binary exact",
+  "reports": [
+    {
+      "architecture": "arm64",
+      "artifacts": [
+        {
+          "name": "yijian-toudi-0.5.53-arm64.dmg",
+          "bytes": 126466422,
+          "sha256": "78ca581e8f677fe1f32788941aae4e39e18ce2a3c9ed2085f3488cdcd496633e"
+        },
+        {
+          "name": "yijian-toudi-0.5.53-arm64.zip",
+          "bytes": 125315435,
+          "sha256": "13cc0ee81b0641d842c5ccfd2e986e5e25c2a1a869fb1a2c8ce452ba8c1f1312"
+        }
+      ],
+      "audit": {
+        "version": "0.5.53",
+        "ownFilesMatched": 125,
+        "asarEntries": 1150,
+        "noPrivateDataFiles": true,
+        "noKnownKeyPatterns": true
+      },
+      "installationOk": true,
+      "manualChecks": 9,
+      "automaticUpdateOk": true,
+      "automaticChecks": 10,
+      "profileChecks": 6,
+      "refreshChecks": 6,
+      "initialInstallFailure": null,
+      "adHocSignatureVerified": true,
+      "developerID": false,
+      "notarized": false,
+      "officialPublicUpdateProven": false
+    },
+    {
+      "architecture": "x64",
+      "artifacts": [
+        {
+          "name": "yijian-toudi-0.5.53-x64.dmg",
+          "bytes": 131205890,
+          "sha256": "fbb3d4526a3cbad3b071c3f4c931c16f2b66f0b72a9e524fbf120fe5656572d1"
+        },
+        {
+          "name": "yijian-toudi-0.5.53-x64.zip",
+          "bytes": 130077102,
+          "sha256": "ee641594fcbabbd46ea530f1e794aad1e98f9c3cfe1dc9da724cb3090f25239b"
+        }
+      ],
+      "audit": {
+        "version": "0.5.53",
+        "ownFilesMatched": 125,
+        "asarEntries": 1150,
+        "noPrivateDataFiles": true,
+        "noKnownKeyPatterns": true
+      },
+      "installationOk": false,
+      "manualChecks": 6,
+      "automaticUpdateOk": false,
+      "automaticChecks": 0,
+      "profileChecks": 6,
+      "refreshChecks": 6,
+      "initialInstallFailure": {
+        "error": "Expected values to be strictly equal:\n\n1 !== 2\n",
+        "errorStack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 2\n\n    at main (/Users/runner/work/yijian-toudi/yijian-toudi/test/macos-install-upgrade.cjs:61:9)",
+        "failureObservation": {
+          "visibleProfiles": 2,
+          "storedProfiles": 2,
+          "textDialogOpen": false
+        },
+        "originalPacketCauseProven": false
+      },
+      "adHocSignatureVerified": true,
+      "developerID": false,
+      "notarized": false,
+      "officialPublicUpdateProven": false
+    }
+  ],
+  "completeBothArchitectureAcceptance": false,
+  "staleBroadcastDefectReproducedSeparatelyInWindows53": true,
+  "exactOriginalMacFailureCauseProven": false
+}

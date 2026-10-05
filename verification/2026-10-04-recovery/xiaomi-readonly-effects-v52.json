@@ -1,0 +1,59 @@
+{
+  "version": "0.5.52",
+  "isolatedReadonly": true,
+  "officialWrites": 0,
+  "explicitReadonlyEffectsFromPublicSource": true,
+  "result": {
+    "rows": [
+      {
+        "name": "nationalityList",
+        "beforeCount": 0
+      },
+      {
+        "name": "locationList",
+        "beforeCount": 0
+      },
+      {
+        "type": "common/fetchNationalities",
+        "isPromise": true,
+        "settled": true
+      },
+      {
+        "type": "common/fetchLocations",
+        "isPromise": true,
+        "settled": true
+      }
+    ],
+    "afterCounts": {
+      "nationalities": 242,
+      "locations": 248
+    },
+    "controls": 0
+  },
+  "network": [
+    {
+      "companyId": "xiaomi",
+      "method": "GET",
+      "kind": "xhr",
+      "url": "https://xiaomi.jobs.f.mioffice.cn/api/v1/config/location/nationalities/"
+    },
+    {
+      "companyId": "xiaomi",
+      "method": "GET",
+      "kind": "xhr",
+      "url": "https://xiaomi.jobs.f.mioffice.cn/api/v1/config/location/nationalities"
+    },
+    {
+      "companyId": "xiaomi",
+      "method": "GET",
+      "kind": "xhr",
+      "url": "https://xiaomi.jobs.f.mioffice.cn/api/v1/config/location/nodes/"
+    },
+    {
+      "companyId": "xiaomi",
+      "method": "GET",
+      "kind": "xhr",
+      "url": "https://xiaomi.jobs.f.mioffice.cn/api/v1/config/location/nodes"
+    }
+  ]
+}

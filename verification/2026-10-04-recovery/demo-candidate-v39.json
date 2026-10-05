@@ -1,0 +1,92 @@
+{
+  "version": "0.5.39",
+  "candidate": true,
+  "completeDemo": false,
+  "sampleResume": true,
+  "jobsSource": "anonymous-live-official-providers",
+  "realApplications": 0,
+  "externalMessages": 0,
+  "output": "isolated-recording-profile",
+  "checks": [
+    "Actual onboarding, sample resume, create/rename directions and independent content through UI",
+    "Actual process cold reopen retains sample resume and named directions",
+    "Actual UI anonymous official job refresh, including real failure/partial state if any",
+    "Actual job company/search filtering and local cart; no application initiated",
+    "Visible Agent prompt masks local token; no private prompt copied"
+  ],
+  "videos": [
+    {
+      "file": "page@00e3c559a74da0be4dafdfa0bf952bc9.webm",
+      "durationSeconds": 38.68
+    },
+    {
+      "file": "page@889f7fa73f2d68b6d72e8ff8732802c6.webm",
+      "durationSeconds": 295.64
+    }
+  ],
+  "liveRefresh": {
+    "at": "2026-10-04T08:17:14.223Z",
+    "completedAllProviders": true,
+    "jobCount": 4158,
+    "companies": [
+      "tencent",
+      "baidu",
+      "bytedance",
+      "xiaomi",
+      "jd",
+      "meituan"
+    ],
+    "task": {
+      "status": "done",
+      "detail": "已抓取 4158 个岗位（近 30 天）：腾讯 1374 个，百度 9 个，字节跳动 455 个，小米 203 个，京东 974 个，美团 1143 个。"
+    }
+  },
+  "ok": true,
+  "pageErrors": [],
+  "mp4": {
+    "name": "yijian-toudi-preview-0.5.39.mp4",
+    "bytes": 6040024,
+    "durationSeconds": 116.2,
+    "dimensions": [
+      1280,
+      960
+    ],
+    "codec": "h264",
+    "sha256": "d53f28025ddbca0ee92857179f5cd625a9a671496d5fae4dc5efffb553dd9827"
+  },
+  "editing": {
+    "rawPreserved": true,
+    "fullMp4Preserved": true,
+    "actualAppPixels": true,
+    "footerLabelsCandidateAndSample": true,
+    "onlyWaitIntervalAccelerated": {
+      "startSeconds": 55,
+      "endSeconds": 304.32,
+      "rate": 8
+    },
+    "noOutcomeFabricated": true
+  },
+  "framesInspected": true,
+  "visualReview": {
+    "rootReviewedFrames": [
+      3,
+      18,
+      40,
+      55,
+      70,
+      85,
+      101,
+      112
+    ],
+    "independentReport": "verification/2026-10-04-recovery/demo-observer-v39.json",
+    "fullPlaybackInspected": false,
+    "limitations": [
+      "Only eight discrete frames at 3,18,40,55,70,85,101,112 seconds were visually inspected.",
+      "No complete playback, audio review, frame-by-frame privacy audit, independent encoding probe or speed-rate measurement performed.",
+      "No simultaneous application observation, Kimi interaction or new product test performed.",
+      "This is a clearly labeled candidate demonstration and sample resume; it does not prove full MVP delivery or software defect rate below 1%.",
+      "No source, raw recording or candidate MP4 was edited during review."
+    ],
+    "minorPresentationFinding": "101s English Select option overlay retained"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "version": "0.5.39",
+  "reason": "suite-total-180s-timeout",
+  "lastLoggedIteration": 8,
+  "readOnly": true,
+  "observed": {
+    "active": "profile-ff1dd346-1f6a-463e-ae45-55cb690b976e",
+    "tabCount": 2,
+    "school": "新方向-8",
+    "dialog": false,
+    "errors": []
+  },
+  "rootCause": "not-proven"
+}

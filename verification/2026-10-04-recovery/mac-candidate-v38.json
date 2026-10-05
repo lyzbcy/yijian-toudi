@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "version": "0.5.38",
+  "ownFilesMatched": 110,
+  "asarEntries": 1135,
+  "noPrivateDataFiles": true,
+  "noKnownKeyPatterns": true,
+  "host": "darwin",
+  "architecture": "arm64",
+  "artifacts": [
+    {
+      "name": "一键投递-0.5.38-arm64.dmg",
+      "bytes": 129097314,
+      "sha256": "4c23aa6b522b006452f32a1edea0dbaa212fd7d2cc987cb4add84cf2dee94a20"
+    },
+    {
+      "name": "一键投递-0.5.38-arm64.zip",
+      "bytes": 127192778,
+      "sha256": "9e9090b42bb325eb1ee8cec2816fdca34f840cae558e49729cc8d215968522ca"
+    }
+  ],
+  "dmgMountedAndCopied": true,
+  "zipExtractedAndAudited": true,
+  "runtimeTarget": "isolated-dmg-copy",
+  "signature": "not-verified",
+  "endUserInstall": "not-verified",
+  "realAccounts": "not-verified"
+}

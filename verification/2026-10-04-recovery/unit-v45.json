@@ -1,0 +1,8 @@
+{
+  "version": "0.5.45",
+  "ok": true,
+  "passed": 363,
+  "failed": 0,
+  "skipped": 0,
+  "scope": "Final full Windows unit suite, after final cooldown assertion; no overall product defect-rate inference"
+}

@@ -1,0 +1,68 @@
+{
+  "at": "2026-10-04T17:12:21.620Z",
+  "sourceVersion": "0.5.47",
+  "sealed": true,
+  "realWebsiteSdk": true,
+  "syntheticLocalEditsOnly": true,
+  "officialSaveUploadApplications": 0,
+  "contextCount": 26,
+  "hiddenMirrors": 4,
+  "selectSearchesProtected": true,
+  "dates": [
+    {
+      "key": "education.0.start",
+      "written": true,
+      "verified": true,
+      "error": null,
+      "action": "month-picker-reopened"
+    },
+    {
+      "key": "education.0.end",
+      "written": true,
+      "verified": true,
+      "error": null,
+      "action": "month-picker-reopened"
+    },
+    {
+      "key": "experience.0.start",
+      "written": true,
+      "verified": true,
+      "error": null,
+      "action": "month-picker-reopened"
+    },
+    {
+      "key": "experience.0.end",
+      "written": true,
+      "verified": true,
+      "error": null,
+      "action": "month-picker-reopened"
+    },
+    {
+      "key": "projects.0.start",
+      "written": true,
+      "verified": true,
+      "error": null,
+      "action": "month-picker-reopened"
+    },
+    {
+      "key": "projects.0.end",
+      "written": true,
+      "verified": true,
+      "error": null,
+      "action": "month-picker-reopened"
+    }
+  ],
+  "datesRetainedAfterTextEdits": true,
+  "text": {
+    "verified": [
+      "projects.0.name",
+      "projects.0.role",
+      "projects.0.description",
+      "projects.0.contribution"
+    ],
+    "mismatched": [],
+    "failed": []
+  },
+  "blockedExternalRequests": 1,
+  "ok": false
+}

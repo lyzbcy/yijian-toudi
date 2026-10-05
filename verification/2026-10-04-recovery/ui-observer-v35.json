@@ -1,0 +1,470 @@
+{
+  "observer": "independent_read_only_ui_observer",
+  "date": "2026-10-04",
+  "version": "0.5.35",
+  "status": "pass_for_observed_UI_scope",
+  "method": "Read-only CDP attached to same isolated Electron instance and port as parent test/ui-delivery-layout.cjs. No clicks, input, product source edits or second application.",
+  "livePort": 51674,
+  "terminalManifest": {
+    "status": "finished",
+    "root": "E:\\共享\\创业\\一键投递-交付开发-2026-10-04"
+  },
+  "kimi": {
+    "daemonExtensionConnectivityPreviouslyVerified": true,
+    "nativeElectronObservation": false,
+    "reason": "Kimi extension browser-session tab API has no provided mechanism for attaching to separate native Electron renderer. A browser file copy would not be same instance.",
+    "classification": "CDP observation, not Kimi webpage interaction acceptance"
+  },
+  "phases": [
+    {
+      "phase": "resume",
+      "ack": {
+        "phase": "resume",
+        "ok": true,
+        "findings": [],
+        "method": "read_only_CDP_same_Electron_instance",
+        "checks": {
+          "activeSidebarMatchesPage": true,
+          "headingWidth": 913.3333740234375,
+          "summaryHeight": 292,
+          "statusWidth": 1031.3333740234375,
+          "navigationSections": 11,
+          "navigationMatchesOrder": true,
+          "schoolInputMatchesPersistedSample": true,
+          "closedDialogsVisible": 0,
+          "brokenImages": 0,
+          "horizontalOverflow": false
+        },
+        "actualPixelsViewed": true
+      },
+      "observation": {
+        "phase": "resume",
+        "version": "0.5.35",
+        "port": 51674,
+        "method": "read_only_CDP_same_Electron_instance",
+        "observed": {
+          "title": "一键投递",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "activeSidebar": [
+            "resume"
+          ],
+          "visiblePages": [
+            "page-resume"
+          ],
+          "closedDialogsVisible": [],
+          "horizontalOverflow": -15,
+          "brokenImages": [],
+          "resume": {
+            "heading": "按求职方向维护多份，基本信息共享",
+            "headingWidth": 913.3333740234375,
+            "summaryHeight": 292,
+            "statusWidth": 1031.3333740234375,
+            "statusCount": 12,
+            "navigation": [
+              {
+                "href": "#resume-basic",
+                "text": "01 基本信息"
+              },
+              {
+                "href": "#resume-intention",
+                "text": "02 求职意向"
+              },
+              {
+                "href": "#resume-education",
+                "text": "03 教育经历"
+              },
+              {
+                "href": "#resume-experience",
+                "text": "04 工作经历"
+              },
+              {
+                "href": "#resume-project",
+                "text": "05 项目经历"
+              },
+              {
+                "href": "#resume-games",
+                "text": "06 游戏经历"
+              },
+              {
+                "href": "#resume-ai",
+                "text": "07 AI 应用技能"
+              },
+              {
+                "href": "#resume-skills",
+                "text": "08 技能与证书"
+              },
+              {
+                "href": "#resume-extras",
+                "text": "09 补充信息"
+              },
+              {
+                "href": "#resume-family",
+                "text": "10 家庭成员"
+              },
+              {
+                "href": "#resume-compliance",
+                "text": "11 合规声明"
+              }
+            ],
+            "sections": [
+              {
+                "href": "#resume-basic",
+                "text": "01 基本信息"
+              },
+              {
+                "href": "#resume-intention",
+                "text": "02 求职意向"
+              },
+              {
+                "href": "#resume-education",
+                "text": "03 教育经历"
+              },
+              {
+                "href": "#resume-experience",
+                "text": "04 工作经历"
+              },
+              {
+                "href": "#resume-project",
+                "text": "05 项目经历"
+              },
+              {
+                "href": "#resume-games",
+                "text": "06 游戏经历"
+              },
+              {
+                "href": "#resume-ai",
+                "text": "07 AI 应用技能"
+              },
+              {
+                "href": "#resume-skills",
+                "text": "08 技能与证书"
+              },
+              {
+                "href": "#resume-extras",
+                "text": "09 补充信息"
+              },
+              {
+                "href": "#resume-family",
+                "text": "10 家庭成员"
+              },
+              {
+                "href": "#resume-compliance",
+                "text": "11 合规声明"
+              }
+            ],
+            "schoolInput": "交付验收样本大学",
+            "schoolPersisted": "交付验收样本大学"
+          }
+        },
+        "screenshot": "E:\\共享\\创业\\一键投递-交付开发-2026-10-04\\verification\\2026-10-04-recovery\\observer-v35-resume.png"
+      }
+    },
+    {
+      "phase": "jobs",
+      "ack": {
+        "phase": "jobs",
+        "ok": true,
+        "findings": [],
+        "method": "read_only_CDP_same_Electron_instance",
+        "checks": {
+          "activeSidebarMatchesPage": true,
+          "sixFilterLabelsSingleLine": true,
+          "filtersClipped": false,
+          "closedDialogsVisible": 0,
+          "brokenImages": 0,
+          "horizontalOverflow": false
+        },
+        "actualPixelsViewed": true
+      },
+      "observation": {
+        "phase": "jobs",
+        "version": "0.5.35",
+        "port": 51674,
+        "method": "read_only_CDP_same_Electron_instance",
+        "observed": {
+          "title": "一键投递",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "activeSidebar": [
+            "jobs"
+          ],
+          "visiblePages": [
+            "page-jobs"
+          ],
+          "closedDialogsVisible": [],
+          "horizontalOverflow": -15,
+          "brokenImages": [],
+          "filters": [
+            {
+              "text": "全部",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "★ 收藏",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "北京",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "上海",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "深圳",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "杭州",
+              "lines": 1,
+              "clipped": false
+            }
+          ]
+        },
+        "screenshot": "../../test-output/delivery-jobs.png",
+        "screenshotProvenance": "Parent phase image; independent observer captured and viewed the proper jobs phase before ack. A subsequent transition raced with a follow-up read, overwriting the observer jobs image. That misleading image is removed; this structured record is restored from the successful initial tool output.",
+        "actualInitialJobsPixelsViewed": true
+      }
+    },
+    {
+      "phase": "agent",
+      "ack": {
+        "phase": "agent",
+        "ok": true,
+        "findings": [],
+        "method": "read_only_CDP_same_Electron_instance",
+        "checks": {
+          "activeSidebarMatchesPage": true,
+          "promptMaskVisible": true,
+          "actualCredentialVisible": false,
+          "copyPromptControlVisible": true,
+          "serviceRunningLabelVisible": true,
+          "closedDialogsVisible": 0,
+          "brokenImages": 0,
+          "horizontalOverflow": false
+        },
+        "actualPixelsViewed": true
+      },
+      "observation": {
+        "phase": "agent",
+        "version": "0.5.35",
+        "port": 51674,
+        "method": "read_only_CDP_same_Electron_instance",
+        "observed": {
+          "title": "一键投递",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "activeSidebar": [
+            "agent"
+          ],
+          "visiblePages": [
+            "page-agent"
+          ],
+          "closedDialogsVisible": [],
+          "horizontalOverflow": -15,
+          "brokenImages": [],
+          "agent": {
+            "maskedPlaceholder": true,
+            "actualCredentialVisible": false,
+            "copyControlVisible": true,
+            "serviceStatusText": true
+          }
+        },
+        "screenshot": "E:\\共享\\创业\\一键投递-交付开发-2026-10-04\\verification\\2026-10-04-recovery\\observer-v35-agent.png"
+      }
+    }
+  ],
+  "parentTestEvidence": {
+    "path": "test-output/delivery-layout.json",
+    "result": {
+      "ok": true,
+      "version": "0.5.35",
+      "fixtureOnly": true,
+      "checks": [
+        {
+          "width": 1100,
+          "filters": [
+            {
+              "text": "全部",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "★ 收藏",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "北京",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "上海",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "深圳",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "杭州",
+              "lines": 1,
+              "clipped": false
+            }
+          ],
+          "geometry": {
+            "width": 1100,
+            "headingWidth": 609.3333740234375,
+            "summaryHeight": 380.3333435058594,
+            "statusWidth": 727.3333740234375,
+            "overflow": -15,
+            "closedDialogsVisible": []
+          }
+        },
+        {
+          "width": 1280,
+          "filters": [
+            {
+              "text": "全部",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "★ 收藏",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "北京",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "上海",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "深圳",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "杭州",
+              "lines": 1,
+              "clipped": false
+            }
+          ],
+          "geometry": {
+            "width": 1280,
+            "headingWidth": 753.3333740234375,
+            "summaryHeight": 380.3333435058594,
+            "statusWidth": 871.3333740234375,
+            "overflow": -15,
+            "closedDialogsVisible": []
+          }
+        },
+        {
+          "width": 1440,
+          "filters": [
+            {
+              "text": "全部",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "★ 收藏",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "北京",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "上海",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "深圳",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "杭州",
+              "lines": 1,
+              "clipped": false
+            }
+          ],
+          "geometry": {
+            "width": 1440,
+            "headingWidth": 913.3333740234375,
+            "summaryHeight": 292,
+            "statusWidth": 1031.3333740234375,
+            "overflow": -15,
+            "closedDialogsVisible": []
+          }
+        }
+      ],
+      "directorySections": 11,
+      "credentialMasked": true,
+      "credentialCopiedCorrectly": true,
+      "clipboardRestored": true,
+      "pageErrors": []
+    },
+    "scopeNote": "Multiwidth and clipboard behavior are parent test evidence; independent observer reviewed all three phases at 1440x900."
+  },
+  "priorFindings": [
+    {
+      "id": "UI-OBS-001",
+      "title": "Resume summary column collapse",
+      "state": "resolved_in_observed_v35_UI"
+    },
+    {
+      "id": "UI-OBS-002",
+      "title": "Job filter wrapping",
+      "state": "resolved_in_observed_v35_UI"
+    },
+    {
+      "id": "UI-OBS-003",
+      "title": "Directory order and numbering",
+      "state": "resolved_in_observed_v35_UI"
+    },
+    {
+      "id": "UI-OBS-004",
+      "title": "Closed dialog visible strip",
+      "state": "resolved_in_observed_v35_UI"
+    },
+    {
+      "id": "UI-OBS-005",
+      "title": "Visible public authorization token",
+      "state": "resolved_in_observed_v35_UI"
+    }
+  ],
+  "findings": [],
+  "methodologyEvent": "After jobs ack one follow-up initially read jobs manifest during transition to agent. A phase/page guard was added and latest phase re-read. Correct initial jobs structured result was restored from successful observed output; mislabeled overwritten screenshot removed. Proper independent screenshot pixels were viewed before all three phase acknowledgments.",
+  "limitations": [
+    "Isolated fixture profile: no recruitment sessions, real job fetch or submission performed.",
+    "Observer personally reviewed 1440x900. Parent test inspected 1100,1280,1440 widths.",
+    "UI scope pass cannot establish complete MVP, fan distribution readiness, or defect rate below 1%.",
+    "Kimi webpage interaction observer requirement is unmet for native Electron run."
+  ]
+}

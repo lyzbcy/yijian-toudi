@@ -1,0 +1,104 @@
+{
+  "version": "0.5.38",
+  "readiness": "draft-candidate-not-complete-delivery",
+  "runtimeSourceCommit": "22d7b2ee70f724ce91d9ead546b210ba7d59739c",
+  "artifacts": [
+    {
+      "name": "yijian-toudi-setup-0.5.38.exe",
+      "bytes": 104227354,
+      "sha256": "dfb34605ce62cdb9cd2ce5a857502d52f98d06205a46cfab4a46608108f5527e"
+    },
+    {
+      "name": "yijian-toudi-skill-0.5.38.tar.gz",
+      "bytes": 13907,
+      "sha256": "995fcecf71f56d4446bee39cf25091e8f3de1bb1e1f8f61de8d9c616f3b608aa"
+    },
+    {
+      "name": "yijian-toudi-feedback-server-0.5.38.tar.gz",
+      "bytes": 12432,
+      "sha256": "2e61b6c0ed454bfc0fb4fb55e8509236ee37435eda3e2ec5ca8dbcc8949cc667"
+    },
+    {
+      "name": "yijian-toudi-0.5.38-arm64.dmg",
+      "bytes": 129097314,
+      "sha256": "4c23aa6b522b006452f32a1edea0dbaa212fd7d2cc987cb4add84cf2dee94a20",
+      "originalBuilderName": "一键投递-0.5.38-arm64.dmg"
+    },
+    {
+      "name": "yijian-toudi-0.5.38-arm64.zip",
+      "bytes": 127192778,
+      "sha256": "9e9090b42bb325eb1ee8cec2816fdca34f840cae558e49729cc8d215968522ca",
+      "originalBuilderName": "一键投递-0.5.38-arm64.zip"
+    }
+  ],
+  "unitTests": 351,
+  "backgroundSuites": 19,
+  "backgroundCurrentPass": true,
+  "firstBackgroundTimeoutRetained": "verification/2026-10-04-recovery/background-v38-attempt1.json",
+  "timeoutRootCause": "not-proven",
+  "windows": {
+    "visiblePackagedUI": true,
+    "independentReadOnlyObserver": true,
+    "upgradeDesktopOnAndOff": true,
+    "signature": "NotSigned",
+    "releaseNetwork": "controlled-fixture"
+  },
+  "mac": {
+    "ok": true,
+    "version": "0.5.38",
+    "ownFilesMatched": 110,
+    "asarEntries": 1135,
+    "noPrivateDataFiles": true,
+    "noKnownKeyPatterns": true,
+    "host": "darwin",
+    "architecture": "arm64",
+    "artifacts": [
+      {
+        "name": "一键投递-0.5.38-arm64.dmg",
+        "bytes": 129097314,
+        "sha256": "4c23aa6b522b006452f32a1edea0dbaa212fd7d2cc987cb4add84cf2dee94a20"
+      },
+      {
+        "name": "一键投递-0.5.38-arm64.zip",
+        "bytes": 127192778,
+        "sha256": "9e9090b42bb325eb1ee8cec2816fdca34f840cae558e49729cc8d215968522ca"
+      }
+    ],
+    "dmgMountedAndCopied": true,
+    "zipExtractedAndAudited": true,
+    "runtimeTarget": "isolated-dmg-copy",
+    "signature": "not-verified",
+    "endUserInstall": "not-verified",
+    "realAccounts": "not-verified",
+    "workflowRun": 37183937648
+  },
+  "linux": {
+    "ok": true,
+    "version": "0.5.38",
+    "platform": "linux",
+    "systemdTemplateValidated": true,
+    "caddyTemplateValidated": true,
+    "composeBootAndRestart": true,
+    "persistentUnknownReceipt": true,
+    "readonlyContainer": true,
+    "realPublicTLS": false,
+    "realWecom": false,
+    "systemdRuntime": false,
+    "workflowRun": 37183855095
+  },
+  "remainingGates": [
+    "real-account-complete-save-reopen-and-authorized-application-receipts",
+    "public-HTTPS-feedback-and-real-WeCom",
+    "public-official-download-and-update-and-cloud-Skill",
+    "Windows-default-directory-and-installer-GUI",
+    "Mac-end-user-Gatekeeper-install-upgrade-and-Intel-coverage",
+    "current-complete-real-demonstration-video",
+    "representative-product-bug-rate-below-1-percent"
+  ],
+  "distributionNameFix": {
+    "reason": "GitHub removed non-ASCII attachment prefix during upload",
+    "runtimeChanged": false,
+    "ASCIIAssetsAlreadySupportedByUpdater": true,
+    "originalAssetsPreserved": true
+  }
+}

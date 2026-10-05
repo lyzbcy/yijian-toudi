@@ -1,0 +1,9 @@
+{
+  "ok": false,
+  "version": "0.5.46",
+  "packaged": false,
+  "platform": "win32",
+  "realApplications": 0,
+  "externalMessages": 0,
+  "failure": "Expected values to be strictly equal:\n\nfalse !== true\n"
+}

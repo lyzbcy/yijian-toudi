@@ -1,0 +1,23 @@
+{
+  "version": "0.5.39",
+  "workflowRun": 37187255276,
+  "job": 111391725351,
+  "architecture": "x64",
+  "ok": false,
+  "failedTest": "live start is once per Shanghai day",
+  "assertion": {
+    "file": "test/skill-daily-boss.test.cjs",
+    "line": 49,
+    "actualDirectoryEntries": 2,
+    "expectedDirectoryEntries": 1
+  },
+  "dailyStartCount": 1,
+  "rootCause": "Test counted background-updater updates/ directory as a second daily marker. Deterministic loopback-only composition regression confirms one start and one marker alongside updates/.",
+  "productRuntimeChanged": false,
+  "repair": "Isolate engine cases from updater; test wrapper/updater coexistence separately without external requests.",
+  "latestTargetedTests": {
+    "passed": 6,
+    "failed": 0
+  },
+  "remaining": "Native Intel package build/runtime still needs rerun"
+}

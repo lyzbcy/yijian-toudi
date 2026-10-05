@@ -1,0 +1,445 @@
+{
+  "observer": "independent_read_only_ui_observer",
+  "date": "2026-10-04",
+  "version": "0.5.38",
+  "status": "pass_for_observed_visible_packaged_UI_scope",
+  "method": "Read-only CDP connected to the exact parent test instance on the manifest port. Observer did not launch apps, click, fill, modify product source, send messages or submit to recruitment services.",
+  "port": 58171,
+  "applicationTerminalEvidence": {
+    "status": "finished",
+    "root": "E:\\共享\\创业\\一键投递-交付开发-2026-10-04"
+  },
+  "phases": [
+    {
+      "phase": "resume",
+      "ack": {
+        "phase": "resume",
+        "ok": true,
+        "findings": [],
+        "actualPixelsViewed": true,
+        "method": "read_only_CDP_same_visible_packaged_Electron_instance"
+      },
+      "observation": {
+        "phase": "resume",
+        "version": "0.5.38",
+        "port": 58171,
+        "method": "read_only_CDP_same_visible_packaged_Electron_instance",
+        "ok": true,
+        "findings": [],
+        "observedPageErrors": [],
+        "observed": {
+          "title": "一键投递",
+          "runtimeVersion": "0.5.38",
+          "displayVersion": "0.5.38",
+          "packagedAsarRenderer": true,
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "documentVisibility": "visible",
+          "activeSidebar": [
+            "resume"
+          ],
+          "visiblePages": [
+            "page-resume"
+          ],
+          "pageOpacity": "1",
+          "unfinishedPageAnimations": 0,
+          "closedDialogsVisible": [],
+          "horizontalOverflow": -15,
+          "brokenImages": [],
+          "resume": {
+            "heading": "按求职方向维护多份，基本信息共享",
+            "headingWidth": 913.3333740234375,
+            "summaryHeight": 292,
+            "statusWidth": 1031.3333740234375,
+            "statusCount": 12,
+            "navigation": [
+              {
+                "href": "#resume-basic",
+                "text": "01 基本信息"
+              },
+              {
+                "href": "#resume-intention",
+                "text": "02 求职意向"
+              },
+              {
+                "href": "#resume-education",
+                "text": "03 教育经历"
+              },
+              {
+                "href": "#resume-experience",
+                "text": "04 工作经历"
+              },
+              {
+                "href": "#resume-project",
+                "text": "05 项目经历"
+              },
+              {
+                "href": "#resume-games",
+                "text": "06 游戏经历"
+              },
+              {
+                "href": "#resume-ai",
+                "text": "07 AI 应用技能"
+              },
+              {
+                "href": "#resume-skills",
+                "text": "08 技能与证书"
+              },
+              {
+                "href": "#resume-extras",
+                "text": "09 补充信息"
+              },
+              {
+                "href": "#resume-family",
+                "text": "10 家庭成员"
+              },
+              {
+                "href": "#resume-compliance",
+                "text": "11 合规声明"
+              }
+            ],
+            "sections": [
+              {
+                "href": "#resume-basic",
+                "text": "01 基本信息"
+              },
+              {
+                "href": "#resume-intention",
+                "text": "02 求职意向"
+              },
+              {
+                "href": "#resume-education",
+                "text": "03 教育经历"
+              },
+              {
+                "href": "#resume-experience",
+                "text": "04 工作经历"
+              },
+              {
+                "href": "#resume-project",
+                "text": "05 项目经历"
+              },
+              {
+                "href": "#resume-games",
+                "text": "06 游戏经历"
+              },
+              {
+                "href": "#resume-ai",
+                "text": "07 AI 应用技能"
+              },
+              {
+                "href": "#resume-skills",
+                "text": "08 技能与证书"
+              },
+              {
+                "href": "#resume-extras",
+                "text": "09 补充信息"
+              },
+              {
+                "href": "#resume-family",
+                "text": "10 家庭成员"
+              },
+              {
+                "href": "#resume-compliance",
+                "text": "11 合规声明"
+              }
+            ],
+            "sampleSchoolMatches": true
+          }
+        },
+        "screenshot": "E:\\共享\\创业\\一键投递-交付开发-2026-10-04\\verification\\2026-10-04-recovery\\observer-v38-resume.png",
+        "actualPixelsViewed": true
+      }
+    },
+    {
+      "phase": "jobs",
+      "ack": {
+        "phase": "jobs",
+        "ok": true,
+        "findings": [],
+        "actualPixelsViewed": true,
+        "method": "read_only_CDP_same_visible_packaged_Electron_instance"
+      },
+      "observation": {
+        "phase": "jobs",
+        "version": "0.5.38",
+        "port": 58171,
+        "method": "read_only_CDP_same_visible_packaged_Electron_instance",
+        "ok": true,
+        "findings": [],
+        "observedPageErrors": [],
+        "observed": {
+          "title": "一键投递",
+          "runtimeVersion": "0.5.38",
+          "displayVersion": "0.5.38",
+          "packagedAsarRenderer": true,
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "documentVisibility": "visible",
+          "activeSidebar": [
+            "jobs"
+          ],
+          "visiblePages": [
+            "page-jobs"
+          ],
+          "pageOpacity": "1",
+          "unfinishedPageAnimations": 0,
+          "closedDialogsVisible": [],
+          "horizontalOverflow": -15,
+          "brokenImages": [],
+          "filters": [
+            {
+              "text": "全部",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "★ 收藏",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "北京",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "上海",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "深圳",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "杭州",
+              "lines": 1,
+              "clipped": false
+            }
+          ]
+        },
+        "screenshot": "E:\\共享\\创业\\一键投递-交付开发-2026-10-04\\verification\\2026-10-04-recovery\\observer-v38-jobs.png",
+        "actualPixelsViewed": true
+      }
+    },
+    {
+      "phase": "agent",
+      "ack": {
+        "phase": "agent",
+        "ok": true,
+        "findings": [],
+        "actualPixelsViewed": true,
+        "method": "read_only_CDP_same_visible_packaged_Electron_instance"
+      },
+      "observation": {
+        "phase": "agent",
+        "version": "0.5.38",
+        "port": 58171,
+        "method": "read_only_CDP_same_visible_packaged_Electron_instance",
+        "ok": true,
+        "findings": [],
+        "observedPageErrors": [],
+        "observed": {
+          "title": "一键投递",
+          "runtimeVersion": "0.5.38",
+          "displayVersion": "0.5.38",
+          "packagedAsarRenderer": true,
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "documentVisibility": "visible",
+          "activeSidebar": [
+            "agent"
+          ],
+          "visiblePages": [
+            "page-agent"
+          ],
+          "pageOpacity": "1",
+          "unfinishedPageAnimations": 0,
+          "closedDialogsVisible": [],
+          "horizontalOverflow": -15,
+          "brokenImages": [],
+          "agent": {
+            "maskedPlaceholder": true,
+            "actualCredentialVisible": false,
+            "copyControlVisible": true,
+            "serviceStatusText": true
+          }
+        },
+        "screenshot": "E:\\共享\\创业\\一键投递-交付开发-2026-10-04\\verification\\2026-10-04-recovery\\observer-v38-agent.png",
+        "actualPixelsViewed": true
+      }
+    }
+  ],
+  "findings": [],
+  "allThreeScreenshotsActuallyViewed": true,
+  "allThreeRenderedFromPackagedAsar": true,
+  "allThreeRuntimeAndDisplayVersionsMatch": true,
+  "allThreeDocumentsVisibleAndAnimationsSettled": true,
+  "parentEvidence": {
+    "source": "test-output/delivery-layout.json",
+    "report": {
+      "ok": true,
+      "version": "0.5.38",
+      "fixtureOnly": true,
+      "packaged": true,
+      "visible": true,
+      "checks": [
+        {
+          "width": 1100,
+          "filters": [
+            {
+              "text": "全部",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "★ 收藏",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "北京",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "上海",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "深圳",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "杭州",
+              "lines": 1,
+              "clipped": false
+            }
+          ],
+          "geometry": {
+            "width": 1100,
+            "headingWidth": 609.3333740234375,
+            "summaryHeight": 380.3333435058594,
+            "statusWidth": 727.3333740234375,
+            "overflow": -15,
+            "closedDialogsVisible": []
+          }
+        },
+        {
+          "width": 1280,
+          "filters": [
+            {
+              "text": "全部",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "★ 收藏",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "北京",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "上海",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "深圳",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "杭州",
+              "lines": 1,
+              "clipped": false
+            }
+          ],
+          "geometry": {
+            "width": 1280,
+            "headingWidth": 753.3333740234375,
+            "summaryHeight": 380.3333435058594,
+            "statusWidth": 871.3333740234375,
+            "overflow": -15,
+            "closedDialogsVisible": []
+          }
+        },
+        {
+          "width": 1440,
+          "filters": [
+            {
+              "text": "全部",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "★ 收藏",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "北京",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "上海",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "深圳",
+              "lines": 1,
+              "clipped": false
+            },
+            {
+              "text": "杭州",
+              "lines": 1,
+              "clipped": false
+            }
+          ],
+          "geometry": {
+            "width": 1440,
+            "headingWidth": 913.3333740234375,
+            "summaryHeight": 292,
+            "statusWidth": 1031.3333740234375,
+            "overflow": -15,
+            "closedDialogsVisible": []
+          }
+        }
+      ],
+      "directorySections": 11,
+      "credentialMasked": true,
+      "credentialCopiedCorrectly": true,
+      "clipboardRestored": true,
+      "pageErrors": []
+    },
+    "note": "Multiwidth checks and clipboard copy are performed by parent test; observer personally inspected three phase screenshots and DOM at 1440x900."
+  },
+  "kimi": {
+    "nativeElectronObservation": false,
+    "classification": "Independent same-instance CDP verification, not Kimi extension webpage interaction verification",
+    "reason": "Provided Kimi extension tab API cannot attach to this separate native Electron renderer. An opened browser copy would not be the same application instance."
+  },
+  "preservedPriorEvidence": "v35, v37 preparation and feedback observer files are retained; v37 preparation script was not run.",
+  "limitations": [
+    "Isolated fixture profile has no real recruitment login sessions.",
+    "No real job retrieval, resume synchronization or submission was performed by this observer.",
+    "Independent observer inspected 1440x900; parent tests cover 1100,1280,1440 widths.",
+    "UI scope pass does not independently prove complete fan distribution readiness, full MVP acceptance, or overall defect rate below 1%."
+  ]
+}

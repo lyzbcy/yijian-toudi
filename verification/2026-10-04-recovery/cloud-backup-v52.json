@@ -1,0 +1,65 @@
+{
+  "ok": true,
+  "version": "0.5.52",
+  "draft": true,
+  "published": false,
+  "url": "https://github.com/lyzbcy/yijian-toudi/releases/tag/untagged-52b2ff408ee35157055a",
+  "tag": "v0.5.52",
+  "sourceCommit": "5f5a66383445b50e0f9455cb6eb225bb2f884847",
+  "assets": 10,
+  "allBytesHashesAndApiDigestsVerified": true,
+  "files": [
+    {
+      "name": "yijian-toudi-setup-0.5.52.exe",
+      "bytes": 104310633,
+      "sha256": "5e1c8c60e9a6aae5321251aba050dfde14e3169cd0e7cd1578734d963e9ce875"
+    },
+    {
+      "name": "yijian-toudi-skill-0.5.52.tar.gz",
+      "bytes": 14153,
+      "sha256": "4219e2e77ba6776f8a069ab080f31a8f0282d69babb95dceae0fe054d5ef5f53"
+    },
+    {
+      "name": "yijian-toudi-skill-0.5.52.sha256",
+      "bytes": 99,
+      "sha256": "19d0113c81cbb63d4fc7f871d6a8adeff29992a5b5c6750f7327c2d114c14284"
+    },
+    {
+      "name": "yijian-toudi-feedback-server-0.5.52.tar.gz",
+      "bytes": 12434,
+      "sha256": "6be58223961096e434a9605b2220afe437f9776f25250dfe82d8cbc42481589d"
+    },
+    {
+      "name": "yijian-toudi-feedback-server-0.5.52.sha256",
+      "bytes": 109,
+      "sha256": "6d7f0cc90a76a6fcb71e59e348bcd7c65502371015dd1725375011225851c278"
+    },
+    {
+      "name": "yijian-toudi-0.5.52-SHA256.txt",
+      "bytes": 304,
+      "sha256": "dc4402a351fdbf3efaf0cbcbfcc54bd31f91528443649b2047a4ca01b6b19e17"
+    },
+    {
+      "name": "yijian-toudi-0.5.52-candidate-guide.md",
+      "bytes": 1102,
+      "sha256": "493e3f4f7cae32a7c0945cb62f1968d57da366d060c66d16445acd4f3e529ce7"
+    },
+    {
+      "name": "candidate-manifest-v0.5.52.json",
+      "bytes": 939,
+      "sha256": "f5a9efd49200ff864a0260dcab5ee47c3e78a696c9485dedb67308d97e705600"
+    },
+    {
+      "name": "source-fingerprints-v52.json",
+      "bytes": 20391,
+      "sha256": "7706b353b45667264a92319bba34601690c7bf059321829fc35a249a7253211a"
+    },
+    {
+      "name": "local-verification-v52.json",
+      "bytes": 4526,
+      "sha256": "03ca01f7335810992c4e9c7d638a24ea8b35fa83e329879879d495b55a63c381"
+    }
+  ],
+  "containsMac52": false,
+  "privateResumeCookiesCredentialsIncluded": false
+}

@@ -1,0 +1,44 @@
+{
+  "ok": false,
+  "version": "0.5.47",
+  "fixtureOnly": true,
+  "packaged": true,
+  "promptStubbed": false,
+  "checks": [
+    "New-profile Escape/button cancellation preserves unsaved content and returns keyboard focus",
+    "Actual labeled modal at three widths creates independent profile with Enter; native prompt unchanged"
+  ],
+  "pageErrors": [],
+  "error": "locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('#textEntryDialog[open]') to be visible\n",
+  "inputEvents": [
+    {
+      "type": "click",
+      "detail": 1,
+      "target": "BUTTON",
+      "rename": false,
+      "active": false,
+      "open": false
+    },
+    {
+      "type": "click",
+      "detail": 1,
+      "target": "BUTTON",
+      "rename": false,
+      "active": false,
+      "open": false
+    },
+    {
+      "type": "click",
+      "detail": 1,
+      "target": "BUTTON",
+      "rename": false,
+      "active": false,
+      "open": false
+    }
+  ],
+  "dialogState": {
+    "open": false,
+    "activeTabCount": 1,
+    "tabCount": 2
+  }
+}

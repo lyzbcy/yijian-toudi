@@ -1,0 +1,499 @@
+{
+  "version": "0.5.52",
+  "isolatedProfile": true,
+  "officialWrites": 0,
+  "onlyOfficialCaptions": true,
+  "sections": [
+    {
+      "index": 0,
+      "title": "内推串码",
+      "groupCount": 0,
+      "captions": [],
+      "repeatedGroups": [],
+      "developerLanguageRow": []
+    },
+    {
+      "index": 1,
+      "title": "简历附件",
+      "groupCount": 0,
+      "captions": [],
+      "repeatedGroups": [],
+      "developerLanguageRow": []
+    },
+    {
+      "index": 2,
+      "title": "基础信息",
+      "groupCount": 0,
+      "captions": [
+        "个人照片",
+        "姓名",
+        "性别",
+        "国家/地区",
+        "个人证件",
+        "手机号码",
+        "邮箱",
+        "当前所处地",
+        "微信号",
+        "QQ号",
+        "紧急联系人",
+        "紧急联系人电话"
+      ],
+      "repeatedGroups": [],
+      "developerLanguageRow": []
+    },
+    {
+      "index": 3,
+      "title": "意向信息",
+      "groupCount": 0,
+      "captions": [
+        "期望工作城市",
+        "除上述选择外，是否还接受其他城市分配",
+        "感兴趣的事业群",
+        "感兴趣的部门",
+        "参加面试城市"
+      ],
+      "repeatedGroups": [],
+      "developerLanguageRow": []
+    },
+    {
+      "index": 4,
+      "title": "教育经历",
+      "groupCount": 1,
+      "captions": [
+        "学历",
+        "学校名称",
+        "目前就读地",
+        "起止时间",
+        "院系",
+        "专业",
+        "成绩排名",
+        "GPA-GPA",
+        "GPA-BASE",
+        "导师",
+        "实验室",
+        "研究方向",
+        "论文"
+      ],
+      "repeatedGroups": [
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "学历",
+            "学校名称",
+            "目前就读地",
+            "起止时间",
+            "院系",
+            "专业",
+            "成绩排名",
+            "GPA-GPA",
+            "GPA-BASE",
+            "导师",
+            "实验室",
+            "研究方向",
+            "论文"
+          ],
+          "visible": true
+        }
+      ],
+      "developerLanguageRow": []
+    },
+    {
+      "index": 5,
+      "title": "实习经历",
+      "groupCount": 1,
+      "captions": [
+        "公司",
+        "职位",
+        "起止时间",
+        "描述"
+      ],
+      "repeatedGroups": [
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "公司",
+            "职位",
+            "起止时间",
+            "描述"
+          ],
+          "visible": true
+        }
+      ],
+      "developerLanguageRow": []
+    },
+    {
+      "index": 6,
+      "title": "项目经历",
+      "groupCount": 5,
+      "captions": [
+        "项目名称",
+        "在项目中担任的角色",
+        "起止时间",
+        "描述"
+      ],
+      "repeatedGroups": [
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "项目名称",
+            "在项目中担任的角色",
+            "起止时间",
+            "描述"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "项目名称",
+            "在项目中担任的角色",
+            "起止时间",
+            "描述"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "项目名称",
+            "在项目中担任的角色",
+            "起止时间",
+            "描述"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "项目名称",
+            "在项目中担任的角色",
+            "起止时间",
+            "描述"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "项目名称",
+            "在项目中担任的角色",
+            "起止时间",
+            "描述"
+          ],
+          "visible": true
+        }
+      ],
+      "developerLanguageRow": []
+    },
+    {
+      "index": 7,
+      "title": "游戏经历 游戏经历将作为游戏类职位评估的重要参考，请以你的体验深度和热爱程度作为填写标准。如果有更多热爱游戏的材料，可以简历附件中提供",
+      "groupCount": 14,
+      "captions": [
+        "请选择你玩过的所有游戏品类",
+        "游戏品类",
+        "游戏名称",
+        "游戏时长",
+        "游戏成就",
+        "其他经验"
+      ],
+      "repeatedGroups": [
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "游戏品类",
+            "游戏名称",
+            "游戏时长",
+            "游戏成就",
+            "其他经验"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "游戏品类",
+            "游戏名称",
+            "游戏时长",
+            "游戏成就",
+            "其他经验"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "游戏品类",
+            "游戏名称",
+            "游戏时长",
+            "游戏成就",
+            "其他经验"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "游戏品类",
+            "游戏名称",
+            "游戏时长",
+            "游戏成就",
+            "其他经验"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "游戏品类",
+            "游戏名称",
+            "游戏时长",
+            "游戏成就",
+            "其他经验"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "游戏品类",
+            "游戏名称",
+            "游戏时长",
+            "游戏成就",
+            "其他经验"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "游戏品类",
+            "游戏名称",
+            "游戏时长",
+            "游戏成就",
+            "其他经验"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "游戏品类",
+            "游戏名称",
+            "游戏时长",
+            "游戏成就",
+            "其他经验"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "游戏品类",
+            "游戏名称",
+            "游戏时长",
+            "游戏成就",
+            "其他经验"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "游戏品类",
+            "游戏名称",
+            "游戏时长",
+            "游戏成就",
+            "其他经验"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "游戏品类",
+            "游戏名称",
+            "游戏时长",
+            "游戏成就",
+            "其他经验"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "游戏品类",
+            "游戏名称",
+            "游戏时长",
+            "游戏成就",
+            "其他经验"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "游戏品类",
+            "游戏名称",
+            "游戏时长",
+            "游戏成就",
+            "其他经验"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "游戏品类",
+            "游戏名称",
+            "游戏时长",
+            "游戏成就",
+            "其他经验"
+          ],
+          "visible": true
+        }
+      ],
+      "developerLanguageRow": []
+    },
+    {
+      "index": 8,
+      "title": "获奖信息",
+      "groupCount": 5,
+      "captions": [
+        "获奖类型",
+        "奖项名称",
+        "获奖时间",
+        "奖项说明"
+      ],
+      "repeatedGroups": [
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "获奖类型",
+            "奖项名称",
+            "获奖时间",
+            "奖项说明"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "获奖类型",
+            "奖项名称",
+            "获奖时间",
+            "奖项说明"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "获奖类型",
+            "奖项名称",
+            "获奖时间",
+            "奖项说明"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "获奖类型",
+            "奖项名称",
+            "获奖时间",
+            "奖项说明"
+          ],
+          "visible": true
+        },
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "获奖类型",
+            "奖项名称",
+            "获奖时间",
+            "奖项说明"
+          ],
+          "visible": true
+        }
+      ],
+      "developerLanguageRow": []
+    },
+    {
+      "index": 9,
+      "title": "AI应用技能",
+      "groupCount": 0,
+      "captions": [
+        "请列出你常用的 AI 工具&模型",
+        "请描述一个或多个你与AI协作完成的项目或任务",
+        "相关项目或作品链接"
+      ],
+      "repeatedGroups": [],
+      "developerLanguageRow": []
+    },
+    {
+      "index": 10,
+      "title": "语言能力",
+      "groupCount": 0,
+      "captions": [
+        "外语考试/等级",
+        "开发语言"
+      ],
+      "repeatedGroups": [],
+      "developerLanguageRow": [
+        {
+          "classes": "info_box",
+          "inputCount": 2,
+          "selectClass": "el-select",
+          "popups": 1
+        }
+      ]
+    },
+    {
+      "index": 11,
+      "title": "作品或个人主页 可展示作品集或其他附件",
+      "groupCount": 1,
+      "captions": [
+        "作品名称",
+        "作品链接",
+        "密码或提取码",
+        "个人主页链接"
+      ],
+      "repeatedGroups": [
+        {
+          "classes": "info_list",
+          "fieldCaptions": [
+            "作品名称",
+            "作品链接",
+            "密码或提取码",
+            "个人主页链接"
+          ],
+          "visible": true
+        }
+      ],
+      "developerLanguageRow": []
+    },
+    {
+      "index": 12,
+      "title": "资料证明人",
+      "groupCount": 0,
+      "captions": [
+        "以上资料证明人",
+        "证明人身份",
+        "联系电话"
+      ],
+      "repeatedGroups": [],
+      "developerLanguageRow": []
+    },
+    {
+      "index": 13,
+      "title": "其他关键信息 为了更好地了解您的背景与特长，增加您简历曝光的机会，请填写以下信息。",
+      "groupCount": 0,
+      "captions": [
+        "补充信息"
+      ],
+      "repeatedGroups": [],
+      "developerLanguageRow": []
+    }
+  ]
+}

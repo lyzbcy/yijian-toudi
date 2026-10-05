@@ -1,0 +1,194 @@
+{
+  "version": "0.5.52",
+  "isolatedReadonly": true,
+  "officialWrites": 0,
+  "privateValuesOmitted": true,
+  "samples": [
+    {
+      "elapsedMs": 5029,
+      "path": "/campus/resume/edit",
+      "controls": 0,
+      "identityPresent": true,
+      "userLoading": false,
+      "loading": true,
+      "loadingVisible": 2,
+      "contentStructure": [
+        {
+          "tag": "DIV",
+          "class": "resumeEdit__67393a resumeFormPage__e1fe37",
+          "children": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "resumeEdit-wrapper",
+          "children": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "",
+          "children": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "emptyPlaceholder__5f9ae8",
+          "children": 0
+        }
+      ]
+    },
+    {
+      "elapsedMs": 10043,
+      "path": "/campus/resume/edit",
+      "controls": 0,
+      "identityPresent": true,
+      "userLoading": false,
+      "loading": true,
+      "loadingVisible": 2,
+      "contentStructure": [
+        {
+          "tag": "DIV",
+          "class": "resumeEdit__67393a resumeFormPage__e1fe37",
+          "children": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "resumeEdit-wrapper",
+          "children": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "",
+          "children": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "emptyPlaceholder__5f9ae8",
+          "children": 0
+        }
+      ]
+    },
+    {
+      "elapsedMs": 15053,
+      "path": "/campus/resume/edit",
+      "controls": 0,
+      "identityPresent": true,
+      "userLoading": false,
+      "loading": true,
+      "loadingVisible": 2,
+      "contentStructure": [
+        {
+          "tag": "DIV",
+          "class": "resumeEdit__67393a resumeFormPage__e1fe37",
+          "children": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "resumeEdit-wrapper",
+          "children": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "",
+          "children": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "emptyPlaceholder__5f9ae8",
+          "children": 0
+        }
+      ]
+    },
+    {
+      "elapsedMs": 20063,
+      "path": "/campus/resume/edit",
+      "controls": 0,
+      "identityPresent": true,
+      "userLoading": false,
+      "loading": true,
+      "loadingVisible": 2,
+      "contentStructure": [
+        {
+          "tag": "DIV",
+          "class": "resumeEdit__67393a resumeFormPage__e1fe37",
+          "children": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "resumeEdit-wrapper",
+          "children": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "",
+          "children": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "emptyPlaceholder__5f9ae8",
+          "children": 0
+        }
+      ]
+    },
+    {
+      "elapsedMs": 25071,
+      "path": "/campus/resume/edit",
+      "controls": 0,
+      "identityPresent": true,
+      "userLoading": false,
+      "loading": true,
+      "loadingVisible": 2,
+      "contentStructure": [
+        {
+          "tag": "DIV",
+          "class": "resumeEdit__67393a resumeFormPage__e1fe37",
+          "children": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "resumeEdit-wrapper",
+          "children": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "",
+          "children": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "emptyPlaceholder__5f9ae8",
+          "children": 0
+        }
+      ]
+    },
+    {
+      "elapsedMs": 30085,
+      "path": "/campus/resume/edit",
+      "controls": 0,
+      "identityPresent": true,
+      "userLoading": false,
+      "loading": true,
+      "loadingVisible": 2,
+      "contentStructure": [
+        {
+          "tag": "DIV",
+          "class": "resumeEdit__67393a resumeFormPage__e1fe37",
+          "children": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "resumeEdit-wrapper",
+          "children": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "",
+          "children": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "emptyPlaceholder__5f9ae8",
+          "children": 0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "version": "0.5.49",
+  "packaged": true,
+  "platformCount": 7,
+  "concurrency": [
+    4,
+    6
+  ],
+  "realNativeWindows": true,
+  "genericFieldReadback": true,
+  "queueAdvance": true,
+  "historyPersisted": true,
+  "falseSaved": 0,
+  "externalRequests": 0,
+  "offlineFixture": true,
+  "ranBeforeInstallerSequentially": true
+}

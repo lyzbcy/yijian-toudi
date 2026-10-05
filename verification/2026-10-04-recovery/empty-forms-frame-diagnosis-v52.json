@@ -1,0 +1,106 @@
+{
+  "version": "0.5.52",
+  "isolatedProfile": true,
+  "readonlyLoadOnly": true,
+  "allRequestsSealedAfterLoad": true,
+  "officialWrites": 0,
+  "privateDomAndValuesOmitted": true,
+  "rows": [
+    {
+      "companyId": "bytedance",
+      "frames": [
+        {
+          "origin": "https://jobs.bytedance.com",
+          "path": "/campus/resume/edit",
+          "dom": {
+            "bodyChildren": 9,
+            "bodyLength": 92,
+            "captchaPrompt": false,
+            "iframeCount": 2,
+            "inputCount": 0,
+            "loadingPrompt": false,
+            "loginPrompt": false,
+            "shadowRoots": 0
+          }
+        },
+        {
+          "origin": "null",
+          "path": "blank",
+          "dom": {
+            "bodyChildren": 0,
+            "bodyLength": 0,
+            "captchaPrompt": false,
+            "iframeCount": 0,
+            "inputCount": 0,
+            "loadingPrompt": false,
+            "loginPrompt": false,
+            "shadowRoots": 0
+          }
+        },
+        {
+          "origin": "null",
+          "path": "blank",
+          "dom": {
+            "bodyChildren": 0,
+            "bodyLength": 0,
+            "captchaPrompt": false,
+            "iframeCount": 0,
+            "inputCount": 0,
+            "loadingPrompt": false,
+            "loginPrompt": false,
+            "shadowRoots": 0
+          }
+        }
+      ],
+      "localStorageCount": 27
+    },
+    {
+      "companyId": "xiaomi",
+      "frames": [
+        {
+          "origin": "https://xiaomi.jobs.f.mioffice.cn",
+          "path": "/campus/resume/edit",
+          "dom": {
+            "bodyChildren": 11,
+            "bodyLength": 24,
+            "captchaPrompt": false,
+            "iframeCount": 2,
+            "inputCount": 0,
+            "loadingPrompt": false,
+            "loginPrompt": false,
+            "shadowRoots": 0
+          }
+        },
+        {
+          "origin": "null",
+          "path": "blank",
+          "dom": {
+            "bodyChildren": 0,
+            "bodyLength": 0,
+            "captchaPrompt": false,
+            "iframeCount": 0,
+            "inputCount": 0,
+            "loadingPrompt": false,
+            "loginPrompt": false,
+            "shadowRoots": 0
+          }
+        },
+        {
+          "origin": "null",
+          "path": "blank",
+          "dom": {
+            "bodyChildren": 0,
+            "bodyLength": 0,
+            "captchaPrompt": false,
+            "iframeCount": 0,
+            "inputCount": 0,
+            "loadingPrompt": false,
+            "loginPrompt": false,
+            "shadowRoots": 0
+          }
+        }
+      ],
+      "localStorageCount": 10
+    }
+  ]
+}

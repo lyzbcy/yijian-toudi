@@ -1,0 +1,13 @@
+{
+  "version": "0.5.42",
+  "ok": true,
+  "fixtureOnly": true,
+  "realOSHelperVerified": false,
+  "checks": [
+    "Real renderer polls pending installed state and displays restored-old-version failure after fixture status transition",
+    "Live unconfirmed update explains retained recovery copy and saving/closing without claiming restoration or exposing helper codes",
+    "Confirmed restart ends watcher without an incorrect failure toast"
+  ],
+  "pageErrors": [],
+  "sourceCommit": "01b893365a5c84561f86b839841d5254758ba4e6"
+}

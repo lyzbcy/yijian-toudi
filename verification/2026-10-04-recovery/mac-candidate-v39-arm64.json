@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "version": "0.5.39",
+  "ownFilesMatched": 111,
+  "asarEntries": 1136,
+  "noPrivateDataFiles": true,
+  "noKnownKeyPatterns": true,
+  "host": "darwin",
+  "architecture": "arm64",
+  "artifacts": [
+    {
+      "name": "yijian-toudi-0.5.39-arm64.dmg",
+      "bytes": 129103963,
+      "sha256": "b5020c6a6b6370c830a553a527635d1c9a74f632732c32d80137df2962c283f8"
+    },
+    {
+      "name": "yijian-toudi-0.5.39-arm64.zip",
+      "bytes": 127194099,
+      "sha256": "720b08b1f978908f044660a40438b8d0666c238b29c9847847640bea8fe5dfcc"
+    }
+  ],
+  "dmgMountedAndCopied": true,
+  "zipExtractedAndAudited": true,
+  "runtimeTarget": "isolated-dmg-copy",
+  "signature": "not-verified",
+  "endUserInstall": "not-verified",
+  "realAccounts": "not-verified",
+  "workflowRun": 37187658202,
+  "sourceCommit": "e7bb45fa08e02fa1a2847d45728b1823b3a789ef"
+}

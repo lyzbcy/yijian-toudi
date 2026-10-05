@@ -1,0 +1,66 @@
+{
+  "ok": true,
+  "version": "0.5.53",
+  "fixtureOnly": true,
+  "packaged": true,
+  "promptStubbed": false,
+  "checks": [
+    "New-profile Escape/button cancellation preserves unsaved content and returns keyboard focus",
+    "Actual labeled modal at three widths creates independent profile with Enter; native prompt unchanged",
+    "Rename prefill, required validation, cancellation and Enter retain unsaved current resume",
+    "Automatic blank-name fallback, independent directions and shared identity verified",
+    "Both customer-dialog cancellations, digit validation and optional tail work without launching browser or sending",
+    "Reload retains names, independent resume content and shared identity with zero page errors"
+  ],
+  "pageErrors": [],
+  "renameAttempts": [
+    {
+      "phase": "before-first-dblclick",
+      "connected": true,
+      "focused": true,
+      "rect": {
+        "x": 575.140625,
+        "y": 96.5,
+        "width": 44.96875,
+        "height": 16
+      },
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "parents": [
+        {
+          "tag": "HTML",
+          "scrollTop": 379,
+          "clientHeight": 900,
+          "scrollHeight": 8658
+        }
+      ],
+      "dialogOpen": false
+    },
+    {
+      "phase": "after-first-dblclick",
+      "connected": true,
+      "focused": true,
+      "rect": {
+        "x": 575.140625,
+        "y": -0.5,
+        "width": 44.96875,
+        "height": 16
+      },
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "parents": [
+        {
+          "tag": "HTML",
+          "scrollTop": 476,
+          "clientHeight": 900,
+          "scrollHeight": 8658
+        }
+      ],
+      "dialogOpen": true
+    }
+  ]
+}

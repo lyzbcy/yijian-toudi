@@ -1,0 +1,189 @@
+{
+  "version": "0.5.52",
+  "privateValuesOmitted": true,
+  "result": {
+    "path": "/campus/resume/edit",
+    "configPath": "campus",
+    "processType": 2,
+    "hasReactApp": true,
+    "storeKeys": [
+      "router",
+      "@@dva",
+      "common",
+      "userInfo",
+      "tenantInfo",
+      "loading",
+      "evaluation",
+      "tempEmail",
+      "loginType",
+      "histroyQuene",
+      "websiteInfo",
+      "positionDetail",
+      "positionCard",
+      "ssrData"
+    ],
+    "userLoading": false,
+    "identityPresent": true,
+    "loadingStatus": 1,
+    "routes": [
+      {
+        "path": "/",
+        "realPath": null,
+        "children": []
+      },
+      {
+        "path": "/success/fullResumeDone",
+        "realPath": null,
+        "children": []
+      },
+      {
+        "path": "/success/miniApply",
+        "realPath": null,
+        "children": []
+      },
+      {
+        "path": "/",
+        "realPath": null,
+        "children": []
+      },
+      {
+        "path": "/ambassador-confirm",
+        "realPath": null,
+        "children": []
+      },
+      {
+        "path": "/ambassador-recommendations",
+        "realPath": null,
+        "children": []
+      },
+      {
+        "path": "/role-select",
+        "realPath": null,
+        "children": []
+      },
+      {
+        "path": "/ambassador-profile",
+        "realPath": null,
+        "children": []
+      },
+      {
+        "path": "/login",
+        "realPath": null,
+        "children": [
+          {
+            "path": "/",
+            "realPath": null,
+            "children": []
+          }
+        ]
+      },
+      {
+        "path": "/douyin_login",
+        "realPath": null,
+        "children": []
+      },
+      {
+        "path": "/resume",
+        "realPath": null,
+        "children": [
+          {
+            "path": "/edit",
+            "realPath": null,
+            "children": []
+          },
+          {
+            "path": "/view",
+            "realPath": null,
+            "children": []
+          },
+          {
+            "path": "/application/:id",
+            "realPath": null,
+            "children": []
+          },
+          {
+            "path": "/:id/application",
+            "realPath": null,
+            "children": []
+          },
+          {
+            "path": "/:id/apply/",
+            "realPath": null,
+            "children": []
+          },
+          {
+            "path": "/apply",
+            "realPath": null,
+            "children": []
+          },
+          {
+            "path": "/applied",
+            "realPath": null,
+            "children": []
+          }
+        ]
+      },
+      {
+        "path": "/position",
+        "realPath": "/position/list",
+        "children": [
+          {
+            "path": "/application",
+            "realPath": null,
+            "children": []
+          },
+          {
+            "path": "/",
+            "realPath": null,
+            "children": []
+          },
+          {
+            "path": "/list",
+            "realPath": null,
+            "children": []
+          },
+          {
+            "path": "/share",
+            "realPath": null,
+            "children": []
+          },
+          {
+            "path": "/:id/detail",
+            "realPath": null,
+            "children": []
+          },
+          {
+            "path": "/detail/:id",
+            "realPath": null,
+            "children": []
+          },
+          {
+            "path": "/detail",
+            "realPath": null,
+            "children": []
+          }
+        ]
+      },
+      {
+        "path": "/5xx",
+        "realPath": null,
+        "children": []
+      },
+      {
+        "path": "/recommend",
+        "realPath": null,
+        "children": [
+          {
+            "path": "/",
+            "realPath": null,
+            "children": []
+          }
+        ]
+      }
+    ],
+    "loading": true,
+    "midasRoot": true,
+    "contentElementCount": 1,
+    "historyPath": "/resume/edit"
+  }
+}

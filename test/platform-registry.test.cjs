@@ -44,6 +44,12 @@ test('平台 URL 只允许 manifest 声明的 https 招聘域名', () => {
   assert.throws(() => resolvePlatformUrl('boss', 'social', 'submit'), /未声明/);
 });
 
+test('百度登录入口保留真实简历上下文，不访问已404的login路由',()=>{
+  assert.equal(resolvePlatformUrl('baidu','campus','login'),resolvePlatformUrl('baidu','campus','resume'));
+  assert.equal(resolvePlatformUrl('baidu','social','login'),resolvePlatformUrl('baidu','social','resume'));
+  assert.equal(PLATFORM_MANIFESTS.baidu.safety.autoSaveProfile,false);
+});
+
 test('逐字段回读必须严格相等，数组忽略顺序但不忽略缺项', () => {
   assert.equal(verifyObservedValue('张三', '张三'), true);
   assert.equal(verifyObservedValue('张三', '张三丰'), false);

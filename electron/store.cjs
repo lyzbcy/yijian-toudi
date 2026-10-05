@@ -89,6 +89,10 @@ class JsonStore {
     const seedCompanies = new Map(seed.companies.map((c) => [c.id, c]));
     const existingIds = new Set((this.state.companies || []).map((c) => c.id));
     let changed = false;
+    if (!Number.isSafeInteger(this.state.meta.stateRevision) || this.state.meta.stateRevision < 0) {
+      this.state.meta.stateRevision = 0;
+      changed = true;
+    }
 
     // 1. 补全缺失的公司（新版本新增的）
     for (const [id, company] of seedCompanies) {
@@ -274,8 +278,10 @@ class JsonStore {
   }
 
   update(mutator) {
+    const previousRevision = this.state.meta.stateRevision || 0;
     const draft = structuredClone(this.state);
     const result = mutator(draft) || draft;
+    result.meta.stateRevision = previousRevision + 1;
     result.meta.updatedAt = new Date().toISOString();
     // 保存前刷新简历兼容视图，保证 resume.intention/education/... 与 activeProfile 同步
     if (result.resume) syncResumeActiveView(result.resume);
@@ -291,6 +297,7 @@ class JsonStore {
     try {
       this.state = structuredClone(nextState);
       this.migrate({ persist: false });
+      this.state.meta.stateRevision = (previous.meta.stateRevision || 0) + 1;
       syncResumeActiveView(this.state.resume);
       this.flush();
     } catch (error) {

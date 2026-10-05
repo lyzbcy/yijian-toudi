@@ -1,6 +1,6 @@
 {
   "name": "yijian-toudi",
-  "version": "0.5.0",
+  "version": "0.5.55",
   "description": "把岗位、简历和招聘消息放在一个地方管理的本地桌面应用",
   "main": "electron/main.cjs",
   "type": "commonjs",
@@ -10,6 +10,9 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
+    "preview:ai": "node scripts/ai-preview.cjs start",
+    "preview:ai:stop": "node scripts/ai-preview.cjs stop",
+    "test:ai-browser": "node test/ui-ai-browser.cjs && node test/ui-ai-preview.cjs",
     "test": "node --test test/*.test.cjs",
     "test:background": "node scripts/test-background.cjs",
     "test:live-jobs": "node test/live-jobs-full.cjs",
@@ -28,6 +31,7 @@
     "dist:win": "electron-builder --win nsis --config.electronDist=node_modules/electron/dist",
     "release": "node scripts/release.cjs",
     "pack:skill": "node scripts/package-skill.cjs",
+    "pack:feedback": "node scripts/package-feedback.cjs",
     "preview:site": "node scripts/site-preview.cjs"
   },
   "dependencies": {
@@ -60,9 +64,10 @@
         "dmg",
         "zip"
       ],
-      "artifactName": "一键投递-${version}-${arch}.${ext}",
+      "artifactName": "yijian-toudi-${version}-${arch}.${ext}",
       "hardenedRuntime": false,
-      "gatekeeperAssess": false
+      "gatekeeperAssess": false,
+      "identity": "-"
     },
     "dmg": {
       "title": "一键投递 ${version}",
@@ -78,6 +83,17 @@
           "path": "/Applications"
         }
       ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": false,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true,
+      "include": "installer/windows-options.nsh"
     },
     "win": {
       "icon": "build/icon.ico",

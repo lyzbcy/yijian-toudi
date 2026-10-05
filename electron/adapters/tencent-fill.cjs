@@ -244,24 +244,19 @@ async function inspectTencentResume({ workspace, company, taskId, onStep, recrui
 function planTencentResumePatch(resume, inspection, { recruitType = 'social' } = {}) {
   const remoteFields = Array.isArray(inspection?.fields) ? inspection.fields : [];
   const plan = createTencentResumePlan(resume, { recruitType });
-  // 远端字段描述统一小写化用于关键词匹配
-  const remoteDescribed = remoteFields.map((f) => ({ ...f, descLower: (f.label + ' ' + f.placeholder + ' ' + f.name + ' ' + f.id).toLowerCase() }));
-
-  const usedRemote = new Set();
+  // 与实际写入共用安全匹配器：旧的关键词“包含即命中”会把姓名错误匹配到紧急联系人。
+  const matchedPlans = planGenericResumeFields(plan, remoteFields);
+  const matchedByKey = new Map(matchedPlans.writable.map((item) => [item.key, remoteFields.find((field) => field.index === item.fieldIndex)]));
   const patches = plan.map((item) => {
     const localValue = String(item.value || '').trim();
-    // 在远端字段里按 keywords 找最佳匹配（与 buildFillScript 的打分逻辑一致）
-    const candidates = remoteDescribed
-      .filter((f) => !usedRemote.has(f.index))
-      .map((f) => ({ field: f, score: item.keywords.reduce((s, kw) => s + (f.descLower.includes(kw.toLowerCase()) ? 1 : 0), 0) }))
-      .filter((c) => c.score > 0)
-      .sort((a, b) => b.score - a.score);
-    const matched = candidates[0]?.field;
+    const matched = matchedByKey.get(item.key);
     if (!matched) {
       return { key: item.key, localValue, remoteValue: '', action: 'manual', risk: '在腾讯简历页未找到对应字段，需手动填写', matchedField: null, segmentLabel: item.segmentLabel };
     }
-    usedRemote.add(matched.index);
-    const remoteValue = String(matched.value || '').trim();
+    const rawRemoteValue = String(matched.value || '').trim();
+    const remoteValue = String(matched.type || '').includes('radio') && ['是', '否'].includes(localValue)
+      ? (rawRemoteValue === '1' ? '是' : rawRemoteValue === '0' ? '否' : rawRemoteValue)
+      : rawRemoteValue;
     // select 字段：检查本地值是否在选项里
     if (matched.options && !matched.options.includes(localValue)) {
       return { key: item.key, localValue, remoteValue, action: 'manual', risk: `腾讯此字段是下拉框，选项 [${matched.options.slice(0, 5).join('/')}…] 不含「${localValue}」`, matchedField: matched.label, segmentLabel: item.segmentLabel };
@@ -366,6 +361,7 @@ async function fillAfterProbe(workspace, plan, probe, resume, step, campus = fal
     return { ok: false, status: 'login-required', message: '腾讯页面已进入登录或验证码流程，请完成后重新更新简历' };
   }
 
+  if(campus)return require('./tencent-campus-fill.cjs').fillTencentCampusDraft(resume,{workspace,step,attachmentPath});
   step('inspecting', `正在读取腾讯页面字段并进行高置信匹配…`);
   const fieldsBefore = await workspace.run(INSPECT_FORM_FIELDS);
   if (!fieldsBefore.length) {

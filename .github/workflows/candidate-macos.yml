@@ -1,0 +1,134 @@
+name: Verify macOS delivery candidate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'electron/**'
+      - 'src/**'
+      - 'support/**'
+      - 'skill/**'
+      - 'scripts/**'
+      - 'test/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/candidate-macos.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: candidate-macos-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  macos:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [macos-latest, macos-15-intel]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Unit boundaries and static integrity
+        run: |
+          pnpm test
+          pnpm check
+      - name: Matching complete auxiliary packages
+        run: |
+          pnpm pack:skill
+          pnpm pack:feedback
+      - name: Build native macOS DMG and ZIP
+        env:
+          # Ad-hoc only: no private certificate or publishing credentials.
+          CSC_FOR_PULL_REQUEST: 'true'
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: pnpm dist:mac
+      - name: Audit actual macOS bundle and native artifacts
+        run: node scripts/verify-mac-candidate.cjs
+      - name: Launch actual packaged application and verify local user flows
+        run: |
+          node test/ui-delivery-layout.cjs
+          node test/ui-resume-profiles.cjs
+      - name: Verify standalone author page in actual packaged application
+        run: |
+          APP=$(find release -maxdepth 2 -type d -name '*.app' -print -quit)
+          test -n "$APP"
+          YJT_PACKAGED_EXECUTABLE="$GITHUB_WORKSPACE/$APP/Contents/MacOS/一键投递" YJT_VISIBLE_TEST=1 node test/ui-author-page.cjs
+      - name: Verify persisted partial refresh with actual packaged main and UI
+        run: |
+          APP=$(find release -maxdepth 2 -type d -name '*.app' -print -quit)
+          test -n "$APP"
+          YJT_PACKAGED_EXECUTABLE="$GITHUB_WORKSPACE/$APP/Contents/MacOS/一键投递" node test/ui-job-refresh-status.cjs
+      - name: Verify durable revision and delayed state broadcasts in actual package
+        run: |
+          APP=$(find release -maxdepth 2 -type d -name '*.app' -print -quit)
+          test -n "$APP"
+          YJT_PACKAGED_EXECUTABLE="$GITHUB_WORKSPACE/$APP/Contents/MacOS/一键投递" node test/ui-state-revision.cjs
+          YJT_PACKAGED_EXECUTABLE="$GITHUB_WORKSPACE/$APP/Contents/MacOS/一键投递" node test/ui-feishu-control-guards.cjs
+      - name: Obtain actual v38 baseline source for Applications upgrade test
+        uses: actions/checkout@v6
+        with:
+          ref: b32bb9e1d39142512847ffce99273acc36f45738
+          path: .local-data/mac-baseline-source
+      - name: Build native baseline and verify current Applications installation
+        env:
+          YJT_REQUIRE_VALID_BUNDLE_SIGNATURE: '1'
+        run: |
+          ln -s "$GITHUB_WORKSPACE/node_modules" .local-data/mac-baseline-source/node_modules
+          pnpm exec electron-builder --projectDir .local-data/mac-baseline-source --mac dir --config.directories.output="$GITHUB_WORKSPACE/.local-data/mac-baseline-build"
+          node test/macos-install-upgrade.cjs . .local-data/mac-baseline-source .local-data/mac-baseline-build test-output/mac-candidate.json
+      - name: Obtain historical v41 worker for missing-restart regression
+        uses: actions/checkout@v6
+        with:
+          ref: b206eb5f0aa0b56098b219f0f4b95879a893d356
+          path: .local-data/mac-v41-worker
+      - name: Obtain historical v43 launcher for slow native readiness regression
+        uses: actions/checkout@v6
+        with:
+          ref: 23995dbc5c45876e4fbf692cceea7d6338f80a63
+          path: .local-data/mac-v43-launcher
+      - name: Verify real native automatic update, abort and injected rollback
+        env:
+          CSC_FOR_PULL_REQUEST: 'true'
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: node test/macos-auto-update.cjs .local-data/mac-v41-worker/electron/install-update-mac.sh .local-data/mac-v43-launcher/electron/macos-update.cjs
+      - name: Save native evidence and candidate artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          include-hidden-files: true
+          name: macos-candidate-${{ github.run_id }}-${{ matrix.runner }}
+          if-no-files-found: error
+          path: |
+            test-output/mac-candidate.json
+            test-output/delivery-layout.json
+            test-output/delivery-*.png
+            test-output/resume-profiles.json
+            test-output/state-revision.json
+            test-output/feishu-control-guards.json
+            test-output/profiles-text-entry.png
+            test-output/profiles-failure.png
+            test-output/author-page/**
+            test-output/mac-install-upgrade.json
+            test-output/mac-install-*.png
+            test-output/mac-auto-update.json
+            test-output/mac-auto-update-*.png
+            .local-data/job-refresh-ui-*/report.json
+            .local-data/job-refresh-ui-*/partial-reopened.png
+            .local-data/job-refresh-ui-*/failure.png
+            release/*.dmg
+            release/*.zip
+            release/*.sha256
+            release/*skill*.tar.gz
+            release/*feedback-server*.tar.gz

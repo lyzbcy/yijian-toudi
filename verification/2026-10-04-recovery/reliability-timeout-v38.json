@@ -1,0 +1,14 @@
+{
+  "version": "0.5.38",
+  "parentTimeoutMs": 180000,
+  "method": "read-only-orphan-CDP",
+  "observed": {
+    "title": "一键投递",
+    "activePage": "page-resume",
+    "onboardingOpen": false,
+    "dialogs": [],
+    "profiles": 2,
+    "activeProfile": "profile-06f3bbf7-6828-43f5-bac7-374f596dfa30",
+    "schoolValue": "新方向-8"
+  }
+}

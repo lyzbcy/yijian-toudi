@@ -52,6 +52,7 @@ test('kimi-bridge 与模拟扩展完成协议往返', async () => {
   const port = bridge.port;
 
   let helloAcked = false;
+  let lastToolArgs = null;
   const fakeExt = new WebSocket(`ws://127.0.0.1:${port}`);
   fakeExt.on('open', () => {
     fakeExt.send(JSON.stringify({ type: 'hello', payload: { extensionVersion: 'test' } }));
@@ -61,6 +62,7 @@ test('kimi-bridge 与模拟扩展完成协议往返', async () => {
     if (msg.type === 'hello_ack') helloAcked = true;
     if (msg.type === 'ping') fakeExt.pong();
     if (msg.type === 'tool_call') {
+      lastToolArgs = msg.payload.args;
       fakeExt.send(JSON.stringify({ type: 'tool_result', responseToRequestId: msg.requestId, payload: { data: { success: true, echoed: msg.payload.name } } }));
     }
   });
@@ -69,6 +71,8 @@ test('kimi-bridge 与模拟扩展完成协议往返', async () => {
   assert.strictEqual(helloAcked, true, '桥应回 hello_ack');
   const result = await bridge.sendTool('navigate', { url: 'https://example.com' }, { timeoutMs: 5000 });
   assert.strictEqual(result.data.echoed, 'navigate');
+  await bridge.navigate('https://example.com/second', { newTab: true, timeoutMs: 5000 });
+  assert.strictEqual(lastToolArgs.newTab, true, 'newTab 必须进入扩展工具参数而非只作为超时选项');
   fakeExt.close();
   bridge.stop();
 });

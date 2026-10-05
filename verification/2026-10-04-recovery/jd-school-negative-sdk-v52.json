@@ -1,0 +1,17 @@
+{
+  "version": "0.5.52",
+  "isolatedProfile": true,
+  "syntheticUnknownSchoolQuery": true,
+  "officialWrites": 0,
+  "allExternalRequestsSealedExceptExactReadonlySchoolGetDuringQuery": true,
+  "result": {
+    "key": "education.0.school",
+    "written": false,
+    "error": "option-missing"
+  },
+  "schoolModelTextRetained": true,
+  "ownPopupClosed": true,
+  "searchQueryRestored": true,
+  "otherOpenCombos": 0,
+  "ok": true
+}

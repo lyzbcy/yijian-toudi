@@ -1,0 +1,39 @@
+{
+  "ok": false,
+  "version": "0.5.46",
+  "packaged": true,
+  "platform": "win32",
+  "realApplications": 0,
+  "externalMessages": 0,
+  "native": {
+    "applicationMenuAbsent": true,
+    "menuBarVisible": false,
+    "resizable": true,
+    "minimizable": true,
+    "maximizable": true,
+    "closable": true
+  },
+  "renderer": {
+    "platformClass": true,
+    "logo": "./assets/stickers/mascot.png",
+    "logoLoaded": true,
+    "overlayVisible": true,
+    "titlebarArea": {
+      "x": 0,
+      "y": 0,
+      "width": 1303,
+      "height": 40
+    },
+    "scrollbarWidth": "8px",
+    "workspacePaddingRight": "160px"
+  },
+  "feedback": {
+    "overlayVisible": true,
+    "headerTop": 40,
+    "dragRegion": "drag",
+    "scrollbarWidth": "8px"
+  },
+  "failure": "page.screenshot: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n",
+  "sourceStatus": "actual-ASAR117-files-matched-to-working-tree",
+  "processExitCode": 1
+}

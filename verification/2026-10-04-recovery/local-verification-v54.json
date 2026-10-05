@@ -1,0 +1,262 @@
+{
+  "ok": true,
+  "version": "0.5.54",
+  "at": "2026-10-04T23:33:38.194Z",
+  "scope": "Local regression, packaged Windows upgrade/queue/backup/state ordering; isolated authenticated Tencent draft; incomplete fan delivery",
+  "sourceFingerprints": "source-fingerprints-v54.json",
+  "candidateManifest": "candidate-manifest-v0.5.54.json",
+  "ownFilesMatched": 127,
+  "authenticode": "NotSigned",
+  "units": {
+    "passed": 401,
+    "failed": 0,
+    "skipped": 0
+  },
+  "background": {
+    "at": "2026-10-04T23:29:50.648Z",
+    "ok": true,
+    "results": [
+      {
+        "name": "unit",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 6450
+      },
+      {
+        "name": "check",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 408
+      },
+      {
+        "name": "ui-smoke",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 12851
+      },
+      {
+        "name": "ui-resume-segments",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 64551
+      },
+      {
+        "name": "ui-resume-profiles",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 50683
+      },
+      {
+        "name": "ui-capabilities",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 5365
+      },
+      {
+        "name": "ui-workspace-exit",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 5042
+      },
+      {
+        "name": "ui-resume-batch",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 49076
+      },
+      {
+        "name": "ui-batch-actions",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 2024
+      },
+      {
+        "name": "ui-login-upload",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 17322
+      },
+      {
+        "name": "ui-live-window-fixes",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 22506
+      },
+      {
+        "name": "ui-jd-login",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 12333
+      },
+      {
+        "name": "ui-auth-frame",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 4041
+      },
+      {
+        "name": "ui-ai-browser",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 19336
+      },
+      {
+        "name": "ui-ai-preview",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 20143
+      },
+      {
+        "name": "ui-reliability",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 145227
+      },
+      {
+        "name": "ui-boss-recovery",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 6310
+      },
+      {
+        "name": "ui-delivery-layout",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 36836
+      },
+      {
+        "name": "ui-feedback",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 11660
+      },
+      {
+        "name": "ui-update-install-status",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 2897
+      },
+      {
+        "name": "ui-job-refresh-status",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 3424
+      },
+      {
+        "name": "ui-author-page",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 35624
+      },
+      {
+        "name": "ui-windows-shell",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 1664
+      },
+      {
+        "name": "ui-alibaba-staging",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 8622
+      },
+      {
+        "name": "ui-jd-widgets",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 4148
+      },
+      {
+        "name": "ui-jd-school-search",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 16572
+      },
+      {
+        "name": "ui-tencent-campus",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 19836
+      },
+      {
+        "name": "ui-tencent-widgets",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 9000
+      },
+      {
+        "name": "ui-state-revision",
+        "ok": true,
+        "exitCode": 0,
+        "ms": 21749
+      }
+    ]
+  },
+  "site": {
+    "ok": true,
+    "brokenImages": 0,
+    "overflow": 0
+  },
+  "skillAndFeedbackArchives": {
+    "sameVersion": true
+  },
+  "tencent": {
+    "report": "tencent-staged-sdk-v54.json",
+    "verifiedControls": 29,
+    "manualSourceFacts": 35,
+    "impreciseDateRequests": 14,
+    "controlledTextModels": {
+      "controls": 26,
+      "known": 24,
+      "matched": 24,
+      "allDomEqual": true,
+      "allKnownModelsEqual": true
+    },
+    "unrelatedControls": {
+      "count": 132,
+      "allValuesAndChecksUnchanged": true,
+      "scope": "games,awards,intent,certifier,other widgets,consent,exposure"
+    },
+    "schoolCatalogValidationProven": false,
+    "syntheticExactDate": "tencent-native-date-synthetic-v54.json",
+    "actualUserExactDatesProven": false,
+    "initialSDKFailure": "tencent-staged-sdk-v54-attempt1.json",
+    "initialSyntheticFailures": [
+      "tencent-native-date-synthetic-v54-attempt1.json",
+      "tencent-native-date-synthetic-v54-attempt2.json",
+      "tencent-native-date-synthetic-v54-attempt3.json"
+    ],
+    "fixtureChecks": 24,
+    "officialValidationProven": false
+  },
+  "stateRevision": {
+    "packaged": "state-revision-packaged-v54.json",
+    "source": "state-revision-source-v54.json",
+    "checks": 7,
+    "baselineReproduction": "stale-profile-broadcast-packaged-v53.json",
+    "originalMac53PacketCauseProven": false
+  },
+  "backup": "backup-roundtrip-v54-windows.json",
+  "packagedBatch": "legacy-batch-packaged-v54.json",
+  "upgrade": {
+    "report": "windows-install-upgrade-v54.json",
+    "checks": 8,
+    "sourceHelperOverride": false,
+    "nativeWizardVerified": false
+  },
+  "mac53": {
+    "report": "mac-readback-v53.json",
+    "completeBothArchitectureAcceptance": false,
+    "intelInitialInstallFailureRetained": true
+  },
+  "mac54": "pending-native-run",
+  "linux53": [
+    "linux-candidate-v53.json",
+    "linux-systemd-v53.json",
+    "linux-caddy-v53.json"
+  ],
+  "goalStatus": "active",
+  "productDefectRateBelowOnePercentProven": false,
+  "officialSaveUploadApplications": 0,
+  "externalMessages": 0
+}

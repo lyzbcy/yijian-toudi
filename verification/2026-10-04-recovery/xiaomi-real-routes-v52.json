@@ -1,0 +1,28 @@
+{
+  "version": "0.5.52",
+  "isolatedProfile": true,
+  "readonlyLoadOnly": true,
+  "allRequestsSealedAfterLoad": true,
+  "officialWrites": 0,
+  "privateValuesOmitted": true,
+  "rows": [
+    {
+      "requestedPath": "/campus/resume/view",
+      "path": "/campus/resume/view",
+      "inputs": 0,
+      "formRows": 0,
+      "bodyLength": 24,
+      "editActions": [],
+      "loginPrompt": false
+    },
+    {
+      "requestedPath": "/campus/resume",
+      "path": "/campus/resume",
+      "inputs": 0,
+      "formRows": 0,
+      "bodyLength": 54,
+      "editActions": [],
+      "loginPrompt": false
+    }
+  ]
+}

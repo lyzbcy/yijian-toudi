@@ -1,0 +1,92 @@
+{
+  "version": "0.5.54",
+  "companyId": "xiaomi",
+  "readonly": true,
+  "noFormActions": true,
+  "allRequestsSealed": true,
+  "officialWrites": 0,
+  "privateValuesOmitted": true,
+  "proposedWrites": [
+    {
+      "key": "basic.name",
+      "hiddenField": false,
+      "select": false,
+      "date": false,
+      "visible": true
+    },
+    {
+      "key": "basic.email",
+      "hiddenField": false,
+      "select": false,
+      "date": false,
+      "visible": true
+    },
+    {
+      "key": "extras.summary",
+      "hiddenField": false,
+      "select": false,
+      "date": false,
+      "visible": true
+    },
+    {
+      "key": "education.0.school",
+      "hiddenField": false,
+      "select": true,
+      "date": false,
+      "visible": true
+    },
+    {
+      "key": "education.0.end",
+      "hiddenField": false,
+      "select": false,
+      "date": true,
+      "visible": true
+    },
+    {
+      "key": "experience.0.company",
+      "hiddenField": false,
+      "select": false,
+      "date": false,
+      "visible": true
+    },
+    {
+      "key": "experience.0.role",
+      "hiddenField": false,
+      "select": false,
+      "date": false,
+      "visible": true
+    },
+    {
+      "key": "projects.0.name",
+      "hiddenField": false,
+      "select": false,
+      "date": false,
+      "visible": true
+    },
+    {
+      "key": "projects.0.role",
+      "hiddenField": false,
+      "select": false,
+      "date": false,
+      "visible": true
+    }
+  ],
+  "unsafeProposedWrites": [
+    {
+      "key": "education.0.school",
+      "hiddenField": false,
+      "select": true,
+      "date": false,
+      "visible": true
+    },
+    {
+      "key": "education.0.end",
+      "hiddenField": false,
+      "select": false,
+      "date": true,
+      "visible": true
+    }
+  ],
+  "hiddenFieldEligibilityDefectObserved": false,
+  "semanticCorrectnessOfPriorEightNotProven": true
+}

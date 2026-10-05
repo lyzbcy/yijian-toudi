@@ -9,6 +9,8 @@ const { chromium } = require('playwright-core');
   fs.mkdirSync(output, { recursive: true });
   const candidates = [
     process.env.CHROME_EXECUTABLE,
+    'C:/Program Files/Google/Chrome/Application/chrome.exe',
+    'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
     '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
     '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge',
     '/Applications/Chromium.app/Contents/MacOS/Chromium'

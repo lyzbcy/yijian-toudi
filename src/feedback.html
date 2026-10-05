@@ -1,0 +1,11 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; connect-src 'none'"><title>遇到问题反馈</title><link rel="stylesheet" href="feedback.css"></head><body>
+<div class="window-titlebar" aria-hidden="true">一键投递</div>
+<main><header><img src="assets/stickers/log/focus.png" alt=""><div><h1>遇到问题反馈</h1><p>版本 <span id="feedbackVersion">读取中</span> · 留言直接送到开发者群</p></div></header>
+<p id="configurationHint" role="status"></p>
+<form id="feedbackForm"><label>反馈类型<select id="feedbackKind" disabled><option value="bug">问题反馈</option><option value="review">真实评价</option></select></label>
+<label id="categoryRow">问题方向（选填）<select id="feedbackCategory"><option value="">不选择</option><option value="login">登录与跳转</option><option value="resume">简历更新</option><option value="apply">岗位投递</option><option value="update">安装与更新</option><option value="ui">界面体验</option><option value="other">其它</option></select></label>
+<label>备注 / 真实评价（必填）<textarea id="feedbackMessage" rows="4" maxlength="1000" required placeholder="强烈建议说明操作步骤、预期结果和实际结果。评价请写真实体验。请勿填写账号密码或证件信息。"></textarea></label>
+<div class="privacy"><label><input id="feedbackIncludeLogs" type="checkbox" checked>附加脱敏诊断日志（默认）</label><small>日志没有任何敏感信息：仅含固定事件类别、错误码与计数，不含简历、联系方式、凭据、网页内容或本地路径。你可以取消勾选。</small></div>
+<details><summary>查看将发送的诊断日志</summary><pre id="feedbackLogPreview"></pre></details>
+<p id="feedbackStatus" role="status" aria-live="polite"></p><a id="feedbackLogLink" hidden>查看日志长链接</a>
+<footer><button id="feedbackCancel" type="button">关闭</button><button id="feedbackCheck" type="button" hidden>核对回执</button><button id="feedbackSend" type="submit">发送给开发者</button></footer></form></main><script src="feedback.js"></script></body></html>

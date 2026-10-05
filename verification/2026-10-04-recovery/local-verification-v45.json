@@ -1,0 +1,45 @@
+{
+  "version": "0.5.45",
+  "ok": true,
+  "artifacts": [
+    {
+      "name": "yijian-toudi-setup-0.5.45.exe",
+      "bytes": 104236085,
+      "sha256": "7f6810997ef66168c4eb7772511d35c8bfdf5d052475aa600125c890efbb428f"
+    },
+    {
+      "name": "yijian-toudi-skill-0.5.45.tar.gz",
+      "bytes": 13907,
+      "sha256": "ade3d837a8f1e7d750357021e284eb7a000118917924969fd15386c76770ff67"
+    },
+    {
+      "name": "yijian-toudi-feedback-server-0.5.45.tar.gz",
+      "bytes": 12433,
+      "sha256": "16233ee75d25209f96185e43b1fb4638dc5ec06f6d7eb3d938c07ebd1d1fbc4d"
+    }
+  ],
+  "verificationReports": [
+    "verification\\2026-10-04-recovery\\background-v45-windows.json",
+    "verification\\2026-10-04-recovery\\unit-v45.json",
+    "verification\\2026-10-04-recovery\\windows-source-v45.json",
+    "verification\\2026-10-04-recovery\\job-refresh-ui-v45-windows.json",
+    "verification\\2026-10-04-recovery\\backup-roundtrip-v45-windows.json",
+    "verification\\2026-10-04-recovery\\windows-ui-v45.json",
+    "verification\\2026-10-04-recovery\\install-upgrade-v45-desktop-0.json",
+    "verification\\2026-10-04-recovery\\install-upgrade-v45-desktop-1.json",
+    "verification\\2026-10-04-recovery\\default-install-v45.json",
+    "verification\\2026-10-04-recovery\\delivery-layout-v45-attempt1.json",
+    "verification\\2026-10-04-recovery\\mac-install-upgrade-v44-arm64-repeat-attempt1.json",
+    "verification/2026-10-04-recovery/job-refresh-ui-v45-attempt1.json",
+    "verification/2026-10-04-recovery/job-refresh-partial-v45-windows.png"
+  ],
+  "macNative": "pending",
+  "linuxNative": "pending",
+  "cloudCandidateRelease": "not-created",
+  "fullGoalComplete": false,
+  "productBugRateBelowOnePercentProven": false,
+  "realRecruitment": false,
+  "externalMessages": 0,
+  "completeCurrentVideo": false,
+  "scope": "Windows local candidate evidence only; v44 reports/assets/video preserved"
+}

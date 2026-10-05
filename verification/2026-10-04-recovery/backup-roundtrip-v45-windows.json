@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "version": "0.5.45",
+  "platform": "win32",
+  "packaged": true,
+  "nativeDialogResponsesFixture": true,
+  "nativeDialogClicksVerified": false,
+  "realRecruitment": false,
+  "externalMessages": 0,
+  "checks": [
+    "Actual visible export button writes versioned JSON through packaged IPC and excludes Agent Token/email encrypted authorization/idempotency",
+    "Actual restore IPC canceled at file selection or confirmation preserves all state and creates no automatic backup",
+    "Malformed selected JSON is rejected by actual packaged IPC before replacing state or creating a restore backup",
+    "Actual visible restore button replaces resume, preserves local credentials despite imported values and writes one credential-free automatic pre-restore backup with original data",
+    "Real process cold reopen keeps restored resume and original private credential values with zero renderer errors"
+  ],
+  "at": "2026-10-04T12:56:34.327Z",
+  "asar": {
+    "version": "0.5.45",
+    "ownFilesMatched": 117,
+    "asarEntries": 1142,
+    "noPrivateDataFiles": true,
+    "noKnownKeyPatterns": true
+  },
+  "pageErrors": []
+}

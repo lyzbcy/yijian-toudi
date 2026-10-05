@@ -1,0 +1,14 @@
+{
+  "packaged": true,
+  "visible": true,
+  "stubbedPrompt": false,
+  "observed": {
+    "version": "0.5.38",
+    "profileCount": 1,
+    "errors": [
+      "prompt() is not supported."
+    ],
+    "openDialogs": [],
+    "promptFunctionString": "function () { [native code] }"
+  }
+}

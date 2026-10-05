@@ -1,0 +1,594 @@
+{
+  "version": "0.5.54",
+  "isolatedProfile": true,
+  "readonly": true,
+  "noFormActions": true,
+  "allRequestsSealed": true,
+  "officialWrites": 0,
+  "privateValuesOmitted": true,
+  "rows": [
+    {
+      "index": 0,
+      "caption": "姓名",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "atsx-row-flex atsx-row-flex-space-between atsx-row-flex-middle",
+        "createFormSection-formList"
+      ]
+    },
+    {
+      "index": 1,
+      "caption": "手机号码",
+      "controls": [],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "atsx-row-flex atsx-row-flex-space-between atsx-row-flex-middle",
+        "createFormSection-formList"
+      ]
+    },
+    {
+      "index": 2,
+      "caption": "邮箱",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "atsx-row-flex atsx-row-flex-space-between atsx-row-flex-middle",
+        "createFormSection-formList"
+      ]
+    },
+    {
+      "index": 3,
+      "caption": "性别",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": true,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "atsx-row-flex atsx-row-flex-space-between atsx-row-flex-middle",
+        "createFormSection-formList"
+      ]
+    },
+    {
+      "index": 4,
+      "caption": "unknown-static-caption",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "atsx-row-flex atsx-row-flex-space-between atsx-row-flex-middle",
+        "createFormSection-formList"
+      ]
+    },
+    {
+      "index": 5,
+      "caption": "unknown-static-caption",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": true,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "atsx-row-flex atsx-row-flex-space-between atsx-row-flex-middle",
+        "createFormSection-formList"
+      ]
+    },
+    {
+      "index": 6,
+      "caption": "unknown-static-caption",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "atsx-row-flex atsx-row-flex-space-between atsx-row-flex-middle",
+        "createFormSection-formList"
+      ]
+    },
+    {
+      "index": 7,
+      "caption": "unknown-static-caption",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": true,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "atsx-row-flex atsx-row-flex-space-between atsx-row-flex-middle",
+        "createFormSection-formList"
+      ]
+    },
+    {
+      "index": 8,
+      "caption": "unknown-static-caption",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": true,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "atsx-row-flex atsx-row-flex-space-between atsx-row-flex-middle",
+        "createFormSection-formList"
+      ]
+    },
+    {
+      "index": 9,
+      "caption": "unknown-static-caption",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": true
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-education",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 10,
+      "caption": "学校名称",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": true,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-education",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 11,
+      "caption": "学历",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": true,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-education",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 12,
+      "caption": "学历类型",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": true,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-education",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 13,
+      "caption": "专业",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-education",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 14,
+      "caption": "起止时间",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": true
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-internship",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 15,
+      "caption": "公司名称",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-internship",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 16,
+      "caption": "职位名称",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-internship",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 17,
+      "caption": "unknown-static-caption",
+      "controls": [
+        {
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-internship",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 18,
+      "caption": "起止时间",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": true
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-project",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 19,
+      "caption": "项目名称",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-project",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 20,
+      "caption": "项目角色",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-project",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 21,
+      "caption": "unknown-static-caption",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-project",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 22,
+      "caption": "unknown-static-caption",
+      "controls": [
+        {
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-project",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 23,
+      "caption": "unknown-static-caption",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": true
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-award",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 24,
+      "caption": "unknown-static-caption",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-award",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 25,
+      "caption": "unknown-static-caption",
+      "controls": [
+        {
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-award",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 26,
+      "caption": "unknown-static-caption",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "file",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-award",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 27,
+      "caption": "unknown-static-caption",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": true,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-language",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 28,
+      "caption": "unknown-static-caption",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": true,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-language",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 29,
+      "caption": "自我评价",
+      "controls": [
+        {
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "atsx-col atsx-col-24",
+        "resumeEditForm-item resumeEditForm-7178743785101230189",
+        "createFormSection-formList createFormSection-formList-mutiple"
+      ]
+    },
+    {
+      "index": 30,
+      "caption": "unknown-static-caption",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "resumeEditForm-hiddenField",
+        "atsx-form atsx-form-horizontal",
+        "resumeEditForm-wrapper"
+      ]
+    },
+    {
+      "index": 31,
+      "caption": "unknown-static-caption",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "readOnly": false,
+          "inSelect": false,
+          "inDate": false
+        }
+      ],
+      "ancestorClasses": [
+        "resumeEditForm-hiddenField",
+        "atsx-form atsx-form-horizontal",
+        "resumeEditForm-wrapper"
+      ]
+    }
+  ],
+  "groupClasses": [
+    "atsx-col atsx-col-24",
+    "atsx-row-flex atsx-row-flex-space-between atsx-row-flex-middle",
+    "createFormSection-formList",
+    "resumeEditForm-item resumeEditForm-education",
+    "createFormSection-formList createFormSection-formList-mutiple",
+    "resumeEditForm-item resumeEditForm-internship",
+    "resumeEditForm-item resumeEditForm-project",
+    "resumeEditForm-item resumeEditForm-award",
+    "resumeEditForm-item resumeEditForm-language",
+    "resumeEditForm-item resumeEditForm-7178743785101230189",
+    "resumeEditForm-hiddenField",
+    "atsx-form atsx-form-horizontal",
+    "resumeEditForm-wrapper"
+  ]
+}

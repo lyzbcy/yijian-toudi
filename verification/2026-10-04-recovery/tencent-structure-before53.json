@@ -1,0 +1,7963 @@
+{
+  "version": "0.5.52",
+  "scope": "readonly Tencent official captions and structure before53 development",
+  "privateValuesOmitted": true,
+  "isolatedProfile": true,
+  "officialWrites": 0,
+  "controls": [
+    {
+      "index": 0,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input is-disabled",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 1
+        },
+        {
+          "tag": "LI",
+          "class": "send_box sendBorder",
+          "directInputs": 1
+        },
+        {
+          "tag": "UL",
+          "class": "send_list",
+          "directInputs": 193
+        },
+        {
+          "tag": "DIV",
+          "class": "main",
+          "directInputs": 194
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "type": "file",
+      "tag": "INPUT",
+      "id": "",
+      "name": "file",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-upload__input",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-upload el-upload--text",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "resume_upload",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "upload_box has_resume",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 2
+        },
+        {
+          "tag": "LI",
+          "class": "send_box",
+          "directInputs": 2
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "type": "file",
+      "tag": "INPUT",
+      "id": "resume-upload",
+      "name": "resume",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "upload-input",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "btn",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "download_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "resume_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "upload_box has_resume",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 2
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "type": "file",
+      "tag": "INPUT",
+      "id": "",
+      "name": "file",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-upload__input",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-upload el-upload--picture",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "photo_upload",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box person-name",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "type": "radio",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-radio__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-radio__input is-checked",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-radio is-checked",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box sex-scroll",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "type": "radio",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-radio__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-radio__input",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-radio",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box sex-scroll",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input is-disabled el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box nationality",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input is-disabled identity-last-border",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box identity",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select my-selent-phone input-border-corder",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box phone",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input last-input-border-corder",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box phone",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 11,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box email",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 12,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-cascader",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 13,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 14,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 15,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 16,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 17,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box jobCity",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 15
+        }
+      ]
+    },
+    {
+      "index": 18,
+      "type": "radio",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-radio__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-radio__input is-checked",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-radio is-checked",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box jobCityDistributable",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 15
+        }
+      ]
+    },
+    {
+      "index": 19,
+      "type": "radio",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-radio__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-radio__input",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-radio",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box jobCityDistributable",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 15
+        }
+      ]
+    },
+    {
+      "index": 20,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box applicant-group",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 15
+        }
+      ]
+    },
+    {
+      "index": 21,
+      "type": "radio",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-radio__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-radio__input",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-radio el-tooltip item",
+          "directInputs": 1
+        },
+        {
+          "tag": "LI",
+          "class": "checkbox",
+          "directInputs": 1
+        },
+        {
+          "tag": "UL",
+          "class": "radio-box clearfix",
+          "directInputs": 10
+        },
+        {
+          "tag": "DIV",
+          "class": "content dep_content clearfix",
+          "directInputs": 10
+        }
+      ]
+    },
+    {
+      "index": 22,
+      "type": "radio",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-radio__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-radio__input",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-radio el-tooltip item",
+          "directInputs": 1
+        },
+        {
+          "tag": "LI",
+          "class": "checkbox",
+          "directInputs": 1
+        },
+        {
+          "tag": "UL",
+          "class": "radio-box clearfix",
+          "directInputs": 10
+        },
+        {
+          "tag": "DIV",
+          "class": "content dep_content clearfix",
+          "directInputs": 10
+        }
+      ]
+    },
+    {
+      "index": 23,
+      "type": "radio",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-radio__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-radio__input",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-radio el-tooltip item",
+          "directInputs": 1
+        },
+        {
+          "tag": "LI",
+          "class": "checkbox",
+          "directInputs": 1
+        },
+        {
+          "tag": "UL",
+          "class": "radio-box clearfix",
+          "directInputs": 10
+        },
+        {
+          "tag": "DIV",
+          "class": "content dep_content clearfix",
+          "directInputs": 10
+        }
+      ]
+    },
+    {
+      "index": 24,
+      "type": "radio",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-radio__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-radio__input",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-radio el-tooltip item",
+          "directInputs": 1
+        },
+        {
+          "tag": "LI",
+          "class": "checkbox",
+          "directInputs": 1
+        },
+        {
+          "tag": "UL",
+          "class": "radio-box clearfix",
+          "directInputs": 10
+        },
+        {
+          "tag": "DIV",
+          "class": "content dep_content clearfix",
+          "directInputs": 10
+        }
+      ]
+    },
+    {
+      "index": 25,
+      "type": "radio",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-radio__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-radio__input is-checked",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-radio el-tooltip item is-checked",
+          "directInputs": 1
+        },
+        {
+          "tag": "LI",
+          "class": "checkbox",
+          "directInputs": 1
+        },
+        {
+          "tag": "UL",
+          "class": "radio-box clearfix",
+          "directInputs": 10
+        },
+        {
+          "tag": "DIV",
+          "class": "content dep_content clearfix",
+          "directInputs": 10
+        }
+      ]
+    },
+    {
+      "index": 26,
+      "type": "radio",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-radio__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-radio__input",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-radio el-tooltip item",
+          "directInputs": 1
+        },
+        {
+          "tag": "LI",
+          "class": "checkbox",
+          "directInputs": 1
+        },
+        {
+          "tag": "UL",
+          "class": "radio-box clearfix",
+          "directInputs": 10
+        },
+        {
+          "tag": "DIV",
+          "class": "content dep_content clearfix",
+          "directInputs": 10
+        }
+      ]
+    },
+    {
+      "index": 27,
+      "type": "radio",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-radio__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-radio__input",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-radio el-tooltip item",
+          "directInputs": 1
+        },
+        {
+          "tag": "LI",
+          "class": "checkbox",
+          "directInputs": 1
+        },
+        {
+          "tag": "UL",
+          "class": "radio-box clearfix",
+          "directInputs": 10
+        },
+        {
+          "tag": "DIV",
+          "class": "content dep_content clearfix",
+          "directInputs": 10
+        }
+      ]
+    },
+    {
+      "index": 28,
+      "type": "radio",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-radio__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-radio__input",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-radio el-tooltip item",
+          "directInputs": 1
+        },
+        {
+          "tag": "LI",
+          "class": "checkbox",
+          "directInputs": 1
+        },
+        {
+          "tag": "UL",
+          "class": "radio-box clearfix",
+          "directInputs": 10
+        },
+        {
+          "tag": "DIV",
+          "class": "content dep_content clearfix",
+          "directInputs": 10
+        }
+      ]
+    },
+    {
+      "index": 29,
+      "type": "radio",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-radio__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-radio__input",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-radio el-tooltip item",
+          "directInputs": 1
+        },
+        {
+          "tag": "LI",
+          "class": "checkbox",
+          "directInputs": 1
+        },
+        {
+          "tag": "UL",
+          "class": "radio-box clearfix",
+          "directInputs": 10
+        },
+        {
+          "tag": "DIV",
+          "class": "content dep_content clearfix",
+          "directInputs": 10
+        }
+      ]
+    },
+    {
+      "index": 30,
+      "type": "radio",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-radio__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-radio__input",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-radio el-tooltip item",
+          "directInputs": 1
+        },
+        {
+          "tag": "LI",
+          "class": "checkbox",
+          "directInputs": 1
+        },
+        {
+          "tag": "UL",
+          "class": "radio-box clearfix",
+          "directInputs": 10
+        },
+        {
+          "tag": "DIV",
+          "class": "content dep_content clearfix",
+          "directInputs": 10
+        }
+      ]
+    },
+    {
+      "index": 31,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box interviewCity",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 15
+        }
+      ]
+    },
+    {
+      "index": 32,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 33,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "inp el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 34,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-cascader",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 35,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--date start-time",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 36,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--date",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 37,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 38,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "inp el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 39,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 40,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 41,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 42,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "education_more",
+          "directInputs": 4
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 43,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "education_more",
+          "directInputs": 4
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 44,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "education_more",
+          "directInputs": 4
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 45,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "education_more",
+          "directInputs": 4
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 14
+        }
+      ]
+    },
+    {
+      "index": 46,
+      "type": "checkbox",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-checkbox__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-checkbox__input",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-checkbox no_experience",
+          "directInputs": 1
+        },
+        {
+          "tag": "LI",
+          "class": "send_box",
+          "directInputs": 7
+        },
+        {
+          "tag": "UL",
+          "class": "send_list",
+          "directInputs": 193
+        },
+        {
+          "tag": "DIV",
+          "class": "main",
+          "directInputs": 194
+        }
+      ]
+    },
+    {
+      "index": 47,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "inp el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 6
+        }
+      ]
+    },
+    {
+      "index": 48,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 6
+        }
+      ]
+    },
+    {
+      "index": 49,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--date start-time",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 6
+        }
+      ]
+    },
+    {
+      "index": 50,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-date-editor el-input is-disabled el-input--prefix el-input--suffix el-date-editor--date start-time",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 6
+        }
+      ]
+    },
+    {
+      "index": 51,
+      "type": "checkbox",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-checkbox__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-checkbox__input is-checked",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-checkbox sofar_check is-checked",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        }
+      ]
+    },
+    {
+      "index": 52,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 6
+        }
+      ]
+    },
+    {
+      "index": 53,
+      "type": "checkbox",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-checkbox__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-checkbox__input",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-checkbox no_experience",
+          "directInputs": 1
+        },
+        {
+          "tag": "LI",
+          "class": "send_box",
+          "directInputs": 31
+        },
+        {
+          "tag": "UL",
+          "class": "send_list",
+          "directInputs": 193
+        },
+        {
+          "tag": "DIV",
+          "class": "main",
+          "directInputs": 194
+        }
+      ]
+    },
+    {
+      "index": 54,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 55,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 56,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--date start-time",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 57,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--date start-time",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 58,
+      "type": "checkbox",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-checkbox__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-checkbox__input",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-checkbox sofar_check",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        }
+      ]
+    },
+    {
+      "index": 59,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 60,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 61,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 62,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--date start-time",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 63,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--date start-time",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 64,
+      "type": "checkbox",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-checkbox__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-checkbox__input",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-checkbox sofar_check",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        }
+      ]
+    },
+    {
+      "index": 65,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 66,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 67,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 68,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--date start-time",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 69,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--date start-time",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 70,
+      "type": "checkbox",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-checkbox__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-checkbox__input",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-checkbox sofar_check",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        }
+      ]
+    },
+    {
+      "index": 71,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 72,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 73,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 74,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--date start-time",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 75,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--date start-time",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 76,
+      "type": "checkbox",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-checkbox__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-checkbox__input",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-checkbox sofar_check",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        }
+      ]
+    },
+    {
+      "index": 77,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 78,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 79,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 80,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--date start-time",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 81,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--date start-time",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 82,
+      "type": "checkbox",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-checkbox__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-checkbox__input",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-checkbox sofar_check",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        }
+      ]
+    },
+    {
+      "index": 83,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 6
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 30
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 30
+        }
+      ]
+    },
+    {
+      "index": 84,
+      "type": "checkbox",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-checkbox__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-checkbox__input",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-checkbox no_experience",
+          "directInputs": 1
+        },
+        {
+          "tag": "LI",
+          "class": "send_box",
+          "directInputs": 72
+        },
+        {
+          "tag": "UL",
+          "class": "send_list",
+          "directInputs": 193
+        },
+        {
+          "tag": "DIV",
+          "class": "main",
+          "directInputs": 194
+        }
+      ]
+    },
+    {
+      "index": 85,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box game_s",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 71
+        }
+      ]
+    },
+    {
+      "index": 86,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 87,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 88,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 89,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 90,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 91,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 92,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 93,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 94,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 95,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 96,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 97,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 98,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 99,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 100,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 101,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 102,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 103,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 104,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 105,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 106,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 107,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 108,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 109,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 110,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 111,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 112,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 113,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 114,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 115,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 116,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 117,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 118,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 119,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 120,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 121,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 122,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 123,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 124,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 125,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 126,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 127,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 128,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 129,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 130,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 131,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 132,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 133,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 134,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 135,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 136,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 137,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 138,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 139,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 140,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 141,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 142,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 143,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 144,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 145,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 146,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 147,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 148,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 149,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 150,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 151,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 152,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 153,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 154,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 155,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 70
+        }
+      ]
+    },
+    {
+      "index": 156,
+      "type": "checkbox",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-checkbox__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-checkbox__input",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-checkbox no_experience",
+          "directInputs": 1
+        },
+        {
+          "tag": "LI",
+          "class": "send_box",
+          "directInputs": 21
+        },
+        {
+          "tag": "UL",
+          "class": "send_list",
+          "directInputs": 193
+        },
+        {
+          "tag": "DIV",
+          "class": "main",
+          "directInputs": 194
+        }
+      ]
+    },
+    {
+      "index": 157,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 4
+        }
+      ]
+    },
+    {
+      "index": 158,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 4
+        }
+      ]
+    },
+    {
+      "index": 159,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--year",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 4
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 20
+        }
+      ]
+    },
+    {
+      "index": 160,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 4
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 20
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 20
+        }
+      ]
+    },
+    {
+      "index": 161,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 4
+        }
+      ]
+    },
+    {
+      "index": 162,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 4
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 20
+        }
+      ]
+    },
+    {
+      "index": 163,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--year",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 4
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 20
+        }
+      ]
+    },
+    {
+      "index": 164,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 4
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 20
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 20
+        }
+      ]
+    },
+    {
+      "index": 165,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 4
+        }
+      ]
+    },
+    {
+      "index": 166,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 4
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 20
+        }
+      ]
+    },
+    {
+      "index": 167,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--year",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 4
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 20
+        }
+      ]
+    },
+    {
+      "index": 168,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 4
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 20
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 20
+        }
+      ]
+    },
+    {
+      "index": 169,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 4
+        }
+      ]
+    },
+    {
+      "index": 170,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 4
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 20
+        }
+      ]
+    },
+    {
+      "index": 171,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--year",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 4
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 20
+        }
+      ]
+    },
+    {
+      "index": 172,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 4
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 20
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 20
+        }
+      ]
+    },
+    {
+      "index": 173,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 4
+        }
+      ]
+    },
+    {
+      "index": 174,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 4
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 20
+        }
+      ]
+    },
+    {
+      "index": 175,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--year",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 4
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 20
+        }
+      ]
+    },
+    {
+      "index": 176,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 4
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 20
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 20
+        }
+      ]
+    },
+    {
+      "index": 177,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 3
+        },
+        {
+          "tag": "LI",
+          "class": "send_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "UL",
+          "class": "send_list",
+          "directInputs": 193
+        }
+      ]
+    },
+    {
+      "index": 178,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 3
+        },
+        {
+          "tag": "LI",
+          "class": "send_box",
+          "directInputs": 3
+        },
+        {
+          "tag": "UL",
+          "class": "send_list",
+          "directInputs": 193
+        }
+      ]
+    },
+    {
+      "index": 179,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box urlBox",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 3
+        },
+        {
+          "tag": "LI",
+          "class": "send_box",
+          "directInputs": 3
+        }
+      ]
+    },
+    {
+      "index": 180,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 3
+        },
+        {
+          "tag": "LI",
+          "class": "send_box",
+          "directInputs": 3
+        }
+      ]
+    },
+    {
+      "index": 181,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-select__input",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select__tags",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 3
+        },
+        {
+          "tag": "LI",
+          "class": "send_box",
+          "directInputs": 3
+        }
+      ]
+    },
+    {
+      "index": 182,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": true,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input el-input--suffix",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "el-select",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 2
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 3
+        },
+        {
+          "tag": "LI",
+          "class": "send_box",
+          "directInputs": 3
+        }
+      ]
+    },
+    {
+      "index": 183,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box accessory_link_0",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "box-continer",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 184,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "box-continer",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 185,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "box-continer",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 186,
+      "type": "file",
+      "tag": "INPUT",
+      "id": "",
+      "name": "file",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-upload__input",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-upload el-upload--text",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "resume_upload",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box accessory_upload",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 187,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box urlBox",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 5
+        },
+        {
+          "tag": "DIV",
+          "class": "experience_box",
+          "directInputs": 5
+        }
+      ]
+    },
+    {
+      "index": 188,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 3
+        }
+      ]
+    },
+    {
+      "index": 189,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 3
+        }
+      ]
+    },
+    {
+      "index": 190,
+      "type": "text",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-input__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-input",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "input_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_list",
+          "directInputs": 3
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 3
+        }
+      ]
+    },
+    {
+      "index": 191,
+      "type": "textarea",
+      "tag": "TEXTAREA",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "TEXTAREA",
+          "class": "el-textarea__inner",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-textarea",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "info_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "send_content",
+          "directInputs": 1
+        },
+        {
+          "tag": "LI",
+          "class": "send_box",
+          "directInputs": 2
+        },
+        {
+          "tag": "UL",
+          "class": "send_list",
+          "directInputs": 193
+        }
+      ]
+    },
+    {
+      "index": 192,
+      "type": "checkbox",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-switch__input",
+          "directInputs": 0
+        },
+        {
+          "tag": "DIV",
+          "class": "el-switch is-checked",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "switch_box",
+          "directInputs": 1
+        },
+        {
+          "tag": "LI",
+          "class": "send_box",
+          "directInputs": 2
+        },
+        {
+          "tag": "UL",
+          "class": "send_list",
+          "directInputs": 193
+        },
+        {
+          "tag": "DIV",
+          "class": "main",
+          "directInputs": 194
+        }
+      ]
+    },
+    {
+      "index": 193,
+      "type": "checkbox",
+      "tag": "INPUT",
+      "id": "",
+      "name": "",
+      "readOnly": false,
+      "nearestElCaption": null,
+      "ancestors": [
+        {
+          "tag": "INPUT",
+          "class": "el-checkbox__original",
+          "directInputs": 0
+        },
+        {
+          "tag": "SPAN",
+          "class": "el-checkbox__input is-checked",
+          "directInputs": 1
+        },
+        {
+          "tag": "LABEL",
+          "class": "el-checkbox is-checked",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "bottom_box terms",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "send_bottom isFixed",
+          "directInputs": 1
+        },
+        {
+          "tag": "DIV",
+          "class": "main",
+          "directInputs": 194
+        }
+      ]
+    }
+  ]
+}

@@ -31,9 +31,21 @@ const LOGIN_AND_FORM_PROBE = `(() => new Promise((resolve) => {
   }, 250);
 }))()`;
 
+const {getJdFormContext}=require('./jd-form-context.cjs');
+const {getBaiduFormContext}=require('./baidu-form-context.cjs');
 const INSPECT_FORM_FIELDS = `(() => {
+  const jdContext = ${getJdFormContext.toString()};
+  const baiduContext = ${getBaiduFormContext.toString()};
+  const baiduResume = location.origin==='https://talent.baidu.com'&&['/jobs/resume/create','/jobs/resume/create/','/jobs/center','/jobs/center/'].includes(location.pathname);
   function describe(control) {
     const labelByFor = control.id ? document.querySelector('label[for="' + CSS.escape(control.id) + '"]')?.innerText : '';
+    // Real UD/MTD forms place the caption outside the deeply nested input.
+    // Read only the nearest field's caption, never a sibling field or value.
+    const fieldItem = control.closest('.ud-formily-item, .mtd-form-item');
+    const itemLabel = fieldItem?.querySelector('.ud-formily-item-label')?.textContent?.trim()
+      || fieldItem?.querySelector('.mtd-form-item-label')?.textContent?.trim()
+      || fieldItem?.querySelector(':scope > .mtd-form-item-body > .label')?.textContent?.trim();
+    if (itemLabel) return itemLabel.replace(/^[*＊\\s]+|[*＊\\s：:]+$/g, '').trim();
     const ancestorTexts = [];
     let node = control.parentElement;
     for (let depth = 0; depth < 5 && node; depth += 1) {
@@ -46,7 +58,7 @@ const INSPECT_FORM_FIELDS = `(() => {
       node = node.parentElement;
     }
     return [
-      labelByFor, control.closest('label')?.innerText, control.placeholder, control.name, control.id,
+      baiduContext(control)?.label, jdContext(control)?.label, labelByFor, itemLabel, control.closest('label')?.innerText, control.placeholder, control.name, control.id,
       control.getAttribute('aria-label'), control.getAttribute('autocomplete'), control.className,
       ancestorTexts.join(' ')
     ].filter(Boolean).join(' ').trim();
@@ -77,6 +89,10 @@ const INSPECT_FORM_FIELDS = `(() => {
   } catch (error) {}
   const headerNodes = [...headerCandidates.values()].sort((a, b) => a.top - b.top);
   const sectionOf = (control) => {
+    const baidu=baiduContext(control);if(baidu)return baidu.section;
+    const jd=jdContext(control);
+    const aliases={edu:'教育经历',experience:'实习经历',program:'项目经历'};
+    if(jd&&aliases[jd.sectionId])return aliases[jd.sectionId]+'-'+jd.groupNumber;
     if (typeof control.getBoundingClientRect !== 'function') return '';
     const top = control.getBoundingClientRect().top;
     let section = '';
@@ -87,6 +103,9 @@ const INSPECT_FORM_FIELDS = `(() => {
   };
   return controls.map((control, index) => ({
     index,
+    jdLocator: jdContext(control),
+    baiduLocator: baiduContext(control),
+    readOnly: Boolean(control.readOnly || (baiduResume&&!baiduContext(control)) || (baiduContext(control)&&(baiduContext(control).hidden||!baiduContext(control).key||baiduContext(control).widgetKind!=='text')) || control.closest('.ud__select, .mtd-select') || control.closest('.atsx-select, .atsx-date-picker, .resumeEditForm-hiddenField') || (jdContext(control)&&control.matches('.ant-select-search__field'))),
     section: sectionOf(control),
     label: describe(control).slice(0, 240),
     type: control.tagName.toLowerCase() + (control.type ? ':' + control.type : ''),

@@ -1,0 +1,308 @@
+{
+  "version": "0.5.45",
+  "candidate": true,
+  "completeDemo": false,
+  "sampleResume": true,
+  "jobsSource": "anonymous-live-official-providers",
+  "realApplications": 0,
+  "externalMessages": 0,
+  "output": "isolated-recording-profile",
+  "checks": [
+    "Actual onboarding, sample resume, create/rename directions and independent content through UI",
+    "Actual process cold reopen retains sample resume and named directions",
+    "Actual UI anonymous official job refresh, including real failure/partial state if any",
+    "Actual job company/search filtering and local cart; no application initiated",
+    "Visible Agent prompt masks local token; no private prompt copied"
+  ],
+  "videos": [
+    {
+      "name": "page@95cd0717f5ca28877f34964687472d1e.webm",
+      "durationSeconds": 38.76,
+      "sha256": "abaa71e765816dcd5dbab0f9d6a2f985b83c2bea508c861fbdaff72f74c75098"
+    },
+    {
+      "name": "page@eed8fdc5ad417ee5c037082196f15133.webm",
+      "durationSeconds": 293.68,
+      "sha256": "708d47d9faca058c359577caa325467adc8db538cd77ec32d5b6c766d25cefdb"
+    }
+  ],
+  "liveRefresh": {
+    "at": "2026-10-04T14:02:39.211Z",
+    "completedAllProviders": true,
+    "jobCount": 4159,
+    "companies": [
+      "tencent",
+      "baidu",
+      "bytedance",
+      "xiaomi",
+      "jd",
+      "meituan"
+    ],
+    "task": {
+      "status": "done",
+      "detail": "已抓取 4159 个岗位（近 30 天）：腾讯 1374 个，百度 9 个，字节跳动 456 个，小米 203 个，京东 974 个，美团 1143 个。"
+    }
+  },
+  "ok": true,
+  "pageErrors": [],
+  "mp4": {
+    "name": "一键投递-0.5.45-候选操作录像.mp4",
+    "bytes": 10866633,
+    "durationSeconds": 332.44,
+    "dimensions": [
+      1280,
+      960
+    ],
+    "codec": "h264",
+    "sha256": "69862316a5f1f8df1d17e1fddfa478c7058972fece87310c79ce1fe8c9d537b5"
+  },
+  "editing": {
+    "rawPreserved": true,
+    "realTime": true,
+    "trimmed": false,
+    "accelerated": false,
+    "actualAppPixels": true,
+    "footerLabelsCandidateAndSample": true,
+    "audioPresent": false
+  },
+  "verification": {
+    "fullCodecDecodePassed": true,
+    "extractedFrameSeconds": [
+      3,
+      18,
+      42,
+      307,
+      315,
+      327,
+      331
+    ],
+    "inspectedFrameSeconds": [
+      3,
+      18,
+      42,
+      307,
+      315,
+      327,
+      331
+    ],
+    "fullPlaybackInspected": false,
+    "temporalSampleReview": {
+      "version": "0.5.45",
+      "sourceMP4Hash": "69862316a5f1f8df1d17e1fddfa478c7058972fece87310c79ce1fe8c9d537b5",
+      "method": "40 specified temporal samples in 10 four-frame sheets; full-resolution five key frames retained separately",
+      "sampleSeconds": [
+        0,
+        3,
+        6,
+        9,
+        12,
+        15,
+        18,
+        21,
+        24,
+        27,
+        30,
+        33,
+        36,
+        39,
+        42,
+        50,
+        70,
+        90,
+        110,
+        130,
+        150,
+        170,
+        190,
+        210,
+        230,
+        250,
+        270,
+        290,
+        300,
+        303,
+        306,
+        309,
+        312,
+        315,
+        318,
+        321,
+        324,
+        327,
+        330,
+        332
+      ],
+      "sheets": [
+        {
+          "name": "sheet-01.png",
+          "seconds": [
+            0,
+            3,
+            6,
+            9
+          ]
+        },
+        {
+          "name": "sheet-02.png",
+          "seconds": [
+            12,
+            15,
+            18,
+            21
+          ]
+        },
+        {
+          "name": "sheet-03.png",
+          "seconds": [
+            24,
+            27,
+            30,
+            33
+          ]
+        },
+        {
+          "name": "sheet-04.png",
+          "seconds": [
+            36,
+            39,
+            42,
+            50
+          ]
+        },
+        {
+          "name": "sheet-05.png",
+          "seconds": [
+            70,
+            90,
+            110,
+            130
+          ]
+        },
+        {
+          "name": "sheet-06.png",
+          "seconds": [
+            150,
+            170,
+            190,
+            210
+          ]
+        },
+        {
+          "name": "sheet-07.png",
+          "seconds": [
+            230,
+            250,
+            270,
+            290
+          ]
+        },
+        {
+          "name": "sheet-08.png",
+          "seconds": [
+            300,
+            303,
+            306,
+            309
+          ]
+        },
+        {
+          "name": "sheet-09.png",
+          "seconds": [
+            312,
+            315,
+            318,
+            321
+          ]
+        },
+        {
+          "name": "sheet-10.png",
+          "seconds": [
+            324,
+            327,
+            330,
+            332
+          ]
+        }
+      ],
+      "inspectedSheets": [
+        "sheet-01.png",
+        "sheet-02.png",
+        "sheet-03.png",
+        "sheet-04.png",
+        "sheet-05.png",
+        "sheet-06.png",
+        "sheet-07.png",
+        "sheet-08.png",
+        "sheet-09.png",
+        "sheet-10.png"
+      ],
+      "samplingIsNotEveryFrameOrFullPlayback": true,
+      "observations": [
+        "Sample resume labels and no actual identity/contact details in inspected shots",
+        "Anonymous public job-read progress retained including long waits",
+        "Actual completed notice and4159 job count visible",
+        "Local cart is not an application receipt",
+        "Agent331s full-resolution frame shows credential placeholder; no private prompt copied"
+      ]
+    },
+    "everyFramePrivacyReviewed": false,
+    "sensitiveContentObservedInInspectedFrames": false
+  },
+  "runtimeSourceCommit": "98ee8812a45ab93e196897af8c6a1ef7ff0fada8",
+  "observationSourceCommit": "88cd5c36035e9ca0c3b64a9ea9d6de3691bc92ee",
+  "asar": {
+    "version": "0.5.45",
+    "ownFilesMatched": 117,
+    "asarEntries": 1142,
+    "noPrivateDataFiles": true,
+    "noKnownKeyPatterns": true
+  },
+  "providerFunctionsFixture": false,
+  "actualRefreshResult": {
+    "at": "2026-10-04T14:02:39.211Z",
+    "daysBack": 30,
+    "recruitType": "social",
+    "providers": [
+      {
+        "companyId": "tencent",
+        "name": "腾讯",
+        "count": 1374,
+        "status": "done"
+      },
+      {
+        "companyId": "baidu",
+        "name": "百度",
+        "count": 9,
+        "status": "done"
+      },
+      {
+        "companyId": "bytedance",
+        "name": "字节跳动",
+        "count": 456,
+        "status": "done"
+      },
+      {
+        "companyId": "xiaomi",
+        "name": "小米",
+        "count": 203,
+        "status": "done"
+      },
+      {
+        "companyId": "jd",
+        "name": "京东",
+        "count": 974,
+        "status": "done"
+      },
+      {
+        "companyId": "meituan",
+        "name": "美团",
+        "count": 1143,
+        "status": "done"
+      }
+    ],
+    "status": "done",
+    "count": 4159
+  },
+  "originalV44NetworkFailureRootCauseProven": false,
+  "productBugRateBelowOnePercentProven": false
+}

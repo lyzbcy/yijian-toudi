@@ -27,10 +27,11 @@ const { _electron: electron } = require('playwright-core');
     if (backupControls !== 2) throw new Error(`备份恢复按钮数量不正确：${backupControls}`);
     // 首启会弹出 onboarding 选方向 dialog，点"社招"关掉它
     const onboarding = window.locator('#onboardingDialog[open]');
-    if (await onboarding.count() > 0) {
-      await window.locator('.onboarding-choice[data-recruit="social"]').click();
-      await window.waitForTimeout(500);
-    }
+    // This is a fresh profile. Wait for the asynchronous first-run prompt;
+    // a synchronous count can miss it and leave it covering later clicks.
+    await onboarding.waitFor({ state: 'visible' });
+    await window.locator('.onboarding-choice[data-recruit="social"]').click();
+    await onboarding.waitFor({ state: 'hidden' });
     // 首次启动无演示数据，应显示空状态而非岗位卡片
     await window.waitForSelector('#jobEmpty:not(.hidden)');
     const emptyText = await window.locator('#jobEmpty').textContent();
@@ -53,7 +54,8 @@ const { _electron: electron } = require('playwright-core');
     const promptText = await window.locator('#agentPrompt').textContent();
     if (!promptText.includes('/v1/jobs')) throw new Error('Agent Prompt 缺少 API');
     const base = /Base URL: (http:\/\/127\.0\.0\.1:\d+)/.exec(promptText)?.[1];
-    const token = /Authorization: Bearer (\S+)/.exec(promptText)?.[1];
+    const token = await window.evaluate(async () => (await window.oneClick.getState()).settings.apiToken);
+    if (promptText.includes(token)) throw new Error('界面不得直接显示有效 Agent Token');
     if (!base || !token) throw new Error('Agent API 地址或 Token 未渲染');
     const unauthorized = await fetch(`${base}/v1/status`);
     if (unauthorized.status !== 401) throw new Error(`Agent API 未鉴权：${unauthorized.status}`);

@@ -1,0 +1,49 @@
+{
+  "ok": true,
+  "version": "0.5.44",
+  "platform": "win32",
+  "at": "2026-10-04T12:12:55.483Z",
+  "scope": "Actual sealed archive module, loopback HTTP, fixture notification transport and trusted-proxy client addresses",
+  "realWecom": false,
+  "productionLoadProven": false,
+  "productionBackupProven": false,
+  "productBugRateBelowOnePercentProven": false,
+  "checks": [
+    "200 concurrent real HTTP requests persist 180 sent, 10 failed and 10 unknown fixture outcomes; each of 20 proxy-client limits rejects request 11, health remains available",
+    "Stopped service backup includes all receipts, logs and dummy private config; fresh-root restore matches every file byte/hash with original root moved offline",
+    "Fresh restored server returns all 200 original outcomes and rejects re-sending failed/unknown receipts; concurrent replay makes zero new notification calls",
+    "Restored same-ID/different-content conflict is rejected, original diagnostic content and protective headers remain valid, all stored bytes stay unchanged"
+  ],
+  "archive": {
+    "verified": true,
+    "version": "0.5.44",
+    "sha256": "ecd9b1f39050f47771f28725f690ee3f5ee75084817702ec354c2b850f14c5a7",
+    "files": 11
+  },
+  "load": {
+    "concurrentRequests": 200,
+    "fixtureProxyClients": 20,
+    "defaultRequestsPerClientPerMinute": 10,
+    "durationMs": 416,
+    "p50Ms": 296,
+    "p95Ms": 382,
+    "maxMs": 385,
+    "expectedSent": 180,
+    "injectedFailed": 10,
+    "injectedUnknown": 10
+  },
+  "backup": {
+    "stoppedBeforeCopy": true,
+    "restoredToFreshRoot": true,
+    "files": 401,
+    "byteHashMatched": true
+  },
+  "notificationCalls": {
+    "initialFixture": 200,
+    "afterRestoreAndReplay": 0,
+    "realExternal": 0
+  },
+  "productRuntimeSourceCommit": "a89b7bb0de18d0674b7fa81a9b459fccf43993b1",
+  "testScript": "test/feedback-backup-load.cjs",
+  "testScriptSha256": "81fb68465604651848d5fcaadad70e77c909da24f0b37412ec058ee289598876"
+}

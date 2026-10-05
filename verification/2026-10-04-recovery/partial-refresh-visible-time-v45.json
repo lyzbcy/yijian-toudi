@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-04T13:13:37.925Z",
+  "version": "0.5.45",
+  "sourceCommit": "45f1087b310cb188753426ce1c3b6902af3b37bb",
+  "packaged": true,
+  "ok": true,
+  "snapshotSource": "Copy of actual v44 partial live-refresh recording state, new isolated profile, no new refresh or HTTP interception",
+  "jobs": 3694,
+  "noticeTitle": "最近刷新未全部成功",
+  "noticeDetail": "已抓取 3694 个岗位（近 30 天）：腾讯 1374 个，百度 0 个（失败：岗位请求超过总时限，请稍后重试），字节跳动 0 个（失败：岗位接口请求失败，保留上次岗位数据），小米 203 个，京东 974 个，美团 1143 个。",
+  "lastRefreshAttemptAt": "2026-10-04T12:22:28.754Z",
+  "lastCompleteRefreshAt": null,
+  "visibleRefreshText": "最近尝试：2026/10/4 20:22:28；尚无完整成功记录",
+  "contradictionFixed": true,
+  "originalJobsAndTaskIDsPreserved": true,
+  "originalProfileByteHashUnchanged": true,
+  "originalNetworkFailureRootCauseProven": false,
+  "realApplications": 0,
+  "externalMessages": 0,
+  "fullGoalComplete": false
+}

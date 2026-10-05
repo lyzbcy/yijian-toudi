@@ -162,7 +162,10 @@ class KimiBridge {
   }
 
   // 便捷封装（实测过的最小工具集）
-  navigate(url, opts) { return this.sendTool('navigate', { url }, opts); }
+  navigate(url, opts = {}) {
+    const { newTab, ...timing } = opts;
+    return this.sendTool('navigate', newTab ? { url, newTab: true } : { url }, timing);
+  }
   snapshot(opts) { return this.sendTool('snapshot', {}, { timeoutMs: 40000, ...opts }); }
   click(selector, opts) { return this.sendTool('click', { selector }, opts); }
   fill(selector, value, opts) { return this.sendTool('fill', { selector, value }, opts); }

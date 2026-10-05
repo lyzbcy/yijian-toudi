@@ -1,0 +1,10 @@
+{
+  "version": "0.5.54",
+  "scope": "Actual IPC/save/add and controlled delayed broadcast of earlier real state; unrelated isolated fixture",
+  "visibleBefore": 2,
+  "visibleAfterStaleBroadcast": 2,
+  "storedProfiles": 2,
+  "staleBroadcastDefectReproduced": false,
+  "originalMac53FailureExactPacketCauseProven": false,
+  "privateValuesOmitted": true
+}

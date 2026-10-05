@@ -1,0 +1,91 @@
+{
+  "version": "0.5.43",
+  "nextVersion": "0.5.44",
+  "architecture": "x64",
+  "ok": true,
+  "fixtureOnly": true,
+  "mode": "actual-native-IPC-helper-transaction-and-open",
+  "incomingVersionIsTestFixture": true,
+  "officialPublicUpdateProven": false,
+  "endUserGatekeeperVerified": false,
+  "realAccountsVerified": false,
+  "checks": [
+    "Actual native current ZIP installs into unique Applications path; distinct future fixture ZIP is built with full resource signature",
+    "Historical v41 worker on actual native bundles leaves installed with no new process or recovery when successful launcher response is injected; test restores its preserved backup",
+    "Actual detached helper is ready before abort; current process and complete old bundle remain unchanged",
+    "Injected test-worker failure after real bundle replacement restores full original signed bundle; isolated user data stays intact",
+    "Actual replacement without a new process is detected by shortened test confirmation deadline and fully restores/reopens the original signed bundle",
+    "Actual live newer app with withheld confirmation remains running and serves the retained authenticated profile; helper defers rollback and preserves old bundle, then test stops/restores its isolated fixture",
+    "Actual installed main IPC selects future fixture, downloads genuine native ZIP and verifies exact SHA-256",
+    "Real IPC ready/commit/exit helper replaces bundle, open launches visible next app, and helper observes authenticated restart confirmation before completing",
+    "Subsequent visible cold reopen confirms new version and retained UI resume/API credential/attachment bytes/persistent sample Cookie"
+  ],
+  "pageErrors": [],
+  "helperDiagnostics": [
+    {
+      "template": "baseline-no-process.sh",
+      "startedAt": "2026-10-04T11:10:26.173Z",
+      "spawnMs": 10854,
+      "attempt": "install-MBMCYw",
+      "returnMs": 14385,
+      "exitCode": 0,
+      "exitSignal": null,
+      "exitMs": 18922,
+      "workerOutput": ""
+    },
+    {
+      "template": "production-worker",
+      "startedAt": "2026-10-04T11:10:47.177Z",
+      "spawnMs": 8592,
+      "attempt": "install-tgLX8H",
+      "returnMs": 11816,
+      "exitCode": 1,
+      "exitSignal": null,
+      "exitMs": 12200,
+      "workerOutput": ""
+    },
+    {
+      "template": "forced-failure.sh",
+      "startedAt": "2026-10-04T11:10:59.511Z",
+      "spawnMs": 7476,
+      "attempt": "install-0ur8Gm",
+      "returnMs": 10776,
+      "exitCode": 1,
+      "exitSignal": null,
+      "exitMs": 16732,
+      "workerOutput": ""
+    },
+    {
+      "template": "new-no-process.sh",
+      "startedAt": "2026-10-04T11:11:17.786Z",
+      "spawnMs": 8428,
+      "attempt": "install-IvCAqa",
+      "returnMs": 17846,
+      "exitCode": 1,
+      "exitSignal": null,
+      "exitMs": 38991,
+      "workerOutput": ""
+    },
+    {
+      "template": "live-unconfirmed.sh",
+      "startedAt": "2026-10-04T11:11:58.272Z",
+      "spawnMs": 14309,
+      "attempt": "install-uDv6y9",
+      "returnMs": 26099,
+      "exitCode": 1,
+      "exitSignal": null,
+      "exitMs": 59176,
+      "workerOutput": ""
+    }
+  ],
+  "baselineGap": {
+    "helperVersion": "0.5.41",
+    "helperSource": "b206eb5f0aa0b56098b219f0f4b95879a893d356",
+    "actualAppFrom": "0.5.43",
+    "actualAppTo": "0.5.44",
+    "launcherResponseInjected": true,
+    "installedWithoutNewProcessOrRecovery": true
+  },
+  "workflowRun": 37197464455,
+  "sourceCommit": "fd82e1f2702e251b61805e9430c9bdc1fbf9eaad"
+}

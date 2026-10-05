@@ -1,0 +1,358 @@
+{
+  "version": "0.5.49",
+  "sealed": true,
+  "realWebsiteSdk": true,
+  "actualProductionAdapter": true,
+  "navigation": "already-loaded authenticated isolated page",
+  "syntheticLocalEditsOnly": true,
+  "officialSaveUploadApplications": 0,
+  "status": "review-required",
+  "verification": {
+    "verified": [
+      "basic.name",
+      "basic.phone",
+      "basic.email",
+      "experience.0.company",
+      "experience.0.department",
+      "experience.0.role",
+      "experience.0.description",
+      "projects.0.name",
+      "projects.0.role",
+      "projects.0.description",
+      "projects.0.contribution",
+      "basic.gender",
+      "education.0.school",
+      "education.0.major",
+      "education.0.degree",
+      "education.0.start",
+      "education.0.end",
+      "experience.0.start",
+      "experience.0.end",
+      "projects.0.start",
+      "projects.0.end"
+    ],
+    "mismatched": [],
+    "failed": [],
+    "manual": []
+  },
+  "widgets": [
+    {
+      "key": "basic.gender",
+      "written": true,
+      "verified": true,
+      "error": null
+    },
+    {
+      "key": "education.0.school",
+      "written": true,
+      "verified": true,
+      "error": null,
+      "action": "exact-option-selected"
+    },
+    {
+      "key": "education.0.major",
+      "written": true,
+      "verified": true,
+      "error": null,
+      "action": "exact-option-selected"
+    },
+    {
+      "key": "education.0.degree",
+      "written": true,
+      "verified": true,
+      "action": "select-reopened"
+    },
+    {
+      "key": "education.0.start",
+      "written": true,
+      "verified": true,
+      "error": null,
+      "action": "month-picker-reopened"
+    },
+    {
+      "key": "education.0.end",
+      "written": true,
+      "verified": true,
+      "error": null,
+      "action": "month-picker-reopened"
+    },
+    {
+      "key": "experience.0.start",
+      "written": true,
+      "verified": true,
+      "error": null,
+      "action": "month-picker-reopened"
+    },
+    {
+      "key": "experience.0.end",
+      "written": true,
+      "verified": true,
+      "error": null,
+      "action": "month-picker-reopened"
+    },
+    {
+      "key": "projects.0.start",
+      "written": true,
+      "verified": true,
+      "error": null,
+      "action": "month-picker-reopened"
+    },
+    {
+      "key": "projects.0.end",
+      "written": true,
+      "verified": true,
+      "error": null,
+      "action": "month-picker-reopened"
+    }
+  ],
+  "retainedAfterAllFields": {
+    "school": true,
+    "major": true,
+    "degree": true,
+    "gender": true
+  },
+  "missingExactSchoolRejected": true,
+  "previousSchoolPreservedAfterMissingOption": true,
+  "requiredFields": {
+    "applicable": true,
+    "structurallyComplete": false,
+    "officialValidationProven": false,
+    "requiredRows": [
+      {
+        "key": "name",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "姓名",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "sex",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "性别",
+        "status": "filled",
+        "reason": "checked-model"
+      },
+      {
+        "key": "country",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "国籍/地区",
+        "status": "filled",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "mobile",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "移动电话",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "email",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "电子邮箱建议使用网易或QQ邮箱；不建议使用Outlook、Gmail、教育邮箱",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "targetCity",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "目标工作城市",
+        "status": "empty",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "targetPositionType",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "目标职位类别",
+        "status": "empty",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "interviewOnlineType",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "可面试方式",
+        "status": "empty",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "school0",
+        "sectionId": "education",
+        "groupNumber": 1,
+        "label": "学校",
+        "status": "filled",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "edudate0",
+        "sectionId": "education",
+        "groupNumber": 1,
+        "label": "起止时间",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "academic0",
+        "sectionId": "education",
+        "groupNumber": 1,
+        "label": "学历",
+        "status": "filled",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "major0",
+        "sectionId": "education",
+        "groupNumber": 1,
+        "label": "专业",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "companyName0",
+        "sectionId": "experience",
+        "groupNumber": 1,
+        "label": "企业名称",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "industryType0",
+        "sectionId": "experience",
+        "groupNumber": 1,
+        "label": "行业类别",
+        "status": "empty",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "workdate0",
+        "sectionId": "experience",
+        "groupNumber": 1,
+        "label": "起止时间",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "department0",
+        "sectionId": "experience",
+        "groupNumber": 1,
+        "label": "所在部门",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "positionName0",
+        "sectionId": "experience",
+        "groupNumber": 1,
+        "label": "职位名称",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "workDesc0",
+        "sectionId": "experience",
+        "groupNumber": 1,
+        "label": "工作描述",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "subjectName0",
+        "sectionId": "projects",
+        "groupNumber": 1,
+        "label": "项目名称",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "position0",
+        "sectionId": "projects",
+        "groupNumber": 1,
+        "label": "项目职务",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "subjectDate0",
+        "sectionId": "projects",
+        "groupNumber": 1,
+        "label": "起止时间",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "subjectDesc0",
+        "sectionId": "projects",
+        "groupNumber": 1,
+        "label": "项目描述",
+        "status": "filled",
+        "reason": "visible-inputs"
+      },
+      {
+        "key": "privacy-consent",
+        "sectionId": "consent",
+        "groupNumber": 1,
+        "label": "隐私声明",
+        "status": "empty",
+        "reason": "user-consent-required"
+      }
+    ],
+    "missing": [
+      {
+        "key": "targetCity",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "目标工作城市",
+        "status": "empty",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "targetPositionType",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "目标职位类别",
+        "status": "empty",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "interviewOnlineType",
+        "sectionId": "info",
+        "groupNumber": 1,
+        "label": "可面试方式",
+        "status": "empty",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "industryType0",
+        "sectionId": "experience",
+        "groupNumber": 1,
+        "label": "行业类别",
+        "status": "empty",
+        "reason": "selected-model-only"
+      },
+      {
+        "key": "privacy-consent",
+        "sectionId": "consent",
+        "groupNumber": 1,
+        "label": "隐私声明",
+        "status": "empty",
+        "reason": "user-consent-required"
+      }
+    ],
+    "unknown": []
+  },
+  "stepKinds": [
+    "loading",
+    "field-verified",
+    "field-writing",
+    "required-missing",
+    "review-required"
+  ],
+  "ok": true
+}

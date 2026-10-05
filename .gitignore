@@ -1,4 +1,5 @@
 node_modules/
+node_modules.reference/
 release/
 dist/
 .DS_Store
@@ -15,3 +16,13 @@ _plaintext.html
 _search_index.js
 _final_verify.mjs
 .zcode/
+release-candidate-*/
+support/data/
+support/deploy/feedback.env
+support/deploy/feedback-data/
+verification/**/baseline-app/
+verification/**/rollback-copy/
+verification/**/install-smoke-*/
+verification/**/yijian-toudi/
+verification/**/yijian-toudi-feedback-server/
+verification/**/*.tar.gz

@@ -1,0 +1,13 @@
+{
+  "version": "0.5.51",
+  "isolatedProfile": true,
+  "allExternalRequestsSealed": true,
+  "officialWrites": 0,
+  "click": true,
+  "result": {
+    "selectedTextMatches": true,
+    "expanded": "false",
+    "searchInputPresent": true
+  },
+  "blocked": []
+}

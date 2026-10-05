@@ -1,0 +1,37 @@
+{
+  "ok": true,
+  "version": "0.5.47",
+  "tests": 27,
+  "pass": 27,
+  "fail": 0,
+  "isolatedProfile": true,
+  "nativeNestedClickTrusted": true,
+  "nativeNestedFillTrusted": true,
+  "staleAndSubmissionGuards": true,
+  "frameOrder": "actual DOM iframe/frame owner order",
+  "finalLogSha256": "9d0fd44d7ac5e1a0d673ebe472abea1154d7a22db2ec8f7fb0f3323b9a6ebad7",
+  "priorAttempts": [
+    {
+      "tests": 17,
+      "pass": 16,
+      "fail": 1,
+      "reason": "Page.getFrameTree excludes OOPIF",
+      "inventory": "ai-browser-frame-tree-attempt-v47.json"
+    },
+    {
+      "tests": 21,
+      "pass": 19,
+      "fail": 2,
+      "reason": "Target.getTargets order differs between debugger connections"
+    },
+    {
+      "reason": "Playwright reconnect lacks registered nested same-process child in OOPIF",
+      "error": "frame_not_found_refresh_list:depth_1"
+    },
+    {
+      "reason": "raw nested native locator initially omitted count method",
+      "error": "locator.count is not a function"
+    }
+  ],
+  "knownLimit": "nested selected channel returns refreshed target inventory but does not collect navigation events"
+}

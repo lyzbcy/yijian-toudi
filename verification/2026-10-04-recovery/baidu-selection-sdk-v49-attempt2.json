@@ -1,0 +1,31 @@
+{
+  "sealed": true,
+  "result": [
+    {
+      "key": "basic.gender",
+      "written": true,
+      "error": null,
+      "verified": true
+    },
+    {
+      "key": "education.0.school",
+      "written": true,
+      "error": null,
+      "verified": true,
+      "action": "exact-option-selected"
+    },
+    {
+      "key": "education.0.major",
+      "written": true,
+      "error": null,
+      "verified": true,
+      "action": "exact-option-selected"
+    },
+    {
+      "key": "education.0.degree",
+      "written": true,
+      "verified": true,
+      "action": "select-reopened"
+    }
+  ]
+}

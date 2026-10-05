@@ -1,0 +1,16 @@
+{
+  "ok": true,
+  "version": "0.5.54",
+  "nativeRun": 37244296845,
+  "sourceCommit": "391c48dabf84532f5ef7d20dbda50fc54b324ff2",
+  "reports": [
+    "linux-candidate-v54.json",
+    "linux-systemd-v54.json",
+    "linux-caddy-v54.json"
+  ],
+  "systemdRuntime": true,
+  "caddyLocalTrustedTLS": true,
+  "realPublicTLS": false,
+  "realWecom": false,
+  "noNewNotificationSubmitted": true
+}

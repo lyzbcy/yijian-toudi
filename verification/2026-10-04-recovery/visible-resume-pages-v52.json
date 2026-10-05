@@ -1,0 +1,66 @@
+{
+  "version": "0.5.52",
+  "isolatedProfile": true,
+  "shownInactiveWithoutFocus": true,
+  "visibilityRestored": true,
+  "officialWrites": 0,
+  "privateValuesOmitted": true,
+  "rows": [
+    {
+      "companyId": "bytedance",
+      "freshNavigation": true,
+      "readonlyEffectsManuallyDispatched": false,
+      "state": {
+        "path": "/campus/resume/edit",
+        "visibility": "visible",
+        "controls": 19,
+        "identityPresent": true,
+        "loading": true,
+        "hasProtectionPrompt": false,
+        "elapsedMs": 1038
+      },
+      "readonlyApiPaths": [
+        "/people-suite/next-sdk/api/notice",
+        "/api/v1/website/agent/config",
+        "/api/v1/ip/location",
+        "/api/v1/user/mobile/login_status",
+        "/api/v1/common/setting",
+        "/api/v1/config/job/filters/3",
+        "/api/v1/config/location/nationalities/",
+        "/api/v1/config/location/nodes/",
+        "/api/v1/user/profile",
+        "/api/v1/config/location/nationalities",
+        "/api/v1/config/location/nodes",
+        "/api/v1/user/recommend/code",
+        "/api/v1/user/latest/resume"
+      ]
+    },
+    {
+      "companyId": "xiaomi",
+      "freshNavigation": true,
+      "readonlyEffectsManuallyDispatched": false,
+      "state": {
+        "path": "/campus/resume/edit",
+        "visibility": "visible",
+        "controls": 32,
+        "identityPresent": true,
+        "loading": false,
+        "hasProtectionPrompt": false,
+        "elapsedMs": 1010
+      },
+      "readonlyApiPaths": [
+        "/people-suite/next-sdk/api/notice",
+        "/api/v1/ip/location",
+        "/api/v1/user/mobile/login_status",
+        "/api/v1/common/setting",
+        "/api/v1/config/location/nodes/",
+        "/api/v1/config/location/nationalities/",
+        "/api/v1/user/latest/resume",
+        "/api/v1/user/profile",
+        "/api/v1/config/location/nationalities",
+        "/api/v1/config/location/nodes",
+        "/api/v1/user/recommend/code"
+      ]
+    }
+  ]
+}

@@ -1,7 +1,9 @@
-const { app, BrowserWindow, ipcMain, shell, dialog, safeStorage, net, Notification } = require('electron');
+const { app, BrowserWindow, ipcMain, shell, dialog, safeStorage, net, Notification, Menu } = require('electron');
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
+// Match the NSIS shortcut identity; keep it stable across product versions.
+if (process.platform === 'win32') app.setAppUserModelId('com.lyzbcy.yijiantoudi');
 const { JsonStore, calculateResumeCompletion, applyResumeEdit, switchProfile, addProfile, deleteProfile, renameProfile, migrateFlatResumeToProfiles, patchResume, batchAddToCart, findJobs } = require('./store.cjs');
 const { AgentServer } = require('./agent-server.cjs');
 const { syncQqMail } = require('./mail.cjs');
@@ -27,15 +29,20 @@ const {
 const { createRedactedSnapshot } = require('./redact.cjs');
 const { manualApplicationOutcome } = require('./workspace-outcome.cjs');
 const { resolveResumeFilePath } = require('./resume-files.cjs');
-const { mergeJobSnapshot, singleFlight } = require('./job-refresh.cjs');
+const { mergeJobSnapshot, singleFlight, refreshResult, shouldAutoRefresh } = require('./job-refresh.cjs');
 const wecomNotify = require('./wecom-notify.cjs');
 const { KimiBridge } = require('./kimi-bridge.cjs');
-const { BossBatchRunner } = require('./boss-batch.cjs');
+const { BossBatchController } = require('./boss-control.cjs');
 const { AccountBrowserManager } = require('./account-browser.cjs');
-const { summarizeRelease } = require('./update-release.cjs');
+const { createDesktopUpdater } = require('./desktop-updater.cjs');
+const windowsUpdate=require('./windows-update.cjs');
+const macosUpdate=require('./macos-update.cjs');
+const {diagnosticEntries}=require('./diagnostics.cjs');
+const {shouldPrompt,migratePromotion,dismissPromotion}=require('./promo-policy.cjs');
+const {endpointUrl,payloadForFeedback,createFeedbackClient}=require('./feedback.cjs');
 
 let kimiBridge = null;
-let bossBatchRunner = null;
+let bossBatchController = null;
 let accountBrowsers = null;
 
 async function startKimiBridge() {
@@ -58,12 +65,61 @@ function stopKimiBridge() {
 }
 
 
+let desktopUpdater,stagedDesktopUpdate=null,installInProgress=false;
+const updateDirectory=()=>path.join(app.getPath('userData'),'desktop-updates');
+const installationContext=()=>({executable:process.execPath,current:app.getVersion(),platform:process.platform,arch:process.arch,packaged:app.isPackaged,userData:app.getPath('userData')});
+const desktopInstaller=()=>process.platform==='darwin'?macosUpdate:windowsUpdate;
+async function canInstallDesktopUpdate(){
+ if(!app.isPackaged||localPreview||backgroundTest)return false;
+ try{if(process.platform==='darwin'){await macosUpdate.readInstallation(installationContext());return true;}return windowsUpdate.installationMatches(await windowsUpdate.readInstallation(),installationContext());}catch{return false;}
+}
+function getDesktopUpdater(){
+ if(!desktopUpdater)desktopUpdater=createDesktopUpdater({store,directory:path.join(app.getPath('userData'),'desktop-updates'),fetchFn:(...args)=>net.fetch(...args),current:app.getVersion(),platform:process.platform,arch:process.arch,onProgress:progress=>{if(window&&!window.isDestroyed())window.webContents.send('update:progress',progress);}});
+ return desktopUpdater;
+}
 let window;
 let store;
 let agentServer;
+let feedbackWindow=null,feedbackClient=null,feedbackSession=null;
+function getUiState(){const state=store.get();state.meta.starPromptDue=shouldPrompt(state.meta);return state;}
+function ensureFeedbackClient(){if(!feedbackClient)feedbackClient=createFeedbackClient({file:path.join(app.getPath('userData'),'feedback-outbox.json')});return feedbackClient;}
+function assertFeedbackSender(event){if(!feedbackWindow||event.sender!==feedbackWindow.webContents)throw Error('feedback-window-required');}
+async function openFeedback(kind='bug'){
+  if(feedbackWindow&&!feedbackWindow.isDestroyed()){feedbackWindow.focus();return{opened:true};}
+  const pending=ensureFeedbackClient().pending();
+  feedbackSession={kind:pending?.payload.kind||(kind==='review'?'review':'bug'),requestId:pending?.payload.requestId||crypto.randomUUID(),logs:diagnosticEntries(logger.recent()),pending};
+  feedbackWindow=new BrowserWindow({parent:window,modal:true,show:false,width:650,height:735,minWidth:520,minHeight:600,title:'遇到问题反馈 · 一键投递',backgroundColor:'#f6f7fb',icon:path.join(__dirname,'..','src','assets','stickers','mascot.png'),...(process.platform==='win32'?{titleBarStyle:'hidden',titleBarOverlay:{color:'#f6f7fb',symbolColor:'#52566f',height:40}}:{}),webPreferences:{preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,sandbox:true,nodeIntegration:false}});
+  feedbackWindow.webContents.setWindowOpenHandler(()=>({action:'deny'}));feedbackWindow.on('closed',()=>{feedbackWindow=null;feedbackSession=null;});
+  try{await feedbackWindow.loadFile(path.join(__dirname,'..','src','feedback.html'));if(!backgroundTest)feedbackWindow.show();return{opened:true};}catch{feedbackWindow?.destroy();return{opened:false};}
+}
 const backgroundTest = process.env.YIJIAN_BACKGROUND_TEST === '1';
+const localPreview = process.argv.includes('--yjt-local-preview');
 if (backgroundTest && !process.argv.some((arg) => arg.startsWith('--user-data-dir='))) {
   throw new Error('后台测试必须指定隔离的 --user-data-dir');
+}
+let resumeBatch = null;
+function getResumeBatch() {
+  if (!resumeBatch) {
+    const { ResumeBatch } = require('./resume-batch.cjs');
+    const { createResumeBatchWindow } = require('./resume-batch-window.cjs');
+    resumeBatch = new ResumeBatch({
+      store,
+      getTargets: () => expandResumeSyncTargets(resumeSyncTargets(store.get()), store.get().settings?.jobs?.recruitType || 'social'),
+      getAdapter: id => registry.getAdapter(id),
+      createWorkspace: (...args) => createResumeBatchWindow(window, ...args),
+      attachmentPath: resume => {
+        const name = resume?.basic?.resumeFile;
+        if (!name) return null;
+        const file = resolveResumeFilePath(path.join(app.getPath('userData'), 'resumes'), name);
+        return fs.existsSync(file) ? file : null;
+      },
+      onChange: status => {
+        if (window && !window.isDestroyed()) window.webContents.send('resume:batch-changed', status);
+      }
+    });
+    loginManager.setExternalBusy(() => resumeBatch.isActive());
+  }
+  return resumeBatch;
 }
 let resumeSyncSession = null;
 let resumeSyncSessionGeneration = null;
@@ -203,7 +259,7 @@ async function executeResumeSync({ startCompanyId, resumeSyncGeneration, pauseOn
     if (result.status === 'verified' || (result.summary && result.summary.verifiedPlatforms >= 1)) {
       store.update((state) => {
         state.meta.fillCompletedCount = (state.meta.fillCompletedCount || 0) + 1;
-        if (state.meta.fillCompletedCount >= 3 && !state.meta.starPromptDone) state.meta.starPromptDue = true;
+        state.meta.starPromptDue=shouldPrompt(state.meta);
         return state;
       });
     }
@@ -218,7 +274,9 @@ function createWindow() {
     height: 920,
     minWidth: 1080,
     minHeight: 720,
-    titleBarStyle: 'hiddenInset',
+    titleBarStyle: process.platform === 'win32' ? 'hidden' : 'hiddenInset',
+    ...(process.platform === 'win32' ? { titleBarOverlay: { color: '#f5f6fa', symbolColor: '#52566f', height: 40 } } : {}),
+    icon: path.join(__dirname, '..', 'src', 'assets', 'stickers', 'mascot.png'),
     trafficLightPosition: { x: 18, y: 18 },
     backgroundColor: '#f6f7fb',
     webPreferences: {
@@ -229,7 +287,16 @@ function createWindow() {
       backgroundThrottling: !backgroundTest
     }
   });
-  window.loadFile(path.join(__dirname, '..', 'src', 'index.html'));
+  window.webContents.once('did-finish-load', () => {
+    if (!['win32','darwin'].includes(process.platform) || !app.isPackaged || backgroundTest || localPreview) return;
+    void desktopInstaller().confirmUpdateRestart(updateDirectory(), {
+      version: app.getVersion(), executable: process.execPath, visible: window.isVisible()
+    }).then(result => {
+      if (result) logger.info('[desktop-update]', `Restart confirmed: ${result.runningVersion}`);
+    }).catch(error => logger.warn('[desktop-update]', `Restart confirmation failed: ${error.message}`));
+  });
+  window.loadFile(path.join(__dirname, '..', 'src', 'index.html'), { query: { appVersion: app.getVersion(), ...(localPreview ? { localPreview: '1', ...(app.commandLine.hasSwitch('remote-debugging-port') ? { aiDebug: '1' } : {}) } : {}) } });
+  window.once('close', () => { void resumeBatch?.stop(); });
   window.webContents.setWindowOpenHandler(({ url }) => {
     if (/^https?:\/\//.test(url)) shell.openExternal(url);
     return { action: 'deny' };
@@ -242,7 +309,7 @@ function createWindow() {
 }
 
 function broadcast() {
-  if (window && !window.isDestroyed()) window.webContents.send('state:changed', store.get());
+  if (window && !window.isDestroyed()) window.webContents.send('state:changed', getUiState());
 }
 
 function addTask({ type, title, status = 'running', detail = '', progress = 10 }) {
@@ -355,19 +422,20 @@ async function handleCommand(command) {
 }
 
 // ==== Boss 批量投递控制面（IPC 与 Agent API 共用；2026-09-22 抽出）====
-function bossBatchStatus() {
-  return {
-    running: Boolean(bossBatchRunner && !bossBatchRunner.stopped),
-    applied: bossBatchRunner ? bossBatchRunner.applied : [],
-    fails: bossBatchRunner ? bossBatchRunner.fails : 0,
-    stopReason: bossBatchRunner ? bossBatchRunner.stopReason : null
-  };
+function getBossBatchController() {
+  if (!bossBatchController) bossBatchController = new BossBatchController({
+    store,
+    getBridge: async () => { if (!kimiBridge) await startKimiBridge(); return kimiBridge?.isUp() ? kimiBridge : null; },
+    notify: (message) => wecomNotify.notify(message),
+    log: (message) => logger.info('[boss-batch]', message),
+    onChanged: () => broadcast()
+  });
+  return bossBatchController;
 }
 
-function stopBossBatch() {
-  bossBatchRunner?.stop('user-stop');
-  return { stopping: true };
-}
+function bossBatchStatus() { return getBossBatchController().status(); }
+function stopBossBatch() { return getBossBatchController().stop(); }
+function resolveBossBatch(request) { return getBossBatchController().resolve(request); }
 
 function listBossAccounts() {
   const state = store.get();
@@ -383,79 +451,7 @@ function listBossAccounts() {
 }
 
 async function startBossBatch(request = {}) {
-  if (!kimiBridge) await startKimiBridge();
-  if (!kimiBridge) return { error: 'kimi-bridge-unavailable' };
-  if (bossBatchRunner && !bossBatchRunner.stopped) return { error: 'already-running' };
-  // 账号档案：历史投过的公司名（跨批去重，2026-09-22 修复此前恒空的 bug）
-  const state = store.get();
-  const accounts = Array.isArray(state.accounts) ? state.accounts : [];
-  const account = accounts.find((a) => a.id === (request.accountId || state.activeAccountId)) || null;
-  if (request.accountId && !account) return { error: 'account-not-found' };
-  const appliedBefore = account && account.boss && Array.isArray(account.boss.banCompanies)
-    ? account.boss.banCompanies.filter(Boolean)
-    : [];
-  // 新账号首日限额：客户账号（非默认自用账号）target 上限 50，防新登录即高频投递触发风控
-  const isNewClientAccount = Boolean(account) && account.id !== 'default';
-  const hardCap = isNewClientAccount ? 50 : 120;
-  const target = Math.min(Number(request.target) || 30, hardCap);
-  if (Number(request.target) > hardCap) {
-    return { error: 'target-exceeds-limit', message: `该账号单次上限 ${hardCap}（新客户账号首日限额）`, hardCap };
-  }
-  bossBatchRunner = new BossBatchRunner({
-    bridge: kimiBridge,
-    notify: (text) => wecomNotify.notify(text),
-    log: (msg) => logger.info('[boss-batch]', msg),
-    target,
-    dryRun: Boolean(request.dryRun),
-    banCompanies: appliedBefore,
-    onApplied: account ? (entry) => persistBossApplied(account.id, entry) : null
-  });
-  const reportEvery = 8;
-  const accountLabel = account ? `${account.name}(${account.phoneMasked || account.id})` : '默认';
-  (async () => {
-    await wecomNotify.notify(`【一键投递·Boss 批量】账号=${accountLabel} 开始${request.dryRun ? '（dryRun 演练，不实际发送）' : ''}：目标 ${target} 笔，规则=开发岗/排除测试，城市=武汉实习+沪苏锡杭校招。每 ${reportEvery} 笔汇报。`);
-    let lastCount = 0;
-    const progressTimer = setInterval(() => {
-      const applied = bossBatchRunner ? bossBatchRunner.applied : [];
-      if (applied.length - lastCount >= reportEvery) {
-        lastCount = applied.length;
-        wecomNotify.notify(`【一键投递·进度 ${applied.length}/${target}】\n` + applied.slice(-reportEvery).map((a) => `· ${a.time} ${a.city} ${a.company || ''}｜${a.title}`).join('\n'));
-      }
-    }, 15000);
-    try {
-      const result = await bossBatchRunner.run();
-      wecomNotify.notify(`【一键投递·批量结束】账号=${accountLabel} 投出 ${result.applied.length} 笔，失败 ${result.fails}，停止原因 ${result.stopReason}。\n免责声明：投递操作经账号持有人授权发起；账号在平台的合规状态由账号持有人自行负责。`);
-    } catch (err) {
-      wecomNotify.notify(`【一键投递·批量异常】账号=${accountLabel} ${err.message}，已停止。`);
-    } finally {
-      clearInterval(progressTimer);
-      if (account) touchAccount(account.id);
-      broadcast();
-    }
-  })();
-  broadcast();
-  return { started: true, target, dryRun: Boolean(request.dryRun), accountId: account ? account.id : null };
-}
-
-// 投递成功即落盘到账号档案（boss-batch 引擎回调）
-function persistBossApplied(accountId, entry) {
-  try {
-    store.update((state) => {
-      const acc = (state.accounts || []).find((a) => a.id === accountId);
-      if (!acc) return state;
-      acc.boss = acc.boss || { applied: [], banCompanies: [] };
-      acc.boss.applied = acc.boss.applied || [];
-      acc.boss.applied.unshift({ ...entry, date: new Date().toISOString().slice(0, 10) });
-      acc.boss.applied = acc.boss.applied.slice(0, 2000);
-      if (entry.company && !acc.boss.banCompanies.includes(entry.company)) {
-        acc.boss.banCompanies.push(entry.company);
-        acc.boss.banCompanies = acc.boss.banCompanies.slice(-500);
-      }
-      return state;
-    });
-  } catch (err) {
-    logger.error('[boss-batch]', 'persist applied failed:', err.message);
-  }
+  return getBossBatchController().start(request);
 }
 
 function touchAccount(accountId) {
@@ -523,10 +519,10 @@ async function verifyAccountBinding(accountId) {
     await new Promise((r) => setTimeout(r, 5000));
     const snap = await kimiBridge.snapshot();
     const raw = JSON.stringify(snap);
-    const seoPage = /「[^」]{2,8}招聘」/.test(raw) || /热门城市|附近城市/.test(raw);
-    if (seoPage) return { error: 'login-required', message: 'Boss 未登录或登录态失效，请先扫码' };
+    const loginPage = /BOSS直聘注册登录|微信扫码 安全登录|验证码登录\/注册|登录\/注册/.test(raw);
+    if (loginPage) return { error: 'login-required', message: 'Boss 未登录或登录态失效，请先扫码' };
     const m = /1\d{2}[\s*]*\*{2,}[\s*]*\d{2,4}/.exec(raw.replace(/\\u002a/g, '*')) || [];
-    const detected = m ? m[0].replace(/\s/g, '') : '';
+    const detected = m[0] ? m[0].replace(/\s/g, '') : '';
     if (!detected) {
       // 探测不到手机号时不阻塞：页面结构可能变化，返回页面片段供人工判断
       return { verified: false, detected: '', message: '未能在页面上读到脱敏手机号，请人工确认当前连接身份' };
@@ -555,6 +551,7 @@ async function startAgentServer() {
   agentServer = new AgentServer({ store, onCommand: handleCommand, bossControl: {
     start: (request) => startBossBatch(request || {}),
     stop: () => stopBossBatch(),
+    resolve: (request) => resolveBossBatch(request),
     status: () => bossBatchStatus(),
     accounts: () => listBossAccounts(),
     createAccount: (request) => createBossAccount(request || {}),
@@ -594,14 +591,12 @@ const JOB_ADAPTERS = registry.listJobAdapters().map((adapter) => ({
   fetch: (opts) => adapter.listJobs(opts)
 }));
 
-// 启动时检查是否需要自动刷新岗位（settings.jobs.autoRefresh + 距上次>24h）
+// Count partial/failed attempts too: reopening must not repeatedly retry sites.
 function maybeAutoRefreshJobs() {
-  if (backgroundTest) return;
+  if (backgroundTest || localPreview) return;
   try {
     const settings = store.get().settings;
-    if (!settings.jobs?.autoRefresh) return;
-    const last = settings.jobs.lastRefreshAt ? new Date(settings.jobs.lastRefreshAt).getTime() : 0;
-    if (Date.now() - last < 24 * 3600 * 1000) return;
+    if (!shouldAutoRefresh(settings.jobs)) return;
     logger.info('自动刷新岗位（距上次超过 24 小时）');
     refreshJobs().catch((e) => logger.warn('自动刷新岗位失败', { error: e.message }));
   } catch (e) {
@@ -663,9 +658,11 @@ const refreshJobs = singleFlight(async function refreshJobsOnce() {
       }
     }
 
-    const next = store.update((state) => {
-      state.settings.jobs = { ...state.settings.jobs, lastRefreshAttemptAt: new Date().toISOString(),
-        ...(results.every((result) => !result.error) ? { lastRefreshAt: new Date().toISOString() } : {}) };
+    const outcome = refreshResult(results, { daysBack, recruitType });
+    store.update((state) => {
+      state.settings.jobs = { ...state.settings.jobs, lastRefreshAttemptAt: outcome.at,
+        lastRefreshResult: outcome,
+        ...(outcome.status === 'done' ? { lastRefreshAt: outcome.at } : {}) };
       return state;
     });
     broadcast();
@@ -673,10 +670,14 @@ const refreshJobs = singleFlight(async function refreshJobsOnce() {
     const totalAdded = results.reduce((sum, r) => sum + r.count, 0);
     const summary = results.map((r) => `${r.name || r.companyId} ${r.count} 个${r.error ? `（失败：${r.error}）` : ''}`).join('，');
 
-    if (totalAdded === 0) {
+    if (totalAdded === 0 && outcome.status !== 'done') {
       logger.warn('刷新岗位完成但无数据', { results: results.map((r) => ({ c: r.companyId, err: r.error })) });
       finishTask(id, 'error', '各家适配器均未能抓取到岗位，请稍后重试。');
-      return { mode: 'live', added: 0, message: '未能抓取到岗位，请稍后重试' };
+      return { mode: 'live', added: 0, status: outcome.status, message: '本次没有更新岗位，部分或全部公司刷新失败，已保留原有数据；请稍后重试' };
+    }
+    if (totalAdded === 0) {
+      finishTask(id, 'done', `已完成各家${recruitLabel}岗位查询（近 ${daysBack} 天），当前筛选条件下没有岗位。`);
+      return { mode: 'live', added: 0, status: 'done', message: '当前筛选条件下没有岗位，查询已完成' };
     }
 
     logger.info('刷新岗位全部完成', { total: totalAdded, breakdown: results.map((r) => ({ company: r.name, count: r.count })) });
@@ -982,16 +983,27 @@ app.setPath(
 );
 
 app.whenReady().then(async () => {
+  if (process.platform === 'win32') Menu.setApplicationMenu(null);
   store = new JsonStore(app.getPath('userData'));
   store.init();
+  store.update(state=>{state.meta=migratePromotion(state.meta);return state;});
   wecomNotify.configure(store.get().settings.wecomWebhook);
-  if (store.get().settings.kimiBridgeEnabled !== false) await startKimiBridge();
+  if (!localPreview && store.get().settings.kimiBridgeEnabled !== false) await startKimiBridge();
   await startAgentServer();
   createWindow();
   // 启动时若开启自动刷新且距上次超过 24 小时，后台抓一次岗位（T3.2 #8）
   maybeAutoRefreshJobs();
 
-  ipcMain.handle('state:get', () => store.get());
+  ipcMain.handle('state:get', () => getUiState());
+  ipcMain.handle('promo:dismiss',()=>{store.update(state=>{state.meta=dismissPromotion(state.meta);return state;});broadcast();return getUiState();});
+  ipcMain.handle('feedback:open',(_event,kind)=>openFeedback(kind));
+  ipcMain.handle('feedback:metadata',event=>{assertFeedbackSender(event);return{version:app.getVersion(),kind:feedbackSession.kind,requestId:feedbackSession.requestId,logs:feedbackSession.logs,configured:!!store.get().settings.feedbackEndpoint,pending:feedbackSession.pending?{message:feedbackSession.pending.payload.message,category:feedbackSession.pending.payload.category,includeLogs:!!feedbackSession.pending.payload.logs}:null};});
+  ipcMain.handle('feedback:submit',async(event,input)=>{
+    assertFeedbackSender(event);if(input?.requestId!==feedbackSession.requestId)return{ok:false,code:'feedback-id-conflict'};
+    try{const payload=payloadForFeedback({...input,kind:feedbackSession.kind},{version:app.getVersion(),platform:process.platform,entries:feedbackSession.logs});return await ensureFeedbackClient().send(store.get().settings.feedbackEndpoint,payload);}catch{return{ok:false,code:'feedback-message-required'};}
+  });
+  ipcMain.handle('feedback:receipt',event=>{assertFeedbackSender(event);return ensureFeedbackClient().check(feedbackSession.requestId);});
+  ipcMain.handle('feedback:close',event=>{assertFeedbackSender(event);feedbackWindow.close();return{closed:true};});
   ipcMain.handle('app:data-path', () => app.getPath('userData'));
   ipcMain.handle('resume:save', (_event, resume) => {
     const next = store.update((state) => {
@@ -1143,6 +1155,23 @@ app.whenReady().then(async () => {
   // 一键更新所有支持简历填写的平台（agent.md 核心目标）：遍历 resume 能力非 unsupported 的公司
   // （含腾讯 verified 自动填 + 五家 manual 打开官网手动填）。每家独立 workspace，遇到 login/captcha 停下。
   // 跟随当前 recruitType：校招模式只更校招简历页，社招模式只更社招页。
+  ipcMain.handle('resume:batch-catalog', () => getResumeBatch().catalog());
+  ipcMain.handle('resume:batch-start', (_event, request) => {
+    if (loginManager.isActive()) throw new Error('请先结束当前网页登录、核对或简历批次');
+    return getResumeBatch().start(request);
+  });
+  ipcMain.handle('resume:batch-action', (_event, { action, id } = {}) => {
+    const batch = getResumeBatch();
+    if (action === 'stop') return batch.stop();
+    if (action === 'close') return batch.close(id);
+    if (action === 'retry') {
+      if (loginManager.getStatus().active) throw new Error('请先结束当前内嵌工作区');
+      return batch.retry(id);
+    }
+    if (action === 'confirm-saved') return batch.confirmSaved(id);
+    if (action === 'focus') return batch.focus(id);
+    throw new Error('未知简历批次操作');
+  });
   ipcMain.handle('resume:fill-all', async (_event, request = {}) => {
     const { startCompanyId, resumeSyncGeneration } = typeof request === 'object'
       ? request
@@ -1250,67 +1279,41 @@ app.whenReady().then(async () => {
       throw error;
     }
   });
-  ipcMain.handle('update:check', async () => {
-    // 仓库地址写死（这是捞鱼自己的 APP，不该让用户填）。settings.githubRepo 保留做向后兼容。
-    const repo = (store.get().settings.githubRepo || '').trim() || 'lyzbcy/yijian-toudi';
-    if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) return { configured: false, current: app.getVersion() };
-    const release = await requestJson(`https://api.github.com/repos/${repo}/releases/latest`);
-    return summarizeRelease(release, app.getVersion(), process.platform, process.arch);
+  ipcMain.handle('update:check', async(event,input={}) => {
+    if(event.sender!==window.webContents)throw Error('main-window-required');
+    if(installInProgress)throw Error('update-install-in-progress');
+    return {...await getDesktopUpdater().check({manual:input?.manual!==false}),canInstall:await canInstallDesktopUpdate()};
   });
-  // 一键更新（#3）：下载 zip 到下载目录、校验 SHA256、打开文件夹、弹教学窗。
-  // 刻意不自动替换 .app / 重启——那需要 helper 进程和真实发布环境验收，风险高。
-  // 当前做到「点一下→下载好→打开文件夹→告诉用户怎么替换」，已比「只给 GitHub 链接」友好得多。
-  let downloadInProgress = false;
-  ipcMain.handle('update:download', async (_event, { downloadUrl, downloadName, sha256Url }) => {
-    if (downloadInProgress) return { ok: false, message: '已有下载在进行中' };
-    if (!downloadUrl) return { ok: false, message: '没有找到可下载的安装包' };
-    downloadInProgress = true;
-    const downloadsDir = app.getPath('downloads');
-    const zipPath = path.join(downloadsDir, downloadName || '一键投递-update.zip');
+  ipcMain.handle('update:download', async(event,input={}) => {
+    if(event.sender!==window.webContents)throw Error('main-window-required');
+    if(installInProgress)return {ok:false,message:'update-install-in-progress'};
+    stagedDesktopUpdate=null;
+    try {const result=await getDesktopUpdater().download(input);stagedDesktopUpdate=result;const canInstall=await canInstallDesktopUpdate();if(!canInstall)shell.showItemInFolder(result.file);return {...result,canInstall};}
+    catch(error){return {ok:false,message:error.message};}
+  });
+  ipcMain.handle('update:install-status',async(event)=>{if(event.sender!==window.webContents)throw Error('main-window-required');try{const r=JSON.parse(fs.readFileSync(path.join(updateDirectory(),'install-result.json'),'utf8').replace(/^\uFEFF/,''));return {status:r.status,version:r.version,runningVersion:r.runningVersion,message:r.message,restored:r.restored,restorationDeferred:r.restorationDeferred};}catch{return null;}});
+  ipcMain.handle('update:install',async(event,input={})=>{
+    if(event.sender!==window.webContents)throw Error('main-window-required');
+    if(installInProgress)return {ok:false,message:'update-install-in-progress'};
+    installInProgress=true;let handoff,committed=false;
     try {
-      // 下载 zip
-      await new Promise((resolve, reject) => {
-        const req = net.request({ url: downloadUrl, redirect: 'follow' });
-        const chunks = [];
-        req.on('response', (resp) => {
-          if (resp.statusCode >= 300) { reject(new Error(`下载失败 HTTP ${resp.statusCode}`)); return; }
-          resp.on('data', (c) => chunks.push(c));
-          resp.on('end', () => { fs.writeFileSync(zipPath, Buffer.concat(chunks)); resolve(); });
-        });
-        req.on('error', reject);
-        req.end();
-      });
-      // 校验 SHA256（如果有提供）
-      let shaOk = null;
-      let expectedSha = null;
-      if (sha256Url) {
-        try {
-          expectedSha = await new Promise((resolve, reject) => {
-            const req = net.request({ url: sha256Url, redirect: 'follow' });
-            let txt = '';
-            req.on('response', (r) => r.on('data', (c) => txt += c.toString()).on('end', () => resolve(txt)));
-            req.on('error', reject);
-            req.end();
-          });
-          // SHA256 文件格式通常：「<hash>  <filename>」取前 64 位
-          expectedSha = (expectedSha.match(/[0-9a-fA-F]{64}/) || [])[0];
-          if (expectedSha) {
-            const fileBuf = fs.readFileSync(zipPath);
-            const actualSha = crypto.createHash('sha256').update(fileBuf).digest('hex');
-            shaOk = actualSha === expectedSha.toLowerCase();
-          }
-        } catch (e) { shaOk = null; /* 校验失败不阻塞，只标注 */ }
-      }
-      // 打开下载目录，让用户看到文件
-      shell.showItemInFolder(zipPath);
-      return { ok: true, file: zipPath, shaChecked: shaOk !== null, shaOk, expectedSha };
-    } catch (error) {
-      return { ok: false, message: error.message };
-    } finally {
-      downloadInProgress = false;
-    }
+      if(input.confirmed!==true||input.version!==stagedDesktopUpdate?.version)throw Error('update-confirmation-required');
+      if(loginManager.isActive()||resumeBatch?.isActive()||bossBatchController?.status().running)throw Error('finish-current-workspace-before-update');
+      if(!await canInstallDesktopUpdate())throw Error('installed-writable-version-required');
+      const installer=desktopInstaller();
+      const staged=await installer.validateStagedUpdate(stagedDesktopUpdate,{directory:updateDirectory(),current:app.getVersion(),arch:process.arch});
+      const record=await installer.readInstallation(installationContext());
+      window.webContents.send('update:progress',{phase:'preparing',percent:100});
+      handoff=await installer.launchUpdateHelper({pid:process.pid,version:staged.version,oldVersion:app.getVersion(),root:record.root,oldExe:process.execPath,userData:app.getPath('userData'),file:staged.file,sha256:staged.sha256,desktop:record.desktop,arch:process.arch},updateDirectory());
+      store.flush();await require('electron').session.defaultSession.cookies.flushStore();
+      await handoff.commit();committed=true;
+      window.webContents.send('update:progress',{phase:'installing',percent:100});
+      setImmediate(()=>app.quit());return {ok:true,status:'handoff-committed',version:staged.version};
+    }catch(error){await handoff?.abort().catch(()=>{});window.webContents.send('update:progress',{phase:'failed',message:error.message});return {ok:false,message:error.message};}
+    finally{if(!committed)installInProgress=false;}
   });
   ipcMain.handle('settings:update', async (_event, patch) => {
+    if(patch.feedbackEndpoint!==undefined&&patch.feedbackEndpoint.trim())endpointUrl(patch.feedbackEndpoint.trim());
     const before = store.get().settings;
     const next = store.update((state) => {
       // jobsDaysBack / recruitType 是扁平传入，存到嵌套的 settings.jobs
@@ -1375,6 +1378,7 @@ app.whenReady().then(async () => {
   });
   ipcMain.handle('boss:batch:status', () => bossBatchStatus());
   ipcMain.handle('boss:batch:stop', () => stopBossBatch());
+  ipcMain.handle('boss:batch:resolve', (_event, request) => resolveBossBatch(request));
   ipcMain.handle('boss:batch:start', (_event, request = {}) => startBossBatch(request));
   // —— 账号管理（代投商业化）——
   ipcMain.handle('account:list', () => listBossAccounts());
@@ -1462,20 +1466,21 @@ app.whenReady().then(async () => {
     return { ok: true };
   });
   // 开发日志：返回内存中最近 50 条（见 logger.cjs）
-  ipcMain.handle('log:get', () => logger.recent());
+  ipcMain.handle('log:get', () => diagnosticEntries(logger.recent()));
 
   // 嵌入式登录（见 login-manager.cjs）
-  ipcMain.handle('login:open', (_event, companyId) => resumeSyncExecutionQueue.run(async () => {
+  ipcMain.handle('login:open', (_event, companyId, recruitType = 'social') => resumeSyncExecutionQueue.run(async () => {
     const company = store.get().companies.find((item) => item.id === companyId);
     if (!company) throw new Error('未找到公司');
     logger.info('打开嵌入式登录', { company: company.name, portal: company.portal });
-    return loginManager.openLoginView(company);
+    return loginManager.openLoginView(company, recruitType);
   }));
   ipcMain.handle('login:close', () => resumeSyncExecutionQueue.run(async () => {
     logger.info('关闭嵌入式登录');
     await loginManager.closeLoginView();
     return { ok: true };
   }));
+  ipcMain.handle('login:restart', () => resumeSyncExecutionQueue.run(() => loginManager.restartLogin()));
   ipcMain.handle('login:status', () => ({
     active: loginManager.isActive(),
     companyId: loginManager.getActiveCompanyId(),

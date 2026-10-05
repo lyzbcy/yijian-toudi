@@ -1,0 +1,176 @@
+{
+  "ok": true,
+  "version": "0.5.49",
+  "nativeRun": 37222875741,
+  "sourceCommit": "e6910ccbfd2b33022951c0c3eac4ddc6b09e3146",
+  "sourceExtractedFromExactCommit": true,
+  "comparisonTextNormalization": "CRLF to LF only in extracted Git text files; binary files exact",
+  "macArtifactsReadBack": true,
+  "reports": [
+    {
+      "architecture": "arm64",
+      "artifacts": [
+        {
+          "name": "yijian-toudi-0.5.49-arm64.dmg",
+          "bytes": 126464802,
+          "sha256": "4d44ba6b5aeca11e3a5a7396ae44b90347de91bfe302a6a216b92d456ced69ab"
+        },
+        {
+          "name": "yijian-toudi-0.5.49-arm64.zip",
+          "bytes": 125308999,
+          "sha256": "663d84cc7b301b3ab0930e11863d090c3aed86d9c5cd8c8808fd54fe4cdaf076"
+        }
+      ],
+      "audit": {
+        "version": "0.5.49",
+        "ownFilesMatched": 121,
+        "asarEntries": 1146,
+        "noPrivateDataFiles": true,
+        "noKnownKeyPatterns": true
+      },
+      "manualChecks": 9,
+      "automaticChecks": 10,
+      "profileChecks": 6,
+      "renameAttempts": [
+        {
+          "phase": "before-first-dblclick",
+          "connected": true,
+          "focused": true,
+          "rect": {
+            "x": 575.140625,
+            "y": 7.5,
+            "width": 44.96875,
+            "height": 16
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 720
+          },
+          "parents": [
+            {
+              "tag": "HTML",
+              "scrollTop": 468,
+              "clientHeight": 720,
+              "scrollHeight": 8658
+            }
+          ],
+          "dialogOpen": false
+        },
+        {
+          "phase": "after-first-dblclick",
+          "connected": true,
+          "focused": true,
+          "rect": {
+            "x": 575.140625,
+            "y": 351.5,
+            "width": 44.96875,
+            "height": 16
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 720
+          },
+          "parents": [
+            {
+              "tag": "HTML",
+              "scrollTop": 124,
+              "clientHeight": 720,
+              "scrollHeight": 8658
+            }
+          ],
+          "dialogOpen": true
+        }
+      ],
+      "refreshDetailedFiles": [
+        "job-refresh-ui-0.5.49-LbTxLN\\report.json"
+      ],
+      "adHocSignatureVerified": true,
+      "developerID": false,
+      "notarized": false,
+      "officialPublicUpdateProven": false
+    },
+    {
+      "architecture": "x64",
+      "artifacts": [
+        {
+          "name": "yijian-toudi-0.5.49-x64.dmg",
+          "bytes": 131201004,
+          "sha256": "f159cd451c0edb17ae217714c984aa9b8c0cceadba91fcb5464ea736e9b1261f"
+        },
+        {
+          "name": "yijian-toudi-0.5.49-x64.zip",
+          "bytes": 130070668,
+          "sha256": "193ce7b801a9aeecf3689a742d1f28dea9fb9d7f5e0c4b141d6d6fd1268431c4"
+        }
+      ],
+      "audit": {
+        "version": "0.5.49",
+        "ownFilesMatched": 121,
+        "asarEntries": 1146,
+        "noPrivateDataFiles": true,
+        "noKnownKeyPatterns": true
+      },
+      "manualChecks": 9,
+      "automaticChecks": 10,
+      "profileChecks": 6,
+      "renameAttempts": [
+        {
+          "phase": "before-first-dblclick",
+          "connected": true,
+          "focused": true,
+          "rect": {
+            "x": 575.140625,
+            "y": 475.5,
+            "width": 44.96875,
+            "height": 16
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "parents": [
+            {
+              "tag": "HTML",
+              "scrollTop": 0,
+              "clientHeight": 900,
+              "scrollHeight": 8658
+            }
+          ],
+          "dialogOpen": false
+        },
+        {
+          "phase": "after-first-dblclick",
+          "connected": true,
+          "focused": true,
+          "rect": {
+            "x": 575.140625,
+            "y": 441.5,
+            "width": 44.96875,
+            "height": 16
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "parents": [
+            {
+              "tag": "HTML",
+              "scrollTop": 34,
+              "clientHeight": 900,
+              "scrollHeight": 8658
+            }
+          ],
+          "dialogOpen": true
+        }
+      ],
+      "refreshDetailedFiles": [
+        "job-refresh-ui-0.5.49-1Q7kxG\\report.json"
+      ],
+      "adHocSignatureVerified": true,
+      "developerID": false,
+      "notarized": false,
+      "officialPublicUpdateProven": false
+    }
+  ],
+  "previous47Arm64FailureCauseProven": false
+}

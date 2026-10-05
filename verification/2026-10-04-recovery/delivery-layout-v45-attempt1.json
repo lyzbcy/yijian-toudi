@@ -1,0 +1,26 @@
+{
+  "version": "0.5.45",
+  "ok": false,
+  "packaged": true,
+  "visible": false,
+  "source": "original tool result preserved by handoff summary; no initial success JSON was written",
+  "error": "page.screenshot: Timeout 30000ms exceeded.",
+  "observedSteps": [
+    "taking page screenshot",
+    "disabled all CSS animations",
+    "waiting for fonts to load...",
+    "fonts loaded"
+  ],
+  "stackLocations": [
+    "phase(test/ui-delivery-layout.cjs:37:16)",
+    "test/ui-delivery-layout.cjs:85:11"
+  ],
+  "failedPhase": "agent",
+  "rootCauseProven": false,
+  "retest": {
+    "report": "windows-ui-v45.json",
+    "visible": true,
+    "assertionsReduced": false
+  },
+  "staleSuccessReportNotUsed": true
+}

@@ -5,7 +5,7 @@ const root = path.resolve(__dirname, '..');
 const suites = [
   ['unit', ['--test', ...fs.readdirSync(path.join(root, 'test')).filter(f => f.endsWith('.test.cjs')).map(f => `test/${f}`)]],
   ['check', ['scripts/check-project.cjs']],
-  ...['ui-smoke', 'ui-resume-segments', 'ui-resume-profiles', 'ui-capabilities', 'ui-workspace-exit', 'ui-resume-sync-all', 'ui-resume-sync-cancel', 'ui-reliability']
+  ...['ui-smoke', 'ui-resume-segments', 'ui-resume-profiles', 'ui-capabilities', 'ui-workspace-exit', 'ui-resume-batch', 'ui-batch-actions', 'ui-login-upload', 'ui-live-window-fixes', 'ui-jd-login', 'ui-auth-frame', 'ui-ai-browser', 'ui-ai-preview', 'ui-reliability', 'ui-boss-recovery', 'ui-delivery-layout', 'ui-feedback', 'ui-update-install-status', 'ui-job-refresh-status', 'ui-author-page', 'ui-windows-shell', 'ui-alibaba-staging', 'ui-jd-widgets', 'ui-jd-school-search', 'ui-tencent-campus', 'ui-tencent-widgets', 'ui-state-revision', 'ui-feishu-control-guards']
     .map(name => [name, [`test/${name}.cjs`]])
 ];
 const results = [];
@@ -14,7 +14,9 @@ for (const [name, args] of suites) {
   console.log(`运行后台测试：${name}`);
   const start = Date.now();
   const result = spawnSync(process.execPath, args, {
-    cwd: root, windowsHide: true, timeout: 180000, encoding: 'utf8',
+    // Ten loops include real modal input and 30 persisted profile operations.
+    // Each UI action stays bounded at 15s; retain failures in the suite report.
+    cwd: root, windowsHide: true, timeout: name === 'ui-reliability' ? 300000 : 180000, encoding: 'utf8',
     env: { ...process.env, YIJIAN_BACKGROUND_TEST: '1' }
   });
   fs.writeFileSync(path.join(root, 'test-output', `background-${name}.log`), `${result.stdout || ''}${result.stderr || ''}${result.error?.message || ''}`);

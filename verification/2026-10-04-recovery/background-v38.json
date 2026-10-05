@@ -1,0 +1,120 @@
+{
+  "at": "2026-10-04T07:07:32.425Z",
+  "ok": true,
+  "results": [
+    {
+      "name": "unit",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 5628
+    },
+    {
+      "name": "check",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 296
+    },
+    {
+      "name": "ui-smoke",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 10871
+    },
+    {
+      "name": "ui-resume-segments",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 62513
+    },
+    {
+      "name": "ui-resume-profiles",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 29687
+    },
+    {
+      "name": "ui-capabilities",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 6294
+    },
+    {
+      "name": "ui-workspace-exit",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 3044
+    },
+    {
+      "name": "ui-resume-batch",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 50236
+    },
+    {
+      "name": "ui-batch-actions",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 2045
+    },
+    {
+      "name": "ui-login-upload",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 17675
+    },
+    {
+      "name": "ui-live-window-fixes",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 22487
+    },
+    {
+      "name": "ui-jd-login",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 12273
+    },
+    {
+      "name": "ui-auth-frame",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 4032
+    },
+    {
+      "name": "ui-ai-browser",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 16928
+    },
+    {
+      "name": "ui-ai-preview",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 19957
+    },
+    {
+      "name": "ui-reliability",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 65685
+    },
+    {
+      "name": "ui-boss-recovery",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 5300
+    },
+    {
+      "name": "ui-delivery-layout",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 36783
+    },
+    {
+      "name": "ui-feedback",
+      "ok": true,
+      "exitCode": 0,
+      "ms": 9252
+    }
+  ]
+}

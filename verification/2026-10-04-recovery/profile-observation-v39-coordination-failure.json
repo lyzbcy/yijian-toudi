@@ -1,0 +1,10 @@
+{
+  "version": "0.5.39",
+  "packaged": true,
+  "promptStubbed": false,
+  "phase": "input",
+  "parentTestPassed": false,
+  "reason": "Independent observer acknowledgement did not arrive within 60 seconds; parent closed its isolated app.",
+  "productFailureConfirmed": false,
+  "independentProductAcceptance": false
+}
