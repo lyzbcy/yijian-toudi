@@ -24,6 +24,10 @@ Function .onInit
  IfSilent silent interactive
  silent:
   ${GetParameters} $R0
+  ; NSIS consumes /D= before GetParameters. Forward the parsed install directory
+  ; as the final, unquoted argument so the backend preserves the chosen path.
+  StrCmp $INSTDIR "" +2
+  StrCpy $R0 "$R0 /D=$INSTDIR"
   ExecWait '$\"$PLUGINSDIR\backend.exe$\" $R0' $R1
   SetErrorLevel $R1
   Goto done

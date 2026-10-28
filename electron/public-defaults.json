@@ -1,4 +1,4 @@
 {
   "schema": 1,
-  "feedbackEndpoint": ""
+  "feedbackEndpoint": "https://111.231.25.152:8443/v1/feedback"
 }
