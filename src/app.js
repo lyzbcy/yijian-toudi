@@ -4,7 +4,7 @@
   const pageMeta = {
     jobs: ['JOB BOARD', '招聘项目', '把不同公司的岗位放在一张清单里比较。'],
     cart: ['CART', '投递购物车', '挑好的岗位放这里，按公司分组，检查投递限制后一键投递。'],
-    applied: ['APPLIED', '已投递', '追踪已投岗位的状态变化。'],
+    applied: ['APPLICATIONS', '投递管理', '管理待投递、笔试、面试与Offer；官网成功回执独立保留。'],
     resume: ['MY RESUME', '我的简历', '维护一份完整信息，按不同平台字段映射。'],
     inbox: ['RECRUITING INBOX', '招聘信息', '统一查看面试、测评、Offer 和流程通知。'],
     automation: ['AUTOMATION', '自动化中心', '看清每一次自动化执行到了哪里。'],
@@ -16,6 +16,9 @@
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   let state = null;
+  let resumeAutosave = null;
+  let platformCompanyId = '';
+  let platformRenderKey = '';
   let activeFilter = 'all';
   let activeStage = '全部';
   let selectedMessageId = null;
@@ -134,7 +137,7 @@ async function updateKimiBridgeStatus() {
   try {
     const status = await window.oneClick.kimiStatus();
     let text = status.running
-      ? (status.connected ? '已连接（扩展在线）' : '服务已启动，等待扩展连接')
+      ? (status.connected ? '已连接 WebBridge（HTTP 客户端）' : '未连通 WebBridge：请检查本机 daemon 与浏览器扩展')
       : '未启动';
     if (status.connected && status.boundAccount) text += ` · 绑定账号 ${status.boundAccount}`;
     $('#kimiBridgeStatus').textContent = text;
@@ -146,14 +149,21 @@ async function updateBossBatchStatus() {
     const running = status.running;
     $('#bossBatchStartButton').hidden = running;
     $('#bossBatchStopButton').hidden = !running;
+    $('#bossBatchDryRunButton').disabled = running || status.requiresReview;
+    $('#bossBatchStartButton').disabled = status.requiresReview;
+    $('#bossBatchResolveButton').hidden = running || !status.requiresReview;
+    const count = status.applied?.length || 0;
+    const previewCount = status.previewed?.length || 0;
     if (running) {
-      $('#bossBatchStatusLine').textContent = `运行中：已投 ${status.applied.length} 笔`;
+      $('#bossBatchStatusLine').textContent = `${status.stopping ? '停止中，等待在途操作结束' : '运行中'}：阶段 ${status.phase || 'running'}，已沟通 ${count}/${status.target || 0} 次，演练预览 ${previewCount} 笔；剩余约 ${Math.ceil(Math.max(0,(status.target || 0)-(status.dryRun ? previewCount : count))*45/60)}–${Math.ceil(Math.max(0,(status.target || 0)-(status.dryRun ? previewCount : count))*75/60)} 分钟（含页面等待的估算）`;
     } else {
-      const count = status.applied.length;
-      $('#bossBatchStatusLine').textContent = count
-        ? `上次批量投出 ${count} 笔（${status.stopReason || '完成'}）。`
+      $('#bossBatchStatusLine').textContent = status.stopReason
+        ? `上次批量沟通 ${count} 次（简历送达未核实），演练预览 ${previewCount} 笔（${status.stopReason}）。`
         : '未运行。';
+      if (status.requiresReview) $('#bossBatchStatusLine').textContent += ' 需要先核对上次异常；结果不明岗位不会自动重发。';
     }
+    const progress = $('#operationProgress');
+    if (progress) progress.textContent = running ? $('#bossBatchStatusLine').textContent : (status.stopReason ? `Boss 已停止：${status.stopReason}，确认沟通 ${count} 次；简历送达未核实` : 'Boss 当前无批量任务');
   } catch {}
 }
 // 账号下拉（代投商业化）：渲染 accounts + activeAccountId；选中即切换
@@ -182,7 +192,7 @@ async function updateBossAccounts() {
 
     $('#jobCount').textContent = state.jobs.length;
     $('#cartCount').textContent = (state.cart || []).length;
-    $('#appliedCount').textContent = (state.applied || []).length;
+    $('#appliedCount').textContent = (state.careerApplications || []).filter(r=>r.accountId===(state.activeAccountId||'default') && r.profileId===(state.resume?.activeProfileId||'default')).length;
     $('#resumeBadge').textContent = `${state.resume.completion || 0}%`;
     $('#unreadCount').textContent = unread;
     $('#heroJobCount').textContent = state.jobs.length;
@@ -196,9 +206,23 @@ async function updateBossAccounts() {
     $('#resumeCompletion').textContent = `${state.resume.completion || 0}%`;
     $('#resumeRing').style.setProperty('--percent', `${state.resume.completion || 0}%`);
     $('#emailStatus').textContent = state.settings.email.connected ? '已连接' : '未连接';
-    $('#emailAddress').value = state.settings.email.address || '';
+    $('#emailAddress').value = state.settings.email.imapAddress || state.settings.email.address || '';
+    const email=state.settings.email;
+    $('#browserEmailInfo').textContent = email.method==='browser' ? (
+      email.browserStatus==='connected' ? `已复用网页登录：${email.address}。最近扫描 ${email.browserScanned||0} 封${email.browserPartial?'（仅最近列表，非全邮箱）':''}；上次同步 ${email.lastSyncAt?new Date(email.lastSyncAt).toLocaleString('zh-CN'):'—'}。保留邮箱同步页以便自动读取。` :
+      email.browserStatus==='tab-required' ? '邮箱同步页已关闭，点击下方按钮重新连接；后台不会自动弹出新页。' : '已打开邮箱页，请完成扫码登录后点击下方按钮继续同步。'
+    ) : '点击后复用浏览器已有登录；未登录时扫码。请先连接浏览器扩展。IMAP仅作为高级选项。';
+    $('#emailReadBody').checked = state.settings.email.readBody === true;
+    $('#emailAutoSync').checked = state.settings.email.autoSync === true;
+    $('#emailImportProgress').checked=email.importProgress===true;
+    $('#emailScanLimit').value=String(email.scanLimit||200);
+    const mailboxAccounts=(email.accounts||[]).filter(a=>a.accountId===(state.activeAccountId||'default')&&a.profileId===(state.resume?.activeProfileId||'default'));
+    $('#mailboxAccounts').innerHTML=mailboxAccounts.map(a=>`<article class="mailbox-account"><strong>${escapeHtml(a.address)} · ${a.provider==='jiangnan'?'江南大学':'QQ'}</strong><p>${a.connected?'已连接':escapeHtml(a.status||'未连接')} · 扫描 ${a.scanned??'—'} 封${a.partial?'（局部列表）':''} · 同步 ${a.lastSyncAt?new Date(a.lastSyncAt).toLocaleString('zh-CN'):'—'}</p><button data-mailbox-sync="${escapeHtml(a.id)}">继续同步此邮箱</button></article>`).join('');
+
     $('#autoUpdate').checked = Boolean(state.settings.autoCheckUpdates);
+    $('#feedbackEndpoint').value=state.settings.feedbackEndpoint||'';
     $('#apiEnabled').checked = Boolean(state.settings.apiEnabled);
+    $('#diagnosticLogging').checked = state.settings.diagnosticLogging === true;
     $('#apiPort').value = state.settings.apiPort;
     $('#apiAddress').textContent = `127.0.0.1:${state.settings.apiPort}`;
     $('#jobsDaysBack').value = state.settings.jobs?.daysBack ?? 30;
@@ -357,8 +381,8 @@ async function updateBossAccounts() {
     } else {
       $('#messageList').innerHTML = messages.map((message) => `<article class="message-item ${message.unread ? 'unread' : ''} ${message.id === selectedMessageId ? 'active' : ''}" data-message="${message.id}">
         <span class="message-company">${escapeHtml(message.company.slice(0, 1))}</span>
-        <div><h4>${escapeHtml(message.subject)}</h4><p>${escapeHtml(message.company)} · ${escapeHtml(message.preview)}</p></div>
-        <div class="message-side"><time>${escapeHtml(message.receivedAt.slice(5))}</time><span class="stage-pill">${escapeHtml(message.stage)}</span></div>
+        <div><h4>${escapeHtml(message.subject)}</h4><p>${escapeHtml(message.company)} · ${escapeHtml(message.mailbox||'未标注邮箱')} · ${escapeHtml(message.preview)}</p></div>
+        <div class="message-side"><time>${escapeHtml(message.receivedAtPrecision==='day' ? (message.displayDate+'（日期）') : message.receivedAt ? message.receivedAt.slice(5) : '日期不详')}</time><span class="stage-pill">${escapeHtml(message.stage)}</span></div>
       </article>`).join('');
     }
     if (selectedMessageId) showMessage(selectedMessageId, false);
@@ -375,7 +399,7 @@ async function updateBossAccounts() {
     </div>
     <div class="message-preview">${escapeHtml(message.preview)}</div>
     <div class="detail-meta">
-      <div><span>收到时间</span><b>${escapeHtml(message.receivedAt)}</b></div>
+      <div><span>收到时间</span><b>${escapeHtml(message.receivedAtPrecision==='day' ? (message.displayDate+'（仅日期，非精确收到时间）') : message.receivedAt || '日期不详')}</b></div>
       <div><span>数据来源</span><b>${escapeHtml(message.source)}</b></div>
       <div><span>分类结果</span><b>${escapeHtml(message.stage)}</b></div>
     </div>`;
@@ -384,10 +408,10 @@ async function updateBossAccounts() {
 
   function renderTasks() {
     const labels = { jobs: '⌁', browser: '◎', email: '✉', system: '✦' };
-    const statusLabels = { running: '执行中', waiting: '等你确认', done: '已完成', error: '需处理' };
+    const statusLabels = { running: '执行中', waiting: '等你确认', done: '已完成', error: '需处理', interrupted: '已中断，请核对' };
     $('#taskList').innerHTML = state.tasks.map((task) => `<article class="task-item">
       <span class="task-type">${labels[task.type] || '↻'}</span>
-      <div><h4>${escapeHtml(task.title)}</h4><p>${escapeHtml(task.detail || '')}${task.currentJob ? `<em class="task-current-job">▸ ${escapeHtml(task.currentJob)}</em>` : ''}</p></div>
+      <div><h4>${escapeHtml(task.title)}</h4><p>${task.status === 'interrupted' ? '上次记录：' : ''}${escapeHtml(task.detail || '')}${task.currentJob ? `<em class="task-current-job">▸ ${escapeHtml(task.currentJob)}</em>` : ''}</p>${task.status === 'interrupted' ? '<small class="task-recovery-note">上次运行已结束，本轮未自动续做；原网页和操作结果需要重新核对。</small>' : ''}</div>
       <div class="task-progress"><i style="width:${Number(task.progress) || 0}%"></i></div>
       <span class="task-status ${task.status}">${statusLabels[task.status] || task.status}</span>
     </article>`).join('');
@@ -397,7 +421,7 @@ async function updateBossAccounts() {
   function renderRefreshProgress() {
     const task = state.tasks.find((t) => t.type === 'jobs');
     const bar = $('#refreshProgress');
-    if (!task || task.status === 'done' || task.status === 'error') {
+    if (!task || task.status !== 'running') {
       bar.classList.add('hidden');
       return;
     }
@@ -501,10 +525,58 @@ async function updateBossAccounts() {
   }
 
   // 已投递岗位
+  let careerSelectedId='',careerDetailSignature='';
+  const careerDate=value=>{const d=new Date(value);return Number.isFinite(d.getTime())?d.toLocaleString('zh-CN',{timeZone:'Asia/Shanghai',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}):'时间待确认';};
+  function careerTaskCard(task){
+    const e=escapeHtml;return `<button class="career-task ${e(task.tone)} ${careerSelectedId===task.id?'is-selected':''}" data-career-detail="${e(task.id)}"><span class="career-avatar">${e(task.company.slice(0,1))}</span><span class="career-task-body"><strong>${e(task.company)} · ${e(task.title)}</strong><small>${e(task.role)} · ${e(task.source)}${task.stale?' · 历史通知需核对':''}</small></span><span class="career-task-time"><b>${e(task.urgency)}</b><small>${task.dueAt?e(careerDate(task.dueAt)):task.status==='pending'?'补充时间':e(task.status==='done'?'已完成':'已忽略')}</small></span><span class="career-task-arrow" aria-hidden="true">↗</span></button>`;
+  }
+  function renderCareerDetail(board){
+    const e=escapeHtml,record=board.records.find(r=>r.id===careerSelectedId),host=$('#careerDetail');
+    if(!record){careerSelectedId='';careerDetailSignature='';host.innerHTML='<div class="career-detail-empty"><span>↗</span><h3>看清下一步</h3><p>点击项目或待办，查看进展、安排时间和邮件证据。</p></div>';return;}
+    const task=board.tasks.find(t=>t.id===record.id),history=[...(record.history||[])].reverse();
+    const ids=new Set(history.map(h=>h.mailId).filter(Boolean)),mail=(state.messages||[]).filter(m=>ids.has(m.id)&&window.CareerBoard.visible(state,m)&&m.mailbox===record.mailbox);
+    // Unrelated state broadcasts must not destroy an in-progress schedule edit.
+    const signature=JSON.stringify([record,task,mail]);if(signature===careerDetailSignature)return;careerDetailSignature=signature;
+    host.innerHTML=`<div class="career-section-head"><h3>事项详情</h3><button class="ghost-button" data-career-close aria-label="关闭事项详情">×</button></div><div class="career-detail-company"><span class="career-avatar">${e(record.company.slice(0,1))}</span><div><h2>${e(record.company)}</h2><p>${e(record.role)}</p></div></div><span class="career-badge">${e(record.stage)}</span>${record.rolePending?'<span class="career-badge unknown">岗位待确认</span>':''}
+      ${task?`<div class="career-deadline ${e(task.tone)}"><small>${e(task.title)} · ${e(task.source)}</small><strong>${e(task.dueAt?careerDate(task.dueAt):'时间待确认')}</strong><span>${e(task.status==='pending'?task.urgency:task.status==='done'?'已完成':'已忽略')}</span></div><div class="career-detail-actions"><button class="primary-button" data-career-task-status="${task.status==='pending'?'done':'pending'}">${task.status==='pending'?'✓ 标记完成':'恢复待办'}</button>${task.status==='pending'?'<button class="ghost-button" data-career-task-status="dismissed">忽略</button>':''}</div><form id="careerTodoForm"><label>待办事项<input id="careerTodoTitle" maxlength="200" required value="${e(task.title)}"></label><label>时间（北京时间）<input type="datetime-local" id="careerTodoDue" value="${task.dueAt?new Date(Date.parse(task.dueAt)+28800000).toISOString().slice(0,16):''}"></label><div class="career-detail-actions"><button class="ghost-button" type="submit">保存安排</button><button class="ghost-button" type="button" data-career-clear-due>清除时间</button></div></form>`:'<p class="career-muted">该阶段没有待办，历史记录保留。</p>'}
+      ${task?.timeConflict?'<p class="career-muted">邮件包含多个不同时间，保留待核对，未覆盖手动安排。</p>':''}${task?.historicalDueAt?`<p class="career-muted">历史邮件时间：${e(careerDate(task.historicalDueAt))}，不自动作为当前紧急截止。</p>`:''}${task?.evidence?`<p class="career-muted">时间依据：${e(task.evidence)}</p>`:''}
+      ${task?.links?.length?`<h4>相关链接</h4><div class="career-related-links">${task.links.map((l,i)=>`<button class="ghost-button" data-career-link="${i}">${e(l.label)}<small>${e(new URL(l.url).hostname)} ↗</small></button>`).join('')}</div>`:''}
+      ${record.officialStatus?`<p class="career-muted">官网原文：${e(record.officialStatus.rawStatus)} · 核对于 ${e(careerDate(record.officialStatus.observedAt))}（仅记录官网标签，非测评完成证明）</p>`:''}<h4>进度时间线</h4><ol class="career-timeline">${history.map(h=>`<li><strong>${e(h.stage)}</strong><small>${e(careerDate(h.at))} · ${e(h.source==='manual'?'手动记录':h.source==='mail-correction'?'邮件分类修正':h.source==='mail'?'来自邮箱':h.source==='agent-receipt'?'Agent回执':'进度记录')}</small></li>`).join('')||'<li>暂无阶段历史</li>'}</ol><details class="career-evidence"><summary>邮件证据 · ${mail.length}</summary>${mail.map(m=>`<article><strong>${e(m.subject)}</strong><p>${e(m.preview||'列表无预览')}</p><small>${e(careerDate(m.receivedAt))}</small></article>`).join('')||'<p>当前没有可回读的邮件证据。</p>'}<p>来源邮箱：${e(record.mailbox||'未绑定')}</p></details><p class="career-muted">${e(record.note||'')}</p><button class="ghost-button" data-career-edit="${e(record.id)}">编辑 / 确认岗位</button><p class="career-detail-footnote">完成待办不会更改投递阶段。时间与链接优先使用已补全的正文信息；手动安排优先。</p>`;
+  }
+  function renderCareer() {
+    if(state.careerRefresh?.accountId===(state.activeAccountId||'default')&&state.careerRefresh?.profileId===(state.resume.activeProfileId||'default'))$('#careerRefreshStatus').textContent=new Date(state.careerRefresh.at).toLocaleString('zh-CN')+' · '+state.careerRefresh.summary;else $('#careerRefreshStatus').textContent='刷新将同步邮箱并核对已支持官网；未覆盖项目单独列为待核对。';
+    const stages=window.CareerBoard.stages,board=window.CareerBoard.build(state),all=board.records,e=escapeHtml;
+    const currentMailbox=$('#careerMailbox').value;$('#careerMailbox').innerHTML='<option value="">默认邮箱</option>'+(state.settings.email.accounts||[]).filter(a=>a.accountId===(state.activeAccountId||'default')&&a.profileId===(state.resume?.activeProfileId||'default')).map(a=>`<option value="${e(a.address)}">${e(a.address)}</option>`).join('');$('#careerMailbox').value=currentMailbox;
+    const filter=$('#careerFilter').value,rows=all.filter(r=>!filter||r.stage===filter);
+    $('#page-applied .career-main').classList.toggle('career-stage-focused',!!filter);$('#careerTodoHeading').textContent=filter?filter+'待办':'紧急待办';if(filter&&!rows.some(r=>r.id===careerSelectedId))careerSelectedId='';
+    const node=(s,i)=>`<button class="career-stage stage-${i} ${filter===s?'selected':''}" data-career-stage="${e(s)}" aria-pressed="${filter===s}"><span class="career-stage-icon" aria-hidden="true">${['↗','✎','◈','⚑'][i]||'•'}</span><span><strong>${board.counts[s]}</strong><small>${e(s)}</small></span></button>`;
+    $('#careerPipeline').innerHTML='<div class="career-stage-track">'+['已投递','笔试中','面试中','Offer'].map(node).join('')+'</div><div class="career-pipeline-footer"><button data-career-stage="" aria-pressed="'+(!filter)+'">全部项目 '+all.length+'</button>'+['待投递','已结束','已撤回'].map(s=>`<button data-career-stage="${e(s)}" aria-pressed="${filter===s}">${e(s)} ${board.counts[s]}</button>`).join('')+'</div>';
+    const selectedTasks=board.tasks.filter(t=>!filter||t.stage===filter),pending=selectedTasks.filter(t=>t.status==='pending'),done=selectedTasks.filter(t=>t.status!=='pending');
+    $('#careerTodoCount').textContent=pending.length+' 项';$('#careerDoneCount').textContent=done.length;
+    $('#careerTodos').innerHTML=pending.map(careerTaskCard).join('')||'<div class="career-empty"><strong>当前没有待办</strong><p>添加投递或同步邮箱后，可一键整理下一步。</p></div>';
+    $('#careerDoneTodos').innerHTML=done.map(careerTaskCard).join('')||'<p class="career-muted">尚无已处理事项</p>';
+    $('#careerListHeading').textContent=(filter||'全部项目')+' · '+rows.length+' 个项目';
+    $('#careerList').innerHTML=rows.length?rows.map(r=>`<article class="career-record"><button class="career-project-open" data-career-detail="${e(r.id)}"><span class="career-avatar">${e(r.company.slice(0,1))}</span><span><strong>${e(r.company)}</strong><small>${e(r.role)}${r.rolePending?' · 待确认':''}${r.agentApplicationIds?.length?' · '+escapeHtml(r.applicationRoute?applicationRouteLabel(r.applicationRoute):'Agent历史回执'):''}</small></span><span aria-hidden="true">↗</span></button><div class="career-project-actions"><button class="ghost-button" data-career-edit="${e(r.id)}">编辑岗位</button><select data-career-id="${e(r.id)}" aria-label="${e(r.company+' '+r.role+' 阶段')}">${stages.map(s=>`<option ${s===r.stage?'selected':''}>${s}</option>`).join('')}</select></div></article>`).join(''):'<div class="career-empty">该阶段暂无项目</div>';
+    const x=state.careerMailSync;
+    $('#careerSyncInfo').textContent=x?`上次邮件同步：新增 ${x.created||0} 条，更新 ${x.updated} 条，分类纠正 ${x.corrected||0} 条，待人工匹配 ${x.unmatched} 封。自动匹配不覆盖旧邮件或回退已进展阶段。`:'邮箱连接后可同步阶段；手动记录不等于官网投递成功。';
+    const review=(state.careerMailReview||[]).filter(r=>r.accountId===(state.activeAccountId||'default')&&r.profileId===(state.resume?.activeProfileId||'default'));
+    $('#careerMailReview').innerHTML=review.length?'<h4>待核对邮件（不自动推进）</h4>'+review.map(m=>`<p><strong>${escapeHtml(m.company)}</strong> · ${escapeHtml(m.subject)}<br><small>${escapeHtml(m.reason)} · ${escapeHtml(m.mailbox)}</small></p>`).join(''):'';
+
+    renderCareerDetail(board);
+  }
+  const applicationRouteLabel=route=>({'chat-only':'仅沟通','platform-resume':'平台简历送达','employer-ats':'企业网申成功',unknown:'历史/未分类'})[route]||'历史/未分类';
+  function renderRouteCounts(items){
+    const sent=items.filter(i=>i.status==='submitted'),count=r=>sent.filter(i=>(i.applicationRoute||'unknown')===r).length;
+    const chats=items.filter(i=>(i.interactions||[]).some(e=>e.event==='chat-started')).length;
+    $('#careerRouteCounts').innerHTML=[['Agent已沟通',chats],['平台简历送达',count('platform-resume')],['企业网申成功',count('employer-ats')],['历史/未分类',count('unknown')]].map(([label,n])=>`<span><b>${n}</b> ${label}</span>`).join('');
+  }
   function renderApplied() {
+    renderCareer();
     const applied = state.applied || [];
+    const agentItems = (state.agentApplications?.items || []).filter(i=>window.CareerBoard.visible(state,i));
+    renderRouteCounts(agentItems);
     const list = $('#appliedList');
-    if (!applied.length) {
+    if (!applied.length && !agentItems.length) {
       list.innerHTML = '<div class="empty-state"><span>📋</span><h3>还没有投递记录</h3><p>从「投递购物车」一键投递后，已投岗位会显示在这里。</p></div>';
       return;
     }
@@ -516,8 +588,22 @@ async function updateBossAccounts() {
         <div><strong>${escapeHtml(job.title)}</strong><span>${escapeHtml(company.name)} · ${escapeHtml(job.city || '')}</span></div>
         <span class="stage-pill">${escapeHtml(job.applyStatus || '已投递')}</span>
         <span class="job-time">${escapeHtml(job.appliedAt || '')}</span>
+        <button class="ghost-button" data-track-job="${escapeHtml(job.id)}">加入管理</button>
       </div>`;
     }).join('');
+    if (agentItems.length) {
+      const labels = { queued: '待处理', 'in-progress': '进行中', ready: '待提交', submitting: '提交待核验',
+        'submission-unknown': '提交结果未知', submitted: '已投递', 'waiting-login': '待登录',
+        'waiting-verification': '待验证', 'waiting-materials': '待资料', 'waiting-review': '待复核', skipped: '已跳过' };
+      list.innerHTML += '<h3>Agent 申请与沟通账本</h3><p>按账号和简历隔离；分别记录沟通、平台送达和企业网申，来源入库不计投递。</p>' + agentItems.map(item => `
+        <div class="cart-item applied-item" data-agent-application="${escapeHtml(item.id)}">
+          <div><strong>${escapeHtml(item.company)} · ${escapeHtml(item.role)}</strong>
+          <span>账号 ${escapeHtml(item.accountId)} / 简历 ${escapeHtml(item.profileId)}</span>
+          <span>${escapeHtml((item.missingFields || []).map(f => f.field).join('、'))}</span>
+          ${item.receipt ? `<span>回执：${escapeHtml(item.receipt.text)} · ${escapeHtml(item.receipt.observedAt)}</span>` : ''}</div>
+          <span class="stage-pill">${escapeHtml(item.status==='submitted'?applicationRouteLabel(item.applicationRoute):labels[item.status] || item.status)}</span><span class="career-route-label">${escapeHtml(applicationRouteLabel(item.applicationRoute))}${item.interactions?.some(e=>e.event==='chat-started')?' · 已沟通':''}</span>
+        </div>`).join('');
+    }
   }
 
   function pathGet(object, path) {
@@ -549,14 +635,17 @@ async function updateBossAccounts() {
       { key: 'school', label: '学校', placeholder: '学校名称', type: 'input' },
       { key: 'department', label: '学院', placeholder: '学院/系名称（腾讯/京东校招要）', type: 'input' },
       { key: 'major', label: '专业', placeholder: '专业名称', type: 'input' },
+      { key: 'majorCategory', label: '专业类别', placeholder: '官网完整路径：一级 / 二级；不确定留空', type: 'input' },
       { key: 'degree', label: '学历', type: 'select', options: ['', '大专', '本科', '硕士', '博士', 'MBA'], optionLabels: ['请选择', '大专', '本科', '硕士', '博士', 'MBA'] },
       { key: 'degreeName', label: '学位', placeholder: '学士/硕士/博士（≠学历）', type: 'input' },
+      { key: 'isHighestDegree', label: '是否最高学历', type: 'select', options: ['', 'true', 'false'], optionLabels: ['未回答', '是', '否'] },
+      { key: 'isDoubleDegree', label: '是否双学位', type: 'select', options: ['', 'true', 'false'], optionLabels: ['未回答', '是', '否'] },
       { key: 'rank', label: '成绩/排名', placeholder: '例如：前 10% / 3/120', type: 'input' },
       { key: 'gpa', label: 'GPA', placeholder: '如 3.8（腾讯/京东校招要）', type: 'input' },
       { key: 'gpaBase', label: 'GPA满分', placeholder: '如 4.0（与 GPA 配对）', type: 'input' },
       { key: 'laboratory', label: '实验室', placeholder: '选填（腾讯/京东校招硕博）', type: 'input' },
-      { key: 'start', label: '入学时间', type: 'month' },
-      { key: 'end', label: '毕业时间', type: 'month' },
+      { key: 'start', label: '入学时间', type: 'resumeDate' },
+      { key: 'end', label: '毕业时间', type: 'resumeDate' },
       { key: 'isFullTime', label: '全日制', type: 'select', options: ['', 'true', 'false'], optionLabels: ['未回答', '是', '否'] },
       { key: 'isUnified', label: '统招', type: 'select', options: ['', 'true', 'false'], optionLabels: ['不填写', '是', '否'] },
       { key: 'is211', label: '双一流', placeholder: '是/否/自动判定', type: 'input' },
@@ -570,8 +659,8 @@ async function updateBossAccounts() {
       { key: 'department', label: '部门', placeholder: '所在部门', type: 'input' },
       { key: 'role', label: '职位', placeholder: '职位名称', type: 'input' },
       { key: 'level', label: '职级', placeholder: '如 P6/T5（选填）', type: 'input' },
-      { key: 'start', label: '开始时间', type: 'month' },
-      { key: 'end', label: '结束时间', placeholder: '至今', type: 'month' },
+      { key: 'start', label: '开始时间', type: 'resumeDate' },
+      { key: 'end', label: '结束时间', type: 'resumeDate' },
       { key: 'employmentType', label: '类型', type: 'select', options: ['全职', '实习', '兼职', '外包'], optionLabels: ['全职', '实习', '兼职', '外包'] },
       { key: 'isOutsource', label: '是否外包/派遣', type: 'select', options: ['', 'true', 'false'], optionLabels: ['不填写', '是', '否'] },
       { key: 'description', label: '工作描述', placeholder: '负责什么、如何推进、产生什么结果', type: 'textarea', rows: 4, span: true },
@@ -583,8 +672,8 @@ async function updateBossAccounts() {
     projects: [
       { key: 'name', label: '项目名称', placeholder: '项目名称', type: 'input' },
       { key: 'role', label: '担任角色', placeholder: '例如：独立开发', type: 'input' },
-      { key: 'start', label: '开始时间', type: 'month' },
-      { key: 'end', label: '结束时间', type: 'month' },
+      { key: 'start', label: '开始时间', type: 'resumeDate' },
+      { key: 'end', label: '结束时间', type: 'resumeDate' },
       { key: 'techStack', label: '技术栈', placeholder: 'React,Python,Unity…', type: 'input', span: true },
       { key: 'description', label: '项目背景', placeholder: '项目解决的痛点、背景', type: 'textarea', rows: 3, span: true },
       { key: 'contribution', label: '个人贡献', placeholder: '你具体做了什么（校招要求与项目背景拆分）', type: 'textarea', rows: 3, span: true },
@@ -610,6 +699,11 @@ async function updateBossAccounts() {
   };
 
   const GROUP_LABELS = { education: '教育经历', experience: '工作经历', projects: '项目经历', family: '家庭成员', games: '游戏经历' };
+
+  function formatResumePathEditorValue(name, value) {
+    if (Array.isArray(value) && (name === 'basic.nativePlace' || /^education\.\d+\.majorCategory$/.test(name))) return value.map(part => String(part).trim()).join(' / ');
+    return value ?? '';
+  }
 
   // 简历一键更新能力清单：展示每家公司简历能力（verified/manual/unsupported）
   async function renderResumeSyncStatus() {
@@ -707,7 +801,10 @@ async function updateBossAccounts() {
       return `<div class="login-status-item" title="${escapeHtml(complianceTitle)}">
         <span class="login-status-logo" style="background:${escapeHtml(c.color || '#999')}">${escapeHtml(c.short || c.name.slice(0, 1))}</span>
         <div class="login-status-body"><b>${escapeHtml(c.name)}</b><small>${manualNote}</small></div>
-        <button class="login-status-action" data-login-company="${escapeHtml(c.id)}">打开登录页</button>
+        ${c.id === 'jd'
+          ? `<button class="login-status-action" data-login-company="jd" data-login-track="campus">校招登录</button>
+             <button class="login-status-action" data-login-company="jd" data-login-track="social">社招登录</button>`
+          : `<button class="login-status-action" data-login-company="${escapeHtml(c.id)}">打开登录页</button>`}
       </div>`;
     }).join('');
     list.innerHTML = items;
@@ -716,7 +813,7 @@ async function updateBossAccounts() {
       btn.addEventListener('click', async () => {
         const companyId = btn.dataset.loginCompany;
         const company = companies.find((c) => c.id === companyId);
-        await openEmbeddedLogin(companyId);
+        await openEmbeddedLogin(companyId, btn.dataset.loginTrack || 'social');
       });
     });
   }
@@ -744,15 +841,15 @@ async function updateBossAccounts() {
     if (!box) return;
     const steps = [
       { key: 'jobs', label: '抓取岗位', hint: '点上方「刷新全部岗位」横向对比大厂', done: state.jobs.length > 0 },
-      { key: 'resume', label: '填写简历', hint: '在「我的简历」维护一份完整信息', done: (state.resume.completion || 0) >= 30 },
+      { key: 'resume', label: '填写简历', hint: '在「我的简历」填写姓名、联系方式及经历', done: (state.resume.completion || 0) >= 30 && !!String(state.resume.basic?.name || '').trim() && !!(String(state.resume.basic?.phone || '').trim() || String(state.resume.basic?.email || '').trim()) },
       { key: 'email', label: '连接邮箱', hint: '在「公司与邮箱」连 QQ 邮箱收面试通知', done: state.settings.email?.connected },
-      { key: 'agent', label: '接入 Agent（可选）', hint: '让 AI Agent 帮你筛岗位、更新简历', done: state.settings.apiEnabled }
+      { key: 'agent', label: '开启 Agent API（可选）', hint: '在「连接 AI Agent」查看本机接口和配置', done: state.settings.apiEnabled === true }
     ];
     const doneCount = steps.filter((s) => s.done).length;
     if (doneCount === steps.length) { box.innerHTML = ''; box.classList.add('hidden'); return; }
     box.classList.remove('hidden');
     box.innerHTML = `<div class="ob-head"><strong>开始使用</strong><span>${doneCount}/${steps.length} 已完成</span></div>
-      <div class="ob-steps">${steps.map((s) => `<div class="ob-step ${s.done ? 'done' : ''}">
+      <div class="ob-steps">${steps.map((s) => `<div data-onboarding-step="${s.key}" class="ob-step ${s.done ? 'done' : ''}">
         <span class="ob-check">${s.done ? '✓' : '○'}</span>
         <div><b>${escapeHtml(s.label)}</b><small>${escapeHtml(s.hint)}</small></div>
       </div>`).join('')}</div>`;
@@ -793,13 +890,16 @@ async function updateBossAccounts() {
         const spanClass = field.span ? ' span-2' : '';
         if (field.type === 'select') {
           const options = field.options.map((opt, i) => `<option value="${escapeHtml(opt)}"${item?.[field.key] === opt ? ' selected' : ''}>${escapeHtml(field.optionLabels[i])}</option>`).join('');
-          return `<label class="${spanClass}">${escapeHtml(field.label)}<select name="${name}">${options}</select></label>`;
+          const booleanAttr = field.options.includes('true') && field.options.includes('false') ? ' data-boolean-answer="true"' : '';
+          return `<label class="${spanClass}">${escapeHtml(field.label)}<select name="${name}"${booleanAttr}>${options}</select></label>`;
         }
         if (field.type === 'textarea') {
           return `<label class="${spanClass}">${escapeHtml(field.label)}<textarea name="${name}" rows="${field.rows || 3}" placeholder="${escapeHtml(field.placeholder || '')}">${escapeHtml(item?.[field.key] || '')}</textarea></label>`;
         }
-        const inputType = field.type === 'input' ? 'text' : field.type;
-        return `<label class="${spanClass}">${escapeHtml(field.label)}<input name="${name}" type="${inputType}" placeholder="${escapeHtml(field.placeholder || '')}" value="${escapeHtml(item?.[field.key] || '')}"></label>`;
+        const inputType = ['input', 'resumeDate'].includes(field.type) ? 'text' : field.type;
+        const dateHelp = field.type === 'resumeDate' ? (field.key === 'end' ? 'YYYY-MM / YYYY-MM-DD / 至今' : 'YYYY-MM / YYYY-MM-DD') : '';
+        const dateAttr = field.type === 'resumeDate' ? ' data-resume-date="true"' : '';
+        return `<label class="${spanClass}">${escapeHtml(field.label)}<input name="${name}" type="${inputType}"${dateAttr} placeholder="${escapeHtml(field.placeholder || dateHelp)}" value="${escapeHtml(formatResumePathEditorValue(name,item?.[field.key]))}"></label>`;
       }).join('');
       const removeBtn = arr.length > 1
         ? `<button type="button" class="ghost-button remove-segment" data-remove-segment="${groupKey}" data-index="${index}">删除第${ordinal}段</button>`
@@ -816,7 +916,22 @@ async function updateBossAccounts() {
   // fillResume 防止频繁广播（如 refreshJobs 抓岗位时）反复重建段结构、清空用户输入。
   // 用 renderedFingerprint 记录「上次完整渲染的 profile+段数指纹」，只有指纹真变了才重建。
   let renderedFingerprint = '';
+  function renderPlatformAnswers() {
+    const select=$('#resumePlatformCompany'), fields=$('#platformAnswersFields');
+    if(!select||!fields)return;
+    const companies=state.companies||[];
+    const key=companies.map(c=>c.id).join(',');
+    if(select.dataset.catalog!==key){select.innerHTML='<option value="">请选择公司，未选择时不填写公司专属答案</option>'+companies.map(c=>`<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)}</option>`).join('');select.dataset.catalog=key;}
+    select.value=platformCompanyId;
+    const renderKey=platformCompanyId+'@'+state.resume.updatedAt;
+    if(platformRenderKey===renderKey)return;
+    platformRenderKey=renderKey;
+    const definitions=[['referralCode','内推码'],['channel','渠道来源'],['interviewCity','面试城市'],['businessGroup','意向事业群'],['preferredLocations','该公司志愿城市排序'],['previouslyInterviewed','是否曾参加该公司面试',true],['previouslyEmployed','是否曾在该公司任职',true],['hasRelativeAtCompany','是否有亲属在该公司',true],['relativeDetail','该公司亲属详情（如有）'],['acceptAdjustment','是否接受该公司岗位调剂',true],['acceptCityDeployment','是否接受该公司城市分配',true]];
+    fields.innerHTML=platformCompanyId?definitions.map(([field,label,boolean])=>{const name='platformAnswers.'+platformCompanyId+'.'+field,value=state.resume.platformAnswers?.[platformCompanyId]?.[field]??'';return `<label>${escapeHtml(label)}${boolean?`<select name="${name}" data-boolean-answer="true"><option value="">未回答</option><option value="true" ${String(value)==='true'?'selected':''}>是</option><option value="false" ${String(value)==='false'?'selected':''}>否</option></select>`:`<input name="${name}" value="${escapeHtml(value)}" placeholder="仅用于当前所选公司，选填">`}</label>`;}).join(''):'';
+  }
   function fillResume() {
+    if (resumeAutosave?.pending()) return; // Never replace a dirty editor with a broadcast.
+    renderPlatformAnswers();
     const viewFingerprint = `${state.resume.activeProfileId || 'default'}@${state.resume.updatedAt || 'seed'}`;
     // 段数指纹：activeProfileId + 三个 group 的段数。只有这个变了才重建 DOM。
     const segFingerprint = `${state.resume.activeProfileId || 'default'}|edu:${(state.resume.education||[]).length}|exp:${(state.resume.experience||[]).length}|proj:${(state.resume.projects||[]).length}|fam:${(state.resume.family||[]).length}|game:${(state.resume.games||[]).length}`;
@@ -836,7 +951,7 @@ async function updateBossAccounts() {
         if (field.type === 'checkbox') {
           field.checked = Boolean(v);
         } else {
-          field.value = v ?? '';
+          field.value = field.dataset.booleanAnswer ? window.ResumeEditorValues.booleanAnswer(v) : formatResumePathEditorValue(field.name,v);
         }
       });
       $('#resumeForm').dataset.loaded = viewFingerprint;
@@ -845,12 +960,15 @@ async function updateBossAccounts() {
 
   function collectResume() {
     const resume = collectResumeWithoutTrimming();
+    resume._baseUpdatedAt = state.resume.updatedAt;
+    const dateErrors = window.ResumeEditorValues.validateResumeDates(resume);
+    if (dateErrors.length) throw new Error(dateErrors[0]);
     // 清理尾部全空段（保留至少一段），避免攒一堆空段；中间的空段保留，因为段序号有意义
     for (const groupKey of ['education', 'experience', 'projects', 'family', 'games']) {
       const template = REPEATABLE_TEMPLATES[groupKey];
       while (resume[groupKey].length > 1) {
         const last = resume[groupKey][resume[groupKey].length - 1];
-        const allEmpty = template.every((field) => !String(last?.[field.key] || '').trim());
+        const allEmpty = template.every((field) => !String(last?.[field.key] ?? '').trim());
         if (allEmpty) resume[groupKey].pop();
         else break;
       }
@@ -877,7 +995,7 @@ async function updateBossAccounts() {
       resume[groupKey] = newArr;
     }
     $$('[name]', $('#resumeForm')).forEach((field) => {
-      const value = field.type === 'checkbox' ? field.checked : field.value.trim();
+      const value = field.type === 'checkbox' ? field.checked : field.dataset.booleanAnswer ? window.ResumeEditorValues.booleanAnswer(field.value) : field.value.trim();
       pathSet(resume, field.name, value);
     });
     return resume;
@@ -885,13 +1003,16 @@ async function updateBossAccounts() {
 
   function renderAgentPrompt() {
     const base = `http://127.0.0.1:${state.settings.apiPort}`;
-    $('#agentPrompt').textContent = `你正在协助我管理求职流程，连接本机“一键投递”服务。把它当作一个大型 skill：你能自由读写我的本地求职数据，帮我把重复劳动自动化。
+    const version = new URLSearchParams(location.search).get('appVersion') || $('#aboutAppVersion').textContent;
+    $('#agentSkillInstructions').textContent = window.YJAgentGuide.instructions(version);
+    $('#agentPrompt').textContent = `你正在协助我管理求职流程，连接本机“一键投递”服务。把它当作一个大型 skill：请按我的目标用公开接口协助处理本地求职数据，先说明变更，再做最小增量操作。
 
 Base URL: ${base}
 Authorization: Bearer ${state.settings.apiToken}
 
 可读取（GET）：
 - /v1/status    版本与计数
+- /v1/skill     软件内置 Skill、接口说明书与网站改版后的协作流程（先读取）
 - /v1/jobs      全部岗位（?favorite=true 只看收藏）
 - /v1/resume    脱敏简历（含多 profile；身份与家庭等敏感信息不会提供给 Agent）
 - /v1/messages  招聘邮件
@@ -906,7 +1027,7 @@ Authorization: Bearer ${state.settings.apiToken}
 - {"action":"open_company","companyId":"tencent"}   打开官网
 - {"action":"favorite_job","jobId":"..."}           收藏/取消收藏
 
-【本地数据写入 —— 你可以自由读写，立即生效，无需我确认】
+【本地数据写入 —— 仅在我的目标范围内，优先最小增量】
 - {"action":"update_resume","patch":{"intention":{"roles":"前端,全栈"},"skills":{"keywords":"React,Python"}},"merge":true}
    patch 可含 basic/intention/education/experience/projects/skills/extras 任一字段；merge=true 深合并，false 整体替换
 - {"action":"manage_profile","op":"add","label":"产品方向"}        新建一份简历
@@ -918,12 +1039,12 @@ Authorization: Bearer ${state.settings.apiToken}
 
 【外部操作】
 - 招聘官网填表、投递和邮箱同步不能由 Agent 直接启动；请提示我回到“一键投递”应用，由我本人点击并核对。
-- Boss 批量投递是单独的授权入口：先核对账号与 dryRun；明确要求后才调用 /v1/boss/batch/start，必须带 accountId、target、dryRun。每日定时任务请使用同版本 yijian-toudi Skill 的部署说明。
+- Boss 批量投递是单独的授权入口：先核对账号与 dryRun；明确要求后才调用 /v1/boss/batch/start，必须带 accountId、target、dryRun。每日定时任务先调用 yijian-toudi Skill 的 scripts/use.cjs，读取有效版本/部署文档，再走它返回的 dailyScript；有效 Skill 必须与应用同版本，更新后台运行不打断本次操作。
 
 规则：
-1. 先读状态再做事；想干嘛都可以，本地数据随便改；
+1. 先读状态与 /v1/skill，再根据脱敏简历筛选岗位，说明匹配理由与缺失事实；
 2. 每个写命令生成唯一 Idempotency-Key；重试同一动作复用原键，新动作换新键；
-3. 本地数据改动可以直接做；任何招聘官网或邮箱动作只给建议，不发送对应命令；
+3. 本地数据仅做目标所需的增量修改，不擅自删除或整体替换；任何招聘官网或邮箱动作只给建议，不发送对应命令；
 4. 登录或验证码出现时提示我接管；
 5. 岗位数据来自真实抓取，请如实反映每个岗位的数据来源；
 6. 当响应 requiresReview 为 true，或状态为 review-required / login-required / manual-required 时，提醒我回到“一键投递”处理，不要宣称已完成；
@@ -989,7 +1110,7 @@ Authorization: Bearer ${state.settings.apiToken}
     </div>
     <div class="dialog-actions">
       <button class="ghost-button" data-favorite="${job.id}">${job.favorite ? '取消收藏' : '收藏岗位'}</button>
-      <button class="primary-button" data-open-company="${company.id}">打开 ${escapeHtml(company.name)} 官网</button>
+      ${job.sourceId==='zhilian-campus'?`<button class="primary-button" data-zhilian-job="${escapeHtml(job.id)}">打开智联校园岗位 · 核对网申入口</button>`:`<button class="primary-button" data-open-company="${company.id}">打开 ${escapeHtml(company.name)} 官网</button>`}
     </div>`;
     $('#jobDialog').showModal();
   }
@@ -1049,23 +1170,22 @@ Authorization: Bearer ${state.settings.apiToken}
     $('#fillLogToggle').textContent = fillLogBar.classList.contains('collapsed') ? '»' : '«';
   });
 
-  // 不打扰的求好评：meta.starPromptDue 出现一次，关闭/点击后不再打扰
+  // Due is derived by the main process; dismissal persists for15days.
   function maybeShowStarCard() {
     const card = $('#starCard');
     if (!card || !state?.meta) return;
-    const due = state.meta?.starPromptDue && !state.meta?.starPromptDone;
+    const due = state.meta?.starPromptDue;
     card.classList.toggle('hidden', !due);
   }
   $('#starCardClose')?.addEventListener('click', async () => {
-    $('#starCard').classList.add('hidden');
-    await window.oneClick.updateSettings?.({}).catch?.(() => {});
-    state.meta = { ...(state.meta || {}), starPromptDue: false, starPromptDone: true };
+    try{state=await window.oneClick.dismissPromotion();maybeShowStarCard();}catch{toast('提醒关闭尚未保存，请再试一次');}
   });
   $('#starCardGo')?.addEventListener('click', async () => {
-    $('#starCard').classList.add('hidden');
-    state.meta = { ...(state.meta || {}), starPromptDue: false, starPromptDone: true };
-    try { await window.oneClick.openExternal('https://github.com/lyzbcy/yijian-toudi'); } catch {}
+    try { await window.oneClick.openExternal('https://github.com/lyzbcy/yijian-toudi');state=await window.oneClick.dismissPromotion();maybeShowStarCard(); } catch {toast('仓库入口打开失败，请重试');}
   });
+  document.querySelectorAll('[data-feedback]').forEach(button=>button.addEventListener('click',async()=>{
+    try{const r=await window.oneClick.openFeedback(button.dataset.feedback);if(!r.opened)throw Error('open');if(button.id==='starCardReview'){state=await window.oneClick.dismissPromotion();maybeShowStarCard();}}catch{toast('反馈窗口打开失败，请重试');}
+  }));
 
   function renderWorkspaceStatus(status) {
     const bar = $('#workspaceBar');
@@ -1082,6 +1202,7 @@ Authorization: Bearer ${state.settings.apiToken}
       document.body.classList.remove('workspace-active');
       $('#fillLogBar')?.classList.add('hidden');
       $('#workspaceFinish').disabled = false;
+      $('#workspaceRestartLogin')?.classList.add('hidden');
       return;
     }
     // workspace 激活：隐藏 sidebar 和主区域（原生 view 会铺满顶部以下区域），只留顶部控制条。
@@ -1100,11 +1221,14 @@ Authorization: Bearer ${state.settings.apiToken}
     $('#workspaceBarTitle').textContent = title;
     const campusApplyRisk = ['fill-resume', 'manual-fill-resume'].includes(status.context?.action)
       && ['campus', 'summer-intern', 'daily-intern'].includes(status.context?.recruitType);
-    $('#workspaceBarHint').textContent = campusApplyRisk
+    const authNotice = status.mode === 'login' && status.auth;
+    $('#workspaceBarHint').textContent = authNotice ? status.auth.message : campusApplyRisk
       ? '⚠ 只核对资料：页面中的“提交简历/申请”可能会真实投递，软件不会点击'
       : (status.url || '网页加载中…');
     $('#workspaceFinish').textContent = action;
-    $('#workspaceFinish').disabled = resumeSyncTransitioning;
+    $('#workspaceBarHint').dataset.authState = authNotice ? status.auth.state : '';
+    $('#workspaceFinish').disabled = resumeSyncTransitioning || Boolean(authNotice && status.auth.state !== 'verified');
+    $('#workspaceRestartLogin')?.classList.toggle('hidden', !(authNotice && ['failed', 'stale'].includes(status.auth.state)));
     $('#workspaceCancel').disabled = false;
 
     // 网址可见可复制：点「复制网址」或直接点网址文本
@@ -1119,7 +1243,7 @@ Authorization: Bearer ${state.settings.apiToken}
     $('#workspaceCopyUrl')?.addEventListener('click', copyUrl);
     $('#workspaceBarHint')?.removeEventListener('click', window.__yjtCopyUrl2 || (() => {}));
     window.__yjtCopyUrl2 = copyUrl;
-    $('#workspaceBarHint')?.addEventListener('click', copyUrl);
+    if (!authNotice) $('#workspaceBarHint')?.addEventListener('click', copyUrl);
     // 双保险显示：hidden class 移除 + body.workspace-active 触发 CSS display:flex !important。
     // 用户最痛的就是「看不见取消按钮被困住」，这里冗余一点值得。
     bar.classList.remove('hidden');
@@ -1130,11 +1254,11 @@ Authorization: Bearer ${state.settings.apiToken}
   }
 
   // 在软件内嵌入某公司招聘官网，让用户登录，登录态由 Electron session 持久化
-  async function openEmbeddedLogin(companyId) {
+  async function openEmbeddedLogin(companyId, recruitType = 'social') {
     const company = companyMap()[companyId];
     if (!company) return;
     try {
-      await window.oneClick.openLogin(companyId);
+      await window.oneClick.openLogin(companyId, recruitType);
       await refreshWorkspaceStatus();
       toast(`${company.name} 招聘官网已在软件内打开，请登录`);
     } catch (error) {
@@ -1157,28 +1281,53 @@ Authorization: Bearer ${state.settings.apiToken}
   }
 
   async function init() {
+    const runtimeVersion = new URLSearchParams(location.search).get('appVersion');
+    if (runtimeVersion) {
+      $('#appVersion').textContent = runtimeVersion;
+      $('#aboutAppVersion').textContent = runtimeVersion;
+    }
     state = await window.oneClick.getState();
     renderState();
     // onStateChanged 是异步广播，可能在本地操作（saveResume/switchProfile 等）返回后被旧事件覆盖。
     // 本地发起写操作时记一个序号，操作完成前收到的广播一律忽略，完成后再放行。
     let localWriteInFlight = false;
+    const setSaveStatus=({status,error})=>{const el=$('#resumeAutosaveStatus');if(el){el.dataset.status=status;el.textContent=({dirty:'等待自动保存…',saving:'正在保存到本机…',saved:'已保存到本机',failed:'保存失败：'+error})[status]||status;}};
+    resumeAutosave=window.ResumeAutosave.create({capture:collectResume,save:async resume=>{localWriteInFlight=true;try{return await window.oneClick.saveResume(resume);}finally{localWriteInFlight=false;}},onState:setSaveStatus,onSaved:async next=>{state=next;renderState();}});
+    $('#resumeForm').addEventListener('input',event=>{if(event.target.name)resumeAutosave.mark();});
+    $('#resumeForm').addEventListener('change',event=>{if(event.target.name)resumeAutosave.mark();});
+    window.addEventListener('beforeunload',event=>{if(!resumeAutosave.pending())return;event.preventDefault();event.returnValue='';resumeAutosave.flush().then(()=>window.close()).catch(error=>toast(error.message,'error'));});
+    $('#resumePlatformCompany').addEventListener('change',async event=>{const id=event.target.value;try{await resumeAutosave.flush();platformCompanyId=id;platformRenderKey='';renderPlatformAnswers();}catch(error){event.target.value=platformCompanyId;toast(error.message,'error');}});
+    $('#resumeReloadButton').addEventListener('click',async()=>{if(resumeAutosave.busy())return;if(resumeAutosave.pending()&&!confirm('重新载入本机已保存档案？当前尚未保存的输入将被丢弃。'))return;resumeAutosave.reset();state=await window.oneClick.getState();platformRenderKey='';renderState();setSaveStatus({status:'saved'});});
     window.oneClick.onStateChanged((next) => {
       if (!next) return;
       if (localWriteInFlight) return; // 本地写操作进行中，忽略中间广播
+      const injected=next.resume?.updatedAt!==state.resume?.updatedAt;
+      if(resumeAutosave.pending())next={...next,resume:state.resume};
       state = next;
       renderState();
+      if(injected&&!resumeAutosave.pending())setSaveStatus({status:'saved'});
     });
     window.oneClick.onWorkspaceChanged(renderWorkspaceStatus);
+    window.oneClick.updateInstallStatus?.().then(result=>{
+      if(result?.status==='failed')toast(`上次更新失败：${result.message||'请重新下载'}。${result.restored?'旧版文件已恢复。':''}请重试或打开发布页。`,'error');
+    }).catch(()=>{});
+    window.oneClick.onUpdateProgress?.(progress=>{
+      const box=$('#updateProgress');box.hidden=false;
+      const labels={checking:'正在重新确认最新正式版本',downloading:'正在下载',verifying:'正在校验 SHA-256',verified:'下载校验完成，尚未安装',preparing:'安装助手正在确认就绪，当前软件尚未退出',installing:'助手已确认，正在安装并重新打开',failed:'更新下载失败，请重试或打开发布页'};
+      $('#updateProgressLabel').textContent=labels[progress.phase]||'正在处理更新';
+      const bar=$('#updateDownloadProgress');if(Number.isFinite(progress.percent))bar.value=progress.percent;else bar.removeAttribute('value');
+      $('#updateDownloadBytes').textContent=progress.received?((progress.received/1048576).toFixed(1)+' MB'+(progress.total?' / '+(progress.total/1048576).toFixed(1)+' MB':'')):'';
+    });
     await refreshWorkspaceStatus();
 
     // 首次启动引导：让用户选校招/社招方向
     if (!state.meta?.onboardingSeen) showOnboarding();
 
     // 启动时自动检查更新（agent.md 第66行：每次打开自动检查版本号）
-    if (state.settings?.autoCheckUpdates) {
+    if (state.settings?.autoCheckUpdates && !new URLSearchParams(location.search).has('localPreview')) {
       // 更新服务偶尔会慢；不能在这里 await，否则后面的按钮事件尚未绑定，
       // 用户会看到界面却点不了「取消并返回」等关键操作。
-      window.oneClick.checkUpdate().then((result) => {
+      window.oneClick.checkUpdate({manual:false}).then((result) => {
         if (result.configured && result.updateAvailable) toast(`发现新版本 ${result.latest}，建议更新`);
       }).catch(() => { /* 静默失败，不打扰用户 */ });
     }
@@ -1215,6 +1364,7 @@ Authorization: Bearer ${state.settings.apiToken}
       }
       const removeSegmentBtn = event.target.closest('[data-remove-segment]');
       if (removeSegmentBtn) {
+        try { await resumeAutosave.flush(); } catch(error) { toast(error.message,'error');return; }
         const groupKey = removeSegmentBtn.dataset.removeSegment;
         const index = Number(removeSegmentBtn.dataset.index);
         // 删除前确认：非空段才确认，避免删空段还要点确认
@@ -1244,6 +1394,7 @@ Authorization: Bearer ${state.settings.apiToken}
       }
       const job = event.target.closest('[data-job-id]');
       if (job) return showJob(job.dataset.jobId);
+      const campusJob=event.target.closest('[data-zhilian-job]');if(campusJob){const job=state.jobs.find(j=>j.id===campusJob.dataset.zhilianJob);if(job?.sourceId==='zhilian-campus')window.oneClick.openExternal(job.url);return;}
       const company = event.target.closest('[data-company], [data-open-company]');
       if (company) {
         const id = company.dataset.company || company.dataset.openCompany;
@@ -1313,6 +1464,10 @@ Authorization: Bearer ${state.settings.apiToken}
       renderState();
       return result;
     }, (result) => result.message || '投递流程已启动'));
+    $('#zhilianCampusConnect').addEventListener('click',event=>run(event.currentTarget,()=>window.oneClick.zhilianCampus({open:true}),result=>{
+      const labels={'waiting-consent':'请在智联校园阅读并处理隐私政策确认后，再点击读取','waiting-login':'请先在浏览器登录智联校园','waiting-verification':'请在原网页完成验证','tab-required':'请先打开智联校园','page-not-supported':'当前不是支持的校园岗位列表；请回校园首页/职位列表','job-detail':'当前为智联岗位详情，请由Agent核对正式申请入口；未自动提交'};
+      const text=result.status==='ready'?`智联校园当前页 ${result.report.count} 个岗位：新增 ${result.report.added}，更新 ${result.report.updated}；尚未投递`:(labels[result.status]||'当前页面尚未就绪');$('#zhilianCampusStatus').textContent=text;return text;
+    }));
     $('#refreshApplied').addEventListener('click', (event) => run(event.currentTarget, async () => {
       const result = await window.oneClick.refreshAppliedStatus();
       if (result.ok) {
@@ -1320,11 +1475,11 @@ Authorization: Bearer ${state.settings.apiToken}
         renderState();
       }
       return result;
-    }, (result) => result.ok ? `已刷新 ${result.count} 条腾讯投递状态` : result.message));
+    }, (result) => result.ok ? result.report.summary : result.message));
     $('#exportAppliedButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportApplied(), (result) => `已导出 ${result.count} 条投递记录为 CSV`));
     $('#saveResumeButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
-      state = await window.oneClick.saveResume(collectResume());
-      renderState();
+      if(!resumeAutosave.pending())resumeAutosave.mark();
+      await resumeAutosave.flush();
     }, '简历已安全保存在本机'));
     // 新建简历 profile
     $('#resumeProfilesBar').addEventListener('keydown', (event) => {
@@ -1335,6 +1490,7 @@ Authorization: Bearer ${state.settings.apiToken}
     });
     $('#resumeProfilesBar').addEventListener('click', async (event) => {
       if (localWriteInFlight) return;
+      try { await resumeAutosave.flush(); } catch(error) { toast(error.message,'error');return; }
       localWriteInFlight = true;
       try {
         const addBtn = event.target.closest('[data-add-profile]');
@@ -1396,6 +1552,7 @@ Authorization: Bearer ${state.settings.apiToken}
     // 多段经历：添加段。直接基于 DOM 当前段数追加空段，不经过 collectResume 的尾部清理
     // （否则用户没填内容的空段会被清掉，导致「加了又没了」）。
     $$('[data-add-segment]').forEach((button) => button.addEventListener('click', async () => {
+      try { await resumeAutosave.flush(); } catch(error) { toast(error.message,'error');return; }
       const groupKey = button.dataset.addSegment;
       // 从 DOM 读取当前所有段的值（不清理），再追加一个空段
       const currentResume = collectResumeWithoutTrimming();
@@ -1429,6 +1586,7 @@ Authorization: Bearer ${state.settings.apiToken}
       return result;
     }));
     $('#fillResumeTencentButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
+      await resumeAutosave.flush();
       const result = await window.oneClick.fillResumeToTencent();
       // 填写后若带回差异报告（patchPlan），弹窗展示逐字段命中情况，让用户核对
       if (result?.patchPlan?.patches?.length) {
@@ -1437,29 +1595,14 @@ Authorization: Bearer ${state.settings.apiToken}
       return result;
     }, (result) => result?.message || '已更新到腾讯'));
     // 一键更新所有支持简历填写的平台（agent.md 核心目标）
-    $('#fillResumeAllButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
-      // 一键更新前先保存当前编辑，避免用旧数据填到各平台
-      await window.oneClick.saveResume(collectResume());
-      // 登录检查与填写必须使用同一个内嵌会话。统一编排器会逐站打开，遇到未登录只暂停当前站，
-      // 不再由另一套 Playwright profile 预检并整批阻断。
-      const startsNewRun = resumeSyncGeneration === 0 || resumeSyncRunFinished;
-      if (startsNewRun) {
-        resumeSyncRunResults.clear();
-        resumeSyncRunFinished = false;
-        resumeSyncContinueCompanyId = null;
-      }
-      const generation = resumeSyncGeneration + 1;
-      resumeSyncGeneration = generation;
-      return runResumeSyncStage(resumeSyncContinueCompanyId, generation);
-    }, (result) => {
-      if (result.ignored) return '已取消本轮简历同步';
-      if (result.completed) return resumeSyncSummaryMessage();
-      if (result.ok) {
-        const ok = result.summary?.verifiedPlatforms || 0;
-        return `已写入并核验 ${ok} 个平台简历`;
-      }
-      return result.message || '已暂停，请在保留退出栏的官网页面完成登录或核对';
-    }));
+    $('#fillResumeAllButton').addEventListener('click', async () => {
+      try { await resumeAutosave.flush(); } catch(error) { toast(error.message,'error');return; }
+      try {
+        await window.oneClick.saveResume(collectResume());
+        const catalog = await window.oneClick.resumeBatchCatalog();
+        window.ResumeBatchUI.open(catalog);
+      } catch (error) { toast(error.message); }
+    });
     $('#exportSnapshotButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportSnapshot(), '脱敏快照已导出'));
     $('#backupExportButton').addEventListener('click', (event) => run(event.currentTarget, () => window.oneClick.exportBackup(), (result) => result.canceled ? '已取消备份' : '备份已保存'));
     $('#backupRestoreButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
@@ -1471,14 +1614,69 @@ Authorization: Bearer ${state.settings.apiToken}
       }
       return result;
     }, (result) => result.canceled ? '已取消恢复' : '备份已恢复'));
-    $('#syncEmailButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
-      state = await window.oneClick.syncEmail({ address: $('#emailAddress').value.trim(), authorizationCode: $('#emailCode').value.trim() });
+    $('#careerForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      try {
+        state=await window.oneClick.saveCareer({id:$('#careerEditingId').value||undefined,mailbox:$('#careerMailbox').value||undefined,company:$('#careerCompany').value,role:$('#careerRole').value,stage:$('#careerStage').value,note:$('#careerNote').value});
+        $('#careerForm').reset();$('#careerEditingId').value='';renderState();toast('管理记录已保存');
+      } catch(e) { toast(e.message,'error'); }
+    });
+    $('#appliedList').addEventListener('click',async event=>{
+      const button=event.target.closest('[data-track-job]');if(!button)return;
+      const job=(state.applied||[]).find(j=>j.id===button.dataset.trackJob);if(!job)return;
+      try {state=await window.oneClick.saveCareer({company:companyMap()[job.companyId]?.name||job.companyId,role:job.title,stage:'已投递'});renderState();}
+      catch(e){toast(e.message,'error');}
+    });
+    $('#careerFilter').addEventListener('change',renderCareer);
+    $('#careerAdd').addEventListener('click',()=>{$('#careerForm').reset();$('#careerEditingId').value='';$('#careerFormPanel').open=true;$('#careerForm').scrollIntoView({block:'center'});$('#careerCompany').focus();});
+    $('#careerOrganize').addEventListener('click',event=>run(event.currentTarget,async()=>{if(state.settings.email.readBody===true){state=await window.oneClick.syncEmail({all:true});renderState();}renderCareer();const filter=$('#careerFilter').value,tasks=window.CareerBoard.build(state).tasks.filter(t=>t.status==='pending'&&(!filter||t.stage===filter));$('#careerTodoStatus').textContent=`已整理 ${tasks.length} 项${filter||''}待办，${tasks.filter(t=>!t.dueAt).length} 项时间待确认。未更改投递阶段。`;},'待办已整理'));
+    $('#careerReadBody').addEventListener('click',event=>run(event.currentTarget,async()=>{state=await window.oneClick.updateSettings({email:{readBody:true}});state=await window.oneClick.syncEmail({all:true,details:true});renderState();},'邮件正文安排已核对；不明确的时间保留待确认'));
+    $('#emailReadBody').addEventListener('change',async event=>{state=await window.oneClick.updateSettings({email:{readBody:event.target.checked}});renderState();});
+    $('#page-applied').addEventListener('click',async event=>{
+      const link=event.target.closest('[data-career-link]');if(link){const task=window.CareerBoard.build(state).tasks.find(t=>t.id===careerSelectedId),value=task?.links?.[Number(link.dataset.careerLink)];if(value)try{await window.oneClick.openExternal(value.url);}catch(e){toast(e.message,'error');}return;}
+      const stage=event.target.closest('[data-career-stage]');if(stage){$('#careerFilter').value=stage.dataset.careerStage;renderCareer();return;}
+      const detail=event.target.closest('[data-career-detail]');if(detail){careerSelectedId=detail.dataset.careerDetail;renderCareer();if(innerWidth<1050)$('#careerDetail').scrollIntoView({block:'start',behavior:'smooth'});return;}
+      if(event.target.closest('[data-career-close]')){careerSelectedId='';renderCareer();return;}
+      const status=event.target.closest('[data-career-task-status]'),clear=event.target.closest('[data-career-clear-due]');if(!status&&!clear)return;
+      const task=window.CareerBoard.build(state).tasks.find(t=>t.id===careerSelectedId);if(!task)return;
+      try{state=await window.oneClick.saveCareer({id:task.id,todo:{key:task.key,...(status?{status:status.dataset.careerTaskStatus}:{dueAt:''})}});renderState();}catch(e){toast(e.message,'error');}
+    });
+    $('#careerDetail').addEventListener('submit',async event=>{
+      if(event.target.id!=='careerTodoForm')return;event.preventDefault();const task=window.CareerBoard.build(state).tasks.find(t=>t.id===careerSelectedId);if(!task)return;
+      const value=$('#careerTodoDue').value,dueAt=value?value+':00+08:00':'';
+      try{state=await window.oneClick.saveCareer({id:task.id,todo:{key:task.key,title:$('#careerTodoTitle').value,dueAt}});renderState();toast('待办安排已保存');}catch(e){toast(e.message,'error');}
+    });
+
+    $('#page-applied').addEventListener('click',event=>{const id=event.target.closest('[data-career-edit]')?.dataset.careerEdit;if(!id)return;const r=(state.careerApplications||[]).find(r=>r.id===id);if(!r)return;$('#careerEditingId').value=r.id;$('#careerCompany').value=r.company;$('#careerRole').value=r.role;$('#careerStage').value=r.stage;$('#careerNote').value=r.note;$('#careerMailbox').value=r.mailbox;$('#careerFormPanel').open=true;$('#careerForm').scrollIntoView({block:'center'});$('#careerRole').focus();});
+    $('#careerList').addEventListener('change',async event=>{
+      const id=event.target.dataset.careerId;if(!id)return;
+      try { state=await window.oneClick.saveCareer({id,stage:event.target.value});renderState(); } catch(e) { toast(e.message,'error');renderCareer(); }
+    });
+    $('#emailAutoSync').addEventListener('change',async event=>{
+      state=await window.oneClick.updateSettings({email:{autoSync:event.target.checked}});renderState();
+    });
+    $('#emailImportProgress').addEventListener('change',async event=>{state=await window.oneClick.updateSettings({email:{importProgress:event.target.checked}});renderState();});
+    $('#emailScanLimit').addEventListener('change',async event=>{state=await window.oneClick.updateSettings({email:{scanLimit:Number(event.target.value)}});renderState();});
+    $('#connectSchoolEmailButton').addEventListener('click',event=>run(event.currentTarget,async()=>{state=await window.oneClick.syncEmail({provider:'jiangnan',method:'browser',connect:true});renderState();},'学校邮箱连接状态已更新'));
+    $('#syncAllEmailButton').addEventListener('click',event=>run(event.currentTarget,async()=>{state=await window.oneClick.syncEmail({all:true});renderState();},'所有邮箱核对结束，请检查各邮箱状态与待确认项'));
+    $('#mailboxAccounts').addEventListener('click',event=>{const id=event.target.dataset.mailboxSync;if(id)run(event.target,async()=>{state=await window.oneClick.syncEmail({mailboxId:id,connect:true});renderState();},'邮箱同步结果已更新');});
+    $('#connectBrowserEmailButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
+      state=await window.oneClick.syncEmail({method:'browser',connect:true});renderState();
+    }, '邮箱连接状态已更新'));
+    $('#syncEmailButton').addEventListener('click' , (event) => run(event.currentTarget, async () => {
+      state = await window.oneClick.syncEmail({ method:'imap', address: $('#emailAddress').value.trim(), authorizationCode: $('#emailCode').value.trim() });
       $('#emailCode').value = '';
       renderState();
     }, 'QQ 邮箱同步完成'));
     $('#copyPromptButton').addEventListener('click', async () => {
       await navigator.clipboard.writeText($('#agentPrompt').textContent);
       toast('接入 Prompt 已复制，粘贴到你的 AI Agent 即可');
+    });
+    $('#copyAgentSkillButton').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText($('#agentSkillInstructions').textContent);
+        toast('Skill 说明书已复制（不含 Token）');
+      } catch { toast('复制失败，请手动选择并复制说明书', 'error'); }
     });
     // 一键打开常见 AI Agent（先复制 prompt 再打开网页，T3.7 #15）
     const agentUrls = { claude: 'https://claude.ai/new', chatgpt: 'https://chat.openai.com/', cursor: 'cursor://chat' };
@@ -1496,39 +1694,25 @@ Authorization: Bearer ${state.settings.apiToken}
     });
     $('#checkUpdateButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
       const result = await window.oneClick.checkUpdate();
-      if (!result.configured) return toast('还没有配置 GitHub 更新源（在设置里填 GitHub 仓库）');
-      if (!result.updateAvailable) return toast(`当前已是最新版 ${result.current}`);
-      // 发现新版本：展示版本+说明，提供「一键下载更新」
-      const notes = (result.releaseNotes || '').slice(0, 300);
-      const canDownload = Boolean(result.download);
-      const installHint = result.download?.name?.toLowerCase().endsWith('.exe')
-        ? '下载后双击安装包，按提示升级即可。'
-        : '下载后将新应用拖到「应用程序」替换旧版即可。';
-      const msg = `发现新版本 ${result.latest}（当前 ${result.current}）。\n\n${notes ? '更新说明：\n' + notes + '\n\n' : ''}${canDownload ? `点「确定」下载到「下载」文件夹。${installHint}` : '本次没有找到自动下载链接，将打开 GitHub Release 页面手动下载。'}`;
-      if (!confirm(msg)) return { canceled: true };
-      if (!canDownload) {
-        await window.oneClick.openExternal(result.url);
-        return { openedExternal: true };
+      if(result.latestNewer&&!result.updateAvailable) return toast('发现新版本，但安装包或配套校验文件尚未准备齐全，请打开发布页查看。','error');
+      if(!result.updateAvailable) return toast(`已核对正式发布版本，当前为 ${result.current}`);
+      const notes=(result.releaseNotes||'').slice(0,300);
+      if(!confirm(`发现新版本 ${result.latest}（当前 ${result.current}）。\n${notes}\n下载并校验安装包？国内连接较慢时可开启代理。${result.canInstall?'校验后将自动安装并重启；本机简历会先保存，请先结束官网核对。':'当前下载完成后仍需运行安装包。'}`))return {canceled:true};
+      const dl=await window.oneClick.downloadUpdate({version:result.latest});
+      if(!dl.ok)throw Error(`更新失败：${dl.message}。请点检查更新重试，或打开发布页；国内连接较慢时可开启代理。`);
+      if(dl.canInstall){
+        localWriteInFlight=true;
+        try{state=await window.oneClick.saveResume(collectResume());}finally{localWriteInFlight=false;}
+        const installed=await window.oneClick.installUpdate({version:dl.version,confirmed:true});
+        if(!installed.ok)throw Error(`安装交接失败：${installed.message}。当前软件保留，请重试或打开发布页。`);
+        return installed;
       }
-      toast(`正在下载 ${result.download.name}…`, 'success');
-      const dl = await window.oneClick.downloadUpdate({
-        downloadUrl: result.download.url,
-        downloadName: result.download.name,
-        sha256Url: result.sha256?.url
-      });
-      if (!dl.ok) throw new Error(dl.message || '下载失败');
-      // 校验结果提示
-      if (dl.shaChecked && !dl.shaOk) {
-        toast('⚠️ 校验未通过：下载文件的 SHA256 与发布的不一致，请勿安装，重新下载或到 GitHub 核对', 'error');
-      } else if (dl.shaChecked && dl.shaOk) {
-        toast(`✅ 已下载并校验通过，已打开「下载」文件夹。${installHint}`);
-      } else {
-        toast(`已下载到「下载」文件夹。${installHint}（本次未提供校验值）`);
-      }
+      toast('下载和 SHA-256 校验通过，已打开安装包位置；尚未安装。');
       return dl;
     }));
     $('#saveSettingsButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
-      state = await window.oneClick.updateSettings({
+      const settingsPatch = {
+        diagnosticLogging: $('#diagnosticLogging').checked,
         autoCheckUpdates: $('#autoUpdate').checked,
         apiEnabled: $('#apiEnabled').checked,
         apiPort: Number($('#apiPort').value),
@@ -1537,8 +1721,13 @@ Authorization: Bearer ${state.settings.apiToken}
         autoRefreshJobs: $('#autoRefreshJobs').checked,
         wechatQuickLogin: $('#wechatQuickLogin').checked,
         kimiBridgeEnabled: $('#kimiBridgeEnabled').checked,
-        wecomWebhook: $('#wecomWebhook').value.trim()
-      });
+        wecomWebhook: $('#wecomWebhook').value.trim(),
+        feedbackEndpoint: $('#feedbackEndpoint').value.trim()
+      };
+      // An unchanged blank field is not an explicit opt-out. Send this field
+      // only when edited; direct IPC clearing remains an explicit choice.
+      if (settingsPatch.feedbackEndpoint === (state.settings.feedbackEndpoint || '')) delete settingsPatch.feedbackEndpoint;
+      state = await window.oneClick.updateSettings(settingsPatch);
       renderState();
     }, '设置已保存'));
     // —— Boss 批量 / Kimi 桥 / 企微通知（2026-09-20）——
@@ -1546,11 +1735,11 @@ $('#wecomTestButton').addEventListener('click', (event) => run(event.currentTarg
   await window.oneClick.updateSettings({ wecomWebhook: $('#wecomWebhook').value.trim() });
   const result = await window.oneClick.testWecomNotify();
   if (result && result.sent) toast('测试消息已发送到企业微信');
-  else toast(`发送失败：${(result && result.reason) || '未知原因'}`);
+  else toast(`发送失败：${(result && result.reason) || '未知原因'}`, 'error');
 }));
 $('#kimiRestartButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
   const status = await window.oneClick.kimiRestart();
-  toast(status.running ? 'Kimi 桥已重启' : '启动失败：端口可能被占用');
+  toast(status.connected ? 'WebBridge 客户端已连接' : '请检查官方 WebBridge 与浏览器扩展');
   updateKimiBridgeStatus();
 }));
 $('#bossBatchDryRunButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
@@ -1567,9 +1756,22 @@ $('#bossBatchStartButton').addEventListener('click', (event) => run(event.curren
   toast('批量投递已开始，进度见企业微信通知');
   updateBossBatchStatus();
 }));
+$('#bossAccountConfirmSelfButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
+  const result = await window.oneClick.confirmBossSelfAccount();
+  toast(result.confirmed ? '本人确认已记录，15分钟内单次有效；尚未发送' : `未确认：${result.error || '已取消'}`);
+}));
 $('#bossBatchStopButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
   await window.oneClick.bossBatchStop();
   toast('已发出停止信号，正在收尾');
+  updateBossBatchStatus();
+}));
+$('#bossBatchResolveButton').addEventListener('click', (event) => run(event.currentTarget, async () => {
+  const status = await window.oneClick.bossBatchStatus();
+  if (!status.requiresReview || status.running) return;
+  const message = `上次停止原因：${status.stopReason}。请先处理登录或平台异常。解除暂停不会自动启动投递；结果不明的公司将继续跳过，不计作成功。确认已经核对？`;
+  if (!window.confirm(message)) return;
+  const result = await window.oneClick.bossBatchResolve({ runId: status.runId, action: 'acknowledge-and-skip-unknown' });
+  toast(result.reviewed ? '复核已登记；如需继续，请单独启动新任务。' : `复核未完成：${result.error}`);
   updateBossBatchStatus();
 }));
 // —— 账号管理（代投商业化）——
@@ -1581,8 +1783,8 @@ $('#bossAccountSelect')?.addEventListener('change', async (event) => {
 $('#bossAccountCreateButton')?.addEventListener('click', (event) => run(event.currentTarget, async () => {
   const name = prompt('客户名（用于档案与报表标识）：');
   if (!name) return;
-  const phoneTail = prompt('客户 Boss 手机号后 4 位（用于扫码后核对身份，可留空跳过）：') || '';
-  const result = await window.oneClick.accountCreate({ name, phoneMasked: phoneTail ? `***${phoneTail}` : '' });
+  const phoneMasked = prompt('客户 Boss 手机号：完整手机号或首3位****后4位（仅存脱敏形式，可稍后补充）：') || '';
+  const result = await window.oneClick.accountCreate({ name, phoneMasked });
   if (result.error) { toast(`创建失败：${result.error}`); return; }
   toast(`客户账号已创建：${result.account.name}`);
   await updateBossAccounts();
@@ -1599,7 +1801,14 @@ $('#bossAccountLaunchButton')?.addEventListener('click', (event) => run(event.cu
 $('#bossAccountVerifyButton')?.addEventListener('click', (event) => run(event.currentTarget, async () => {
   const sel = $('#bossAccountSelect');
   if (!sel) return;
-  const result = await window.oneClick.accountVerify(sel.value);
+  let result = await window.oneClick.accountVerify(sel.value);
+  if (result.error === 'account-phone-required') {
+    const phoneMasked = prompt('请补充此账号 Boss 手机号：完整号或首3位****后4位。已有投递记录保留，仅存脱敏形式。');
+    if (!phoneMasked) return;
+    const updated = await window.oneClick.accountUpdatePhone({ accountId: sel.value, phoneMasked });
+    if (!updated.updated) { toast(`手机号未更新：${updated.error}`); return; }
+    result = await window.oneClick.accountVerify(sel.value);
+  }
   if (result.error) { toast(`验证失败：${result.error}${result.message ? '：' + result.message : ''}`); return; }
   if (result.verified) { toast(`身份核对通过（${result.detected}），账号已绑定`); }
   else { toast(`未能自动核对：${result.message || '请人工确认'}`); }
@@ -1608,6 +1817,11 @@ $('#bossAccountVerifyButton')?.addEventListener('click', (event) => run(event.cu
 }));
 
 $('#promoButton').addEventListener('click', () => $('#promoDialog').showModal());
+    $('#workspaceRestartLogin')?.addEventListener('click', () => run($('#workspaceRestartLogin'), async () => {
+      await window.oneClick.restartLogin();
+      await refreshWorkspaceStatus();
+      toast('已重新打开校招登录页；请在官网选择登录方式');
+    }));
     $('#workspaceFinish').addEventListener('click', async () => {
       if (resumeSyncTransitioning) return;
       const generation = resumeSyncGeneration;
@@ -1692,6 +1906,7 @@ $('#promoButton').addEventListener('click', () => $('#promoDialog').showModal())
     </div>`).join('');
   }
 
+  setInterval(updateBossBatchStatus, 3000);
   init().catch((error) => {
     document.body.innerHTML = `<main style="padding:40px;font-family:sans-serif"><h1>应用启动失败</h1><pre>${escapeHtml(error.stack || error.message)}</pre></main>`;
   });

@@ -17,10 +17,11 @@ async function runOnce() {
   try {
     const window = await application.firstWindow();
     await window.waitForSelector('.hero-card');
-    if (await window.locator('#onboardingDialog[open]').count() > 0) {
-      await window.locator('.onboarding-choice[data-recruit="social"]').click();
-      await window.waitForTimeout(400);
-    }
+    // Fresh own profile always needs onboarding. The hero exists before async
+    // initialization opens the dialog; a count snapshot may miss it entirely.
+    await window.locator('#onboardingDialog[open]').waitFor({ state: 'visible' });
+    await window.locator('.onboarding-choice[data-recruit="social"]').click();
+    await window.locator('#onboardingDialog[open]').waitFor({ state: 'hidden' });
     await window.locator('.sidebar .nav-item[data-page="resume"]').first().click();
     await window.waitForTimeout(1000);
     await window.waitForSelector('.profile-tab[data-profile]', { timeout: 10000 });

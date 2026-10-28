@@ -1,0 +1,63 @@
+const {meituanMonth,planMeituanDates,resolveMeituanDate,executeMeituanDate}=require('./meituan-date-fill.cjs');
+const {getMeituanFormContext}=require('./meituan-form-context.cjs');
+function planMeituanWidgets(resume={}) {
+  const out=[];const add=(key,value,section,label,city=false)=>{if(value===undefined||value===null||String(value).trim()==='')return;out.push({key,value:String(value).trim(),locator:{section,label},city});};
+  add('basic.gender',resume.basic?.gender,'basic','性别');
+  // Only the observed explicit synonym is mapped. Do not infer country/type
+  // from the document number or turn a generic passport into a Chinese one.
+  const idType=String(resume.basic?.idType??'').trim();
+  add('basic.idType',idType==='身份证'?'居民身份证':idType,'basic','证件号码');
+  add('basic.city',resume.basic?.city,'basic','当前居住城市',true);
+  for(const[e,i]of (Array.isArray(resume.education)?resume.education:[]).map((e,i)=>[e,i])){const section='教育经历-'+(i+1);for(const[key,label]of [['school','学校名称'],['department','学院名称'],['major','专业名称'],['degree','学历'],['rank','成绩排名'],['laboratory','实验室']]){let value=e[key];if(key==='degree')value=({本科:'大学本科',专科:'大学专科',硕士:'硕士研究生',博士:'博士研究生'})[value]||value;if(key==='rank'&&typeof value==='string'){const ratio=value.trim().match(/^(\d+)\s*\/\s*(\d+)$/);if(ratio){const rank=Number(ratio[1]),total=Number(ratio[2]);if(rank>=1&&rank<=total&&total<=1e9){const limit=[5,10,20,30,40,50].find(p=>rank*100<=total*p);if(limit)value='前'+limit+'%';}}}add(`education.${i}.${key}`,value,section,label);}if(e.isFullTime===true||e.isFullTime===false)add(`education.${i}.isFullTime`,e.isFullTime?'是':'否',section,'是否全日制');else{const full=['全日制','普通全日制','统招全日制'].includes(e.learningMode),part=['非全日制'].includes(e.learningMode);if(full||part)add(`education.${i}.learningMode`,full?'是':'否',section,'是否全日制');}}
+  for(const[e,i]of (Array.isArray(resume.experience)?resume.experience:[]).map((e,i)=>[e,i]))for(const[key,label]of [['company','公司名称'],['employmentType','工作类型']])add(`experience.${i}.${key}`,e[key],'实习经历-'+(i+1),label);
+  return out.concat(planMeituanDates(resume));
+}
+function buildMeituanWidgetScript(requests, {jobId,previousJobId}={}) {
+  async function execute(requests, progress=()=>{},binding={origin:location.origin,pathname:location.pathname,search:location.search,body:document.body,root:document.documentElement,editor:[...document.querySelectorAll('.resume_detail_edit')][0]||null}) {
+    const assertTarget=()=>{const editors=[...document.querySelectorAll('.resume_detail_edit')];if(location.origin!==binding.origin||location.pathname!==binding.pathname||location.search!==binding.search||document.body!==binding.body||document.documentElement!==binding.root||editors.length>1||(editors[0]||null)!==binding.editor)throw Error('widget-target-changed');};
+    const fatal=reason=>['widget-target-changed','unsupported-origin','control-changed','date-control-changed'].includes(reason);
+    const stopRemaining=(reason,from)=>{for(const item of requests.slice(from)){const record={key:item.key,kind:item.kind,locator:item.locator,requested:item.value,expected:item.value,observed:'',written:false,error:reason};results.push(record);progress({phase:'completed',record});}return results;};
+    const visible=e=>!!e?.getClientRects().length&&getComputedStyle(e).visibility!=='hidden'&&getComputedStyle(e).display!=='none';
+    const normalize=(v,city=false)=>String(v??'').replace(/\s+/g,'').replace(city?/市$/:/$^/,'');
+    const pause=ms=>new Promise(r=>setTimeout(r,ms));
+    const closeMenus=()=>{if(document.body)for(const name of ['mousedown','mouseup','click'])document.body.dispatchEvent(new MouseEvent(name,{bubbles:true}));};
+    const results=[];
+    for(const [index,item]of requests.entries()){progress({phase:'running',key:item.key});if(item.kind==='meituan-month'||item.kind==='meituan-present'){const record=await executeMeituanDate(item,assertTarget);results.push(record);progress({phase:'completed',record});if(fatal(record.error))return stopRemaining('widget-target-changed',index+1);continue;}let input,row,originalQuery='';const record={key:item.key,locator:item.locator,expected:item.value,requested:item.value,observed:'',written:false};try{
+      assertTarget();if(location.origin!=='https://zhaopin.meituan.com'||location.pathname!=='/web/personal-center/resume-detail')throw Error('unsupported-origin');
+      const candidates=[...document.querySelectorAll('.mtd-select input')].filter(c=>{const v=getMeituanFormContext(c);return v&&v.section===item.locator.section&&v.label===item.locator.label;});if(candidates.length!==1)throw Error(candidates.length?'control-ambiguous':'control-missing');input=candidates[0];originalQuery=input.value;row=input.closest('.mtd-form-item');const select=input.closest('.mtd-select');if(!visible(select))throw Error('control-disabled');
+      const read=()=>{const label=select.querySelector('.mtd-select-filter-label');return label&&!label.classList.contains('mtd-select-filter-hint')?label.textContent.trim():'';};
+      const current=read();record.observed=current;if(current&&normalize(current,item.city)===normalize(item.value,item.city)){record.expected=current;record.observed=current;record.written=true;record.unchanged=true;results.push(record);progress({phase:'completed',record});continue;}
+      if(item.afterWrittenKey&&!results.some(r=>r.key===item.afterWrittenKey&&r.written===true&&r.expected===r.observed&&!r.unchanged))throw Error('control-needs-change');
+      if(item.retryBlankOnly===true&&current)throw Error('control-needs-change');
+      if(item.readOnly===true)throw Error('control-needs-change');
+      if(input.disabled||select.classList.contains('mtd-select-disabled'))throw Error('control-disabled');
+      const assertControl=()=>{assertTarget();const context=getMeituanFormContext(input);if(!input.isConnected||input.closest('.mtd-form-item')!==row||input.closest('.mtd-select')!==select||context?.section!==item.locator.section||context?.label!==item.locator.label)throw Error('control-changed');if(item.afterWrittenKey){const parent=results.find(r=>r.key===item.afterWrittenKey),inputs=[...document.querySelectorAll('.mtd-select input')].filter(c=>{const v=getMeituanFormContext(c);return v&&v.section===item.afterWrittenLocator?.section&&v.label===item.afterWrittenLocator?.label;});if(inputs.length!==1||!parent?.written)throw Error('control-changed');const label=inputs[0].closest('.mtd-select')?.querySelector('.mtd-select-filter-label');if(!label||label.classList.contains('mtd-select-filter-hint')||normalize(label.textContent.trim())!==normalize(parent.expected))throw Error('control-changed');}if(item.retryBlankOnly===true&&read()){record.observed=read();throw Error('control-needs-change');}};
+      originalQuery=input.value;assertControl();closeMenus();input.blur();assertControl();input.focus();let popups=[];for(let n=0;n<12;n++){await pause(100);assertControl();popups=[...document.querySelectorAll('.mtd-select-popup-wrapper')].filter(visible);if(popups.length)break;
+        // Some MTD controls open from their input's ancestor click, not focus.
+        // In an inactive native view the native focus event can also be absent.
+        // Follow the public DOM event route only while no menu has appeared;
+        // never invoke private React handlers or activate every tiled window.
+        if(n===0){assertControl();input.dispatchEvent(new MouseEvent('click',{bubbles:true,button:0}));}
+        if(n===5){assertControl();input.dispatchEvent(new FocusEvent('focus',{bubbles:false,relatedTarget:null}));assertControl();input.dispatchEvent(new FocusEvent('focusin',{bubbles:true,relatedTarget:null}));}
+      }if(popups.length!==1)throw Error(popups.length?'popup-ambiguous':'popup-missing');
+      const options=()=>[...popups[0].querySelectorAll('.mtd-select-item')].filter(e=>visible(e)&&!e.classList.contains('mtd-select-item-disabled')&&e.getAttribute('aria-disabled')!=='true'&&normalize(e.textContent.trim(),item.city)===normalize(item.value,item.city));
+      let matches=options();if(!matches.length){const setter=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value')?.set;if(!setter)throw Error('value-setter-missing');assertControl();setter.call(input,item.value);input.dispatchEvent(new Event('input',{bubbles:true}));for(let n=0;n<10;n++){await pause(150);assertControl();const fresh=[...document.querySelectorAll('.mtd-select-popup-wrapper')].filter(visible);if(fresh.length>1)throw Error('popup-ambiguous');if(!fresh.length)continue;popups=fresh;matches=options();if(matches.length)break;}}
+      if(matches.length!==1)throw Error(matches.length?'option-ambiguous':'option-missing');assertControl();if(popups[0].isConnected===false||matches[0].isConnected===false)throw Error('control-changed');const chosen=matches[0].textContent.trim();matches[0].click();await pause(600);assertTarget();if(!input.isConnected||getMeituanFormContext(input)?.section!==item.locator.section||getMeituanFormContext(input)?.label!==item.locator.label)throw Error('control-changed');record.observed=read();record.expected=chosen;record.written=record.observed===chosen;if(!record.written)record.error='selection-not-retained';
+    }catch(error){record.error=['widget-target-changed','unsupported-origin','control-ambiguous','control-missing','control-disabled','popup-ambiguous','popup-missing','value-setter-missing','option-ambiguous','option-missing','control-changed','selection-not-retained','control-needs-change'].includes(error.message)?error.message:'widget-inspection-failed';if(item.readOnly!==true&&!fatal(record.error)&&!(item.retryBlankOnly===true&&record.error==='control-needs-change')){try{assertTarget();if(input?.isConnected){const setter=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value')?.set;setter?.call(input,originalQuery);input.dispatchEvent(new Event('input',{bubbles:true}));input.blur();}closeMenus();}catch{record.error='widget-target-changed';}}}results.push(record);progress({phase:'completed',record});if(fatal(record.error))return stopRemaining('widget-target-changed',index+1);}
+    return results;
+  }
+  if(!jobId)return `(()=>{const getMeituanFormContext=${getMeituanFormContext.toString()};const meituanMonth=${meituanMonth.toString()};const resolveMeituanDate=${resolveMeituanDate.toString()};const executeMeituanDate=${executeMeituanDate.toString()};return (${execute.toString()})(${JSON.stringify(requests)});})()`;
+  if(typeof jobId!=='string'||!/^[a-zA-Z0-9_-]{1,100}$/.test(jobId))throw Error('invalid-widget-job-id');
+  if(previousJobId!==undefined&&(typeof previousJobId!=='string'||!/^[a-zA-Z0-9_-]{1,100}$/.test(previousJobId)))throw Error('invalid-widget-job-id');
+  return `(()=>{const id=${JSON.stringify(jobId)},slot='__yjtMeituanWidgetJob47',previous=window[slot];
+    if(location.origin!=='https://zhaopin.meituan.com'||location.pathname!=='/web/personal-center/resume-detail')return {started:false,id,error:'unsupported-origin'};
+    if(previous?.id===id)return {started:false,id,status:previous.status,error:'widget-job-already-started'};
+    if(previous?.status==='running')return {started:false,id:previous.id,status:'running',error:'widget-job-busy'};
+    if(${JSON.stringify(previousJobId||null)}&&(previous?.id!==${JSON.stringify(previousJobId||null)}||previous.status!=='completed'))return {started:false,id:${JSON.stringify(previousJobId||null)},status:'unknown',error:'widget-job-changed'};
+    const binding={origin:location.origin,pathname:location.pathname,search:location.search,body:document.body,root:document.documentElement,editor:[...document.querySelectorAll('.resume_detail_edit')][0]||null};const job={id,status:'running',records:[],pendingKey:null};window[slot]=job;const getMeituanFormContext=${getMeituanFormContext.toString()};const meituanMonth=${meituanMonth.toString()};const resolveMeituanDate=${resolveMeituanDate.toString()};const executeMeituanDate=${executeMeituanDate.toString()};
+    Promise.resolve().then(()=>(${execute.toString()})(${JSON.stringify(requests)},event=>{if(event.phase==='running')job.pendingKey=event.key;else {job.records.push(event.record);job.pendingKey=null;}},binding)).then(()=>{job.status='completed';job.pendingKey=null;},()=>{job.status='failed';job.error='widget-job-failed';});
+    return {started:true,id,status:'running'};
+  })()`;
+}
+async function executeMeituanWidgets(workspace,resume,options){const requests=planMeituanWidgets(resume);return requests.length?require('./meituan-widget-job.cjs').executeMeituanWidgetJob(workspace,requests,options):[];}
+module.exports={planMeituanWidgets,buildMeituanWidgetScript,executeMeituanWidgets};

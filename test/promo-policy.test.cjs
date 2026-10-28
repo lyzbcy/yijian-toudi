@@ -1,0 +1,5 @@
+const test=require('node:test'),assert=require('node:assert/strict'),{shouldPrompt,migratePromotion,dismissPromotion,FIFTEEN_DAYS}=require('../electron/promo-policy.cjs');
+test('light use is not prompted; medium use is eligible',()=>{assert.equal(shouldPrompt({fillCompletedCount:2},0),false);assert.equal(shouldPrompt({fillCompletedCount:3},0),true);});
+test('dismiss is suppressed for full15days and then becomes eligible again',()=>{const meta=dismissPromotion({fillCompletedCount:3},1000);assert.equal(shouldPrompt(meta,1000+FIFTEEN_DAYS-1),false);assert.equal(shouldPrompt(meta,1000+FIFTEEN_DAYS),true);assert.equal(meta.starPromptDismissedUntil,1000+FIFTEEN_DAYS);});
+test('legacy done migrates once instead of ignoring or suppressing forever',()=>{const first=migratePromotion({fillCompletedCount:4,starPromptDone:true},1000),second=migratePromotion(first,5000);assert.equal(second.starPromptDismissedUntil,first.starPromptDismissedUntil);assert.equal(second.starPromptDue,false);});
+test('due flag cannot override persisted cooldown',()=>{assert.equal(shouldPrompt({fillCompletedCount:5,starPromptDue:true,starPromptDismissedUntil:5000},1000),false);});

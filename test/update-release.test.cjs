@@ -2,10 +2,12 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { compareVersions, summarizeRelease } = require('../electron/update-release.cjs');
 
-const win = { name: 'yijian-toudi-setup-0.5.0.exe', browser_download_url: 'https://example.test/win.exe', size: 42 };
-const winSha = { name: 'yijian-toudi-setup-0.5.0.sha256', browser_download_url: 'https://example.test/win.sha256' };
-const mac = { name: 'yijian-toudi-0.5.0-arm64.zip', browser_download_url: 'https://example.test/mac.zip', size: 43 };
-const release = { tag_name: 'v0.5.0', html_url: 'https://example.test/release', body: 'notes', assets: [mac, win, winSha] };
+const base='https://github.com/lyzbcy/yijian-toudi';
+const win = { name: 'yijian-toudi-setup-0.5.0.exe', browser_download_url: base+'/releases/download/v0.5.0/yijian-toudi-setup-0.5.0.exe', size: 42 };
+const winSha = { name: 'yijian-toudi-setup-0.5.0.sha256', browser_download_url: base+'/releases/download/v0.5.0/yijian-toudi-setup-0.5.0.sha256' };
+const mac = { name: 'yijian-toudi-0.5.0-arm64.zip', browser_download_url: base+'/releases/download/v0.5.0/yijian-toudi-0.5.0-arm64.zip', size: 43 };
+const macSha={name:'yijian-toudi-0.5.0-arm64.sha256',browser_download_url:base+'/releases/download/v0.5.0/yijian-toudi-0.5.0-arm64.sha256'};
+const release = { tag_name: 'v0.5.0', html_url: base+'/releases/tag/v0.5.0', body: 'notes', assets: [mac, win, winSha,macSha] };
 
 test('semantic version comparison does not mistake an older release for an update', () => {
   assert.equal(compareVersions('0.3.1', '0.5.0'), -1);

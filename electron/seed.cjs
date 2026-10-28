@@ -5,7 +5,9 @@
 // adapterStatus 字段保留做向后兼容（旧代码/迁移期兜底），新代码应读 capabilities。
 // 标签是人工维护的事实数据（一家公司是不是500强/AI，是确定的），不随岗位抓取变化。
 const VERIFIED = '2026-07-25';
+const guidedCompanies = require('./guided-platforms.cjs').guidedCompanies();
 const companies = [
+  ...guidedCompanies,
   // ===== 互联网头部（已适配或待适配） =====
   { id: 'tencent', name: '腾讯', short: 'T', color: '#1664ff', logoUrl: './assets/logos/tencent.png', portal: 'https://careers.tencent.com/', tags: ['500强', 'AI公司'], adapterStatus: 'adapter-ready', capabilities: { jobs: 'verified', login: 'manual', resume: 'degraded', apply: 'manual', status: 'manual' }, lastVerifiedAt: VERIFIED, applyRule: { maxActive: 3, cooldown: '7天', note: '腾讯 7 天内最多投递 3 个岗位' }, enabled: true },
   { id: 'baidu', name: '百度', short: '百', color: '#2932e1', logoUrl: './assets/logos/baidu.svg', portal: 'https://talent.baidu.com/', tags: ['500强', 'AI公司'], adapterStatus: 'adapter-ready', capabilities: { jobs: 'verified', login: 'manual', resume: 'degraded', apply: 'manual', status: 'unsupported' }, lastVerifiedAt: VERIFIED, enabled: true },
@@ -18,7 +20,6 @@ const companies = [
   { id: 'huawei', name: '华为', short: '华', color: '#cf0a2c', logoUrl: './assets/logos/huawei.svg', portal: 'https://career.huawei.com/cn', tags: ['500强', 'AI公司'], adapterStatus: 'adapter-needed', capabilities: { jobs: 'unsupported', login: 'manual', resume: 'unsupported', apply: 'unsupported', status: 'unsupported' }, lastVerifiedAt: null, enabled: true },
 
   // ===== 游戏 =====
-  { id: 'mihoyo', name: '米哈游', short: '米哈', color: '#5a8dee', logoUrl: './assets/logos/mihoyo.svg', portal: 'https://app.mihoyo.com/', tags: ['游戏', 'AI公司'], adapterStatus: 'adapter-needed', capabilities: { jobs: 'unsupported', login: 'manual', resume: 'unsupported', apply: 'unsupported', status: 'unsupported' }, lastVerifiedAt: null, applyRule: { maxActive: 1, cooldown: '30天', note: '米哈游 30 天内只能投递一个岗位' }, enabled: true },
   { id: 'netease', name: '网易', short: '易', color: '#e1251b', logoUrl: './assets/logos/netease.png', portal: 'https://hr.163.com/', tags: ['500强', '游戏', 'AI公司'], adapterStatus: 'login-only', capabilities: { jobs: 'degraded', login: 'manual', resume: 'unsupported', apply: 'unsupported', status: 'unsupported' }, lastVerifiedAt: null, enabled: true },
 
   // ===== 第三方招聘平台 =====
@@ -153,7 +154,7 @@ function createResumeProfile({ id, label, intention, education, experience, proj
 
 const resume = {
   updatedAt: null,
-  completion: 36,
+  completion: 0,
   activeProfileId: 'default',
   basic: defaultBasic(),
   skills: defaultSkills(),
@@ -182,7 +183,9 @@ function createDefaultAccount() {
 
 function createSeed() {
   const now = new Date().toISOString();
-  return {
+  // Every store owns its initial nested state; no mutable module constants leak
+  // between new profiles, migration helpers or test/sample stores.
+  return structuredClone({
     meta: {
       schemaVersion: 5,
       createdAt: now,
@@ -213,11 +216,13 @@ function createSeed() {
       dataMode: 'live',
       kimiBridgeEnabled: true,
       wecomWebhook: '',
+      feedbackEndpoint: require('./public-defaults.cjs').getPublicDefaults().feedbackEndpoint,
+      feedbackEndpointOverride: false, // Explicit user clearing/custom URL survives upgrade.
       jobs: { daysBack: 30, lastRefreshAt: null, recruitType: 'campus', autoRefresh: true },
       // 旧设置保留仅为数据兼容；自动快捷登录已停用，所有授权由用户在内嵌页操作。
       wechatQuickLogin: false
     }
-  };
+  });
 }
 
 module.exports = { createSeed, createDefaultAccount, createResumeProfile, emptyEducation, emptyExperience, emptyProject, emptyFamily, emptyGame, defaultAi, defaultIntention, defaultBasic, defaultSkills, defaultExtras, defaultCompliance };

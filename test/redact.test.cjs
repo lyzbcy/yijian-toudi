@@ -1,6 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { redactResume, createRedactedSnapshot } = require('../electron/redact.cjs');
+test('shared snapshot excludes the WeCom webhook',()=>{
+ const result=createRedactedSnapshot({settings:{wecomWebhook:'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=fixture-private',apiToken:'private'},resume:{}});assert.equal('wecomWebhook' in result.settings,false);assert.equal('apiToken' in result.settings,false);
+});
 
 test('Agent 默认简历读取会脱敏证件号、手机号、邮箱和家庭电话', () => {
   const result = redactResume({

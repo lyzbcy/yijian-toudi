@@ -9,6 +9,9 @@ const { _electron: electron } = require('playwright-core');
   const output = path.join(root, 'test-output');
   fs.mkdirSync(output, { recursive: true });
   const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'yjt-workspace-ui-'));
+  // Workspace chrome suite: seed onboarding before launch to avoid the late-modal race.
+  const seed=require('../electron/seed.cjs').createSeed();seed.meta.onboardingSeen=true;seed.settings.apiEnabled=false;seed.settings.jobs.autoRefresh=false;
+  fs.writeFileSync(path.join(profile,'state.json'),JSON.stringify(seed));
   const application = await electron.launch({
     args: [root, `--user-data-dir=${profile}`],
     executablePath: process.env.ELECTRON_EXECUTABLE || undefined,
@@ -32,7 +35,11 @@ const { _electron: electron } = require('playwright-core');
     const bar = window.locator('#workspaceBar');
     assert.equal(await bar.isVisible(), true, '工作区激活后顶部退出栏必须可见');
     const box = await bar.boundingBox();
-    assert.equal(Math.round(box.y), 0, '退出栏必须贴住窗口顶部');
+    const chromeHeight=process.platform==='win32'?require('../electron/window-theme.cjs').WINDOWS_CHROME_HEIGHT:0;
+    assert.equal(Math.round(box.y), chromeHeight, '退出栏必须紧贴原生标题控制行下方');
+    const viewport=await window.evaluate(()=>({width:innerWidth,height:innerHeight}));
+    const nativeBounds=require('../electron/workspace-layout.cjs').calculateWorkspaceBounds(viewport.width,viewport.height,{chromeHeight});
+    assert.equal(Math.round(box.y+box.height),nativeBounds.y,'原生网页不得覆盖标题栏或退出控件');
     assert.equal(Math.round(box.height), 52, '退出栏高度必须与原生网页偏移一致');
     await window.screenshot({ path: path.join(output, 'workspace-top-bar.png') });
 

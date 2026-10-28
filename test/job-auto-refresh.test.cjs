@@ -1,0 +1,26 @@
+const { test } = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const vm = require('node:vm');
+const { shouldAutoRefreshJobs } = require('../electron/job-auto-refresh.cjs');
+const now = Date.UTC(2026, 9, 9, 12);
+const state = (seen, last = null) => ({ meta: { onboardingSeen: seen }, settings: { jobs: { autoRefresh: true, lastRefreshAt: last, recruitType: 'social' } } });
+for (const seen of [false, undefined, null, 'true', 1]) test(`unselected first-run does not auto refresh (${String(seen)})`, () => assert.equal(shouldAutoRefreshJobs(state(seen), { now }), false));
+test('missing metadata does not auto refresh', () => assert.equal(shouldAutoRefreshJobs({ settings: state(true).settings }, { now }), false));
+test('legacy completed onboarding without privacy timestamp still refreshes', () => assert.equal(shouldAutoRefreshJobs(state(true), { now }), true));
+test('disabled auto refresh does not start', () => { const s = state(true); s.settings.jobs.autoRefresh = false; assert.equal(shouldAutoRefreshJobs(s, { now }), false); });
+test('background tests do not refresh', () => assert.equal(shouldAutoRefreshJobs(state(true), { now, backgroundTest: true }), false));
+test('local previews do not refresh', () => assert.equal(shouldAutoRefreshJobs(state(true), { now, localPreview: true }), false));
+test('within 24 hours does not refresh', () => assert.equal(shouldAutoRefreshJobs(state(true, new Date(now - 86400000 + 1).toISOString()), { now }), false));
+test('exactly 24 hours and older refresh', () => { for (const elapsed of [86400000, 86400001]) assert.equal(shouldAutoRefreshJobs(state(true, new Date(now - elapsed).toISOString()), { now }), true); });
+test('startup main actually uses the production policy and keeps manual implementation separate', () => {
+  const source = fs.readFileSync(require.resolve('../electron/main.cjs'), 'utf8');
+  const code = source.slice(source.indexOf('function maybeAutoRefreshJobs()'), source.indexOf('const refreshJobs = singleFlight'));
+  assert.match(source, /require\('\.\/job-auto-refresh\.cjs'\)/);
+  let refreshes = 0;
+  const run = (s, flags = {}) => vm.runInNewContext(code + ';maybeAutoRefreshJobs();', { shouldAutoRefreshJobs, store: { get: () => s }, backgroundTest: !!flags.backgroundTest, localPreview: !!flags.localPreview, logger: { info() {}, warn() {} }, refreshJobs: () => { refreshes++; return Promise.resolve(); } });
+  run(state(false)); assert.equal(refreshes, 0);
+  run(state(true)); assert.equal(refreshes, 1);
+  run(state(true), { localPreview: true }); assert.equal(refreshes, 1);
+  assert.match(source, /ipcMain\.handle\('jobs:refresh',[\s\S]{0,150}refreshJobs\(/);
+});

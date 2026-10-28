@@ -1,0 +1,20 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; connect-src 'none'"><title>遇到问题反馈</title><link rel="stylesheet" href="feedback.css"><link rel="stylesheet" href="window-theme.css"><script src="window-theme.js" defer></script></head><body><div class="window-chrome" aria-hidden="true">一键投递</div>
+<main><header><img src="assets/stickers/log/focus.png" alt=""><div><h1>遇到问题反馈</h1><p>版本 <span id="feedbackVersion">读取中</span> · 留言直接送到开发者群</p></div></header>
+<p id="configurationHint" role="status"></p>
+<div class="support-layout"><form id="feedbackForm"><label>反馈类型<select id="feedbackKind" disabled><option value="bug">问题反馈</option><option value="review">真实评价</option></select></label>
+<label id="categoryRow">问题方向（选填）<select id="feedbackCategory"><option value="">不选择</option><option value="login">登录与跳转</option><option value="resume">简历更新</option><option value="apply">岗位投递</option><option value="update">安装与更新</option><option value="ui">界面体验</option><option value="other">其它</option></select></label>
+<label>备注 / 真实评价（必填）<textarea id="feedbackMessage" rows="4" maxlength="1000" required placeholder="强烈建议说明操作步骤、预期结果和实际结果。评价请写真实体验。请勿填写账号密码或证件信息。"></textarea></label>
+<div class="privacy"><label><input id="feedbackIncludeLogs" type="checkbox" checked>附加脱敏诊断日志（默认）</label><small>日志没有任何敏感信息：仅含固定事件类别、错误码与计数，不含简历、联系方式、凭据、网页内容或本地路径。你可以取消勾选。</small></div>
+<details><summary>查看将发送的诊断日志</summary><pre id="feedbackLogPreview"></pre></details>
+<p id="feedbackStatus" role="status" aria-live="polite"></p><a id="feedbackLogLink" hidden>查看日志长链接</a>
+<footer><button id="feedbackCancel" type="button">关闭</button><button id="feedbackCheck" type="button" hidden>核对回执</button><button id="feedbackSend" type="submit">发送给开发者</button></footer></form>
+<aside class="agent-support" aria-labelledby="agentSupportTitle">
+ <span class="support-badge">AI 协作排障</span><h2 id="agentSupportTitle">先让 Agent 帮你定位问题</h2>
+ <p>反馈给开发者与 Agent 排障可以并行。把下面的提示词交给你信任的 Agent：先查版本和证据，再决定怎样处理。</p>
+ <ol><li>复制提示词，补充操作步骤、预期和实际结果。</li><li>需要连接时，在主界面「连接 AI Agent」读取 Skill；此处不复制 Token。</li><li>你可以说“帮我提交 PR”。Agent 经你确认后创建真实 PR，维护者审核；你不必会写代码。</li></ol>
+ <label class="description-option"><input id="agentSupportIncludeDescription" type="checkbox"> 附上我填写的现象（默认不附）</label>
+ <small>日志跟随左侧勾选；发送反馈与复制提示词互不触发。请先检查下方预览，再交给 Agent。</small>
+ <details id="agentSupportPreview"><summary>预览 / 手动复制排障提示词</summary><textarea id="agentSupportPrompt" rows="10" readonly aria-label="Agent 排障提示词预览"></textarea></details>
+ <div class="support-actions"><button id="agentSupportCopy" type="button" disabled>复制 Agent 排障提示词</button><a id="agentSupportRepository" href="https://github.com/lyzbcy/yijian-toudi">查看源码 / Issue / PR</a></div>
+ <p id="agentSupportStatus" role="status" aria-live="polite"></p>
+</aside></div></main><script src="agent-support.js"></script><script src="feedback.js"></script></body></html>

@@ -25,11 +25,20 @@ function createRedactedSnapshot(state) {
   safe.resume = redactResume(safe.resume);
   if (safe.settings) {
     delete safe.settings.apiToken;
+    delete safe.settings.wecomWebhook;
     if (safe.settings.email) {
       delete safe.settings.email.encryptedCode;
+      delete safe.settings.email.imapAddress;
+      safe.settings.email.accounts=(safe.settings.email.accounts||[]).map(a=>({provider:a.provider,connected:a.connected,redacted:true}));
       safe.settings.email.address = safe.settings.email.address ? '[已脱敏邮箱]' : '';
     }
   }
+  safe.careerApplications = (safe.careerApplications || []).map(record => ({
+    id:record.id, stage:record.stage, updatedAt:record.updatedAt,
+    history:(record.history||[]).map(h=>({stage:h.stage,at:h.at,source:h.source})), redacted:true
+  }));
+  delete safe.careerMailSync;
+  delete safe.careerMailReview;
   delete safe.idempotency;
   safe.messages = (safe.messages || []).map((message) => ({
     id: message.id,

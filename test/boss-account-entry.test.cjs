@@ -1,0 +1,11 @@
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const root=process.env.BOSS_ENTRY_SOURCE_ROOT||path.resolve(__dirname,'..'),helper=require(root+'/electron/boss-binding.cjs');
+const observed='https://www.zhipin.com/web/geek/resume',snap=(names,url=observed)=>({data:{url,tree:names.map(name=>({role:'text',name}))}}),account={id:'default',phoneMasked:'181****6789'};
+test('account entry equals the observed official resume link, not deprecated user route',()=>assert.equal(helper.BOSS_ACCOUNT_ENTRY,observed));
+test('account entry has exact official origin/path and no query/hash/credentials',()=>{const u=new URL(helper.BOSS_ACCOUNT_ENTRY);assert.equal(u.origin,'https://www.zhipin.com');assert.equal(u.pathname,'/web/geek/resume');assert.equal(u.search+u.hash+u.username+u.password,'');});
+test('production main imports the same entry and uses it for account verification',()=>{const m=fs.readFileSync(root+'/electron/main.cjs','utf8');assert.match(m,/const\s*\{\s*BOSS_ACCOUNT_ENTRY,\s*classifyBossBinding/);assert.match(m,/await client\.navigate\(BOSS_ACCOUNT_ENTRY\)/);assert.doesNotMatch(m,/client\.navigate\('https:\/\/www\.zhipin\.com\/web\/user'\)/);});
+test('resume page still requires exact explicit phone match',()=>assert.equal(helper.classifyBossBinding(snap(['181****6789']),account).verified,true));
+test('different phone on resume page is rejected',()=>assert.equal(helper.classifyBossBinding(snap(['181****1111']),account).error,'account-binding-mismatch'));
+test('homepage with matching phone remains rejected',()=>assert.equal(helper.classifyBossBinding(snap(['181****6789'],'https://www.zhipin.com/'),account).error,'account-page-required'));
+test('access restriction on resume page prevents verification',()=>assert.equal(helper.classifyBossBinding(snap(['访问受限','181****6789']),account).error,'access-restricted'));
+test('login button on resume page is not an authenticated identity',()=>{const s=snap(['181****6789']);s.data.tree.push({role:'button',name:'登录'});assert.equal(helper.classifyBossBinding(s,account).error,'login-required');});

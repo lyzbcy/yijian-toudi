@@ -1,26 +1,30 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
+  <script>if (new URLSearchParams(location.search).has('localPreview')) document.addEventListener('DOMContentLoaded', () => { document.title = '一键投递 · LOCAL PREVIEW' + (new URLSearchParams(location.search).has('aiDebug') ? ' · AI DEBUG' : ''); });</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:*">
   <title>一键投递</title>
   <link rel="stylesheet" href="./styles.css">
-</head>
-<body>
+<link rel="stylesheet" href="window-theme.css"><script src="window-theme.js" defer></script></head>
+<body><div class="window-chrome" aria-hidden="true">一键投递</div>
   <div class="workspace-bar hidden" id="workspaceBar">
     <span class="workspace-bar-icon">🔐</span>
     <div class="workspace-bar-text"><strong id="workspaceBarTitle">浏览器工作区</strong><span id="workspaceBarHint"></span></div>
     <button class="ghost-button" id="workspaceCopyUrl" title="复制当前网址">🔗 复制网址</button>
+    <button class="ghost-button" data-feedback="bug">遇到问题反馈</button>
+    <button class="ghost-button hidden" id="workspaceRestartLogin">重新打开登录</button>
     <button class="ghost-button" data-workspace-action="cancel" id="workspaceCancel">取消并返回</button>
     <button class="primary-button" data-workspace-action="finish" id="workspaceFinish">完成</button>
   </div>
 
-  <!-- 不打扰的求好评卡片：完成 3 次一键更新后出现一次，关闭不再打扰 -->
+  <!-- 中度使用后求 star/真实评价；关闭后15天不打扰，主进程持久化 -->
   <div class="star-card hidden" id="starCard">
     <img src="./assets/stickers/log/happy.png" alt="">
     <div class="star-card-text"><strong>用得还顺手吗？</strong><span>一键投递是开源软件，去 GitHub 给个 star 就是对作者最大的鼓励 ⭐</span></div>
     <button class="primary-button" id="starCardGo">去点 star</button>
+    <button class="ghost-button" data-feedback="review" id="starCardReview">写真实评价</button>
     <button class="ghost-button" id="starCardClose">不了</button>
   </div>
 
@@ -47,10 +51,11 @@
       <nav class="nav" aria-label="主要导航">
         <button class="nav-item active" data-page="jobs"><span class="nav-icon">⌁</span><span>招聘项目</span><b id="jobCount">0</b></button>
         <button class="nav-item" data-page="cart"><span class="nav-icon">🛒</span><span>投递购物车</span><b id="cartCount">0</b></button>
-        <button class="nav-item" data-page="applied"><span class="nav-icon">✓</span><span>已投递</span><b id="appliedCount">0</b></button>
+        <button class="nav-item" data-page="applied"><span class="nav-icon">✓</span><span>投递管理</span><b id="appliedCount">0</b></button>
         <button class="nav-item" data-page="resume"><span class="nav-icon">▤</span><span>我的简历</span><b id="resumeBadge">0%</b></button>
         <button class="nav-item" data-page="inbox"><span class="nav-icon">✉</span><span>招聘信息</span><b id="unreadCount">0</b></button>
         <button class="nav-item" data-page="automation"><span class="nav-icon">↻</span><span>自动化中心</span><i class="live-dot"></i></button>
+        <button class="nav-item feedback-entry" data-feedback="bug"><span class="nav-icon">💬</span><span>遇到问题反馈</span></button>
       </nav>
 
       <div class="nav-section-title">连接与帮助</div>
@@ -65,7 +70,8 @@
         <strong id="sidebarMotto">今天也在认真投递</strong>
         <span>数据只保存在你的电脑里</span>
       </div>
-      <div class="version">本地优先 · v<span id="appVersion">0.5.0</span></div>
+      <p id="operationProgress" role="status" aria-live="polite" style="font-size:12px;line-height:1.6;padding:0 12px;overflow-wrap:anywhere">正在读取任务状态…</p>
+      <div class="version">本地优先 · v<span id="appVersion">0.5.95</span></div>
     </aside>
 
     <main class="main">
@@ -83,6 +89,12 @@
       </header>
 
       <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+      <section id="updateProgress" hidden aria-live="polite" style="padding:12px;border:1px solid #e4e7ed;border-radius:12px;margin:12px 0">
+        <span id="updateProgressLabel">下载更新</span>
+        <progress id="updateDownloadProgress" max="100" aria-label="更新下载进度"></progress>
+        <span id="updateDownloadBytes"></span>
+        <a href="https://github.com/lyzbcy/yijian-toudi/releases" data-external>打开发布页</a>
+      </section>
 
       <section class="page active" id="page-jobs">
         <div class="hero-card">
@@ -147,16 +159,31 @@
       </section>
 
       <section class="page" id="page-applied">
-        <div class="content-card" style="padding:26px">
-          <div class="card-toolbar"><div><h3>已投递岗位</h3><p>追踪每个已投岗位的状态变化（需登录后刷新）。</p></div><div class="card-actions"><button class="ghost-button" id="exportAppliedButton">导出 CSV</button><button class="ghost-button" id="refreshApplied">刷新状态</button></div></div>
-          <div id="appliedList"></div>
+        <div class="career-dashboard">
+          <header class="career-heading"><div><span class="career-eyebrow">YOUR NEXT CHAPTER</span><h2>投递管理</h2><p>每一步进展，都清晰可见。</p></div><div class="card-actions"><button class="ghost-button" id="zhilianCampusConnect">智联校园网申</button><button class="ghost-button" id="exportAppliedButton">导出 CSV</button><button class="ghost-button" id="refreshApplied">刷新状态</button><button class="primary-button" id="careerAdd">＋ 添加投递</button></div></header>
+          <p id="careerRefreshStatus" role="status" aria-live="polite">刷新将同步邮箱并核对已支持官网；未覆盖项目单独列为待核对。</p>
+          <nav id="careerPipeline" class="career-pipeline" aria-label="投递阶段"></nav>
+          <section class="career-route-summary" aria-label="提交类型分账"><div id="careerRouteCounts"></div><p id="zhilianCampusStatus" role="status">智联校园：读取已登录浏览器的当前岗位页，由 Agent 核对企业正式网申后提交。</p><small>当前账号/简历的Agent分账；Boss沟通另计。沟通≠简历送达≠企业网申；历史未分类记录不自动重判。</small></section>
+          <div class="career-layout"><main class="career-main">
+          <section class="career-surface" id="careerProjectsSection"><div class="career-section-head"><h3 id="careerListHeading">全部项目</h3><label class="career-filter-label">阶段<select id="careerFilter"><option value="">全部</option><option>待投递</option><option>已投递</option><option>笔试中</option><option>面试中</option><option>Offer</option><option>已结束</option><option>已撤回</option></select></label></div><div id="careerList"></div></section>
+          <details id="careerFormPanel" class="career-surface"><summary>添加 / 编辑投递记录</summary>
+          <form id="careerForm" class="inline-form"><input type="hidden" id="careerEditingId"><label>来源邮箱<select id="careerMailbox"><option value="">默认邮箱</option></select></label>
+            <label>公司<input id="careerCompany" required maxlength="200"></label>
+            <label>岗位<input id="careerRole" required maxlength="200"></label>
+            <label>阶段<select id="careerStage"><option>待投递</option><option>已投递</option><option>笔试中</option><option>面试中</option><option>Offer</option><option>已结束</option><option>已撤回</option></select></label>
+            <label>备注<input id="careerNote" maxlength="2000"></label><button class="primary-button" type="submit">添加记录</button>
+          </form>
+          </details>
+          <details class="career-surface"><summary>同步信息与待核对邮件</summary><p id="careerSyncInfo" role="status"></p><div id="careerMailReview" class="career-mail-review"></div></details>
+          <details class="career-surface"><summary>官网投递与申请账本</summary><div id="appliedList"></div></details>
+          </main><aside class="career-sidebar" aria-label="待办与下一步"><section class="career-surface" id="careerTasksSection"><div class="career-section-head"><div><h3><span id="careerTodoHeading">紧急待办</span> <span id="careerTodoCount"></span></h3><p>按截止时间排序，先处理最紧急的事</p></div><div class="career-board-actions"><button class="ghost-button" id="careerReadBody">从邮件正文补全安排</button><button class="primary-button" id="careerOrganize">✦ 一键整理待办</button></div></div><p id="careerTodoStatus" role="status" aria-live="polite"></p><div id="careerTodos"></div><details class="career-completed"><summary>已完成与已忽略 <span id="careerDoneCount"></span></summary><div id="careerDoneTodos"></div></details></section><section id="careerDetail" class="career-surface career-detail" aria-label="事项详情"></section></aside></div>
         </div>
       </section>
 
       <section class="page" id="page-resume">
         <div class="resume-summary content-card">
           <div class="progress-ring" id="resumeRing"><b id="resumeCompletion">0%</b><span>完整度</span></div>
-          <div>
+          <div class="resume-summary-copy">
             <span class="soft-label">统一简历源</span>
             <h2>按求职方向维护多份，基本信息共享</h2>
             <p>联系方式、技能、证书等通用信息在所有简历间共享；意向和经历按方向独立保存。</p>
@@ -167,8 +194,8 @@
             <button class="ghost-button" id="importResumeJsonButton">导入 JSON</button>
             <button class="ghost-button" id="exportResumeButton">导出求职快照</button>
             <button class="ghost-button" id="fillResumeTencentButton">更新到腾讯</button>
-            <button class="primary-button" id="fillResumeAllButton">↻ 一键更新所有平台</button>
-            <button class="primary-button" id="saveResumeButton">保存简历</button>
+            <button class="primary-button" id="fillResumeAllButton">↻ 批量更新简历</button>
+            <button class="primary-button" id="saveResumeButton">立即保存</button><button class="ghost-button" id="resumeReloadButton">重新载入已保存档案</button><span id="resumeAutosaveStatus" role="status" aria-live="polite">编辑后自动保存到本机</span>
           </div>
           <div class="resume-sync-status" id="resumeSyncStatus"></div>
         </div>
@@ -187,13 +214,14 @@
             <a href="#resume-basic">01 基本信息</a>
             <a href="#resume-intention">02 求职意向</a>
             <a href="#resume-education">03 教育经历</a>
-            <a href="#resume-games">06 游戏经历</a>
             <a href="#resume-experience">04 工作经历</a>
             <a href="#resume-project">05 项目经历</a>
-            <a href="#resume-skills">06 技能与证书</a>
-            <a href="#resume-extras">07 补充信息</a>
-            <a href="#resume-family">08 家庭成员</a>
-            <a href="#resume-compliance">09 合规声明</a>
+            <a href="#resume-games">06 游戏经历</a>
+            <a href="#resume-ai">07 AI 应用技能</a>
+            <a href="#resume-skills">08 技能与证书</a>
+            <a href="#resume-extras">09 补充信息</a>
+            <a href="#resume-family">10 家庭成员</a>
+            <a href="#resume-compliance">11 合规声明</a>
             <div class="local-note">🔒 表单内容仅保存在本机应用数据目录。</div>
           </aside>
           <div class="resume-sections">
@@ -208,16 +236,15 @@
                 <label>性别<select name="basic.gender"><option value="">不填写</option><option>男</option><option>女</option><option>其他</option></select></label>
                 <label>出生日期<input name="basic.birthday" type="date"></label>
                 <label>微信<input name="basic.wechat" placeholder="选填"></label>
-                <label>籍贯<input name="basic.nativePlace" placeholder="如：江苏省苏州市（校招常见必填）"></label>
+                <label>籍贯<input name="basic.nativePlace" placeholder="官网完整路径：省 / 市 / 区；不确定留空"></label>
                 <label>国籍<input name="basic.nationality" placeholder="中国"></label>
                 <label>民族<input name="basic.ethnicity" placeholder="如：汉族"></label>
                 <label>政治面貌<select name="basic.politicalStatus"><option value="">不填写</option><option>中共党员</option><option>中共预备党员</option><option>共青团员</option><option>群众</option><option>民主党派</option></select></label>
                 <label>婚姻状况<select name="basic.maritalStatus"><option value="">不填写</option><option>未婚</option><option>已婚</option><option>保密</option></select></label>
-                <label>身份证号<input name="basic.idCard" placeholder="选填，仅本机保存（部分校招/背调要）"></label>
                 <label>个人主页<input name="basic.website" placeholder="https://"></label>
                 <label>GitHub<input name="basic.github" placeholder="https://github.com/你的用户名"></label>
                 <label>QQ号<input name="basic.qq" placeholder="选填（腾讯校招要）"></label>
-                <label>证件类型<select name="basic.idType"><option value="">身份证（默认）</option><option>身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>台湾居民来往大陆通行证</option><option>外国人永久居留身份证</option></select></label>
+                <label>证件类型<select name="basic.idType"><option value="">请选择真实证件类型</option><option>身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>台湾居民来往大陆通行证</option><option>外国人永久居留身份证</option></select></label>
                 <label>证件号码<input name="basic.idNumber" placeholder="证件号码（京东作为简历唯一标识）"></label>
                 <label>紧急联系人<input name="basic.emergencyContact" placeholder="选填，姓名+电话（≠亲属）"></label>
                 <label>身高(cm)<input name="basic.height" type="number" placeholder="选填（罕用）"></label>
@@ -240,23 +267,13 @@
                 <label>实习时长<input name="intention.internDuration" placeholder="如：3-6个月（腾讯校招）"></label>
                 <label>每周可出勤天数<input name="intention.weeklyAttendance" placeholder="如：5天（腾讯校招）"></label>
                 <label>意向城市<input name="intention.cities" placeholder="杭州、上海"></label>
-                <label>多城市排序<input name="intention.preferredLocations" placeholder="第一、二志愿城市（校招多志愿）"></label>
                 <label>期望薪资<input name="intention.salary" placeholder="如 200-300"></label>
                 <label>薪资单位<select name="intention.salaryUnit"><option>月薪</option><option>年薪</option><option>14薪</option><option>日薪（实习）</option><option>期权</option></select></label>
                 <label>到岗时间<input name="intention.availability" placeholder="例如：两周内 / 可随时到岗"></label>
                 <label>工作类型<select name="intention.employmentType"><option>全职</option><option>实习</option><option>兼职</option><option>远程</option></select></label>
-                <label>内推码<input name="intention.referralCode" placeholder="选填，各大厂通用（影响简历优先级）"></label>
-                <label>渠道来源<input name="intention.channel" placeholder="如：宣讲会/招聘网站/内推"></label>
                 <label>期望工作国家<input name="intention.expectCountry" placeholder="如：中国内地（各家独立选择器）"></label>
                 <label>工作年限<input name="intention.workYears" placeholder="如：3 年（社招必填，留空按经历推算）"></label>
-                <label>面试城市<input name="intention.interviewCity" placeholder="选填（腾讯/京东校招，如：深圳）"></label>
-                <label>意向事业群<input name="intention.businessGroup" placeholder="选填（如：微信/QQ/到店/配送）"></label>
-                <label class="span-2">是否接受调剂<small style="display:block;color:var(--muted);margin-bottom:6px">岗位/城市调剂（腾讯/京东校招常见）</small>
-                  <span style="display:flex;gap:14px;flex-wrap:wrap;font-size:10px">
-                    <label style="font-weight:400">岗位调剂<select name="intention.acceptAdjustment"><option value="">未回答</option><option value="true">接受</option><option value="false">不接受</option></select></label>
-                    <label style="font-weight:400">城市分配<select name="intention.acceptCityDeployment"><option value="">未回答</option><option value="true">接受</option><option value="false">不接受</option></select></label>
-                  </span>
-                </label>
+
                 <label class="span-2">可接受<small style="display:block;color:var(--muted);margin-bottom:6px">出差/外派/加班/夜班（勾选表示可接受）</small>
                   <span style="display:flex;gap:14px;flex-wrap:wrap;font-size:10px">
                     <label style="font-weight:400">出差<select name="intention.willingness.travel"><option value="">未回答</option><option value="true">接受</option><option value="false">不接受</option></select></label>
@@ -268,7 +285,7 @@
               </div>
             </section>
             <section class="form-section content-card" id="resume-education">
-              <div class="section-heading"><span>03</span><div><h3>教育经历</h3><p>可加多段；多数招聘网站最多保存前 3-5 段，多余的会被标记为需手动填写</p></div></div>
+              <div class="section-heading"><span>03</span><div><h3>教育经历</h3><p>可加多段；日期支持月份或具体日，不确定日期请勿补造。学习形式/排名/专业类别请按官网选项填写；空白表示未回答。多数网站最多保存前 3-5 段。</p></div></div>
               <div class="repeatable-list" data-repeat="education"></div>
               <button type="button" class="ghost-button add-segment" data-add-segment="education">＋ 添加一段教育经历</button>
             </section>
@@ -299,14 +316,13 @@
               <div class="form-grid">
                 <label class="span-2">专业技能<textarea name="skills.keywords" rows="3" placeholder="React、Python、产品规划、用户研究…"></textarea></label>
                 <label class="span-2">熟练度（技术岗分级）<input name="skills.proficiency" placeholder="如：React 精通、Python 熟练、Go 了解"></label>
-                <label>语言能力<input name="skills.languages" placeholder="英语 CET-6 (492)"></label>
                 <label>开发语言<input name="skills.devLanguages" placeholder="如：Python,Java,Go（腾讯/京东校招独立项）"></label>
                 <label>英语等级<select name="skills.englishLevel"><option value="">不填写</option><option>CET-4</option><option>CET-6</option><option>TEM-4</option><option>TEM-8</option><option>雅思</option><option>托福</option><option>其他</option></select></label>
                 <label>英语分数<input name="skills.englishScore" placeholder="如：492（与等级配对）"></label>
                 <label>证书<input name="skills.certificates" placeholder="PMP、软考、蓝桥杯…"></label>
                 <label>证书编号<input name="skills.certificateIds" placeholder="选填，含金量高的证书编号"></label>
                 <label>作品集链接<input name="skills.portfolioUrl" placeholder="https://"></label>
-                <label>作品集（文件）<input name="skills.portfolio" placeholder="选填，文件路径"></label>
+                <label>作品集说明<input name="skills.portfolio" placeholder="代表作品、职责与成果"></label>
                 <label>兴趣特长<input name="skills.interests" placeholder="主持、博客、3D 建模…"></label>
               </div>
             </section>
@@ -322,19 +338,16 @@
               </div>
             </section>
             <section class="form-section content-card" id="resume-family">
-              <div class="section-heading"><span>08</span><div><h3>家庭成员</h3><p>华为等校招必填；仅本机保存</p></div></div>
+              <div class="section-heading"><span>10</span><div><h3>家庭成员</h3><p>华为等校招必填；仅本机保存</p></div></div>
               <div class="repeatable-list" data-repeat="family"></div>
               <button type="button" class="ghost-button add-segment" data-add-segment="family">＋ 添加一位家庭成员</button>
             </section>
             <section class="form-section content-card" id="resume-compliance">
-              <div class="section-heading"><span>09</span><div><h3>合规声明</h3><p>各大厂投递通用，避免重复填写</p></div></div>
-              <div class="form-grid">
-                <label>曾被本公司面试<select name="compliance.previouslyInterviewed"><option value="">未回答</option><option value="true">是</option><option value="false">否</option></select></label>
-                <label>曾被本公司录用<select name="compliance.previouslyEmployed"><option value="">未回答</option><option value="true">是</option><option value="false">否</option></select></label>
-                <label>有亲属在本公司<select name="compliance.hasRelativeAtCompany"><option value="">未回答</option><option value="true">是</option><option value="false">否</option></select></label>
-                <label>无犯罪记录声明<select name="compliance.criminalRecord"><option value="">未回答</option><option value="true">是</option><option value="false">否</option></select></label>
-                <label class="span-2">亲属详情（如有）<input name="compliance.relativeDetail" placeholder="亲属姓名、关系、所在部门"></label>
-              </div>
+              <div class="section-heading"><span>11</span><div><h3>合规声明</h3><p>公司专属问题：选哪家公司，就只填写和使用该公司的答案；通用事实只填一次。</p></div></div>
+              <label>当前填写的公司<select id="resumePlatformCompany"><option value="">请选择公司</option></select></label>
+              <p class="resume-batch-note">内推码、既往面试/任职、亲属关系、事业群与调剂回答不会跨公司复用。旧版通用答案保留在原档案，不自动归属任何公司，请在对应公司下重新确认。</p>
+              <div class="form-grid" id="platformAnswersFields"></div>
+              <div class="form-grid"><label>通用：无犯罪记录声明<select name="compliance.criminalRecord"><option value="">未回答</option><option value="true">是</option><option value="false">否</option></select></label></div>
             </section>
           </div>
         </form>
@@ -394,23 +407,24 @@
         <div class="connections-grid">
           <article class="content-card connection-card email-card">
             <div class="connection-head"><span class="company-logo qq">Q</span><div><h3>QQ 邮箱</h3><p>读取招聘相关邮件</p></div><b id="emailStatus">未连接</b></div>
-            <p class="connection-copy">需要在 QQ 邮箱设置中开启 IMAP，并使用授权码而不是登录密码。授权码使用系统安全存储加密。</p>
-            <details class="email-help">
-              <summary>不会获取授权码？点这里看步骤</summary>
-              <ol>
-                <li>电脑浏览器打开 <a href="https://mail.qq.com/" data-external>mail.qq.com</a> 并登录你的 QQ 邮箱</li>
-                <li>点顶部「设置」→「账户」</li>
-                <li>找到「POP3/IMAP/SMTP/Exchange/CardDAV/CalDAV 服务」，开启「IMAP/SMTP 服务」</li>
-                <li>按提示用手机发短信验证，会得到一串 16 位授权码（不是登录密码）</li>
-                <li>把授权码填到下面，点「连接并同步」</li>
-              </ol>
-              <p class="email-help-note">支持 163 / Gmail 等其他邮箱吗？目前只接了 QQ，其他邮箱适配在路上。授权码随时可在邮箱设置里关闭。</p>
+            <p class="connection-copy">优先复用电脑浏览器已登录的 QQ 邮箱，无需填写授权码；未登录时扫码即可。通过已连接的浏览器扩展，按每个邮箱读取范围只读收件箱列表中的招聘消息，不打开正文、不改已读状态。</p>
+            <p id="browserEmailInfo" class="connection-copy">点击连接后，邮箱页会放在「一键投递 · 邮箱同步」分组。保留该页可在软件运行时自动同步。</p>
+            <button class="primary-button" id="connectBrowserEmailButton">一键连接网页登录 / 继续同步</button>
+            <label><input type="checkbox" id="emailReadBody">自动读取相关招聘正文，补全时间与链接（网页正常阅读可能标为已读）</label>
+            <label><input type="checkbox" id="emailAutoSync">软件运行时每10分钟同步所有已连接邮箱进度</label>
+            <div class="mail-multi-controls"><button id="connectSchoolEmailButton" class="primary">连接江南大学邮箱</button><button id="syncAllEmailButton" class="secondary">核对并同步所有邮箱进度</button></div>
+              <label><input type="checkbox" id="emailImportProgress"> 将明确的招聘进度加入投递管理（未知岗位标为待确认）</label>
+              <label>每邮箱读取范围 <select id="emailScanLimit"><option value="80">最近80封</option><option value="200">最近200封（学校邮箱逐页读取）</option></select></label>
+              <div id="mailboxAccounts" aria-label="已连接的邮箱"></div>
+              <details class="email-help">
+              <summary>高级选项：IMAP（不依赖浏览器）</summary>
+              <p>适合需要关闭浏览器后仍同步的用户。QQ邮箱「设置 → 账户」开启 IMAP 服务，按邮箱提示完成验证后获取授权码。授权码由系统加密保存，不是登录密码。</p>
+              <div class="inline-form">
+                <label>邮箱地址<input id="emailAddress" placeholder="123456@qq.com"></label>
+                <label>IMAP 授权码<input id="emailCode" type="password" placeholder="首次连接时填写"></label>
+              </div>
+              <button class="secondary-button" id="syncEmailButton">使用 IMAP 连接并同步</button>
             </details>
-            <div class="inline-form">
-              <label>邮箱地址<input id="emailAddress" placeholder="123456@qq.com"></label>
-              <label>IMAP 授权码<input id="emailCode" type="password" placeholder="首次连接时填写"></label>
-            </div>
-            <button class="primary-button" id="syncEmailButton">连接并同步</button>
           </article>
           <article class="content-card connection-card">
             <div class="connection-head"><span class="company-logo chrome">●</span><div><h3>招聘网站浏览器</h3><p>五维能力一目了然，独立资料目录保留登录态</p></div><b>本地</b></div>
@@ -436,19 +450,33 @@
           </div>
           <img src="./assets/stickers/study.png" alt="">
         </div>
+        <article class="content-card agent-native-guide">
+          <h3>建议配合 Agent 使用（可选）</h3>
+          <p>企业官网的字段更新可能让自动投递暂时阻塞；软件未及时更新时，Agent 可以读取任务与诊断，帮你定位问题、整理原窗口的人工处理步骤，也能根据你的简历挑选合适岗位。不使用 Agent 也能照常操作。</p>
+          <details class="agent-skill-guide">
+            <summary>软件内置 Skill · 接口说明书与改版协作流程</summary>
+            <p>这是本版本的公开操作契约，不包含网站选择器、引擎源码或凭据。带 Token 的接入 Prompt 请只交给可信的私有 Agent；这份说明书可单独复制。</p>
+            <button class="ghost-button" id="copyAgentSkillButton">复制 Skill 说明书（不含 Token）</button>
+            <pre id="agentSkillInstructions" class="prompt-box"></pre>
+          </details>
+        </article>
         <div class="agent-grid">
           <article class="content-card">
             <div class="card-toolbar"><div><h3>接入 Prompt</h3><p>Token 只展示在本机，请不要发到公开聊天。</p></div><button class="primary-button" id="copyPromptButton">复制 Prompt</button></div>
             <pre id="agentPrompt" class="prompt-box"></pre>
             <details class="agent-deploy-guide">
               <summary>Skill 版与云端定时部署</summary>
-              <p>每次 Release 附同版本 Skill 包与 SHA256。安装到 Agent 的 skills 目录后，先核对应用与 Skill 版本，运行 dryRun，再启用正式日程。</p>
+              <p>每次 Release 附同版本 Skill 包与 SHA256；先在 draft 上传并回读校验，再公开。安装到 Agent 的 skills 目录后，先核对应用与有效 Skill 版本，运行 dryRun，再启用正式日程。</p>
+              <p>Node20+；每次先调用 scripts/use.cjs，读取有效版本和文档路径。每天首次在后台静默检查，本次不等待下载、不切换版本；失败保留旧版，次日再试。主目录保留为引导器，新版在独立缓存生效；Skill 更新不升级桌面，版本不符时暂停任务。</p>
               <p>应用和已登录浏览器仍在本机运行；异机 Skill 通过 SSH 反向隧道连接本机 API。云端只访问 127.0.0.1，不把 API 暴露公网；Token 放私有环境配置，不写入计划任务或日志。</p>
-              <pre>ssh -N -o ExitOnForwardFailure=yes -R 127.0.0.1:153147:127.0.0.1:53147 USER@SERVER
-YJTD_BASE_URL=http://127.0.0.1:153147
+              <p>软件退出期间暂停新写入。AI 或云端遇断连/503，保留已有任务编号与幂等键；重开后先查询原任务或回执，未知结果不计成功、不换键重发。</p>
+              <pre>ssh -N -o ExitOnForwardFailure=yes -R 127.0.0.1:15347:127.0.0.1:53147 USER@SERVER
+YJTD_BASE_URL=http://127.0.0.1:15347
 YJTD_ACCOUNT_ID=default  YJTD_TARGET=100  YJTD_DRY_RUN=1
+node scripts/use.cjs
 node scripts/daily-boss.cjs
 # 演练核对通过后，移除 YJTD_DRY_RUN；服务器 Asia/Shanghai 每日 10:00 触发。</pre>
+              <p>定时启动回执须匹配账号、数量、dryRun 和 runId；状态不完整、停止中或待复核不启动。YJTD_DRY_RUN 只取 1、0 或未设置，其它值报错。正式回执未知或标记损坏时跨日仍暂停；账号 launch 锁防跨日期并发，只释放本次自己的锁、不按时间强拆。先核对 APP 账本；用户处理遗留锁时还须确认没有触发进程在运行，再备份移走输出指定的锁或标记，不能定时自动清除或重投未知岗位。</p>
               <p>完整跨平台部署、私有 Token 配置和防重复触发说明见仓库 README 与 Skill 内 references/deploy.md。启动不等于投出 100 份，实际数量以应用投递记录为准。</p>
             </details>
             <div class="agent-launch-row">
@@ -482,6 +510,13 @@ node scripts/daily-boss.cjs
             <button class="primary-button" id="saveSettingsButton">保存设置</button>
           </section>
           <section class="content-card settings-card">
+            <h3>问题反馈与真实评价</h3>
+            <p>通过反馈服务把版本、留言和可选脱敏日志直接发给开发者。企业微信密钥只保留在服务端。</p>
+            <label>反馈服务地址<input id="feedbackEndpoint" type="url" placeholder="https://你的域名/v1/feedback"></label>
+              <small>粉丝发行包由发布者内置公开服务地址，通常无需填写；自定义或清空后会保留你的选择。开发候选未配置时会明确提示，部署见 support/README.md。</small>
+            <button class="ghost-button" data-feedback="review">写真实评价</button>
+          </section>
+          <section class="content-card settings-card">
             <h3>岗位抓取</h3>
             <p>选择你的求职方向，软件会优先抓取对应类型岗位；再设置抓取时间范围。</p>
             <label>求职方向<select id="recruitType"><option value="social">社招</option><option value="campus">校招</option><option value="summer-intern">暑期实习</option><option value="daily-intern">日常实习</option><option value="all">全部都要</option></select></label>
@@ -503,8 +538,9 @@ node scripts/daily-boss.cjs
           <section class="content-card settings-card">
             <h3>Boss 批量投递（实验）</h3>
             <p>通过本机 Kimi 浏览器扩展控制你已登录的 Boss 页面批量沟通：规则=开发岗（前端/后端/全栈/游戏/AI/算法），排除测试与销售运营类；武汉投实习、上海/苏州/无锡/杭州投 27 届校招。使用即代表已知悉各平台协议风险。</p>
-            <label class="switch-row"><span><strong>Kimi 桥接（ws://127.0.0.1:10086）</strong><small id="kimiBridgeStatus">状态未知</small></span><input id="kimiBridgeEnabled" type="checkbox"><i></i></label>
-            <label>企业微信通知 Webhook<small>投递进度会推送到企微群机器人（qyapi.weixin.qq.com）</small><input id="wecomWebhook" type="text" placeholder="https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=..."></label>
+              <label class="switch-row"><span><strong>Kimi WebBridge（http://127.0.0.1:10086）</strong><small id="kimiBridgeStatus">状态未知</small></span><input id="kimiBridgeEnabled" type="checkbox"><i></i></label>
+              <p>先安装官方 WebBridge 并连接浏览器扩展；软件复用本机 daemon，不另占端口。文件上传需由本人在扩展详情开启“允许访问文件网址”。每批会先核对账号身份；客户旧尾号档案可在“验证绑定”时补充手机号，原记录保留。<a href="https://www.kimi.com/zh-cn/features/webbridge" data-external>安装与连接说明 ↗</a></p>
+            <label>企业微信通知 Webhook<small>投递进度会推送到企微群机器人（qyapi.weixin.qq.com）</small><input id="wecomWebhook" type="password" autocomplete="off" spellcheck="false" placeholder="https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=..."></label>
             <label>投递账号<small>客户账号=独立浏览器扫码登录，投递记录按账号分开存；新客户账号单次上限 50 家</small>
               <select id="bossAccountSelect"></select>
             </label>
@@ -512,13 +548,15 @@ node scripts/daily-boss.cjs
               <button class="ghost-button" id="bossAccountCreateButton">新建客户账号</button>
               <button class="ghost-button" id="bossAccountLaunchButton">启动该账号浏览器（扫码）</button>
               <button class="ghost-button" id="bossAccountVerifyButton">验证绑定</button>
+              <button class="ghost-button" id="bossAccountConfirmSelfButton">本人确认自用账号（仅末两位时）</button>
             </div>
             <div class="settings-actions">
               <button class="ghost-button" id="wecomTestButton">发送测试通知</button>
-              <button class="ghost-button" id="kimiRestartButton">重连 Kimi 扩展</button>
+                <button class="ghost-button" id="kimiRestartButton">重连 WebBridge 客户端</button>
               <button class="ghost-button" id="bossBatchDryRunButton">批量演练（不发送）</button>
               <button class="primary-button" id="bossBatchStartButton">开始批量投递</button>
               <button class="ghost-button" id="bossBatchStopButton" hidden>停止批量</button>
+              <button class="ghost-button" id="bossBatchResolveButton" hidden>核对上次异常</button>
             </div>
             <p class="setting-hint" id="bossBatchStatusLine">未运行。</p>
           </section>
@@ -537,12 +575,12 @@ node scripts/daily-boss.cjs
             <p class="setting-hint">数据未上传任何服务器。Agent API 只监听 127.0.0.1，仅本机可访问。</p>
           </section>
           <section class="content-card settings-card dev-log-card">
-            <div class="card-toolbar"><div><h3>运行日志</h3><p>遇到问题时，把这里的内容截图或复制发给开发者。内存中保留最近 50 条，重启清空。</p></div><div class="card-actions"><button class="ghost-button" id="copyLogsButton">复制日志</button><button class="ghost-button" id="refreshLogsButton">刷新</button></div></div>
-            <div class="dev-log-list" id="devLogList"><p class="dev-log-empty">点击"刷新"查看日志。</p></div>
+            <div class="card-toolbar"><div><h3>运行日志</h3><p>遇到问题时，把这里的内容截图或复制发给开发者。最近 50 条可复制；脱敏日志每 3 秒批量落盘于数据目录 logs，每份 1MB，保留 3 份轮换。</p></div><div class="card-actions"><button class="ghost-button" id="copyLogsButton">复制日志</button><button class="ghost-button" id="refreshLogsButton">刷新</button></div></div>
+            <label class="switch-row"><span><strong>排障模式</strong><small>增加调用位置与结构信息，不记录简历与凭据原文</small></span><input type="checkbox" id="diagnosticLogging"><i></i></label><div class="dev-log-list" id="devLogList"><p class="dev-log-empty">点击"刷新"查看日志。</p></div>
           </section>
           <section class="content-card settings-card about-card">
             <img src="./assets/stickers/mascot.png" alt="">
-            <div><h3>一键投递 v0.5.0</h3><p>一个弱小但有梦想的开发者，想把重复投简历这件事做得轻松一点。</p><a href="https://lyzbcy.github.io/" data-external>关于捞鱼 ↗</a></div>
+            <div><h3>一键投递 v<span id="aboutAppVersion">0.5.95</span></h3><p>一个弱小但有梦想的开发者，想把重复投简历这件事做得轻松一点。</p><a href="https://lyzbcy.github.io/" data-external>关于捞鱼 ↗</a></div>
           </section>
         </div>
       </section>
@@ -558,6 +596,12 @@ node scripts/daily-boss.cjs
         <strong>🔒 你的求职数据保存在本机</strong>
         <p>简历、招聘消息和网站登录态默认不会上传；邮箱使用 IMAP 授权码并由系统安全存储加密；Agent API 只监听 127.0.0.1；最终投递和简历保存始终由你确认。</p>
       </div>
+      <details class="onboarding-privacy" id="onboardingAgentAdvice" open>
+        <summary>✦ 强烈建议：配合 AI Agent 使用，才能发挥完整工作流</summary>
+        <p><strong>手动投递和 Agent 辅助不是同一种体验。</strong>手动模式由你逐个筛选岗位、核对材料与处理官网异常；Agent 可根据真实简历筛岗、解释匹配理由，读取任务诊断并协助原页续办。</p>
+        <p>不同企业官网随时可能改字段，单靠固定自动填写不能保证持续适配。建议先选方向，再进入左侧「连接 AI Agent」，复制接入 Prompt，读取随软件提供的 Skill 接口说明书。</p>
+        <p>无需为此付费或立即连接；不使用 Agent 仍可手动操作。此推荐不自动开启接口，不替你登录或提交；登录验证码、最终投递与未知回执始终由你核对。</p>
+      </details>
       <div class="onboarding-choices">
         <button class="onboarding-choice" data-recruit="social"><span class="choice-icon">👔</span><strong>社招</strong><small>有工作经验，找全职</small></button>
         <button class="onboarding-choice" data-recruit="campus"><span class="choice-icon">🎓</span><strong>校招</strong><small>应届毕业生，找全职</small></button>
@@ -588,6 +632,26 @@ node scripts/daily-boss.cjs
   </dialog>
 
   <script src="./resume-sync-flow.js"></script>
+  <dialog id="resumeBatchDialog" class="dialog resume-batch-dialog">
+    <button class="dialog-close" aria-label="关闭批量面板">×</button>
+    <h2>批量更新简历</h2>
+    <p>选择本次要更新的平台。不同平台并行，登录/核对互不覆盖；同一平台不同方向排队。</p>
+    <div class="resume-batch-toolbar">
+      <label><input type="checkbox" id="resumeBatchAll"> 一键全选</label>
+      <label>并行窗口 <select id="resumeBatchConcurrency"><option value="4">4 个 · 2×2</option><option value="6">6 个 · 2×3</option></select></label>
+      <span id="resumeBatchCount"></span>
+    </div>
+    <div id="resumeBatchTargets"></div>
+    <p class="resume-batch-note">更新时间区分官网证据与用户确认；填写/回读、直接关闭窗口不算已保存。登录后点重试，核对完关闭窗口可继续排队平台。</p>
+    <div class="settings-actions"><button class="primary-button" id="resumeBatchStart">开始更新所选平台</button><button class="ghost-button" id="resumeBatchStop">停止本轮</button></div>
+    <p id="resumeBatchMessage" role="status"></p>
+    <div id="resumeBatchProgress"></div>
+  </dialog>
+  <script src="./resume-batch-ui.js"></script>
+  <script src="./resume-editor-values.js"></script>
+  <script src="./resume-autosave.js"></script>
+  <script src="./agent-guide.js"></script>
+  <script src="./career-board.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>

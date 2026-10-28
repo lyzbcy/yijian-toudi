@@ -1,6 +1,6 @@
 {
   "name": "yijian-toudi",
-  "version": "0.5.0",
+  "version": "0.5.95",
   "description": "把岗位、简历和招聘消息放在一个地方管理的本地桌面应用",
   "main": "electron/main.cjs",
   "type": "commonjs",
@@ -10,6 +10,9 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
+    "preview:ai": "node scripts/ai-preview.cjs start",
+    "preview:ai:stop": "node scripts/ai-preview.cjs stop",
+    "test:ai-browser": "node test/ui-ai-browser.cjs && node test/ui-ai-preview.cjs",
     "test": "node --test test/*.test.cjs",
     "test:background": "node scripts/test-background.cjs",
     "test:live-jobs": "node test/live-jobs-full.cjs",
@@ -22,10 +25,13 @@
     "test:ui:sync-cancel": "node test/ui-resume-sync-cancel.cjs",
     "test:site": "node test/site-smoke.cjs",
     "check": "node scripts/check-project.cjs",
+    "configure:feedback": "node scripts/configure-feedback.cjs",
+    "check:public-feedback": "node scripts/configure-feedback.cjs --check-public",
+    "check:candidate-feedback": "node scripts/configure-feedback.cjs --check-candidate",
     "pack:mac": "electron-builder --mac dir",
     "dist:mac": "electron-builder --mac dmg zip",
     "pack:win": "electron-builder --win dir --config.electronDist=node_modules/electron/dist",
-    "dist:win": "electron-builder --win nsis --config.electronDist=node_modules/electron/dist",
+    "dist:win": "node scripts/dist-win.cjs",
     "release": "node scripts/release.cjs",
     "pack:skill": "node scripts/package-skill.cjs",
     "preview:site": "node scripts/site-preview.cjs"
@@ -78,6 +84,17 @@
           "path": "/Applications"
         }
       ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": false,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true,
+      "include": "installer/windows-options.nsh"
     },
     "win": {
       "icon": "build/icon.ico",

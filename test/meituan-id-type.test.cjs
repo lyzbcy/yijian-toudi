@@ -1,0 +1,4 @@
+const test=require('node:test'),assert=require('node:assert/strict'),{planMeituanWidgets}=require('../electron/meituan-widget-fill.cjs');
+for(const [supplied,want]of [['身份证','居民身份证'],[' 身份证 ','居民身份证'],['居民身份证','居民身份证'],['香港身份证','香港身份证'],['台湾身份证','台湾身份证'],['护照','护照']])test('Meituan explicit document type '+supplied,()=>{const r=planMeituanWidgets({basic:{idType:supplied}}).find(r=>r.key==='basic.idType');assert.equal(r.value,want);assert.deepEqual(r.locator,{section:'basic',label:'证件号码'});});
+test('Meituan does not infer document type from a number or absent field',()=>{assert.equal(planMeituanWidgets({basic:{idCard:'SAMPLE',idNumber:'SAMPLE'}}).some(r=>r.key==='basic.idType'),false);assert.equal(planMeituanWidgets({basic:{idType:' '}}).some(r=>r.key==='basic.idType'),false);});
+test('Meituan type mapping never rewrites original local facts',()=>{const r={basic:{idType:'身份证'}},before=JSON.stringify(r);planMeituanWidgets(r);assert.equal(JSON.stringify(r),before);});

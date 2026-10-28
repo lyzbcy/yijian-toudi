@@ -1,4 +1,5 @@
 const { ImapFlow } = require('imapflow');
+const { createHash } = require('node:crypto');
 const { simpleParser } = require('mailparser');
 const { classifyRecruitingMail, looksLikeRecruitingMail } = require('./recruiting.cjs');
 
@@ -29,11 +30,12 @@ async function syncQqMail({ address, authorizationCode, limit = 80 }) {
         const plain = parsed.text || parsed.html || '';
         if (!looksLikeRecruitingMail(subject, from, plain)) continue;
         result.push({
-          id: `qq-${message.uid}`,
+          id: `qq-${createHash('sha256').update(address.trim().toLowerCase()).digest('hex').slice(0,16)}-${client.mailbox.uidValidity || 0}-${message.uid}`,
+          mailbox: address.trim().toLowerCase(),
           company: inferCompany(subject, from),
           subject,
           stage: classifyRecruitingMail(subject, plain),
-          receivedAt: new Date(parsed.date || Date.now()).toISOString().replace('T', ' ').slice(0, 16),
+          receivedAt: new Date(parsed.date || Date.now()).toISOString(),
           unread: !message.flags?.has('\\Seen'),
           source: 'QQ 邮箱',
           preview: String(plain).replace(/\s+/g, ' ').slice(0, 160)
@@ -50,8 +52,9 @@ async function syncQqMail({ address, authorizationCode, limit = 80 }) {
 
 function inferCompany(subject, from) {
   const source = `${subject} ${from}`;
-  const names = ['腾讯', '阿里巴巴', '字节跳动', '美团', '小米', '网易', '华为', '百度', '京东', '拼多多'];
-  return names.find((name) => source.includes(name)) || from.split('<')[0].trim() || '招聘信息';
+  const names = ['腾讯', '阿里巴巴', '字节跳动', '美团', '小米', '网易', '华为', '百度', '京东', '拼多多', '长城证券', '华润电力', '上海银行', '小红书', '蚂蚁集团', '中兴', '携程'];
+  const explicit=subject.match(/请参加(.{2,60}?)的在线测评|^(.{2,60}?(?:公司|银行|证券|集团))面试邀请/);
+  return names.find((name) => source.includes(name)) || explicit?.[1] || explicit?.[2] || from.split('<')[0].trim() || '招聘信息';
 }
 
-module.exports = { syncQqMail };
+module.exports = { syncQqMail, inferCompany };

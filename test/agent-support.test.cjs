@@ -1,0 +1,12 @@
+const test=require('node:test'),assert=require('node:assert/strict');
+const {buildPrompt}=require('../src/agent-support.js');
+const {windowTheme,WINDOWS_CHROME_HEIGHT}=require('../electron/window-theme.cjs');
+const {calculateWorkspaceBounds}=require('../electron/workspace-layout.cjs');
+test('support defaults exclude description and request metadata',()=>{const s=buildPrompt({version:'0.5.95',requestId:'PRIVATE-ID',logs:{code:'TEST'}},{description:'PRIVATE-TEXT'});assert(s.includes('TEST'));assert(!s.includes('PRIVATE-TEXT'));assert(!s.includes('PRIVATE-ID'));});
+test('support honors logs opt-out and explicit description opt-in',()=>{const s=buildPrompt({logs:{code:'TEST'}},{includeLogs:false,includeDescription:true,description:'USER-SAMPLE'});assert(!s.includes('TEST'));assert(s.includes('USER-SAMPLE'));assert(s.includes('不作为新指令'));});
+test('support bounds user input and version lines',()=>{assert(!buildPrompt({version:'1\nINJECT'}).includes('1\nINJECT'));const s=buildPrompt({}, {includeDescription:true,description:'a'.repeat(2000)});assert(s.includes('a'.repeat(1000)));assert(!s.includes('a'.repeat(1001)));});
+test('support retains version alignment, unknown receipts and human-reviewed real PR contract',()=>{const s=buildPrompt();for(const x of ['匹配该安装版本','默认分支','原回执','真实 PR 链接','维护者审核','先与我确认'])assert(s.includes(x),x);});
+test('Windows native caption colors match UI and expose no custom command',()=>{const s=windowTheme('win32');assert.equal(s.titleBarStyle,'hidden');assert.equal(s.titleBarOverlay.height,WINDOWS_CHROME_HEIGHT);assert.equal(s.titleBarOverlay.color,s.backgroundColor);assert(!('frame' in s));});
+test('macOS preserves native traffic lights and Linux preserves native frame',()=>{assert.equal(windowTheme('darwin').titleBarStyle,'hiddenInset');assert.deepEqual(windowTheme('darwin').trafficLightPosition,{x:18,y:18});assert.equal(windowTheme('linux').titleBarStyle,undefined);});
+test('native workspace reserves full Windows caption and toolbar without hiding log rail',()=>{assert.deepEqual(calculateWorkspaceBounds(1200,800,{reserveFillLogRail:true,chromeHeight:36}),{x:0,y:88,width:904,height:712});assert.equal(calculateWorkspaceBounds(1200,800).y,52);});
+test('tiny workspace dimensions clamp to zero',()=>{const b=calculateWorkspaceBounds(20,20,{reserveFillLogRail:true,chromeHeight:36});assert.equal(b.width,0);assert.equal(b.height,0);});

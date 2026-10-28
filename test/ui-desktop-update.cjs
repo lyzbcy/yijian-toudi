@@ -1,0 +1,40 @@
+const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),http=require('node:http'),crypto=require('node:crypto'),{_electron:electron}=require('playwright-core'),{JsonStore}=require('../electron/store.cjs');
+(async()=>{
+ const root=path.resolve(__dirname,'..'),version=require('../package.json').version,profile=fs.mkdtempSync(path.join(os.tmpdir(),'yjt-update-ui-')),store=new JsonStore(profile);store.init();store.update(s=>{s.meta.onboardingSeen=true;s.settings.apiEnabled=false;s.settings.kimiBridgeEnabled=false;s.settings.autoCheckUpdates=false;s.settings.jobs.autoRefresh=false;return s;});
+ const fixtureVersion='0.5.99',name=`yijian-toudi-setup-${fixtureVersion}.exe`,bytes=Buffer.alloc(256000,7),hash=crypto.createHash('sha256').update(bytes).digest('hex'),base='https://github.com/lyzbcy/yijian-toudi',asset=n=>({name:n,size:bytes.length,browser_download_url:`${base}/releases/download/v${fixtureVersion}/${n}`});let mode='good',apiCalls=0,packageCalls=0;
+ const server=http.createServer((req,res)=>{if(req.url==='/release'){apiCalls++;res.end(JSON.stringify({tag_name:'v'+fixtureVersion,html_url:base+'/releases/tag/v'+fixtureVersion,assets:[asset(name),asset(name.replace('.exe','.sha256'))],body:'isolated controlled update fixture'}));}else if(req.url==='/hash')res.end((mode==='good'?hash:'a'.repeat(64))+' '+name);else if(req.url==='/package'){packageCalls++;res.setHeader('Content-Length',bytes.length);let offset=0;const send=()=>{if(res.destroyed)return;const end=Math.min(offset+32000,bytes.length);res.write(bytes.subarray(offset,end));offset=end;if(offset===bytes.length)res.end();else setTimeout(send,180);};send();}else{res.statusCode=404;res.end();}});
+ await new Promise(r=>server.listen(0,'127.0.0.1',r));const local=`http://127.0.0.1:${server.address().port}`;
+ const manifest=process.env.DESKTOP_UPDATE_OBSERVER_MANIFEST&&path.resolve(process.env.DESKTOP_UPDATE_OBSERVER_MANIFEST);
+ const application=await electron.launch({executablePath:process.env.ELECTRON_EXECUTABLE||undefined,args:[...(process.env.ELECTRON_EXECUTABLE?[]:[root]),`--user-data-dir=${profile}`,...(manifest?['--remote-debugging-port=2948','--remote-debugging-address=127.0.0.1']:[])],env:{...process.env,YIJIAN_BACKGROUND_TEST:'1'}});const tests=[],check=(name,ok)=>tests.push({name,ok:Boolean(ok)});
+ try{
+ const runtime=await application.evaluate(({app})=>({version:app.getVersion(),appPath:app.getAppPath(),executable:process.execPath}));if(runtime.version!==version)throw Error('runtime_version');if(process.env.ELECTRON_EXECUTABLE&&(path.resolve(runtime.executable)!==path.resolve(process.env.ELECTRON_EXECUTABLE)||!runtime.appPath.endsWith('app.asar')))throw Error('actual_package_required');
+ await application.evaluate(({net,shell},local)=>{const original=net.fetch.bind(net);global.__updateFixture={folderCalls:[],releaseCalls:[]};net.fetch=async(url,opts)=>{if(url.startsWith('https://api.github.com/repos/lyzbcy/yijian-toudi/releases/latest')||url.startsWith('https://github.com/lyzbcy/yijian-toudi/releases/download/')){const route=url.includes('api.github.com')?'/release':url.endsWith('.sha256')?'/hash':'/package';const response=await original(local+route,opts);return new Proxy(response,{get:(target,key)=>{if(key==='url')return url;const v=Reflect.get(target,key,target);return typeof v==='function'?v.bind(target):v;}});}throw Error('unexpected_fixture_network');};shell.showItemInFolder=f=>global.__updateFixture.folderCalls.push(f);shell.openExternal=async u=>global.__updateFixture.releaseCalls.push(u);},local);
+ const p=await application.firstWindow();await p.waitForSelector('.hero-card');p.on('dialog',d=>d.accept());
+ check('runtime sidebar version correct',await p.locator('#appVersion').textContent()===version);
+ check('update progress initially hidden',await p.locator('#updateProgress').isHidden());
+ await p.evaluate(()=>{window.__updatePhases=[];window.oneClick.onUpdateProgress(x=>window.__updatePhases.push(x));});
+ await p.locator('#checkUpdateButton').click();await p.waitForFunction(()=>document.querySelector('#updateProgressLabel').textContent==='正在下载');
+ check('real chunk stream visibly intermediate progress',await p.locator('#updateDownloadProgress').evaluate(e=>e.value>0&&e.value<100));
+ await p.waitForFunction(()=>document.querySelector('#updateProgressLabel').textContent==='下载校验完成，尚未安装');await p.waitForFunction(()=>!document.querySelector('#checkUpdateButton').disabled);
+ const folders=await application.evaluate(()=>global.__updateFixture.folderCalls),file=folders[0];
+ check('check and download query release independently',apiCalls===2);
+ check('downloaded file is exact fixture bytes',Boolean(file)&&fs.readFileSync(file).equals(bytes));
+ const verified=JSON.parse(fs.readFileSync(path.join(path.dirname(file),'verified.json')));
+ check('verified manifest exact SHA and explicitly not installed',verified.sha256===hash&&verified.shaOk&&verified.staged&&!verified.installed);
+ check('progress reaches100 and no partial file retained',await p.locator('#updateDownloadProgress').evaluate(e=>e.value===100)&&!fs.existsSync(path.join(path.dirname(file),'package.part')));
+ await p.evaluate(()=>window.oneClick.checkUpdate({manual:false}));check('daily automatic repeat does not request again',apiCalls===2);
+ mode='bad';await p.locator('#checkUpdateButton').click();await p.waitForFunction(()=>document.querySelector('#updateProgressLabel').textContent==='更新下载失败，请重试或打开发布页');await p.waitForFunction(()=>!document.querySelector('#checkUpdateButton').disabled);
+ check('failed checksum never opens new file',await application.evaluate(()=>global.__updateFixture.folderCalls.length)===1);
+ check('previous verified package unchanged after failed retry',fs.readFileSync(file).equals(bytes));
+ check('error toast exposes retry and proxy instructions',(await p.locator('#toastRegion').textContent()).includes('请点检查更新重试')&&(await p.locator('#toastRegion').textContent()).includes('代理'));
+ await p.locator('#updateProgress [data-external]').click();check('release fallback opens fixed product URL',await application.evaluate(()=>global.__updateFixture.releaseCalls[0])===base+'/releases');
+ mode='good';await p.locator('#checkUpdateButton').click();await p.waitForFunction(()=>document.querySelector('#updateProgressLabel').textContent==='下载校验完成，尚未安装');await p.waitForFunction(()=>!document.querySelector('#checkUpdateButton').disabled);
+ check('manual retry recovers with fresh release lookup',apiCalls===6&&packageCalls===3&&await application.evaluate(()=>global.__updateFixture.folderCalls.length)===2);
+ const state=await p.evaluate(()=>window.oneClick.getState());check('attempt and success dates durable',Boolean(state.meta.desktopUpdate.attemptDay)&&state.meta.desktopUpdate.attemptDay===state.meta.desktopUpdate.successDay&&!state.meta.desktopUpdate.lastFailure);
+ const phases=await p.evaluate(()=>window.__updatePhases);check('checking downloading verifying verified failed stages observed',['checking','downloading','verifying','verified','failed'].every(stage=>phases.some(x=>x.phase===stage)));
+ const report={at:new Date().toISOString(),isolated:true,profile,controlledHTTP:true,actualOfficialRelease:false,installerExecuted:false,runtime,apiCalls,packageCalls,verified,tests,passed:tests.filter(x=>x.ok).length,total:tests.length};
+ const output=process.env.DESKTOP_UPDATE_REPORT||path.join(root,'test-output/ui-desktop-update.json');fs.mkdirSync(path.dirname(output),{recursive:true});fs.writeFileSync(output,JSON.stringify(report,null,2));
+ if(manifest){fs.writeFileSync(manifest,JSON.stringify({port:2948,...report}));console.log('UPDATE_OBSERVER_READY');const until=Date.now()+600000;while(!fs.existsSync(manifest+'.done')&&Date.now()<until)await new Promise(r=>setTimeout(r,1000));if(!fs.existsSync(manifest+'.done'))throw Error('observer_timeout');console.log('UPDATE_OBSERVER_FINISHED');}
+ console.log(`DESKTOP_UPDATE_UI ${report.passed}/${report.total}`);if(report.passed!==report.total)process.exitCode=1;
+ }finally{await application.close();await new Promise(r=>server.close(r));}
+})().catch(e=>{console.error(e.message);process.exitCode=1});

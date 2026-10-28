@@ -80,6 +80,22 @@ test('单选题选择与答案相符的选项并勾选，绝不把“否”实�
   assert.match(script, /control\.value \|\| value/);
 });
 
+test('腾讯校招 0/1 单选把“不接受其他城市分配”匹配到否且按语义回读', () => {
+  const item = { key: 'intention.acceptCityDeployment', value: '否', keywords: ['是否还接受其他城市分配', '接受其他城市分配'] };
+  const fields = [
+    { index: 0, label: '除上述选择外，是否还接受其他城市分配 是', type: 'input:radio', controlValue: '1', value: '1' },
+    { index: 1, label: '除上述选择外，是否还接受其他城市分配 否', type: 'input:radio', controlValue: '0', value: '' }
+  ];
+  const plan = planGenericResumeFields([item], fields);
+  assert.equal(plan.writable.length, 1);
+  assert.equal(plan.writable[0].fieldIndex, 1);
+  const merged = mergeExecutionWithInspection([
+    { key: item.key, locator: plan.writable[0].locator, expected: '否', observed: '0', written: true }
+  ], [{ ...fields[0], value: '' }, { ...fields[1], value: '0' }]);
+  assert.equal(merged[0].observed, '否');
+  assert.deepEqual(summarizeGenericVerification(merged).verified, [item.key]);
+});
+
 test('写入前再次发现页面切到登录态时立即停止，不扫描或写入登录框', async () => {
   const scripts = [];
   const workspace = {

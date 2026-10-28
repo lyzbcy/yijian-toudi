@@ -53,7 +53,16 @@ function tencentApply(job, opts) {
   return require('./tencent-apply.cjs').applyTencentJob(job, opts);
 }
 
+const guidedAdapters = require('../guided-platforms.cjs').GUIDED_PLATFORMS.map(p => ({
+  id:p.id,name:p.name,idPrefix:p.id+'-',
+  listJobs:async()=>[], // No invented jobs or background scraping for manual-only sites.
+  inspectResume:null,planResumePatch:null,
+  fillResume:require('./_manual-fill.cjs').createManualFillResume(p.id,p.name),
+  prepareApplication:createManualPrepareApplication(p.name),inspectApplicationStatus:null,
+  capabilities:{...p.capabilities}
+}));
 const REGISTRY = [
+  ...guidedAdapters,
   {
     id: 'tencent',
     name: '腾讯',
@@ -142,6 +151,14 @@ const REGISTRY = [
   }
 ];
 
+// Every resume entry point (single and batch) gets only this company's answers.
+const {resolveResumeForCompany}=require('../resume-context.cjs');
+for (const adapter of REGISTRY) {
+  if (adapter.fillResume) {
+    const fill=adapter.fillResume;
+    adapter.fillResume=(resume,opts)=>fill(resolveResumeForCompany(resume,adapter.id),opts);
+  }
+}
 const byId = new Map(REGISTRY.map((a) => [a.id, a]));
 
 function getAdapter(companyId) {

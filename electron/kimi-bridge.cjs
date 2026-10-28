@@ -1,5 +1,5 @@
-// Kimi WebBridge 控制层（2026-09-20 新增，协议由 2026-09-19 深夜逆向+实测确立，见技术方案 §9.2）
-// 架构：本模块在本机起 WebSocket 服务端（默认 10086），用户浏览器里的 Kimi 扩展主动连接；
+// 默认使用官方daemon HTTP客户端；下方旧协议仅供显式legacy-ws兼容。
+// Legacy架构：本模块起 WebSocket 服务端，旧扩展主动连接；
 // 指令走 {type:'tool_call', requestId, payload:{name,args}}，回包 {type:'tool_result', responseToRequestId, payload}。
 // MV3 扩展会休眠断连：sendTool 内置等待重连重试。
 const { WebSocketServer } = require('ws');
@@ -7,9 +7,10 @@ const { WebSocketServer } = require('ws');
 const PROTOCOL_PORT_DEFAULT = 10086;
 const PING_INTERVAL_MS = 10000;
 
-class KimiBridge {
+class LegacyKimiBridge {
   constructor({ port = PROTOCOL_PORT_DEFAULT, log } = {}) {
     this.port = port;
+    this.transport = 'legacy-ws';
     this.log = log || (() => {});
     this.wss = null;
     this.activeSocket = null;
@@ -162,10 +163,21 @@ class KimiBridge {
   }
 
   // 便捷封装（实测过的最小工具集）
-  navigate(url, opts) { return this.sendTool('navigate', { url }, opts); }
+  navigate(url, opts = {}) {
+    const { newTab, ...timing } = opts;
+    return this.sendTool('navigate', newTab ? { url, newTab: true } : { url }, timing);
+  }
   snapshot(opts) { return this.sendTool('snapshot', {}, { timeoutMs: 40000, ...opts }); }
   click(selector, opts) { return this.sendTool('click', { selector }, opts); }
   fill(selector, value, opts) { return this.sendTool('fill', { selector, value }, opts); }
 }
 
-module.exports = { KimiBridge, PROTOCOL_PORT_DEFAULT };
+// Legacy direct-extension protocol is explicit opt-in, never an automatic fallback.
+// The default consumes the installed daemon, without owning or stopping its port.
+const { KimiDaemonClient } = require('./kimi-daemon-client.cjs');
+class KimiBridge {
+  constructor(options = {}) {
+    return options.transport === 'legacy-ws' ? new LegacyKimiBridge(options) : new KimiDaemonClient(options);
+  }
+}
+module.exports = { KimiBridge, LegacyKimiBridge, PROTOCOL_PORT_DEFAULT };

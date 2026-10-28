@@ -6,6 +6,7 @@ const path = require('node:path');
 const { run, dayInShanghai } = require('../skill/yijian-toudi/scripts/daily-boss.cjs');
 const { JsonStore } = require('../electron/store.cjs');
 const { AgentServer } = require('../electron/agent-server.cjs');
+const skillVersion = require('../skill/yijian-toudi/version.json').version;
 
 test('Shanghai date is stable across the UTC day boundary', () => {
   assert.equal(dayInShanghai(new Date('2026-09-27T16:00:00Z')), '2026-09-28');
@@ -16,14 +17,14 @@ function fixture() {
   const request = async (url, options) => {
     const route = new URL(url).pathname;
     calls.push({ route, method: options.method, body: options.body && JSON.parse(options.body) });
-    const data = route === '/v1/status' ? { version: '0.5.0' }
+    const data = route === '/v1/status' ? { version: skillVersion }
       : route === '/v1/boss/accounts' ? { accounts: [{ id: 'default' }, { id: 'client' }] }
-      : route === '/v1/boss/batch/status' ? { running: false }
-      : { started: true, accountId: options.body && JSON.parse(options.body).accountId, target: options.body && JSON.parse(options.body).target };
+      : route === '/v1/boss/batch/status' ? { running: false, stopping: false, requiresReview: false, pending: null }
+      : { started: true, runId: 'sample-run-id', ...JSON.parse(options.body) };
     return { ok: true, json: async () => data };
   };
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'yjtd-skill-'));
-  const env = { YJTD_API_TOKEN: 'test-token', YJTD_STATE_DIR: dir, YJTD_TARGET: '100' };
+  const env = { YJTD_API_TOKEN: 'test-token', YJTD_STATE_DIR: dir, YJTD_TARGET: '100', YJTD_SKILL_AUTO_UPDATE: '0' };
   return { request, calls, dir, env };
 }
 
@@ -73,13 +74,13 @@ test('dryRun reaches the real loopback Agent API without external browser action
     onCommand: async () => ({}),
     bossControl: {
       accounts: async () => ({ accounts: [{ id: 'default' }] }),
-      status: async () => ({ running: false }),
-      start: async (body) => { starts.push(body); return { started: true, ...body }; }
+      status: async () => ({ running: false, stopping: false, requiresReview: false, pending: null }),
+      start: async (body) => { starts.push(body); return { started: true, runId: 'sample-run-id', ...body }; }
     }
   });
   try {
     const port = await server.start(0);
-    const result = await run({ env: { YJTD_API_TOKEN: 'integration-token', YJTD_BASE_URL: `http://127.0.0.1:${port}`, YJTD_DRY_RUN: '1' } });
+    const result = await run({ env: { YJTD_API_TOKEN: 'integration-token', YJTD_BASE_URL: `http://127.0.0.1:${port}`, YJTD_DRY_RUN: '1', YJTD_SKILL_AUTO_UPDATE: '0' } });
     assert.equal(result.started, true);
     assert.deepEqual(starts, [{ accountId: 'default', target: 100, dryRun: true }]);
   } finally {

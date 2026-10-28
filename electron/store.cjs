@@ -31,12 +31,14 @@ function syncResumeActiveView(resume) {
     resume.education = [emptyEducation()];
     resume.experience = [emptyExperience()];
     resume.projects = [emptyProject()];
+    resume.completion = calculateResumeCompletion(resume);
     return resume;
   }
   resume.intention = structuredClone(profile.intention);
   resume.education = structuredClone(profile.education);
   resume.experience = structuredClone(profile.experience);
   resume.projects = structuredClone(profile.projects);
+  resume.completion = calculateResumeCompletion(resume);
   return resume;
 }
 
@@ -89,6 +91,19 @@ class JsonStore {
     const seedCompanies = new Map(seed.companies.map((c) => [c.id, c]));
     const existingIds = new Set((this.state.companies || []).map((c) => c.id));
     let changed = false;
+
+    // Public default fills legacy empty/missing values only. Never change a
+    // custom URL, an explicit opt-out or feedback-outbox endpoint/receipts.
+    if (this.state.settings.feedbackEndpointOverride === undefined) {
+      this.state.settings.feedbackEndpointOverride = typeof this.state.settings.feedbackEndpoint === 'string' && this.state.settings.feedbackEndpoint !== '';
+      changed = true;
+    }
+    if (this.state.settings.feedbackEndpointOverride === false &&
+        (this.state.settings.feedbackEndpoint === undefined || this.state.settings.feedbackEndpoint === '') &&
+        seed.settings.feedbackEndpoint) {
+      this.state.settings.feedbackEndpoint = seed.settings.feedbackEndpoint;
+      changed = true;
+    }
 
     // 1. 补全缺失的公司（新版本新增的）
     for (const [id, company] of seedCompanies) {
@@ -265,6 +280,13 @@ class JsonStore {
       this.state.meta.schemaVersion = 5;
       changed = true;
     }
+    // Completion is derived from current facts, never a persisted authority.
+    // Reconcile before migration flush, without changing resume.updatedAt.
+    if (this.state.resume) {
+      const beforeCompletion = this.state.resume.completion;
+      syncResumeActiveView(this.state.resume);
+      if (beforeCompletion !== this.state.resume.completion) changed = true;
+    }
     if (changed && persist) this.flush();
   }
 
@@ -346,6 +368,9 @@ function adapterStatusToCapabilities(status) {
 // 关键：activeProfileId 和非 active profile 一律以后端（currentResume）为权威，避免前端旧快照覆盖并发改动。
 // 返回新的 resume 对象（含 updatedAt/completion/profiles），调用方负责赋值给 state.resume。
 function applyResumeEdit(currentResume, incoming) {
+  if (Object.hasOwn(incoming, '_baseUpdatedAt') && incoming._baseUpdatedAt !== currentResume.updatedAt) {
+    throw new Error('本机简历已改变，未覆盖新资料；请保留当前输入，核对后重新载入');
+  }
   if (incoming.activeProfileId && incoming.activeProfileId !== currentResume.activeProfileId) {
     throw new Error('当前简历已切换，请重新加载后再保存，避免覆盖另一份简历');
   }
@@ -365,13 +390,18 @@ function applyResumeEdit(currentResume, incoming) {
       projects: Array.isArray(incoming.projects) ? incoming.projects : (profile.projects || [])
     };
   });
-  const result = {
+  const result = structuredClone({
     ...currentResume,
     ...incoming,
     activeProfileId: profileId,
     profiles: updatedProfiles,
     updatedAt: new Date().toISOString(),
-  };
+  });
+  delete result._baseUpdatedAt;
+  result.platformAnswers = require('./resume-context.cjs').normalizePlatformAnswers(result.platformAnswers || {});
+  require('./resume-context.cjs').syncResumeAliases(result);
+  const active = result.profiles.find(p => p.id === profileId);
+  if (active) active.education = structuredClone(result.education || active.education || []);
   syncResumeActiveView(result);
   result.completion = calculateResumeCompletion(result);
   return result;
@@ -434,12 +464,20 @@ function patchResume(resume, patch, { merge = true } = {}) {
   syncResumeActiveView(newResume);
   const profile = newResume.profiles.find(p => p.id === newResume.activeProfileId);
   const profileKeys = ['intention', 'education', 'experience', 'projects'];
-  const globalKeys = ['basic', 'skills', 'extras', 'compliance', 'family', 'games', 'ai'];
+  const globalKeys = ['basic', 'skills', 'extras', 'compliance', 'family', 'games', 'ai', 'platformAnswers'];
   const arrayKeys = ['education', 'experience', 'projects', 'family', 'games'];
   for (const [key, value] of Object.entries(patch)) {
     const [section, field, ...rest] = key.split('.');
     if (![...profileKeys, ...globalKeys].includes(section) || rest.length || ['__proto__', 'constructor', 'prototype'].includes(field)) {
       throw new Error(`不支持的简历字段：${key}`);
+    }
+    if (section === 'platformAnswers') {
+      const {normalizePlatformAnswers}=require('./resume-context.cjs');
+      const rows=normalizePlatformAnswers(field ? {[field]:value} : value);
+      const previous=(merge || field) ? normalizePlatformAnswers(newResume.platformAnswers || {}) : {};
+      for (const [company,row] of Object.entries(rows)) previous[company]=merge ? {...(previous[company] || {}),...row} : row;
+      newResume.platformAnswers=previous;
+      continue;
     }
     const target = profileKeys.includes(section) ? profile : newResume;
     if (field) {
@@ -454,6 +492,9 @@ function patchResume(resume, patch, { merge = true } = {}) {
     }
   }
   syncResumeActiveView(newResume);
+  newResume.platformAnswers = require('./resume-context.cjs').normalizePlatformAnswers(newResume.platformAnswers || {});
+  require('./resume-context.cjs').syncResumeAliases(newResume);
+  profile.education = structuredClone(newResume.education || []);
   newResume.updatedAt = new Date().toISOString();
   newResume.completion = calculateResumeCompletion(newResume);
   return newResume;

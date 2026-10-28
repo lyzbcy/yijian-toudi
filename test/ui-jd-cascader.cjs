@@ -1,0 +1,52 @@
+const fs=require('fs'),path=require('path'),os=require('os'),{_electron:electron}=require('playwright-core'),{JsonStore}=require('../electron/store.cjs');
+const root=path.resolve(__dirname,'..'),sourceRoot=process.env.JD_CASCADER_SOURCE_ROOT||(process.env.ELECTRON_EXECUTABLE?path.join(path.dirname(process.env.ELECTRON_EXECUTABLE),'resources/app.asar'):root);
+(async()=>{const profile=fs.mkdtempSync(path.join(os.tmpdir(),'yjt-cascader-')),store=new JsonStore(profile);store.init();store.update(s=>{s.meta.onboardingSeen=true;s.settings.autoCheckUpdates=false;s.settings.kimiBridgeEnabled=false;s.settings.apiEnabled=false;s.settings.jobs.autoRefresh=false;return s;});const a=await electron.launch({executablePath:process.env.ELECTRON_EXECUTABLE||undefined,args:[root,`--user-data-dir=${profile}`],env:{...process.env,YIJIAN_BACKGROUND_TEST:'1'}});
+const runtime=await a.evaluate(({app})=>({version:app.getVersion(),appPath:app.getAppPath(),executable:process.execPath}));if(process.env.ELECTRON_EXECUTABLE&&(!runtime.appPath.endsWith('.asar')||path.resolve(runtime.executable)!==path.resolve(process.env.ELECTRON_EXECUTABLE))){await a.close();throw Error('expected_actual_packaged_executable');}
+let tests;try{await a.firstWindow();tests=await a.evaluate(async({BrowserWindow,session},{root,sourceRoot})=>{
+ const path=process.getBuiltinModule('node:path'),Module=process.getBuiltinModule('node:module'),widgets=Module.createRequire(path.join(root,'package.json'))(path.join(sourceRoot,'electron/jd-widget-fill.cjs'));
+ const tests=[],check=(name,ok)=>tests.push({name,ok:!!ok}),part=session.fromPartition('jd-cascader-fixture-'+Date.now());
+ const html=`<meta charset="utf-8"><style>.ant-cascader-menus{display:flex}.ant-cascader-menu{padding:4px}.ant-cascader-menu-item{min-width:50px;min-height:25px}.hidden{display:none}</style>
+ <section id="info" class="gridContainer___f"><div class="formGroupItem___f"><div class="fieldItem___f"><div class="filedName___f">* 籍贯</div><span class="ant-cascader-picker"><input readonly class="ant-cascader-input"></span></div></div></section>
+ <section id="edu" class="gridContainer___f"><div class="formGroupItem___f"><div class="fieldItem___f"><div class="filedName___f">* 专业类别</div><span class="ant-cascader-picker"><input readonly class="ant-cascader-input"></span></div></div><div class="formGroupItem___f"><div class="fieldItem___f"><div class="filedName___f">* 专业类别</div><span class="ant-cascader-picker"><input readonly class="ant-cascader-input"></span></div></div></section>
+ <button onclick="saved++">保存</button><button onclick="applied++">申请</button><input id="consent" type="checkbox"><script>
+ window.saved=0;window.applied=0;window.leafClicks=0;
+ document.addEventListener('mousedown',e=>{if(e.target===document.body)document.querySelectorAll('.ant-cascader-menus').forEach(e=>e.remove())});
+ document.querySelectorAll('.ant-cascader-picker').forEach(picker=>picker.onclick=()=>{
+  if(picker.classList.contains('ant-cascader-picker-disabled'))return;
+  let pop=document.createElement('div');pop.className='ant-cascader-menus';document.body.append(pop);if(window.dupePopup){let x=pop.cloneNode(true);document.body.append(x)}
+  const rows=[['一级','另一级'],['二级','另二级'],['终点','另终点']];
+  function column(depth){let col=document.createElement('ul');col.className='ant-cascader-menu';pop.append(col);
+   let names=rows[depth].slice();if(window.dupeOption&&depth===1)names.push('二级');
+   names.forEach(name=>{let li=document.createElement('li');li.className='ant-cascader-menu-item';li.setAttribute('role','menuitem');li.textContent=name;
+    if(depth<2)li.classList.add('ant-cascader-menu-item-expand');if(window.disabledOption&&depth===1)li.classList.add('ant-cascader-menu-item-disabled');
+    li.onclick=()=>{[...col.children].forEach(e=>e.classList.remove('ant-cascader-menu-item-active'));if(!window.badActive)li.classList.add('ant-cascader-menu-item-active');while(pop.children.length>depth+1)pop.lastChild.remove();if(depth<2){if(window.commitParent)picker.querySelector('input').value=name;if(window.remount&&depth===0){let copy=picker.cloneNode(true);picker.replaceWith(copy);}setTimeout(()=>column(depth+1),window.slow?120:0);}else{window.leafClicks++;picker.querySelector('input').value='一级 / 二级 / '+name;pop.remove();if(window.revert)setTimeout(()=>picker.querySelector('input').value='',100)}};col.append(li);});}
+  column(0);
+ });</script>`;
+ let generation=0;part.protocol.handle('https',()=>new Response(html,{headers:{'content-type':'text/html; charset=utf-8'}}));const win=new BrowserWindow({show:false,webPreferences:{session:part}}),run=s=>win.webContents.executeJavaScript(s),reset=()=>win.loadURL('https://campus.jd.com/?fixture='+(++generation)+'#/resume'),q=(path,extra={})=>({key:'education.0.majorCategory',value:path.join(' / '),path,kind:'cascader',sectionId:'edu',groupNumber:1,label:'专业类别',ordinal:0,...extra}),perform=async request=>(await run(widgets.buildJdWidgetScript([request])))[0];
+ try{
+ await reset();let r=await perform(q(['一级','二级','终点']));check('exact three-level leaf selected and read back',r.written&&r.observed==='一级 / 二级 / 终点'&&!r.error);check('popup closed after success',await run('document.querySelectorAll(".ant-cascader-menus").length===0'));
+ await reset();await run('window.slow=true');r=await perform(q(['一级','二级','终点']));check('async child columns awaited',r.written&&!r.error);
+ await reset();await run(`document.querySelector('#edu input').value='一级/二级/终点'`);r=await perform(q(['一级','二级','终点']));check('already-matching whitespace normalized without clicks',r.action==='already-matching'&&r.observed==='一级 / 二级 / 终点'&&await run('leafClicks===0'));
+ await reset();r=await perform(q(['一级']));check('ancestor is not selected as a leaf',r.error==='cascader-path-incomplete'&&await run('leafClicks===0&&document.querySelector("#edu input").value===""'));check('failure closes popup',await run('document.querySelectorAll(".ant-cascader-menus").length===0'));
+ await reset();r=await perform(q(['不存在']));check('missing option no write',r.error==='cascader-option-missing'&&await run('leafClicks===0'));
+ await reset();await run('window.dupeOption=true');r=await perform(q(['一级','二级','终点']));check('ambiguous exact option rejected',r.error==='cascader-option-ambiguous'&&await run('leafClicks===0'));
+ await reset();await run('window.disabledOption=true');r=await perform(q(['一级','二级','终点']));check('disabled option rejected',r.error==='cascader-option-disabled-or-hidden'&&await run('leafClicks===0'));
+ await reset();await run('window.dupePopup=true');r=await perform(q(['一级','二级','终点']));check('ambiguous popup rejected',r.error==='cascader-popup-ambiguous'&&await run('leafClicks===0'));
+ await reset();await run(`let x=document.createElement('div');x.className='ant-cascader-menus';document.body.append(x)`);r=await perform(q(['一级','二级','终点']));check('pre-existing popup untouched',r.error==='another-popup-open'&&await run('document.querySelectorAll(".ant-cascader-menus").length===1'));
+ await reset();await run(`document.querySelector('#edu .fieldItem___f').after(document.querySelector('#edu .fieldItem___f').cloneNode(true))`);r=await perform(q(['一级','二级','终点']));check('ambiguous row rejected',!r.written&&r.error==='row-missing-or-ambiguous');
+ await reset();await run(`document.querySelector('#edu .ant-cascader-picker').classList.add('ant-cascader-picker-disabled')`);r=await perform(q(['一级','二级','终点']));check('disabled picker rejected',r.error==='cascader-disabled-or-missing');
+ await reset();await run('window.revert=true');r=await perform(q(['一级','二级','终点']));check('delayed revert is not verified',r.error==='cascader-readback-mismatch'&&r.observed==='');
+ await reset();await run('window.remount=true');r=await perform(q(['一级','二级','终点']));check('context remount aborts before leaf',r.error==='cascader-context-changed'&&await run('leafClicks===0'));
+ await reset();await run('window.commitParent=true');r=await perform(q(['一级','二级','终点']));check('unexpected intermediate commit reported changed',r.error==='cascader-intermediate-committed'&&r.changed===true&&await run('leafClicks===0'));
+ await reset();r=await perform(q(['一级','二级','终点'],{groupNumber:2}));check('second segment isolated',r.written&&await run('document.querySelectorAll("#edu input")[0].value===""'));
+ await reset();r=await perform(q(['一级','二级','终点'],{key:'basic.nativePlace',sectionId:'info',label:'籍贯'}));check('native place scoped to basic section',r.written&&await run('document.querySelector("#edu input").value===""'));
+ await reset();r=await perform(q(['一级','二级','终点','超出']));check('leaf reached too early rejects extra path',r.error==='cascader-path-too-deep'&&await run('leafClicks===0'));
+ await reset();r=await perform(q(['一级','','终点']));check('invalid explicit path rejected before menu',r.error==='cascader-path-invalid'&&await run('document.querySelectorAll(".ant-cascader-menus").length===0'));
+ await reset();await run('window.badActive=true');r=await perform(q(['一级','二级','终点']));check('unverified ancestor cannot authorize child selection',r.error==='cascader-ancestor-mismatch'&&await run('leafClicks===0'));
+ await reset();await run(`document.querySelector('#edu input').value='一级'`);r=await perform(q(['一级']));check('preexisting ancestor text is not a verified leaf',r.error==='cascader-path-incomplete'&&await run('leafClicks===0'));
+ await win.loadURL('https://example.org/#/resume');r=await perform(q(['一级','二级','终点']));check('wrong origin rejected',r.error==='row-missing-or-ambiguous');
+ await win.loadURL('https://campus.jd.com/#/jobs');r=await perform(q(['一级','二级','终点']));check('wrong page rejected',r.error==='row-missing-or-ambiguous');check('save apply consent untouched',await run('saved===0&&applied===0&&!document.querySelector("#consent").checked'));
+ }finally{win.destroy();part.protocol.unhandle('https');}return tests;
+},{root,sourceRoot});}finally{await a.close();}
+const report={at:new Date().toISOString(),sourceRoot,runtime,realWebsite:false,isolated:true,tests,passed:tests.filter(t=>t.ok).length,total:tests.length};fs.writeFileSync(process.env.JD_CASCADER_REPORT||path.join(root,'test-output/ui-jd-cascader.json'),JSON.stringify(report,null,2));console.log(`JD_CASCADER ${report.passed}/${report.total}`);for(const t of tests.filter(t=>!t.ok))console.log('FAIL '+t.name);if(report.passed!==report.total)process.exitCode=1;
+})().catch(e=>{console.error(e.message);process.exitCode=1});

@@ -1,0 +1,3 @@
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),css=fs.readFileSync(path.join(__dirname,'../src/styles.css'),'utf8');
+test('closed report does not override native dialog default hidden display',()=>{const body=css.match(/\.resume-report-dialog\s*\{([^}]+)\}/)?.[1];assert.ok(body);assert.doesNotMatch(body,/\bdisplay\s*:/);});
+test('report flex layout is explicitly scoped to native open state',()=>{const body=css.match(/\.resume-report-dialog\[open\]\s*\{([^}]+)\}/)?.[1];assert.ok(body);assert.match(body,/\bdisplay\s*:\s*flex\s*;/);});

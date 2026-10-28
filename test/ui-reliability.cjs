@@ -17,7 +17,9 @@ const { _electron: electron } = require('playwright-core');
     page.on('pageerror', (error) => errors.push(error.message));
     await page.waitForSelector('.hero-card');
     assert.equal(await application.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows().some(w => w.isVisible())), false);
-    if (await page.locator('#onboardingDialog[open]').count()) await page.locator('[data-recruit="social"]').click();
+    await page.locator('#onboardingDialog[open]').waitFor({ state: 'visible' });
+    await page.locator('[data-recruit="social"]').click();
+    await page.locator('#onboardingDialog').waitFor({ state: 'hidden' });
     await page.locator('.sidebar [data-page="resume"]').click();
     await page.evaluate(() => { window.prompt = () => '回归测试'; window.confirm = () => true; });
     for (let i = 0; i < 10; i++) {

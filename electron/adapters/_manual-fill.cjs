@@ -48,6 +48,9 @@ function createManualFillResume(companyId, siteName) {
     if (fellBackToSocial) {
       message = `${siteName}暂未确认校招简历页，已打开社招页（${directionNote}方向）。若你正在校招，请在页面内手动切换到校招入口`;
     }
+    if (PLATFORM_MANIFESTS[companyId]?.resumeEntryKind === 'portal') {
+      message = '已打开' + siteName + directionNote + '招聘门户入口；请登录后进入“我的简历”。该入口不是已核验简历编辑页，软件暂未自动填写，不会保存或投递';
+    }
     step('manual-required', message);
     return {
       ok: true,

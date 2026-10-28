@@ -15,10 +15,11 @@ const { _electron: electron } = require('playwright-core');
   try {
     const window = await application.firstWindow();
     await window.waitForSelector('.hero-card');
-    if (await window.locator('#onboardingDialog[open]').count() > 0) {
-      await window.locator('.onboarding-choice[data-recruit="social"]').click();
-      await window.waitForTimeout(400);
-    }
+    // Fresh profile: wait for async first-run rendering, not an early count.
+    const onboarding = window.locator('#onboardingDialog[open]');
+    await onboarding.waitFor({ state: 'visible' });
+    await window.locator('.onboarding-choice[data-recruit="social"]').click();
+    await onboarding.waitFor({ state: 'hidden' });
     await window.locator('.sidebar .nav-item[data-page="connections"]').first().click();
     await window.waitForTimeout(700);
     await window.waitForSelector('#companyGridPrimary', { timeout: 10000 });
@@ -26,9 +27,9 @@ const { _electron: electron } = require('playwright-core');
     const errors = [];
     const check = (cond, msg) => { if (!cond) errors.push(msg); };
 
-    // 1. 主区应有 12 家（6 verified + 6 degraded，新增阿里目录与 BOSS 手动入口）
+    // 1. 主区应有 15 家（6 verified + 6 degraded，新增阿里目录与 BOSS 手动入口）
     const primaryCards = await window.locator('#companyGridPrimary .company-button').count();
-    check(primaryCards === 12, `主区应有 12 家公司，实际 ${primaryCards}`);
+    check(primaryCards === 15, `主区应有 15 家公司，实际 ${primaryCards}`);
 
     // 2. 腾讯卡片应有 5 个五维徽章；简历需核对、投递本人操作，不能虚标 verified。
     const tencentCard = window.locator('#companyGridPrimary .company-button[data-company="tencent"]');
@@ -55,19 +56,24 @@ const { _electron: electron } = require('playwright-core');
 
     // 5. 次区「即将支持」应有 8 家（BOSS 新增后总数 20，主区 12）
     const soonText = await window.locator('#soonCount').textContent();
-    check(soonText.includes('8'), `次区应有 8 家公司，实际「${soonText}」`);
+    check(soonText.includes('7'), `次区应有 7 家公司，实际「${soonText}」`);
     await window.locator('.company-section-soon summary').click();
     await window.waitForTimeout(300);
     const soonCards = await window.locator('#companyGridSoon .company-button').count();
-    check(soonCards === 8, `次区展开后应有 8 家公司，实际 ${soonCards}`);
+    check(soonCards === 7, `次区展开后应有 7 家公司，实际 ${soonCards}`);
 
+    for (const id of ['bilibili','mihoyo','kuaishou']) {
+      const card=window.locator('#companyGridPrimary .company-button[data-company="'+id+'"]');
+      check(await card.count()===1,id+'应进入人工接管主区');
+      for (const i of [2,3])check((await card.locator('.cap-dot').nth(i).getAttribute('class')).includes('cap-manual'),id+'简历与申请必须显示manual');
+    }
     // 6. 点击行为：jobs=verified 的走 openCompany（外部浏览器），degraded/unsupported 走嵌入式登录。
     //    测试环境不真实打开外部浏览器，仅验证 companyClickMode 逻辑在前端代码里正确（已由单元测试覆盖）。
 
     if (errors.length) {
       console.error('❌ 能力矩阵 UI 测试失败：');
       errors.forEach((e) => console.error('  - ' + e));
-      process.exit(1);
+      process.exitCode = 1;
     }
     console.log(JSON.stringify({ ok: true, primaryCards, soonCards, tencentDots }));
   } finally {

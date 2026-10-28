@@ -39,7 +39,7 @@ test('内嵌工作区对导航和重定向使用同一策略', () => {
 
 test('登录中心从 manifest 的受信登录入口打开，不直接使用可变 portal', () => {
   const source = require('node:fs').readFileSync(require('node:path').join(__dirname, '../electron/login-manager.cjs'), 'utf8');
-  assert.match(source, /resolvePlatformUrl\(company\.id, 'social', 'login'\)/);
+  assert.match(source, /resolvePlatformUrl\(company\.id, recruitType, 'login'\)/);
   assert.doesNotMatch(source, /url:\s*company\.portal/);
 });
 

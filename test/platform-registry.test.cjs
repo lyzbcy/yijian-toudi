@@ -64,7 +64,7 @@ test('投递适配器源码不得执行 click 或 submit', () => {
 });
 
 test('登录探测不能因登录页有手机号输入框就当成简历表单', () => {
-  const source = require('node:fs').readFileSync(require('node:path').join(__dirname, '../electron/form-inspection.cjs'), 'utf8');
+  const source = require('../electron/form-inspection.cjs').LOGIN_AND_FORM_PROBE;
   assert.match(source, /one-time-code|验证码/);
   assert.doesNotMatch(source, /Boolean\(loginControl\) && inputCount === 0/);
 });

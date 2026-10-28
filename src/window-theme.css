@@ -1,0 +1,8 @@
+/* Reserve the complete native caption-control row; no custom minimize/close IPC. */
+.window-chrome{display:none}
+html[data-platform="win32"] body{padding-top:36px}
+html[data-platform="win32"] .window-chrome{display:flex;position:fixed;inset:0 0 auto;height:36px;padding:0 16px;align-items:center;z-index:1000;background:#f6f7fb;color:#81859d;font:12px system-ui;-webkit-app-region:drag;user-select:none}
+html[data-platform="win32"] .app-shell{min-height:calc(100vh - 36px)}
+html[data-platform="win32"] .sidebar{top:36px}
+html[data-platform="win32"] .workspace-bar{top:36px}
+html[data-platform="win32"] .fill-log{top:88px}

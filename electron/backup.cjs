@@ -7,7 +7,7 @@ function createBackup(state, appVersion) {
   delete data.audit;
   if (data.settings) {
     delete data.settings.apiToken;
-    if (data.settings.email) delete data.settings.email.encryptedCode;
+    if (data.settings.email) {delete data.settings.email.encryptedCode;for(const a of data.settings.email.accounts||[])delete a.encryptedCode;}
   }
   return {
     format: BACKUP_FORMAT,
@@ -56,6 +56,8 @@ function restoreBackup(currentState, backup) {
     resume: source.resume,
     cart: Array.isArray(source.cart) ? source.cart : [],
     applied: Array.isArray(source.applied) ? source.applied : [],
+    careerApplications: Array.isArray(source.careerApplications) ? source.careerApplications : (current.careerApplications || []),
+    careerMailReview:Array.isArray(source.careerMailReview)?source.careerMailReview:[],
     tasks: Array.isArray(source.tasks) ? source.tasks : current.tasks,
     audit: current.audit || [],
     idempotency: current.idempotency || {},
@@ -66,6 +68,7 @@ function restoreBackup(currentState, backup) {
       email: {
         ...currentEmail,
         ...sourceEmail,
+        accounts:(sourceEmail.accounts||currentEmail.accounts||[]).map(a=>{const match=(currentEmail.accounts||[]).find(c=>c.address===a.address&&c.method===a.method&&c.accountId===a.accountId&&c.profileId===a.profileId);return {...a,encryptedCode:match?.encryptedCode||'',connected:match?.connected===true};}),
         encryptedCode: sameEmail ? currentEmail.encryptedCode : '',
         connected: sameEmail
           ? Boolean(currentEmail.connected && currentEmail.encryptedCode)

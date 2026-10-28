@@ -3,6 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
+const { JsonStore } = require('../electron/store.cjs');
 const { _electron: electron } = require('playwright-core');
 
 (async () => {
@@ -10,6 +11,10 @@ const { _electron: electron } = require('playwright-core');
   const output = path.join(root, 'test-output');
   fs.mkdirSync(output, { recursive: true });
   const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'yjt-resume-'));
+  // This suite tests segments, not onboarding. Seed completion before the async UI
+  // opens; otherwise the late onboarding dialog can intercept the first nav click.
+  const fixture = new JsonStore(profile); fixture.init();
+  fixture.update(s => { s.meta.onboardingSeen = true; s.settings.kimiBridgeEnabled = false; s.settings.autoCheckUpdates = false; return s; });
   const application = await electron.launch({
     args: [root, `--user-data-dir=${profile}`],
     executablePath: process.env.ELECTRON_EXECUTABLE || undefined,

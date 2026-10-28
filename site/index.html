@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN" data-page-v="5">
+<html lang="zh-CN" data-page-v="97">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,19 +33,19 @@
     <section class="hero">
       <div class="wrap hero-grid">
         <div>
-          <span class="pill">本地优先 · 开源 · macOS 首发</span>
+          <span class="pill">本地优先 · 开源 · Windows 实测</span>
           <h1>少一点重复，<br><em>多一点选择。</em></h1>
           <p>把不同大厂的岗位放在一起比较，只维护一份完整简历，再统一管理面试、测评和 Offer。登录态与求职数据留在你的电脑里。</p>
-          <div class="actions"><a class="primary" href="https://github.com/lyzbcy/yijian-toudi/releases/latest">查看最新版 macOS 下载</a><a class="secondary" href="#agent">连接我的 Agent</a></div>
-          <p class="microcopy">当前 v0.3.1 内测版（Apple Silicon）· 下载后双击「一键安装.command」即可 · <a href="#install-guide" style="color:var(--purple)">首次安装看这里</a></p>
+          <div class="actions"><a class="primary" href="https://github.com/lyzbcy/yijian-toudi/releases" target="_blank" rel="noopener">查看已公开版本</a><a class="secondary" href="#agent">连接我的 Agent</a></div>
+          <p class="microcopy">源码 v0.5.95 统一投递状态刷新开发版，尚未公开 · Windows 包内候选 v0.5.77（真实六窗认证门禁已验） · 普通EXE v0.5.77（独立SAMPLE主窗/关闭15/15） · 默认安装仍待 · 尚未公开分发 · macOS 当前版尚未验收 · <a href="#install-guide" style="color:var(--purple)">首次安装看这里</a></p>
         </div>
         <div class="preview">
           <div class="preview-card">
             <div class="preview-top"><i></i><i></i><i></i></div>
             <div class="preview-title"><strong>今天的岗位，一眼比较</strong></div>
-            <div class="preview-row"><b style="background:#1664ff">T</b><div><strong>AI 应用开发专家</strong><span>深圳 · 腾讯</span></div><em>真实</em></div>
-            <div class="preview-row"><b style="background:#111827">字</b><div><strong>大模型应用开发工程师</strong><span>北京 · 字节跳动</span></div><em>真实</em></div>
-            <div class="preview-row"><b style="background:#2932e1">百</b><div><strong>Java 工程师</strong><span>北京 · 百度</span></div><em>真实</em></div>
+            <div class="preview-row"><b style="background:#1664ff">T</b><div><strong>AI 应用开发专家</strong><span>深圳 · 腾讯</span></div><em>演示</em></div>
+            <div class="preview-row"><b style="background:#111827">字</b><div><strong>大模型应用开发工程师</strong><span>北京 · 字节跳动</span></div><em>演示</em></div>
+            <div class="preview-row"><b style="background:#2932e1">百</b><div><strong>Java 工程师</strong><span>北京 · 百度</span></div><em>演示</em></div>
           </div>
           <img class="mascot" src="assets/stickers/sparkle.png" alt="星星眼表情">
         </div>
@@ -59,8 +59,8 @@
       <div class="wrap">
         <header class="section-head"><span class="pill">三个核心工作区</span><h2>求职流程终于在一个地方</h2><p>首版先把数据模型、桌面体验和安全边界做稳，再逐站增加招聘网站适配器。</p></header>
         <div class="features">
-          <article class="feature"><span class="feature-icon">⌁</span><h3>招聘项目</h3><p>用公司、城市、时间、技能和收藏状态横向筛选岗位，六家公司岗位已从招聘官网真实抓取。</p><small class="real">六家岗位已验证</small></article>
-          <article class="feature"><span class="feature-icon">▤</span><h3>统一简历</h3><p>涵盖基本信息、教育、工作、项目、技能、证书与长尾字段；腾讯支持自动准备字段并交给用户确认保存，其他平台继续适配。</p><small class="real">腾讯审核式填写</small></article>
+          <article class="feature"><span class="feature-icon">⌁</span><h3>招聘项目</h3><p>用公司、城市、时间、技能和收藏状态横向筛选岗位。上方卡片为界面示例，实际岗位以客户端当次官网回包为准。</p><small class="real">多平台岗位筛选</small></article>
+          <article class="feature"><span class="feature-icon">▤</span><h3>统一简历</h3><p>维护基本信息与多段经历，批量选择平台或一键全选；4/6 页登录展示与字段回读已接入。腾讯等平台仍需用户确认保存，其他平台继续适配与实测。官网保存和岗位回执仍逐站实测，打开页面不算投递。</p><small class="real">批量核对 · 官网闭环实测中</small></article>
           <article class="feature"><span class="feature-icon">✉</span><h3>招聘信息</h3><p>通过 QQ 邮箱 IMAP 读取近期邮件，只保留可能与招聘有关的内容并分类。</p><small class="real">QQ 邮箱可用</small></article>
         </div>
       </div>
@@ -75,13 +75,13 @@
 
     <section class="block" id="install-guide">
       <div class="wrap">
-        <header class="section-head"><span class="pill">首次安装</span><h2>macOS 提示「无法打开」怎么办？</h2><p>一键投递是开源软件、未经苹果付费签名，首次双击会被系统拦截。这是正常的，按下面任一方法授权一次即可，之后正常使用。</p></header>
+        <header class="section-head"><span class="pill">Windows 安装</span><h2>选安装版，还是便携版？</h2><p>源码 v0.5.95（统一投递状态刷新开发版，尚未公开）、Windows 包内候选 v0.5.77（真实六窗认证门禁已验）、普通EXE v0.5.77（独立SAMPLE主窗/关闭15/15）；默认安装仍待（最后实装53），官网闭环和公开发布尚未验收，尚未公开。公开下载请以 GitHub 发布页中真实存在的版本、平台和附件为准。</p></header>
         <div class="features">
-          <article class="feature"><span class="feature-icon">1</span><h3>方法一：右键打开（最快）</h3><p>在「访达/应用程序」里找到一键投递，<b>右键</b>点「打开」，在弹窗里再点「打开」。这个授权是一次性的，以后双击就能正常启动。</p></article>
-          <article class="feature"><span class="feature-icon">2</span><h3>方法二：用一键安装脚本（推荐）</h3><p>下载的安装包里有「一键安装.command」，双击它，脚本会自动复制应用到「应用程序」、移除隔离属性并启动。终端窗口里按提示输开机密码即可。</p></article>
-          <article class="feature"><span class="feature-icon">3</span><h3>方法三：系统设置允许</h3><p>双击被拦后，打开「系统设置 → 隐私与安全性」，下拉会看到「已阻止打开一键投递」，点「仍要打开」。然后再次双击应用。</p></article>
+          <article class="feature"><span class="feature-icon">1</span><h3>Windows 安装版</h3><p>选对应版本的 <b>yijian-toudi-setup-版本.exe</b>，按向导选择目录和桌面快捷方式。当前候选未签名；安装和升级结果需分别验收，不把构建完成记成已安装。</p></article>
+          <article class="feature"><span class="feature-icon">2</span><h3>Windows 完整 ZIP</h3><p>把对应版本的 <b>win-x64 ZIP</b> 完整解压到本地目录，再打开根目录的「一键投递.exe」。保留 resources、locales 和 DLL 等全部文件，不在压缩包内直接运行。</p></article>
+          <article class="feature"><span class="feature-icon">3</span><h3>macOS 与版本核对</h3><p>跨平台架构仍保留。当前候选的 macOS 构建和安装尚未验收；历史 macOS 包不等于当前 Windows 候选，不共用版本说明或安装脚本。</p></article>
         </div>
-        <p style="text-align:center;color:var(--muted);font-size:12px;margin-top:28px">这是开源 macOS 软件的通用情况，不是病毒。源码完全公开在 GitHub，可自行审查。</p>
+        <p style="text-align:center;color:var(--muted);font-size:12px;margin-top:28px">最新源码、本地候选与已公开版本分别标识；SHA256 和安装说明以相应发布附件为准。</p>
       </div>
     </section>
 
@@ -101,8 +101,7 @@
   </main>
   <footer>由 <a href="https://lyzbcy.github.io/" target="_blank" rel="noopener">捞鱼</a> 制作 · 求职数据属于你自己</footer>
   <script>
-    var PAGE_V=7;
-    fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(d){if(PAGE_V!==d.v){var el=document.getElementById('g-load');el.style.display='block';var last=0;try{last=parseInt(sessionStorage.getItem('yjt_refreshed_at')||'0')}catch(e){}if(Date.now()-last<3000)return;try{sessionStorage.setItem('yjt_refreshed_at',String(Date.now()))}catch(e){}setTimeout(function(){location.reload(true)},800)}}).catch(function(){});
+    var PAGE_V=97;
     document.getElementById('copy').addEventListener('click',function(){navigator.clipboard.writeText(document.getElementById('prompt').textContent).then(function(){document.getElementById('copy').textContent='已复制 ✓'})});
   </script>
   <!-- 更新日志小组件 + 一键刷新（版本驱动，见 version.json） -->
@@ -115,31 +114,7 @@
     <div id="changelogList" style="font-size:13px;line-height:1.7;color:#3c3d52"></div>
     <button onclick="document.getElementById('changelogDialog').close()" style="margin-top:14px;border:0;border-radius:8px;background:#1664ff;color:#fff;padding:8px 16px;cursor:pointer">知道了</button>
   </dialog>
-  <script>
-  (function () {
-    var LOGS = {"0.3.1": "七平台一键更新简历、附件自动上传、进度侧边栏、PDF 制作、游戏/AI 新字段", "0.3.0": "多 profile、Agent API、一键更新骨架", "0.2.0": "腾讯闭环、安全备份、脱敏"};
-    var list = document.getElementById('changelogList');
-    list.innerHTML = Object.keys(LOGS).sort().reverse().map(function (v) {
-      return '<p style="margin:0 0 8px"><b>v' + v + '</b> — ' + LOGS[v] + '</p>';
-    }).join('');
-    document.getElementById('changelogBtn').onclick = function () { document.getElementById('changelogDialog').showModal(); };
-    document.getElementById('forceRefreshBtn').onclick = function () {
-      try { localStorage.setItem('yjt-forced-refresh', Date.now()); } catch (e) {}
-      location.reload(true);
-    };
-    // 打开时核对本地渲染版本与远端 version.json：不一致自动强刷一次（带 sessionStorage 防循环）
-    fetch('./version.json?v=' + Date.now()).then(function (r) { return r.json(); }).then(function (remote) {
-      var local = document.documentElement.getAttribute('data-page-v') || '';
-      if (remote.v && String(remote.v) !== String(local)) {
-        if (!sessionStorage.getItem('yjt-refreshed')) {
-          sessionStorage.setItem('yjt-refreshed', '1');
-          location.reload(true);
-        }
-      } else {
-        sessionStorage.removeItem('yjt-refreshed');
-      }
-    }).catch(function () {});
-  })();
-  </script>
+  <script src="page-state.js"></script>
 </body>
 </html>
+

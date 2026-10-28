@@ -3,13 +3,14 @@ const TOP_BAR_HEIGHT = 52;
 // 原生 WebContentsView 永远盖在网页 UI 之上，面板必须渲染在预留空档里，否则会被完全遮挡。
 const FILL_LOG_RAIL_WIDTH = 296;
 
-function calculateWorkspaceBounds(contentWidth, contentHeight, { reserveFillLogRail = false } = {}) {
+function calculateWorkspaceBounds(contentWidth, contentHeight, { reserveFillLogRail = false, chromeHeight = 0 } = {}) {
   const railWidth = reserveFillLogRail ? FILL_LOG_RAIL_WIDTH : 0;
+  const top = TOP_BAR_HEIGHT + Math.max(0, Number(chromeHeight) || 0);
   return {
     x: 0,
-    y: TOP_BAR_HEIGHT,
+    y: top,
     width: Math.max(0, contentWidth - railWidth),
-    height: Math.max(0, contentHeight - TOP_BAR_HEIGHT)
+    height: Math.max(0, contentHeight - top)
   };
 }
 

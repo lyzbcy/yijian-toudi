@@ -4,9 +4,9 @@ const registry = require('../electron/adapters/registry.cjs');
 const { fillTencentResume } = require('../electron/adapters/tencent-fill.cjs');
 const { applyTencentJob } = require('../electron/adapters/tencent-apply.cjs');
 
-test('registry 注册了 8 家公司，6 家可自动抓岗位，阿里/BOSS 仅官方入口', () => {
+test('registry 注册了 11 家公司，6 家可自动抓岗位，阿里/BOSS 仅官方入口', () => {
   const ids = registry.REGISTRY.map((a) => a.id);
-  assert.deepEqual(ids.sort(), ['alibaba', 'baidu', 'boss', 'bytedance', 'jd', 'meituan', 'tencent', 'xiaomi']);
+  assert.deepEqual(ids.sort(), ['alibaba', 'baidu', 'bilibili', 'boss', 'bytedance', 'jd', 'kuaishou', 'meituan', 'mihoyo', 'tencent', 'xiaomi']);
   assert.equal(registry.listJobAdapters().length, 6);
   assert.equal(registry.getAdapter('boss').capabilities.jobs, 'manual');
 });
@@ -46,7 +46,7 @@ test('非腾讯且获允许内嵌操作的公司均有安全接管能力', () =>
 
 test('capabilityMatrix 返回扁平五维结构，供前端/介绍页消费', () => {
   const matrix = registry.capabilityMatrix();
-  assert.equal(matrix.length, 8);
+  assert.equal(matrix.length, 11);
   const tencent = matrix.find((m) => m.id === 'tencent');
   assert.equal(tencent.jobs, 'verified');
   assert.equal(tencent.resume, 'degraded');

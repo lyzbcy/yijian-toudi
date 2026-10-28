@@ -1,19 +1,11 @@
+const {inspectPageAuthentication}=require('./page-auth-probe.cjs');
 const LOGIN_AND_FORM_PROBE = `(() => new Promise((resolve) => {
+  const inspectAuthentication = ${inspectPageAuthentication.toString()};
   const inspect = () => {
     const bodyText = document.body?.innerText || '';
     const inputCount = document.querySelectorAll('input, textarea, select').length;
     const isNotFound = /404|页面不存在|没有找到|Whitelabel Error Page|Not Found/i.test(document.title + bodyText.slice(0, 500));
-    // 百度等站未登录时直接返回 JSON（如 {"status":"need-login"}），页面既无表单也无登录控件
-    const jsonNeedLogin = /"status"\s*:\s*"need-login"|need login!/i.test(bodyText.slice(0, 300));
-    const loginControl = document.querySelector('a[href*="login"], button[class*="login"], button[class*="signin"], .tis-login, [data-testid*="login"], [class*="login-button"], [class*="signin-button"]');
-    const authField = document.querySelector('input[type="password"], input[autocomplete="one-time-code"], input[autocomplete="tel"], input[placeholder*="手机号"], input[placeholder*="验证码"], input[name*="captcha"], input[name*="password"], input[name="phone"], input[name="mobile"]');
-    const routeParts = (location.pathname + location.search).toLowerCase().split(/[\\/?&#=_-]+/).filter(Boolean)
-      // login.html / login.aspx 等带扩展名的路径要去掉扩展名再比对
-      .map((part) => part.replace(/\.(html?|aspx|php|jsp)$/i, ''));
-    const authRoute = routeParts.some((part) => ['login', 'passport', 'signin', 'auth', 'sso'].includes(part) || part.startsWith('sso'));
-    const authPrompt = /手机号登录|扫码登录|验证码登录|密码登录|获取验证码|立即登录|登录账号/.test(bodyText.slice(0, 1200));
-    const strongAuthField = document.querySelector('input[type="password"], input[autocomplete="one-time-code"], input[placeholder*="验证码"], input[name*="captcha"], input[name*="password"]');
-    return { loginRequired: Boolean(jsonNeedLogin || strongAuthField || authRoute || (authField && authPrompt) || (loginControl && authPrompt)), isNotFound, inputCount };
+    return { loginRequired: inspectAuthentication().loginRequired, isNotFound, inputCount };
   };
   const initial = inspect();
   // SPA 跳转登录页存在竞态：首帧可能还停在原路径且带残留输入框，立即按 inputCount 返回会漏判登录。
@@ -31,8 +23,16 @@ const LOGIN_AND_FORM_PROBE = `(() => new Promise((resolve) => {
   }, 250);
 }))()`;
 
+const {getJdFormContext}=require('./jd-form-context.cjs');
+const {getByteDanceFormContext}=require('./bytedance-form-context.cjs');
+const {getMeituanFormContext}=require('./meituan-form-context.cjs');
 const INSPECT_FORM_FIELDS = `(() => {
+  const jdContext = ${getJdFormContext.toString()};
+  const byteContext = ${getByteDanceFormContext.toString()};
+  const meituanContext = ${getMeituanFormContext.toString()};
   function describe(control) {
+    const meituan=meituanContext(control);if(meituan)return meituan.label;
+    const byte=byteContext(control);if(byte)return byte.matchLabel;
     const labelByFor = control.id ? document.querySelector('label[for="' + CSS.escape(control.id) + '"]')?.innerText : '';
     const ancestorTexts = [];
     let node = control.parentElement;
@@ -46,7 +46,7 @@ const INSPECT_FORM_FIELDS = `(() => {
       node = node.parentElement;
     }
     return [
-      labelByFor, control.closest('label')?.innerText, control.placeholder, control.name, control.id,
+      jdContext(control)?.label, labelByFor, control.closest('label')?.innerText, control.placeholder, control.name, control.id,
       control.getAttribute('aria-label'), control.getAttribute('autocomplete'), control.className,
       ancestorTexts.join(' ')
     ].filter(Boolean).join(' ').trim();
@@ -77,6 +77,11 @@ const INSPECT_FORM_FIELDS = `(() => {
   } catch (error) {}
   const headerNodes = [...headerCandidates.values()].sort((a, b) => a.top - b.top);
   const sectionOf = (control) => {
+    const meituan=meituanContext(control);if(meituan)return meituan.section==='basic'?'':meituan.section;
+    const byte=byteContext(control);if(byte)return byte.section==='basic'?'':byte.section;
+    const jd=jdContext(control);
+    const aliases={edu:'教育经历',experience:'实习经历',program:'项目经历'};
+    if(jd&&aliases[jd.sectionId])return aliases[jd.sectionId]+'-'+jd.groupNumber;
     if (typeof control.getBoundingClientRect !== 'function') return '';
     const top = control.getBoundingClientRect().top;
     let section = '';
@@ -87,6 +92,10 @@ const INSPECT_FORM_FIELDS = `(() => {
   };
   return controls.map((control, index) => ({
     index,
+    jdLocator: jdContext(control),
+    byteLocator: byteContext(control),
+    meituanLocator: meituanContext(control),
+    readOnly: Boolean((typeof location!=='undefined'&&location.origin==='https://jobs.bytedance.com'&&location.pathname==='/campus/resume/edit'&&document.querySelector('.ud-formily-item')&&(!byteContext(control)||!(['text','email','tel','textarea'].includes(control.type))||byteContext(control)?.label==='起止时间')) || (typeof location!=='undefined'&&location.origin==='https://zhaopin.meituan.com'&&location.pathname==='/web/personal-center/resume-detail'&&document.querySelector('.resume_detail_edit .mtd-form')&&!meituanContext(control)?.writable) || control.readOnly || (jdContext(control)&&control.matches('.ant-select-search__field'))),
     section: sectionOf(control),
     label: describe(control).slice(0, 240),
     type: control.tagName.toLowerCase() + (control.type ? ':' + control.type : ''),

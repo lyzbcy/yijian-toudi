@@ -26,8 +26,15 @@ for (const [base, html, name] of [['src', appHtml, '桌面界面'], ['src', site
 
 const version = JSON.parse(fs.readFileSync(path.join(root, 'site/version.json'), 'utf8'));
 const pageVersion = Number(siteHtml.match(/var PAGE_V\s*=\s*(\d+)/)?.[1]);
-if (pageVersion === version.v) pass(`介绍页 PAGE_V 与 version.json 一致（${version.v}）`);
-else fail(`介绍页版本不一致：PAGE_V=${pageVersion}, version.json=${version.v}`);
+const dataVersion = Number(siteHtml.match(/data-page-v=["'](\d+)["']/)?.[1]);
+if (pageVersion === version.v && dataVersion === version.v) pass(`介绍页 PAGE_V/data-page-v/version.json 三者一致（${version.v}）`);
+else fail(`介绍页版本不一致：PAGE_V=${pageVersion}, data-page-v=${dataVersion}, version.json=${version.v}`);
+const pageState = path.join(root, 'site/page-state.js');
+if (siteHtml.includes('src="page-state.js"') && fs.existsSync(pageState)) {
+  const result = spawnSync(process.execPath, ['--check', pageState], { encoding: 'utf8' });
+  if (result.status === 0) pass('介绍页单一状态脚本引用与语法通过');
+  else fail(`介绍页状态脚本语法错误：${result.stderr}`);
+} else fail('介绍页单一状态脚本缺失');
 
 const formFields = [...appHtml.matchAll(/<(?:input|select|textarea)[^>]+name=["']([^"']+)["']/g)].map((match) => match[1]);
 // 多段经历（教育/工作/项目）改成动态渲染后，HTML 里只剩全局字段；这三类的字段模板在 app.js 的 REPEATABLE_TEMPLATES。

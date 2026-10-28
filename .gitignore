@@ -15,3 +15,10 @@ _plaintext.html
 _search_index.js
 _final_verify.mjs
 .zcode/
+release-candidate-*/
+support/data/
+verification/**/baseline-app/
+verification/**/rollback-copy/
+
+# Windows portable candidates are generated assets, not source.
+release-portable-candidate-*/
